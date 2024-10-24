@@ -20,16 +20,16 @@ export class WorkspaceManagerService {
     this.initializeWorkspaceManager();
   }
 
-  public leaveCurrentWorkspace() {
+  leaveCurrentWorkspace() {
     localStorage.setItem(this.workspaceLocalStorageKey, '');
     globals.currentWorkspaceData = null;
   }
 
-  public getCurrentWorkspaceName() {
+  getCurrentWorkspaceName() {
     return globals.currentWorkspaceData?.name;
   }
 
-  public async joinWorkspace(name: string, password: string) {
+  async joinWorkspace(name: string, password: string) {
     try {
       const responseData = await this.apiService?.getWorkspaceByName(name);
       const workspace = responseData?.workspace;
