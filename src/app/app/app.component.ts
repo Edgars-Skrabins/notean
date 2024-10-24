@@ -3,7 +3,6 @@ import {RouterOutlet} from '@angular/router';
 import {TaskCreationComponent} from "../components/task-creation/task-creation.component";
 import {CreateWorkspaceComponent} from "../pages/create-workspace/create-workspace.component";
 import {JoinWorkspaceComponent} from "../pages/join-workspace/join-workspace.component";
-import {initializeWorkspaceManager} from "../utils/workspaceManager";
 
 
 @Component({
@@ -14,8 +13,4 @@ import {initializeWorkspaceManager} from "../utils/workspaceManager";
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-
-  constructor() {
-    initializeWorkspaceManager();
-  }
 }

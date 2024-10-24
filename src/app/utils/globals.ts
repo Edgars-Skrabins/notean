@@ -4,6 +4,6 @@ type Globals = {
   currentWorkspaceData: WorkspaceData | null;
 }
 
-export let global: Globals = {
+export let globals: Globals = {
   currentWorkspaceData: null,
 }

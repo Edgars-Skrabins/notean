@@ -1,8 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ApiService} from "./api.service";
-import {global} from "./global";
 import {WorkspaceData} from "../services/api.service";
-import {initializeWorkspaceManager} from "../utils/workspaceManager";
+import {globals} from "../utils/globals";
 
 export enum WorkspaceManagerReply {
   SuccessJoin = 'Successfully joined workspace',
@@ -18,21 +17,21 @@ export class WorkspaceManagerService {
   constructor(private apiService: ApiService) {
     localStorage.setItem('currentWorkspace', '');
     localStorage.getItem('currentWorkspace');
-    initializeWorkspaceManager();
+    this.initializeWorkspaceManager();
   }
 
   public leaveCurrentWorkspace() {
     localStorage.setItem(this.workspaceLocalStorageKey, '');
-    global.currentWorkspaceData = null;
+    globals.currentWorkspaceData = null;
   }
 
   public getCurrentWorkspaceName() {
-    return global.currentWorkspaceData?.name;
+    return globals.currentWorkspaceData?.name;
   }
 
   public async joinWorkspace(name: string, password: string) {
     try {
-      const responseData = await global.apiService?.getWorkspaceByName(name);
+      const responseData = await this.apiService?.getWorkspaceByName(name);
       const workspace = responseData?.workspace;
       if (!workspace) {
         return Promise.reject('Workspace is undefined')
@@ -62,10 +61,10 @@ export class WorkspaceManagerService {
   }
 
   private updateWorkspaceData(data: WorkspaceData) {
-    global.currentWorkspaceData = data;
+    globals.currentWorkspaceData = data;
   }
 
   private getCurrentWorkspaceData() {
-    return global.currentWorkspaceData;
+    return globals.currentWorkspaceData;
   }
 }
