@@ -1,8 +1,8 @@
 import {Component} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {AppRoutes} from "../../app/app.routes";
-import {joinWorkspace} from "../../utils/workspaceManager";
 import {NavigationService} from "../../services/navigation.service";
+import {WorkspaceManagerService} from "../../services/workspaceManager.service";
 
 @Component({
   selector: 'app-join-workspace',
@@ -18,11 +18,11 @@ export class JoinWorkspaceComponent {
   workspacePassword = '';
   alertMessage = '';
 
-  constructor(private navigationService: NavigationService) {
+  constructor(private navigationService: NavigationService, private workspaceManagerService: WorkspaceManagerService) {
   }
 
   handleJoinWorkspace() {
-    joinWorkspace(this.workspaceName, this.workspacePassword)
+    this.workspaceManagerService.joinWorkspace(this.workspaceName, this.workspacePassword)
       .then((result) => {
         this.alertMessage = result;
       })
