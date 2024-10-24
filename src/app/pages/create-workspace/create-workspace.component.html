@@ -1,0 +1,33 @@
+<main>
+  <div class="formContainer">
+    <h2 class="h2 center"> Create your Workspace!</h2>
+
+    <label class="inputLabel" for="workspaceNameInput">
+      Name
+      <input
+        [(ngModel)]="workspaceName"
+        class=""
+        id="workspaceNameInput"
+        placeholder="Enter workspace name"
+        type="text"
+      />
+    </label>
+
+    <label class="inputLabel" for="workspacePasswordInput">
+      Password
+      <input
+        [(ngModel)]="workspacePassword"
+        class=""
+        id="workspacePasswordInput"
+        maxlength="24"
+        placeholder="password"
+        type="password"
+      />
+    </label>
+
+    <button (click)="handleCreateWorkspace()">Create</button>
+    <p> {{ alertMessage }} </p>
+    <p> Already have a workspace? </p>
+    <button (click)="handleGoToJoinWorkspace()">Join workspace</button>
+  </div>
+</main>

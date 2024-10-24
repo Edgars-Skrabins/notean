@@ -1,0 +1,9 @@
+<main class="columnContainer">
+    <div class="formContainer">
+        <h2 class="h2"> Create a task </h2>
+        <label for="taskCreationInput">
+            <input type="text" [(ngModel)]="taskName" placeholder="Enter task name" class="" id="taskCreationInput"/>
+        </label>
+        <button (click)="handleCreateTask()">Create</button>
+    </div>
+</main>
