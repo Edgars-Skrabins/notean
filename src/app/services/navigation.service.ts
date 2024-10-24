@@ -6,17 +6,17 @@ import {AppRoutes} from '../app/app.routes';
   providedIn: 'root',
 })
 export class NavigationService {
-  isNavigating: boolean = false;
+  private isNavigating: boolean = false;
 
   constructor(private router: Router) {
 
   }
 
+  public getIsNavigating(): boolean {
+    return this.isNavigating;
+  }
+
   navigate(route: AppRoutes) {
-    if (!this.router) {
-      console.error('A router does not exist!');
-      return;
-    }
     this.isNavigating = true;
     this.router.navigate([route])
       .then(() => {
