@@ -3,13 +3,15 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AppRoutes} from "../../app/app.routes";
 import {ApiService, WorkspaceIdentifyingParams} from "../../services/api.service";
 import {NavigationService} from "../../services/navigation.service";
+import {TranslateModule} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-create-workspace',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    TranslateModule
   ],
   templateUrl: './create-workspace.component.html',
   styleUrl: './create-workspace.component.css'

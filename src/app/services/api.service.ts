@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {axiosInstance} from "../api/axiosConfig";
+import {axiosInstance} from "../config/axiosConfig";
 import {WorkspaceResponseError, WorkspaceResponseSuccess} from "../types/api/responseTypes";
 
 export type WorkspaceIdentifyingParams = {
