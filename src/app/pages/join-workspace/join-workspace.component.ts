@@ -1,9 +1,9 @@
 import {Component} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {AppRoutes} from "../../app/app.routes";
-import {NavigationService} from "../../services/navigation.service";
-import {WorkspaceManagerService} from "../../services/workspaceManager.service";
-import {WorkspaceIdentifyingParams} from "../../services/api.service";
+import {NavigationService} from "@services/navigation.service";
+import {WorkspaceManagerService} from "@services/workspaceManager.service";
+import {WorkspaceIdentifyingParams} from "@services/api.service";
 
 @Component({
   selector: 'app-join-workspace',

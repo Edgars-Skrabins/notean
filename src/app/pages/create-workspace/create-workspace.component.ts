@@ -1,9 +1,9 @@
 import {Component} from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {AppRoutes} from "../../app/app.routes";
-import {ApiService, WorkspaceIdentifyingParams} from "../../services/api.service";
-import {NavigationService} from "../../services/navigation.service";
+import {NavigationService} from "@services/navigation.service";
 import {TranslateModule} from "@ngx-translate/core";
+import {ApiService, WorkspaceIdentifyingParams} from "@services/api.service";
 
 @Component({
   selector: 'app-create-workspace',
