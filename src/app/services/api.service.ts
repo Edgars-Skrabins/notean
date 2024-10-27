@@ -1,17 +1,10 @@
 import {Injectable} from '@angular/core';
 import {axiosInstance} from "../api/axiosConfig";
+import {WorkspaceResponseError, WorkspaceResponseSuccess} from "../types/api/responseTypes";
 
-export type WorkspaceData = {
-  name: string;
-  password: string;
-}
-
-export interface ResponseData {
-  statusMessage: string,
-}
-
-export interface WorkspaceResponseData extends ResponseData {
-  workspace: WorkspaceData
+export type WorkspaceIdentifyingParams = {
+  name: string,
+  password: string,
 }
 
 @Injectable({
@@ -22,28 +15,28 @@ export class ApiService {
   private workspaceUrl = '/workspaces'
   private actionsUrl = '/actions'
 
-  async getWorkspaceByName(name: string): Promise<WorkspaceResponseData> {
+  async getWorkspaceByName(name: string) {
     const url = `${this.workspaceUrl}/${name}`;
     return axiosInstance.get(url)
-      .then((response) => response.data)
+      .then((response) => response.data as WorkspaceResponseSuccess)
       .catch((error) => {
-        return error.response.data;
+        return error.response.data as WorkspaceResponseError;
       });
   }
 
-  async createWorkspace(workspaceData: WorkspaceData): Promise<string> {
-    return axiosInstance.post(this.workspaceUrl, {workspace: workspaceData})
-      .then((response) => response.data.statusMessage)
+  async createWorkspace(workspaceIdentifyingParams: WorkspaceIdentifyingParams): Promise<string> {
+    return axiosInstance.post(this.workspaceUrl, {workspace: workspaceIdentifyingParams})
+      .then((response) => response.data.statusMessage as string)
       .catch((error) => {
-        return error.response.data.statusMessage;
+        return error.response.data.statusMessage as string;
       });
   }
 
-  async joinWorkspace(workspaceData: WorkspaceData): Promise<string> {
-    return axiosInstance.post(this.actionsUrl + '/joinworkspace', {workspace: workspaceData})
-      .then((response) => response.data.statusMessage)
+  async joinWorkspace(workspaceIdentifyingParams: WorkspaceIdentifyingParams) {
+    return axiosInstance.post(this.actionsUrl + '/joinworkspace', {workspace: workspaceIdentifyingParams})
+      .then((response) => response.data as WorkspaceResponseSuccess)
       .catch((error) => {
-        return error.response.data.statusMessage;
+        return error.response.data as WorkspaceResponseError;
       });
   }
 }

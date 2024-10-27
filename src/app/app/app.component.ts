@@ -13,5 +13,4 @@ import {JoinWorkspaceComponent} from "../pages/join-workspace/join-workspace.com
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-
 }

@@ -1,11 +1,10 @@
 import {Injectable} from '@angular/core';
-import {ApiService} from "./api.service";
-import {WorkspaceData} from "../services/api.service";
+import {ApiService, WorkspaceIdentifyingParams} from "./api.service";
 import {globals} from "../utils/globals";
 
-export enum WorkspaceManagerReply {
-  SuccessJoin = 'Successfully joined workspace',
-  IncorrectPassword = 'Workspace password is incorrect',
+export type Workspace = {
+  name: string;
+  password: string;
 }
 
 @Injectable({
@@ -29,23 +28,34 @@ export class WorkspaceManagerService {
     return globals.currentWorkspaceData?.name;
   }
 
-  async joinWorkspace(name: string, password: string) {
-    try {
-      const responseData = await this.apiService?.getWorkspaceByName(name);
-      const workspace = responseData?.workspace;
-      if (!workspace) {
-        return Promise.reject('Workspace is undefined')
-      }
-      if (workspace.password === password) {
-        localStorage.setItem(this.workspaceLocalStorageKey, name);
-        this.updateWorkspaceData(workspace);
-        return WorkspaceManagerReply.SuccessJoin;
-      } else {
-        return Promise.reject(WorkspaceManagerReply.IncorrectPassword);
-      }
-    } catch (error) {
-      return Promise.reject(error);
-    }
+  async joinWorkspace(workspaceIdentifyingParams: WorkspaceIdentifyingParams) {
+    let message: string = "";
+    await this.apiService.joinWorkspace(workspaceIdentifyingParams)
+      .then((response) => {
+        message = response.statusMessage;
+      })
+      .catch((response) => {
+        message = response.statusMessage as string;
+      })
+
+    return message;
+
+    // try {
+    //   const responseData = await this.apiService?.getWorkspaceByName(name);
+    //   const workspace = responseData?.workspace;
+    //   if (!workspace) {
+    //     return Promise.reject('Workspace is undefined')
+    //   }
+    //   if (workspace.password === password) {
+    //     localStorage.setItem(this.workspaceLocalStorageKey, name);
+    //     this.updateWorkspaceData(workspace);
+    //     return WorkspaceManagerReply.SuccessJoin;
+    //   } else {
+    //     return Promise.reject(WorkspaceManagerReply.IncorrectPassword);
+    //   }
+    // } catch (error) {
+    //   return Promise.reject(error);
+    // }
   }
 
   private initializeWorkspaceManager() {
@@ -56,11 +66,14 @@ export class WorkspaceManagerService {
 
     this.apiService.getWorkspaceByName(workspaceName)
       .then((response) => {
-        this.updateWorkspaceData(response.workspace);
+        this.updateWorkspaceData(response.workspace as Workspace);
+      })
+      .catch((response) => {
+        console.error(response.statusMessage);
       })
   }
 
-  private updateWorkspaceData(data: WorkspaceData) {
+  private updateWorkspaceData(data: Workspace) {
     globals.currentWorkspaceData = data;
   }
 

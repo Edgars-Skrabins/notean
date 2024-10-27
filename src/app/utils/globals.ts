@@ -1,7 +1,7 @@
-import {WorkspaceData} from "../services/api.service";
+import {Workspace} from "../services/workspaceManager.service";
 
 type Globals = {
-  currentWorkspaceData: WorkspaceData | null;
+  currentWorkspaceData: Workspace | null;
 }
 
 export let globals: Globals = {

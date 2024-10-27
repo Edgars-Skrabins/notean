@@ -4,6 +4,7 @@ import {AppRoutes} from "../../app/app.routes";
 import {NavigationService} from "../../services/navigation.service";
 import {WorkspaceManagerService} from "../../services/workspaceManager.service";
 import {TranslationService} from "../../services/translations/dictionaries/translations.service";
+import {WorkspaceIdentifyingParams} from "../../services/api.service";
 
 @Component({
   selector: 'app-join-workspace',
@@ -23,12 +24,13 @@ export class JoinWorkspaceComponent {
   }
 
   handleJoinWorkspace() {
-    this.workspaceManagerService.joinWorkspace(this.workspaceName, this.workspacePassword)
-      .then((result) => {
-        this.alertMessage = result;
-      })
-      .catch((error) => {
-        this.alertMessage = error;
+    const workspaceIdentifyingParams: WorkspaceIdentifyingParams = {
+      name: this.workspaceName,
+      password: this.workspacePassword,
+    }
+    this.workspaceManagerService.joinWorkspace(workspaceIdentifyingParams)
+      .then((message) => {
+        this.alertMessage = message;
       })
   }
 
