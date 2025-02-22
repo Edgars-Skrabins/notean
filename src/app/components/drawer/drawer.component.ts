@@ -1,10 +1,11 @@
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {NgForOf} from "@angular/common";
 import {TranslateModule} from "@ngx-translate/core";
 
 export type Drawer = {
   id: number,
   name: string,
+  component: Component,
 }
 
 @Component({
@@ -19,9 +20,10 @@ export type Drawer = {
 })
 
 export class DrawerComponent {
-  drawers: Drawer[] = [];
+  currentOpenDrawerID: number = 0;
+  @Input() drawers: Drawer[] = [];
 
   handleDrawerClick(drawer: Drawer) {
-
+    this.currentOpenDrawerID = drawer.id;
   }
 }

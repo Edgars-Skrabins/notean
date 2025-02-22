@@ -3,9 +3,6 @@
     <button (click)="handleDrawerClick(drawer)">{{ drawer.name | translate }}</button>
   </div>
   <div class="contentContainer">
-    drawer works!
-    drawer works!
-    drawer works!
-    drawer works!
+    {{ drawers[currentOpenDrawerID].component }}
   </div>
 </main>
