@@ -1,0 +1,17 @@
+:host {
+  --width-drawer: 30%;
+  --width-drawer-content: 70%;
+
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.drawerContainer {
+  background-color: var(--color-foreground);
+  width: var(--width-drawer);
+}
+
+.contentContainer {
+  background-color: var(--color-background);
+  width: var(--width-drawer-content);
+}
