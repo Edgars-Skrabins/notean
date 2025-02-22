@@ -13,6 +13,6 @@ export const enum TranslationPhrase {
   Login = "Login",
   Register = "Register",
   Logout = "Logout",
-  ForgotPassword = "Forgot password",
-  ChangePassword = "Change password"
+  ForgotPassword = "ForgotPassword",
+  ChangePassword = "ChangePassword"
 }
