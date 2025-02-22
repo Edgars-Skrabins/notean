@@ -6,12 +6,28 @@
   min-height: 100%;
 }
 
+.container {
+  display: flex;
+  flex-direction: row;
+  min-height: 100%;
+}
+
 .drawerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
   background-color: var(--color-foreground);
   width: var(--width-drawer);
+  min-height: 100%;
 }
 
 .contentContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   background-color: var(--color-background);
   width: var(--width-drawer-content);
+  min-height: 100%;
 }
