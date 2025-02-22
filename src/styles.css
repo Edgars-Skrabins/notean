@@ -3,8 +3,9 @@
   --color-foreground: #272b4a;
   --color-primaryText: #fafeff;
   --color-secondaryText: #c2cbd8;
-}
 
+  --fs-body: 1.125rem;
+}
 
 [data-theme="light"] {
   --color-background: #ffffff;
@@ -16,6 +17,7 @@
 body {
   background-color: var(--color-background);
   color: var(--color-primaryText);
+  font-size: var(--fs-body);
   margin: 0;
   padding: 0;
 }

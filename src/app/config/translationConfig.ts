@@ -1,4 +1,4 @@
-export const defaultLanguage = 'en'
+export const defaultLanguage = 'lv'
 
 export const supportedTranslations = [
   'en',

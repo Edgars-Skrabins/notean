@@ -1,6 +1,6 @@
 :host {
-  --width-drawer: 30%;
-  --width-drawer-content: 70%;
+  --width-drawer: 20%;
+  --width-drawer-content: 80%;
 
   min-width: 100%;
   min-height: 100%;
