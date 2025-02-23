@@ -1,5 +1,5 @@
 import {Component, Input, Type} from '@angular/core';
-import {NgComponentOutlet, NgForOf, NgIf} from "@angular/common";
+import {NgClass, NgComponentOutlet, NgForOf, NgIf} from "@angular/common";
 import {TranslateModule} from "@ngx-translate/core";
 
 export type Drawer = {
@@ -15,7 +15,8 @@ export type Drawer = {
     NgForOf,
     TranslateModule,
     NgComponentOutlet,
-    NgIf
+    NgIf,
+    NgClass
   ],
   templateUrl: './drawer.component.html',
   styleUrl: './drawer.component.css'

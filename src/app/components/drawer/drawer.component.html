@@ -1,7 +1,10 @@
 <main class="container">
-  <div *ngFor="let drawer of drawers" class="drawerContainer">
+  <div class="drawerContainer">
     <div class="buttonContainer">
-      <button (click)="handleDrawerClick(drawer)" class="drawerButton">{{ drawer.name | translate }}</button>
+      <button (click)="handleDrawerClick(drawer)" *ngFor="let drawer of drawers"
+              [ngClass]="{'activeButton': drawer.id === currentOpenDrawerID, 'inactiveButton': drawer.id !== currentOpenDrawerID}"
+              class="drawerButton">{{ drawer.name | translate }}
+      </button>
     </div>
   </div>
   <div class="contentContainer">

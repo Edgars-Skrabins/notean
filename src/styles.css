@@ -4,6 +4,9 @@
   --color-primaryText: #fafeff;
   --color-secondaryText: #c2cbd8;
 
+  --color-activeButton: #1e203a;
+  --color-inactiveButton: #30365b;;
+
   --spacing-small: 0.5rem;
   --spacing-medium: 1rem;
   --spacing-large: 1.5rem;
