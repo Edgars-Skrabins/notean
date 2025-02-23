@@ -1,0 +1,45 @@
+<main>
+  <div class="formContainer">
+    <h2 class="h2 center"> Register!</h2>
+
+    <label class="inputLabel" for="emailInput">
+      Email
+      <input
+        [(ngModel)]="email"
+        class=""
+        id="emailInput"
+        placeholder="Enter email"
+        type="email"
+      />
+    </label>
+
+    <label class="inputLabel" for="passwordInput">
+      Password
+      <input
+        [(ngModel)]="password"
+        class=""
+        id="passwordInput"
+        maxlength="24"
+        placeholder="password"
+        type="password"
+      />
+    </label>
+
+    <label class="inputLabel" for="confirmPasswordInput">
+      Confirm Password
+      <input
+        [(ngModel)]="confirmPassword"
+        class=""
+        id="confirmPasswordInput"
+        maxlength="24"
+        placeholder="confirm password"
+        type="password"
+      />
+    </label>
+
+    <button (click)="handleRegister()">Register</button>
+    <p> {{ alertMessage }} </p>
+    <p> Already have an account? </p>
+    <button (click)="handleGoToLogin()">Login</button>
+  </div>
+</main>
