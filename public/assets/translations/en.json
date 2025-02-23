@@ -7,5 +7,7 @@
   "Register": "Register",
   "Logout": "Logout",
   "ForgotPassword": "Forgot password",
-  "ChangePassword": "Change password"
+  "ChangePassword": "Change password",
+  "Notes": "Notes",
+  "Tasks": "Tasks"
 }
