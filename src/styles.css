@@ -1,9 +1,50 @@
 :root {
+  --color-background: #1e203a;
+  --color-foreground: #272b4a;
+  --color-primaryText: #fafeff;
+  --color-secondaryText: #c2cbd8;
 
+  --color-button-hover: rgba(30, 32, 58, 0.5);
+
+  --color-activeButton: #1e203a;
+  --color-inactiveButton: #2b3050;;
+
+  --spacing-verySmall: 0.5rem;
+  --spacing-small: 0.8rem;
+  --spacing-medium: 1rem;
+  --spacing-large: 1.5rem;
+
+  --br-small: 0.5rem;
+
+  --fs-regular: 1.125rem;
+}
+
+[data-theme="light"] {
+  --color-background: #ffffff;
+  --color-foreground: #f5f5f5;
+  --color-primaryText: #333333;
+  --color-secondaryText: #666666;
 }
 
 body {
-  background-color: #9dc0bf;
+  background-color: var(--color-background);
+  color: var(--color-primaryText);
+  font-size: var(--fs-regular);
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  background-color: var(--color-background);
+  color: var(--color-primaryText);
+  padding: var(--spacing-verySmall) var(--spacing-medium);
+  border-radius: var(--br-small);
+  border: none;
+  font-size: var(--fs-regular);
+}
+
+button:hover {
+  cursor: pointer;
 }
 
 .mainContainer {

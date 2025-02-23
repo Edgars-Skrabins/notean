@@ -1,0 +1,72 @@
+:host {
+  --width-drawer: 15%;
+  --width-drawer-content: 85%;
+
+  min-width: 100%;
+  min-height: 100%;
+}
+
+.container {
+  display: flex;
+  flex-direction: row;
+  min-height: 100%;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  min-width: 100%;
+  gap: var(--spacing-small);
+}
+
+.drawerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: start;
+  background-color: var(--color-foreground);
+  width: var(--width-drawer);
+  min-height: 100%;
+  padding: var(--spacing-medium);
+}
+
+.drawerButton {
+  background: none;
+  width: 100%;
+  text-align: start;
+  padding: var(--spacing-small);
+}
+
+.drawerButton:hover {
+  transform: scale(0.989);
+  transition: transform 0.15s;
+}
+
+.drawerButton:active {
+  transform: scale(0.979);
+  transition: transform 0.10s;
+}
+
+.activeButton {
+  background-color: var(--color-activeButton);
+}
+
+.inactiveButton {
+  background-color: var(--color-inactiveButton);
+}
+
+.inactiveButton:hover {
+  background-color: var(--color-button-hover);
+}
+
+.contentContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-background);
+  width: var(--width-drawer-content);
+  min-height: 100%;
+}
