@@ -7,5 +7,7 @@
   "Register": "Reģistrēties",
   "Logout": "Iziet",
   "ForgotPassword": "Aizmirsu paroli",
-  "ChangePassword": "Nomainīt paroli"
+  "ChangePassword": "Nomainīt paroli",
+  "Notes": "Piezīmes",
+  "Tasks": "Uzdevumi"
 }

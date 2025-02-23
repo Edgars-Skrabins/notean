@@ -1,9 +1,10 @@
 import {Drawer} from "@components/drawer/drawer.component";
 import {NotesComponent} from "@components/notes/notes.component";
+import {TranslationPhrase} from "@config/translationConfig";
 
 const enum DashboardDrawers {
-  NOTES = 'Notes',
-  TASKS = 'Tasks',
+  NOTES = TranslationPhrase.Notes,
+  TASKS = TranslationPhrase.Tasks,
 }
 
 const allDrawers: Drawer[] = [
@@ -33,6 +34,6 @@ export function getSupportedDrawers() {
   return drawers;
 }
 
-function isDrawerSupported(drawerName: string) {
+function isDrawerSupported(drawer: string) {
   return true;
 }

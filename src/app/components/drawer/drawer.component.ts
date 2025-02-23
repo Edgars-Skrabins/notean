@@ -1,6 +1,7 @@
 import {Component, Input, Type} from '@angular/core';
 import {NgClass, NgComponentOutlet, NgForOf, NgIf} from "@angular/common";
 import {TranslateModule} from "@ngx-translate/core";
+import {TranslationPhrase} from "@config/translationConfig";
 
 export type Drawer = {
   id: number,
@@ -25,6 +26,7 @@ export type Drawer = {
 export class DrawerComponent {
   currentOpenDrawerID: number = 0;
   @Input() drawers: Drawer[] = [];
+  protected readonly TranslationPhrase = TranslationPhrase;
 
   handleDrawerClick(drawer: Drawer) {
     this.currentOpenDrawerID = drawer.id;
