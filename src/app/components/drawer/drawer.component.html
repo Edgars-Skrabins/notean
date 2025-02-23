@@ -1,6 +1,8 @@
 <main class="container">
   <div *ngFor="let drawer of drawers" class="drawerContainer">
-    <button (click)="handleDrawerClick(drawer)">{{ drawer.name | translate }}</button>
+    <div class="buttonContainer">
+      <button (click)="handleDrawerClick(drawer)" class="drawerButton">{{ drawer.name | translate }}</button>
+    </div>
   </div>
   <div class="contentContainer">
     <ng-container *ngIf="drawers[currentOpenDrawerID] as selectedDrawer">

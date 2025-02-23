@@ -4,6 +4,12 @@
   --color-primaryText: #fafeff;
   --color-secondaryText: #c2cbd8;
 
+  --spacing-small: 0.5rem;
+  --spacing-medium: 1rem;
+  --spacing-large: 1.5rem;
+
+  --br-small: 0.5rem;
+
   --fs-body: 1.125rem;
 }
 
@@ -20,6 +26,19 @@ body {
   font-size: var(--fs-body);
   margin: 0;
   padding: 0;
+}
+
+button {
+  background-color: var(--color-background);
+  color: var(--color-primaryText);
+  padding: var(--spacing-small) var(--spacing-medium);
+  border-radius: var(--br-small);
+  border: none;
+  font-size: var(--fs-body);
+}
+
+button:hover {
+  cursor: pointer;
 }
 
 .mainContainer {
