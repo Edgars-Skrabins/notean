@@ -19,4 +19,6 @@ export const enum TranslationPhrase {
   EnterPassword = "EnterPassword",
   Password = "Password",
   ConfirmPassword = "ConfirmPassword",
+  Notes = "Notes",
+  Tasks = "Tasks",
 }
