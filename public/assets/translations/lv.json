@@ -1,3 +1,11 @@
 {
-  "GOODBYE": "oogie"
+  "Dashboard": "Panelis",
+  "Settings": "Iestatījumi",
+  "Workspaces": "Darba virsmas",
+  "Profile": "Profils",
+  "Login": "Pieslēgties",
+  "Register": "Reģistrēties",
+  "Logout": "Iziet",
+  "ForgotPassword": "Aizmirsu paroli",
+  "ChangePassword": "Nomainīt paroli"
 }
