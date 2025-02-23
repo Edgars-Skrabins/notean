@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {DrawerComponent} from "@components/drawer/drawer.component";
+import {getSupportedDrawers} from "@pages/dashboard/utils/dashboardDrawers";
 
 @Component({
   selector: 'app-dashboard',
@@ -12,4 +13,5 @@ import {DrawerComponent} from "@components/drawer/drawer.component";
 })
 export class DashboardComponent {
 
+  protected readonly getSupportedDrawers = getSupportedDrawers;
 }

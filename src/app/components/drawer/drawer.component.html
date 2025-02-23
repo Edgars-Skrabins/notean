@@ -3,6 +3,8 @@
     <button (click)="handleDrawerClick(drawer)">{{ drawer.name | translate }}</button>
   </div>
   <div class="contentContainer">
-    {{ drawers[currentOpenDrawerID].component }}
+    <ng-container *ngIf="drawers[currentOpenDrawerID] as selectedDrawer">
+      <ng-container *ngComponentOutlet="selectedDrawer.component"></ng-container>
+    </ng-container>
   </div>
 </main>
