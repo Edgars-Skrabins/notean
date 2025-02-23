@@ -4,16 +4,19 @@
   --color-primaryText: #fafeff;
   --color-secondaryText: #c2cbd8;
 
-  --color-activeButton: #1e203a;
-  --color-inactiveButton: #30365b;;
+  --color-button-hover: rgba(30, 32, 58, 0.5);
 
-  --spacing-small: 0.5rem;
+  --color-activeButton: #1e203a;
+  --color-inactiveButton: #2b3050;;
+
+  --spacing-verySmall: 0.5rem;
+  --spacing-small: 0.8rem;
   --spacing-medium: 1rem;
   --spacing-large: 1.5rem;
 
   --br-small: 0.5rem;
 
-  --fs-body: 1.125rem;
+  --fs-regular: 1.125rem;
 }
 
 [data-theme="light"] {
@@ -26,7 +29,7 @@
 body {
   background-color: var(--color-background);
   color: var(--color-primaryText);
-  font-size: var(--fs-body);
+  font-size: var(--fs-regular);
   margin: 0;
   padding: 0;
 }
@@ -34,10 +37,10 @@ body {
 button {
   background-color: var(--color-background);
   color: var(--color-primaryText);
-  padding: var(--spacing-small) var(--spacing-medium);
+  padding: var(--spacing-verySmall) var(--spacing-medium);
   border-radius: var(--br-small);
   border: none;
-  font-size: var(--fs-body);
+  font-size: var(--fs-regular);
 }
 
 button:hover {
