@@ -14,5 +14,9 @@ export const enum TranslationPhrase {
   Register = "Register",
   Logout = "Logout",
   ForgotPassword = "ForgotPassword",
-  ChangePassword = "ChangePassword"
+  ChangePassword = "ChangePassword",
+  EnterEmail = "EnterEmail",
+  EnterPassword = "EnterPassword",
+  Password = "Password",
+  ConfirmPassword = "ConfirmPassword",
 }

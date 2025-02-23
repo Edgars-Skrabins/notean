@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {AppRoutes} from "../../app/app.routes";
 import {NavigationService} from "@services/navigation.service";
-import {ApiService} from "@services/api.service";
+import {ApiService, UserIdentifyingParams} from "@services/api.service";
 
 @Component({
   selector: 'app-register',
@@ -23,12 +23,23 @@ export class RegisterComponent {
   }
 
   handleRegister() {
-    if (!this.doesFormHaveValidData()) {
-      this.alertMessage = 'Invalid data';
-      return;
+    const registerData: UserIdentifyingParams = {
+      email: this.email,
+      password: this.password,
     }
 
-    this.alertMessage = 'Registering...';
+    if (!this.doesFormHaveValidData()) {
+        this.alertMessage = 'Invalid data';
+        return;
+    }
+
+    this.apiService.registerUser(registerData)
+      .then((successMessage: string) => {
+        this.alertMessage = successMessage;
+      })
+      .catch((errorMessage: string) => {
+        this.alertMessage = errorMessage
+      })
   }
 
   doesFormHaveValidData() {

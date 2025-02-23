@@ -13,7 +13,6 @@ export type WorkspaceIdentifyingParams = {
 }
 
 export type UserIdentifyingParams = {
-  name: string,
   email: string,
   password: string,
 }
@@ -52,7 +51,7 @@ export class ApiService {
       });
   }
 
-  async registerUser(userIdentifyingParams: UserIdentifyingParams) {
+  async registerUser(userIdentifyingParams: UserIdentifyingParams): Promise<string> {
     return axiosInstance.post(this.userUrl, {user: userIdentifyingParams})
       .then((response) => response.data.statusMessage as string)
       .catch((error) => {
