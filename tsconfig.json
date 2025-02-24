@@ -17,6 +17,9 @@
       "@services/*": [
         "src/app/services/*"
       ],
+      "@styles/*": [
+        "src/app/styles/*"
+      ],
       "@types/*": [
         "src/app/types/*"
       ],

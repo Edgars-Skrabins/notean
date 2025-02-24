@@ -1,33 +1,33 @@
 <main>
   <div class="formContainer">
-    <h2 class="h2 center"> Login!</h2>
+    <h2 class="h2 center"> {{ TranslationPhrase.Login | translate }}!</h2>
 
-    <label class="inputLabel" for="emailInput">
-      Email
+    <label for="emailInput">
+      {{ TranslationPhrase.Email | translate }}
       <input
         [(ngModel)]="email"
-        class=""
+        class="inputLabel"
         id="emailInput"
-        placeholder="Enter email"
+        placeholder="{{ TranslationPhrase.EnterEmail | translate }}"
         type="email"
       />
     </label>
 
-    <label class="inputLabel" for="passwordInput">
-      Password
+    <label for="passwordInput">
+      {{ TranslationPhrase.Password | translate }}
       <input
         [(ngModel)]="password"
-        class=""
+        class="inputLabel"
         id="passwordInput"
         maxlength="24"
-        placeholder="password"
+        placeholder="{{ TranslationPhrase.Password | translate }}"
         type="password"
       />
     </label>
 
-    <button (click)="handleLogin()">Login</button>
+    <button (click)="handleLogin()" class="whiteButton"> {{ TranslationPhrase.Login | translate }}</button>
     <p> {{ alertMessage }} </p>
-    <p> Don't have an account? </p>
-    <button (click)="handleGoToRegister()">Register</button>
+    <p> {{ TranslationPhrase.DoNotHaveAnAccount | translate }} </p>
+    <button (click)="handleGoToRegister()">{{ TranslationPhrase.Register | translate }}</button>
   </div>
 </main>

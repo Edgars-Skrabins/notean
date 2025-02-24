@@ -17,14 +17,20 @@ export type UserIdentifyingParams = {
   password: string,
 }
 
+export enum APIRoutes {
+  WORKSPACES = '/workspaces',
+  ACTIONS = '/actions',
+  USERS = '/users',
+}
+
 @Injectable({
   providedIn: 'root',
 })
 
 export class ApiService {
-  private workspaceUrl = '/workspaces'
-  private actionsUrl = '/actions'
-  private userUrl = '/users'
+  private workspaceUrl = APIRoutes.WORKSPACES;
+  private actionsUrl = APIRoutes.ACTIONS;
+  private userUrl = APIRoutes.USERS;
 
   async getWorkspaceByName(name: string) {
     const url = `${this.workspaceUrl}/${name}`;

@@ -15,5 +15,6 @@
   "Password": "Parole",
   "ConfirmPassword": "Apstipriniet paroli",
   "Email": "E-pasts",
-  "AlreadyHaveAnAccount": "Jau ir konts? Piesakieties šeit"
+  "AlreadyHaveAnAccount": "Jau ir konts? Piesakieties šeit",
+  "DoNotHaveAnAccount": "Nav konta? Reģistrējieties šeit"
 }

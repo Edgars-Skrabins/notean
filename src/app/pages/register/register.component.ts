@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {AppRoutes} from "../../app/app.routes";
 import {NavigationService} from "@services/navigation.service";
@@ -33,13 +33,14 @@ export class RegisterComponent {
     }
 
     if (!this.doesFormHaveValidData()) {
-        this.alertMessage = 'Invalid data';
-        return;
+      this.alertMessage = 'Invalid data';
+      return;
     }
 
     this.apiService.registerUser(registerData)
       .then((successMessage: string) => {
         this.alertMessage = successMessage;
+        this.navigationService?.navigate(AppRoutes.LOGIN);
       })
       .catch((errorMessage: string) => {
         this.alertMessage = errorMessage

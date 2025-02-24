@@ -75,7 +75,7 @@ button:hover {
   margin: 0;
 }
 
-.inputLabel {
+label {
   display: flex;
   flex-direction: column;
 }
@@ -84,4 +84,9 @@ button:hover {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.whiteButton {
+  background-color: var(--color-primaryText);
+  color: var(--color-background);
 }

@@ -6,18 +6,18 @@ import {RegisterComponent} from "@pages/register/register.component";
 import {LoginComponent} from "@pages/login/login.component";
 
 export enum AppRoutes {
+  LOGIN = 'login',
+  REGISTER = 'register',
   JOIN_WORKSPACE = 'join-workspace',
   CREATE_WORKSPACE = 'create-workspace',
   DASHBOARD = 'dashboard',
-  REGISTER = 'register',
-  LOGIN = 'login',
 }
 
 export const routes: Routes = [
-  {path: '', redirectTo: '/register', pathMatch: 'full'},
+  {path: '', redirectTo: AppRoutes.LOGIN, pathMatch: 'full'},
+  {path: AppRoutes.LOGIN, component: LoginComponent},
+  {path: AppRoutes.REGISTER, component: RegisterComponent},
   {path: AppRoutes.JOIN_WORKSPACE, component: JoinWorkspaceComponent},
   {path: AppRoutes.CREATE_WORKSPACE, component: CreateWorkspaceComponent},
   {path: AppRoutes.DASHBOARD, component: DashboardComponent},
-  {path: AppRoutes.REGISTER, component: RegisterComponent},
-  {path: AppRoutes.LOGIN, component: LoginComponent},
 ];

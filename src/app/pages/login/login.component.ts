@@ -1,22 +1,26 @@
-import { Component } from '@angular/core';
+import {Component} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {NavigationService} from "@services/navigation.service";
 import {ApiService} from "@services/api.service";
 import {AppRoutes} from "../../app/app.routes";
+import {TranslationPhrase} from "@config/translationConfig";
+import {TranslateModule} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    FormsModule
+    FormsModule,
+    TranslateModule
   ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css'
+  styleUrls: ['./login.component.css'] // '@styles/forms.css',
 })
 export class LoginComponent {
   email = '';
   password = '';
   alertMessage = '';
+  protected readonly TranslationPhrase = TranslationPhrase;
 
   constructor(private navigationService: NavigationService, private apiService: ApiService) {
   }

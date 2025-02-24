@@ -1,9 +1,14 @@
-export const defaultLanguage = 'lv'
+export enum Language {
+  English = 'en',
+  Latvian = 'lv'
+}
 
 export const supportedTranslations = [
-  'en',
-  'lv',
+  Language.English,
+  Language.Latvian,
 ]
+
+export const defaultLanguage = Language.English
 
 export enum TranslationPhrase {
   Dashboard = "Dashboard",
@@ -23,4 +28,5 @@ export enum TranslationPhrase {
   ConfirmPassword = "ConfirmPassword",
   Email = "Email",
   AlreadyHaveAnAccount = "AlreadyHaveAnAccount",
+  DoNotHaveAnAccount = "DoNotHaveAnAccount",
 }
