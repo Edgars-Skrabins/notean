@@ -26,7 +26,8 @@ export class AppComponent {
   }
 
   private setDefaultLanguageSettings() {
-    this.translationService.setDefaultLang('en');
+    this.translationService.setDefaultLang('lv');
+    this.translationService.use('lv');
     const browserLanguage = getBrowserLanguage();
     const isBrowserLanguageSupported = supportedTranslations.includes(browserLanguage);
     this.translationService.use(isBrowserLanguageSupported ? browserLanguage : defaultLanguage);

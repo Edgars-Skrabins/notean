@@ -1,11 +1,11 @@
-export const defaultLanguage = 'en'
+export const defaultLanguage = 'lv'
 
 export const supportedTranslations = [
   'en',
   'lv',
 ]
 
-export const enum TranslationPhrase {
+export enum TranslationPhrase {
   Dashboard = "Dashboard",
   Settings = "Settings",
   Workspaces = "Workspaces",
@@ -15,10 +15,12 @@ export const enum TranslationPhrase {
   Logout = "Logout",
   ForgotPassword = "ForgotPassword",
   ChangePassword = "ChangePassword",
+  Notes = "Notes",
+  Tasks = "Tasks",
   EnterEmail = "EnterEmail",
   EnterPassword = "EnterPassword",
   Password = "Password",
   ConfirmPassword = "ConfirmPassword",
-  Notes = "Notes",
-  Tasks = "Tasks",
+  Email = "Email",
+  AlreadyHaveAnAccount = "AlreadyHaveAnAccount",
 }

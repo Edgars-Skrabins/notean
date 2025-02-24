@@ -9,5 +9,11 @@
   "ForgotPassword": "Aizmirsu paroli",
   "ChangePassword": "Nomainīt paroli",
   "Notes": "Piezīmes",
-  "Tasks": "Uzdevumi"
+  "Tasks": "Uzdevumi",
+  "EnterEmail": "Ievadiet e-pastu",
+  "EnterPassword": "Ievadiet paroli",
+  "Password": "Parole",
+  "ConfirmPassword": "Apstipriniet paroli",
+  "Email": "E-pasts",
+  "AlreadyHaveAnAccount": "Jau ir konts? Piesakieties šeit"
 }

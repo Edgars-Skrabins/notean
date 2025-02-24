@@ -3,43 +3,43 @@
     <h2 class="h2 center"> Register!</h2>
 
     <label class="inputLabel" for="emailInput">
-      Email
+        {{ TranslationPhrase.Email | translate }}
       <input
         [(ngModel)]="email"
         class=""
         id="emailInput"
-        placeholder="Enter email"
+        placeholder="{{ TranslationPhrase.EnterEmail | translate }}"
         type="email"
       />
     </label>
 
     <label class="inputLabel" for="passwordInput">
-      Password
+        {{ TranslationPhrase.Password | translate }}
       <input
         [(ngModel)]="password"
         class=""
         id="passwordInput"
         maxlength="24"
-        placeholder="password"
+        placeholder="{{ TranslationPhrase.Password | translate }}"
         type="password"
       />
     </label>
 
     <label class="inputLabel" for="confirmPasswordInput">
-      Confirm Password
+        {{ TranslationPhrase.ConfirmPassword | translate }}
       <input
         [(ngModel)]="confirmPassword"
         class=""
         id="confirmPasswordInput"
         maxlength="24"
-        placeholder="confirm password"
+        placeholder="{{ TranslationPhrase.ConfirmPassword | translate }}"
         type="password"
       />
     </label>
 
-    <button (click)="handleRegister()">Register</button>
+    <button (click)="handleRegister()">{{TranslationPhrase.Register | translate}}</button>
     <p> {{ alertMessage }} </p>
-    <p> Already have an account? </p>
-    <button (click)="handleGoToLogin()">Login</button>
+    <p> {{ TranslationPhrase.AlreadyHaveAnAccount | translate }}</p>
+    <button (click)="handleGoToLogin()">{{TranslationPhrase.Login | translate}}</button>
   </div>
 </main>
