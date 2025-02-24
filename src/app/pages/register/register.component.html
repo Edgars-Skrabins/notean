@@ -1,0 +1,45 @@
+<main>
+  <div class="formContainer">
+    <h2 class="h2 center"> {{ TranslationPhrase.Register | translate }}!</h2>
+
+    <label class="" for="emailInput">
+        {{ TranslationPhrase.Email | translate }}
+      <input
+        [(ngModel)]="email"
+        class=""
+        id="emailInput"
+        placeholder="{{ TranslationPhrase.EnterEmail | translate }}"
+        type="email"
+      />
+    </label>
+
+    <label class="" for="passwordInput">
+        {{ TranslationPhrase.Password | translate }}
+      <input
+        [(ngModel)]="password"
+        class=""
+        id="passwordInput"
+        maxlength="24"
+        placeholder="{{ TranslationPhrase.Password | translate }}"
+        type="password"
+      />
+    </label>
+
+    <label class="" for="confirmPasswordInput">
+        {{ TranslationPhrase.ConfirmPassword | translate }}
+      <input
+        [(ngModel)]="confirmPassword"
+        class=""
+        id="confirmPasswordInput"
+        maxlength="24"
+        placeholder="{{ TranslationPhrase.ConfirmPassword | translate }}"
+        type="password"
+      />
+    </label>
+
+    <button (click)="handleRegister()">{{TranslationPhrase.Register | translate}}</button>
+    <p> {{ alertMessage }} </p>
+    <p> {{ TranslationPhrase.AlreadyHaveAnAccount | translate }}</p>
+    <button (click)="handleGoToLogin()">{{TranslationPhrase.Login | translate}}</button>
+  </div>
+</main>
