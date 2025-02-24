@@ -9,5 +9,12 @@
   "ForgotPassword": "Forgot password",
   "ChangePassword": "Change password",
   "Notes": "Notes",
-  "Tasks": "Tasks"
+  "Tasks": "Tasks",
+  "EnterEmail": "Enter email",
+  "EnterPassword": "Enter password",
+  "Password": "Password",
+  "ConfirmPassword": "Confirm password",
+  "Email": "E-mail",
+  "AlreadyHaveAnAccount": "Already have an account? Sign in here",
+  "DoNotHaveAnAccount": "Don't have an account? Register here"
 }
