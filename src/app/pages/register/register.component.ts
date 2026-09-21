@@ -4,6 +4,7 @@ import {AppRoutes} from "../../app/app.routes";
 import {NavigationService} from "@services/navigation.service";
 import {AuthService} from "@services/auth.service";
 import {TranslateModule} from "@ngx-translate/core";
+import {PHRASES} from "@config/phrases";
 
 @Component({
   selector: 'app-register',
@@ -16,6 +17,8 @@ import {TranslateModule} from "@ngx-translate/core";
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {
+  protected readonly PHRASES = PHRASES;
+
   email = '';
   password = '';
   alertMessage = '';
@@ -30,7 +33,7 @@ export class RegisterComponent {
           this.alertMessage = errorMessage;
           return;
         }
-        this.navigationService.navigate(AppRoutes.DASHBOARD);
+        this.navigationService.navigate(AppRoutes.TEAM_SELECTION);
       });
   }
 

@@ -9,5 +9,14 @@
   "LOGIN": "Login",
   "REGISTER": "Register",
   "NO_ACCOUNT_YET": "Don't have an account yet?",
-  "ALREADY_HAVE_ACCOUNT": "Already have an account?"
+  "ALREADY_HAVE_ACCOUNT": "Already have an account?",
+  "TEAM_SELECTION_PROMPT": "What would you like to do?",
+  "CREATE_TEAM": "Create a team",
+  "JOIN_TEAM": "Join a team",
+  "TEAM_NAME": "Team name",
+  "TEAM_CREATED": "Team created!",
+  "TEAM_CODE_SHARE_NOTICE": "Share this code with others so they can join your team:",
+  "CONTINUE": "Continue",
+  "TEAM_CODE": "Team code",
+  "DONT_HAVE_TEAM_CODE": "Don't have a team code?"
 }

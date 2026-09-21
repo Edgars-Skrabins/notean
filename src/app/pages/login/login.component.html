@@ -1,30 +1,30 @@
 <main>
   <div class="formContainer">
-    <h2 class="h2 center"> {{ 'WELCOME_BACK' | translate }}</h2>
+    <h2 class="h2 center"> {{ PHRASES.WELCOME_BACK | translate }}</h2>
 
     <label class="inputLabel" for="emailInput">
-      {{ 'EMAIL' | translate }}
+      {{ PHRASES.EMAIL | translate }}
       <input
         [(ngModel)]="email"
-        [placeholder]="'ENTER_EMAIL' | translate"
+        [placeholder]="PHRASES.ENTER_EMAIL | translate"
         id="emailInput"
         type="email"
       />
     </label>
 
     <label class="inputLabel" for="passwordInput">
-      {{ 'PASSWORD' | translate }}
+      {{ PHRASES.PASSWORD | translate }}
       <input
         [(ngModel)]="password"
-        [placeholder]="'ENTER_PASSWORD' | translate"
+        [placeholder]="PHRASES.ENTER_PASSWORD | translate"
         id="passwordInput"
         type="password"
       />
     </label>
 
-    <button (click)="handleLogin()">{{ 'LOGIN' | translate }}</button>
+    <button (click)="handleLogin()">{{ PHRASES.LOGIN | translate }}</button>
     <p> {{ alertMessage }} </p>
-    <p> {{ 'NO_ACCOUNT_YET' | translate }} </p>
-    <button (click)="handleGoToRegister()">{{ 'REGISTER' | translate }}</button>
+    <p> {{ PHRASES.NO_ACCOUNT_YET | translate }} </p>
+    <button (click)="handleGoToRegister()">{{ PHRASES.REGISTER | translate }}</button>
   </div>
 </main>

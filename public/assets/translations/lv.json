@@ -9,5 +9,14 @@
   "LOGIN": "Pieslēgties",
   "REGISTER": "Reģistrēties",
   "NO_ACCOUNT_YET": "Vēl nav konta?",
-  "ALREADY_HAVE_ACCOUNT": "Jau ir konts?"
+  "ALREADY_HAVE_ACCOUNT": "Jau ir konts?",
+  "TEAM_SELECTION_PROMPT": "Ko vēlaties darīt?",
+  "CREATE_TEAM": "Izveidot komandu",
+  "JOIN_TEAM": "Pievienoties komandai",
+  "TEAM_NAME": "Komandas nosaukums",
+  "TEAM_CREATED": "Komanda izveidota!",
+  "TEAM_CODE_SHARE_NOTICE": "Kopīgojiet šo kodu ar citiem, lai viņi varētu pievienoties jūsu komandai:",
+  "CONTINUE": "Turpināt",
+  "TEAM_CODE": "Komandas kods",
+  "DONT_HAVE_TEAM_CODE": "Nav komandas koda?"
 }
