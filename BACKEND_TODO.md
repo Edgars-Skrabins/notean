@@ -13,13 +13,18 @@ Temporary tracking doc for what the Ruby backend needs to support, based on what
 - Auth is bearer-token based (`Authorization: Bearer <token>`), no cookies/sessions.
 - Frontend keeps the token in memory only (no localStorage), so it's lost on refresh. No refresh-token flow exists yet — needs a decision on whether/how to add one.
 
-## Teams
+## Teams (frontend already built against this)
 
-- Create team
-- Join team
+- `POST /teams` — create a team. body `{ name, password }`
+  - success: `{ team: { id, name, code } }` — `code` is a randomly generated 32-character string, shown to the creator once so they can share it
+  - error: `{ statusMessage }`
+- `POST /teams/join` — join a team. body `{ code, password }`
+  - success: 2xx
+  - error: `{ statusMessage }`
 - List teams for current user
 - Per-team roles: viewer, member, admin, owner
   - Needs endpoints to assign/change a member's role, and to enforce permissions server-side
+- Not yet handled by the frontend: what happens if a user already belongs to a team on login (currently every login/register always lands on the create/join team screen)
 
 ## Workspaces
 
