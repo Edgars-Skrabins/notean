@@ -1,0 +1,34 @@
+<main>
+  <div class="formContainer" *ngIf="!createdTeamCode">
+    <h2 class="h2 center">{{ PHRASES.CREATE_TEAM | translate }}</h2>
+
+    <label class="inputLabel" for="teamNameInput">
+      {{ PHRASES.TEAM_NAME | translate }}
+      <input
+        [(ngModel)]="teamName"
+        id="teamNameInput"
+        type="text"
+      />
+    </label>
+
+    <label class="inputLabel" for="teamPasswordInput">
+      {{ PHRASES.PASSWORD | translate }}
+      <input
+        [(ngModel)]="teamPassword"
+        id="teamPasswordInput"
+        maxlength="24"
+        type="password"
+      />
+    </label>
+
+    <button (click)="handleCreateTeam()">{{ PHRASES.CREATE_TEAM | translate }}</button>
+    <p> {{ alertMessage }} </p>
+  </div>
+
+  <div class="formContainer" *ngIf="createdTeamCode">
+    <h2 class="h2 center">{{ PHRASES.TEAM_CREATED | translate }}</h2>
+    <p>{{ PHRASES.TEAM_CODE_SHARE_NOTICE | translate }}</p>
+    <p class="center"><strong>{{ createdTeamCode }}</strong></p>
+    <button (click)="handleContinueToDashboard()">{{ PHRASES.CONTINUE | translate }}</button>
+  </div>
+</main>

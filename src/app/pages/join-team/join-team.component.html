@@ -1,0 +1,30 @@
+<main>
+  <div class="formContainer">
+    <h2 class="h2 center">{{ PHRASES.JOIN_TEAM | translate }}</h2>
+
+    <label class="inputLabel" for="teamCodeInput">
+      {{ PHRASES.TEAM_CODE | translate }}
+      <input
+        [(ngModel)]="teamCode"
+        id="teamCodeInput"
+        maxlength="32"
+        type="text"
+      />
+    </label>
+
+    <label class="inputLabel" for="teamPasswordInput">
+      {{ PHRASES.PASSWORD | translate }}
+      <input
+        [(ngModel)]="teamPassword"
+        id="teamPasswordInput"
+        maxlength="24"
+        type="password"
+      />
+    </label>
+
+    <button (click)="handleJoinTeam()">{{ PHRASES.JOIN_TEAM | translate }}</button>
+    <p> {{ alertMessage }} </p>
+    <p>{{ PHRASES.DONT_HAVE_TEAM_CODE | translate }}</p>
+    <button (click)="handleGoToCreateTeam()">{{ PHRASES.CREATE_TEAM | translate }}</button>
+  </div>
+</main>
