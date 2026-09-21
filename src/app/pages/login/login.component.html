@@ -1,0 +1,30 @@
+<main>
+  <div class="formContainer">
+    <h2 class="h2 center"> Welcome back!</h2>
+
+    <label class="inputLabel" for="emailInput">
+      Email
+      <input
+        [(ngModel)]="email"
+        id="emailInput"
+        placeholder="Enter email"
+        type="email"
+      />
+    </label>
+
+    <label class="inputLabel" for="passwordInput">
+      Password
+      <input
+        [(ngModel)]="password"
+        id="passwordInput"
+        placeholder="password"
+        type="password"
+      />
+    </label>
+
+    <button (click)="handleLogin()">Login</button>
+    <p> {{ alertMessage }} </p>
+    <p> Don't have an account yet? </p>
+    <button (click)="handleGoToRegister()">Register</button>
+  </div>
+</main>
