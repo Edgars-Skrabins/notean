@@ -14,11 +14,11 @@
       "@pages/*": [
         "src/app/pages/*"
       ],
+      "@models/*": [
+        "src/app/models/*"
+      ],
       "@services/*": [
         "src/app/services/*"
-      ],
-      "@types/*": [
-        "src/app/types/*"
       ],
       "@utils/*": [
         "src/app/utils/*"

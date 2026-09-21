@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {axiosInstance, setAuthToken} from "@config/axiosConfig";
-import {AuthCredentials, AuthResponseError, AuthResponseSuccess} from "../types/api/authTypes";
+import {AuthCredentials, AuthResponseError, AuthResponseSuccess} from "@models/auth.model";
 
 @Injectable({
   providedIn: 'root',
