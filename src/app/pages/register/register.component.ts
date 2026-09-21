@@ -3,12 +3,14 @@ import {FormsModule} from "@angular/forms";
 import {AppRoutes} from "../../app/app.routes";
 import {NavigationService} from "@services/navigation.service";
 import {AuthService} from "@services/auth.service";
+import {TranslateModule} from "@ngx-translate/core";
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [
-    FormsModule
+    FormsModule,
+    TranslateModule
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'

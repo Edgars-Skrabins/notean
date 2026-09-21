@@ -1,3 +1,13 @@
 {
-  "GOODBYE": "oogie"
+  "GOODBYE": "oogie",
+  "WELCOME_BACK": "Sveicināti atpakaļ!",
+  "CREATE_ACCOUNT": "Izveidojiet savu kontu!",
+  "EMAIL": "E-pasts",
+  "PASSWORD": "Parole",
+  "ENTER_EMAIL": "Ievadiet e-pastu",
+  "ENTER_PASSWORD": "parole",
+  "LOGIN": "Pieslēgties",
+  "REGISTER": "Reģistrēties",
+  "NO_ACCOUNT_YET": "Vēl nav konta?",
+  "ALREADY_HAVE_ACCOUNT": "Jau ir konts?"
 }

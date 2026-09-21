@@ -1,3 +1,13 @@
 {
-  "GOODBYE": "GoodBye"
+  "GOODBYE": "GoodBye",
+  "WELCOME_BACK": "Welcome back!",
+  "CREATE_ACCOUNT": "Create your account!",
+  "EMAIL": "Email",
+  "PASSWORD": "Password",
+  "ENTER_EMAIL": "Enter email",
+  "ENTER_PASSWORD": "password",
+  "LOGIN": "Login",
+  "REGISTER": "Register",
+  "NO_ACCOUNT_YET": "Don't have an account yet?",
+  "ALREADY_HAVE_ACCOUNT": "Already have an account?"
 }

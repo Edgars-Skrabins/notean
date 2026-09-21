@@ -1,30 +1,30 @@
 <main>
   <div class="formContainer">
-    <h2 class="h2 center"> Create your account!</h2>
+    <h2 class="h2 center"> {{ 'CREATE_ACCOUNT' | translate }}</h2>
 
     <label class="inputLabel" for="emailInput">
-      Email
+      {{ 'EMAIL' | translate }}
       <input
         [(ngModel)]="email"
+        [placeholder]="'ENTER_EMAIL' | translate"
         id="emailInput"
-        placeholder="Enter email"
         type="email"
       />
     </label>
 
     <label class="inputLabel" for="passwordInput">
-      Password
+      {{ 'PASSWORD' | translate }}
       <input
         [(ngModel)]="password"
+        [placeholder]="'ENTER_PASSWORD' | translate"
         id="passwordInput"
-        placeholder="password"
         type="password"
       />
     </label>
 
-    <button (click)="handleRegister()">Register</button>
+    <button (click)="handleRegister()">{{ 'REGISTER' | translate }}</button>
     <p> {{ alertMessage }} </p>
-    <p> Already have an account? </p>
-    <button (click)="handleGoToLogin()">Login</button>
+    <p> {{ 'ALREADY_HAVE_ACCOUNT' | translate }} </p>
+    <button (click)="handleGoToLogin()">{{ 'LOGIN' | translate }}</button>
   </div>
 </main>
