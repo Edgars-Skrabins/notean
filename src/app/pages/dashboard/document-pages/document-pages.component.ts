@@ -29,7 +29,7 @@ export class DocumentPagesComponent implements OnInit, OnDestroy {
   isLoading = true;
   alertMessage = '';
 
-  private teamCode = this.teamService.getCurrentTeam()!.code;
+  private teamCode: string;
   private searchDebounceHandle: ReturnType<typeof setTimeout> | null = null;
   private requestSequence = 0;
 
@@ -39,6 +39,7 @@ export class DocumentPagesComponent implements OnInit, OnDestroy {
     private teamService: TeamService,
     private translateService: TranslateService
   ) {
+    this.teamCode = this.teamService.getCurrentTeam()!.code;
   }
 
   ngOnInit() {

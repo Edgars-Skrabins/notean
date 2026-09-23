@@ -38,7 +38,7 @@ export class PageDetailComponent implements OnInit, OnDestroy {
   isLoading = true;
   alertMessage = '';
 
-  private teamCode = this.teamService.getCurrentTeam()!.code;
+  private teamCode: string;
   private pageId = 0;
 
   constructor(
@@ -50,6 +50,7 @@ export class PageDetailComponent implements OnInit, OnDestroy {
     private navigationService: NavigationService,
     private translateService: TranslateService
   ) {
+    this.teamCode = this.teamService.getCurrentTeam()!.code;
   }
 
   get showEditingBanner(): boolean {
