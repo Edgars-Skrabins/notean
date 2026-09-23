@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {axiosInstance, setAuthToken} from "@config/axiosConfig";
-import {AuthCredentials, AuthResponseError, AuthResponseSuccess} from "@models/auth.model";
+import {AuthCredentials, AuthResponseError, AuthResponseSuccess, AuthUser, RegisterCredentials} from "@models/auth.model";
 
 @Injectable({
   providedIn: 'root',
@@ -9,15 +9,20 @@ export class AuthService {
   private loginUrl = '/auth/login';
   private registerUrl = '/auth/register';
   private token: string | null = null;
+  private user: AuthUser | null = null;
 
   isAuthenticated(): boolean {
     return this.token !== null;
   }
 
+  getCurrentUser(): AuthUser | null {
+    return this.user;
+  }
+
   async login(credentials: AuthCredentials): Promise<string | null> {
-    return axiosInstance.post(this.loginUrl, credentials)
+    return axiosInstance.post(this.loginUrl, {user: credentials})
       .then((response) => {
-        this.setToken((response.data as AuthResponseSuccess).token);
+        this.setSession(response.data as AuthResponseSuccess);
         return null;
       })
       .catch((error) => {
@@ -25,10 +30,10 @@ export class AuthService {
       });
   }
 
-  async register(credentials: AuthCredentials): Promise<string | null> {
-    return axiosInstance.post(this.registerUrl, credentials)
+  async register(credentials: RegisterCredentials): Promise<string | null> {
+    return axiosInstance.post(this.registerUrl, {user: credentials})
       .then((response) => {
-        this.setToken((response.data as AuthResponseSuccess).token);
+        this.setSession(response.data as AuthResponseSuccess);
         return null;
       })
       .catch((error) => {
@@ -37,11 +42,14 @@ export class AuthService {
   }
 
   logout() {
-    this.setToken(null);
+    this.token = null;
+    this.user = null;
+    setAuthToken(null);
   }
 
-  private setToken(token: string | null) {
-    this.token = token;
-    setAuthToken(token);
+  private setSession(response: AuthResponseSuccess) {
+    this.token = response.token;
+    this.user = response.user;
+    setAuthToken(response.token);
   }
 }

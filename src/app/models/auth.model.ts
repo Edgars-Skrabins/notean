@@ -3,7 +3,18 @@ export interface AuthCredentials {
   password: string;
 }
 
+export interface RegisterCredentials extends AuthCredentials {
+  username: string;
+}
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  username: string;
+}
+
 export interface AuthResponseSuccess {
+  user: AuthUser;
   token: string;
 }
 
