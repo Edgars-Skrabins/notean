@@ -27,6 +27,7 @@ export class CreateTeamComponent {
   teamPassword = '';
   alertMessage = '';
   createdTeamCode: string | null = null;
+  codeCopied = false;
 
   constructor(private navigationService: NavigationService, private teamService: TeamService) {
   }
@@ -57,5 +58,18 @@ export class CreateTeamComponent {
 
   handleGoToJoinTeam() {
     this.navigationService.navigate(AppRoutes.JOIN_TEAM);
+  }
+
+  handleCopyCode() {
+    if (!this.createdTeamCode) {
+      return;
+    }
+
+    navigator.clipboard.writeText(this.createdTeamCode).then(() => {
+      this.codeCopied = true;
+      setTimeout(() => {
+        this.codeCopied = false;
+      }, 1500);
+    });
   }
 }

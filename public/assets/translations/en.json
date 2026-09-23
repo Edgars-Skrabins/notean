@@ -21,6 +21,8 @@
   "TEAM_NAME": "Team name",
   "TEAM_CREATED": "Team created!",
   "TEAM_CODE_SHARE_NOTICE": "Share this code with others so they can join your team:",
+  "COPY_CODE": "Copy code",
+  "CODE_COPIED": "Copied!",
   "CONTINUE": "Continue",
   "TEAM_CODE": "Team code",
   "CREATE_A_TASK": "Create a task",

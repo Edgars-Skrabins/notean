@@ -208,6 +208,10 @@ body {
 }
 
 .authCodeDisplay {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
   font-family: "Courier New", monospace;
   font-size: 0.95rem;
   letter-spacing: 0.02em;
@@ -216,7 +220,43 @@ body {
   border: 1px solid var(--color-input-border);
   border-radius: var(--radius-md);
   padding: 14px 18px;
-  word-break: break-all;
-  text-align: center;
   margin: 0 0 var(--space-5);
+}
+
+.authCodeDisplay__text {
+  word-break: break-all;
+}
+
+.authCodeDisplay__copyButton {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
+}
+
+.authCodeDisplay__copyButton:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--color-text-heading);
+}
+
+.authCodeDisplay__copyButton:active {
+  transform: scale(0.94);
+}
+
+.authCodeDisplay__copyButton svg {
+  width: 16px;
+  height: 16px;
+}
+
+.authCodeDisplay__copyButton--copied {
+  color: #7ee8a8;
 }

@@ -21,6 +21,8 @@
   "TEAM_NAME": "Komandas nosaukums",
   "TEAM_CREATED": "Komanda izveidota!",
   "TEAM_CODE_SHARE_NOTICE": "Kopīgojiet šo kodu ar citiem, lai viņi varētu pievienoties jūsu komandai:",
+  "COPY_CODE": "Kopēt kodu",
+  "CODE_COPIED": "Nokopēts!",
   "CONTINUE": "Turpināt",
   "TEAM_CODE": "Komandas kods",
   "CREATE_A_TASK": "Izveidot uzdevumu",
