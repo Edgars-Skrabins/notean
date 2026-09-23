@@ -5,7 +5,7 @@ import {PHRASES} from "@config/phrases";
 import {NavigationService} from "@services/navigation.service";
 import {AuthService} from "@services/auth.service";
 import {TeamService} from "@services/team.service";
-import {AppRoutes} from "../../app/app.routes";
+import {AppRoutes} from "../../app/app-routes.enum";
 
 @Component({
   selector: 'app-dashboard-header',

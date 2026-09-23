@@ -1,0 +1,15 @@
+export enum AppRoutes {
+  LOGIN = 'login',
+  REGISTER = 'register',
+  TEAM_SELECTION = 'team-selection',
+  CREATE_TEAM = 'create-team',
+  JOIN_TEAM = 'join-team',
+  DASHBOARD = 'dashboard',
+  DASHBOARD_HOME = 'home',
+  PROJECTS = 'projects',
+  DOCUMENT_PAGES = 'pages',
+  DIAGRAMS = 'diagrams',
+  KANBAN_BOARDS = 'kanban',
+  PROFILE = 'profile',
+  SETTINGS = 'settings',
+}

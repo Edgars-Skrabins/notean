@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {Router} from '@angular/router';
-import {AppRoutes} from '../app/app.routes';
+import {AppRoutes} from '../app/app-routes.enum';
 
 @Injectable({
   providedIn: 'root',
