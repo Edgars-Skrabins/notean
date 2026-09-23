@@ -18,5 +18,9 @@
   "TEAM_CODE_SHARE_NOTICE": "Share this code with others so they can join your team:",
   "CONTINUE": "Continue",
   "TEAM_CODE": "Team code",
-  "DONT_HAVE_TEAM_CODE": "Don't have a team code?"
+  "DONT_HAVE_TEAM_CODE": "Don't have a team code?",
+  "CREATE_A_TASK": "Create a task",
+  "ENTER_TASK_NAME": "Enter task name",
+  "CREATE": "Create",
+  "DASHBOARD_PLACEHOLDER": "dashboard works!"
 }

@@ -18,5 +18,9 @@
   "TEAM_CODE_SHARE_NOTICE": "Kopīgojiet šo kodu ar citiem, lai viņi varētu pievienoties jūsu komandai:",
   "CONTINUE": "Turpināt",
   "TEAM_CODE": "Komandas kods",
-  "DONT_HAVE_TEAM_CODE": "Nav komandas koda?"
+  "DONT_HAVE_TEAM_CODE": "Nav komandas koda?",
+  "CREATE_A_TASK": "Izveidot uzdevumu",
+  "ENTER_TASK_NAME": "Ievadiet uzdevuma nosaukumu",
+  "CREATE": "Izveidot",
+  "DASHBOARD_PLACEHOLDER": "vadības panelis darbojas!"
 }

@@ -1,9 +1,9 @@
 <main class="columnContainer">
     <div class="formContainer">
-        <h2 class="h2"> Create a task </h2>
+        <h2 class="h2"> {{ PHRASES.CREATE_A_TASK | translate }} </h2>
         <label for="taskCreationInput">
-            <input type="text" [(ngModel)]="taskName" placeholder="Enter task name" class="" id="taskCreationInput"/>
+            <input type="text" [(ngModel)]="taskName" [placeholder]="PHRASES.ENTER_TASK_NAME | translate" class="" id="taskCreationInput"/>
         </label>
-        <button (click)="handleCreateTask()">Create</button>
+        <button (click)="handleCreateTask()">{{ PHRASES.CREATE | translate }}</button>
     </div>
 </main>
