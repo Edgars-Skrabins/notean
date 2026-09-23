@@ -4,7 +4,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {filter} from "rxjs";
 import {getBrowserLanguage} from "@utils/browserInformation";
 import {defaultLanguage, supportedTranslations} from "@config/translationConfig";
-import {AppRoutes} from "./app.routes";
+import {AppRoutes} from "./app-routes.enum";
 
 @Component({
   selector: 'app-root',

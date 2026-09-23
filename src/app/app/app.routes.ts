@@ -15,22 +15,7 @@ import {ProfileComponent} from "../pages/dashboard/profile/profile.component";
 import {SettingsComponent} from "../pages/dashboard/settings/settings.component";
 import {authGuard} from "../guards/auth.guard";
 import {teamGuard} from "../guards/team.guard";
-
-export enum AppRoutes {
-  LOGIN = 'login',
-  REGISTER = 'register',
-  TEAM_SELECTION = 'team-selection',
-  CREATE_TEAM = 'create-team',
-  JOIN_TEAM = 'join-team',
-  DASHBOARD = 'dashboard',
-  DASHBOARD_HOME = 'home',
-  PROJECTS = 'projects',
-  DOCUMENT_PAGES = 'pages',
-  DIAGRAMS = 'diagrams',
-  KANBAN_BOARDS = 'kanban',
-  PROFILE = 'profile',
-  SETTINGS = 'settings',
-}
+import {AppRoutes} from "./app-routes.enum";
 
 export const routes: Routes = [
   {path: '', redirectTo: '/login', pathMatch: 'full'},

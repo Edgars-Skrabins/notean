@@ -1,7 +1,7 @@
 import {Component} from '@angular/core';
 import {TranslateModule} from "@ngx-translate/core";
 import {NavigationService} from "@services/navigation.service";
-import {AppRoutes} from "../../app/app.routes";
+import {AppRoutes} from "../../app/app-routes.enum";
 import {PHRASES} from "@config/phrases";
 import {AuthCardComponent} from "@components/auth-card/auth-card.component";
 

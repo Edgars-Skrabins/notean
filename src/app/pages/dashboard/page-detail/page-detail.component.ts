@@ -9,7 +9,7 @@ import {PageEditingService} from "@services/page-editing.service";
 import {TeamService} from "@services/team.service";
 import {AuthService} from "@services/auth.service";
 import {NavigationService} from "@services/navigation.service";
-import {AppRoutes} from "../../../app/app.routes";
+import {AppRoutes} from "../../../app/app-routes.enum";
 import {PageDetail, PageUser} from "@models/page.model";
 import {RichTextEditorComponent} from "@components/rich-text-editor/rich-text-editor.component";
 
