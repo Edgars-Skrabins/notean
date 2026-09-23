@@ -1,9 +1,57 @@
 :root {
+  --color-page-bg-start: #1b1042;
+  --color-page-bg-end: #07040f;
 
+  --color-card-bg: #241a52;
+  --color-card-bg-alt: #2d1f63;
+
+  --color-wave-1: rgba(107, 63, 214, 0.35);
+  --color-wave-2: rgba(88, 48, 181, 0.55);
+  --color-wave-3: rgba(58, 28, 133, 0.85);
+
+  --color-page-wave-1: rgba(60, 35, 120, 0.35);
+  --color-page-wave-2: rgba(40, 22, 85, 0.5);
+  --color-page-wave-3: rgba(20, 11, 46, 0.85);
+
+  --color-primary: #6d3ef0;
+  --color-primary-light: #9c6bff;
+  --color-primary-gradient: linear-gradient(90deg, #5a2fe6 0%, #9c6bff 100%);
+
+  --color-text-heading: #ffffff;
+  --color-text-muted: #a9a3d1;
+  --color-text-faint: #7d78a8;
+
+  --color-input-bg: rgba(255, 255, 255, 0.06);
+  --color-input-bg-focus: rgba(255, 255, 255, 0.08);
+  --color-input-border: rgba(255, 255, 255, 0.12);
+  --color-input-border-focus: var(--color-primary-light);
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 24px;
+  --radius-pill: 999px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  --shadow-card: 0 30px 70px -15px rgba(109, 62, 240, 0.35), 0 18px 40px -20px rgba(0, 0, 0, 0.65);
+  --shadow-button: 0 10px 25px -8px rgba(109, 62, 240, 0.6);
+
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
 }
 
 body {
-  background-color: #9dc0bf;
+  min-height: 100vh;
+  margin: 0;
+  background: radial-gradient(circle at 20% 20%, var(--color-page-bg-start) 0%, var(--color-page-bg-end) 100%);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
 }
 
 .mainContainer {
@@ -43,4 +91,132 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.authField {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: var(--space-4);
+}
+
+.authField__label {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.authField input {
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  color: var(--color-text-heading);
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+  width: 100%;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
+}
+
+.authField input::placeholder {
+  color: var(--color-text-faint);
+}
+
+.authField input:focus {
+  border-color: var(--color-input-border-focus);
+  box-shadow: 0 0 0 3px rgba(156, 107, 255, 0.18);
+  background: var(--color-input-bg-focus);
+}
+
+.authButton {
+  width: 100%;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 15px 24px;
+  background: var(--color-primary-gradient);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  box-shadow: var(--shadow-button);
+  font-family: inherit;
+  margin-top: var(--space-2);
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
+}
+
+.authButton:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+  box-shadow: 0 14px 30px -10px rgba(109, 62, 240, 0.7);
+}
+
+.authButton:active {
+  transform: translateY(0);
+  filter: brightness(0.97);
+}
+
+.authButton--secondary {
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: none;
+  border: 1px solid var(--color-input-border);
+}
+
+.authButton--secondary:hover {
+  filter: none;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: none;
+}
+
+.authCornerLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast);
+}
+
+.authCornerLink:hover {
+  color: var(--color-text-heading);
+}
+
+.authCornerLink__arrow {
+  display: inline-block;
+  transition: transform var(--transition-fast);
+}
+
+.authCornerLink:hover .authCornerLink__arrow {
+  transform: translateX(3px);
+}
+
+.authStatus {
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+.authCodeDisplay {
+  font-family: "Courier New", monospace;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  color: var(--color-text-heading);
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  word-break: break-all;
+  text-align: center;
+  margin: 0 0 var(--space-5);
 }

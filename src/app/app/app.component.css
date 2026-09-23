@@ -2,5 +2,57 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 1rem 2rem;
+  min-height: 100vh;
+  padding: 32px 24px;
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+}
+
+.pageBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.pageBackdrop__waves {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 45vh;
+  min-height: 260px;
+}
+
+.pageBackdrop__wave--back {
+  fill: var(--color-page-wave-1);
+  animation: pageWaveDrift 26s ease-in-out infinite;
+}
+
+.pageBackdrop__wave--mid {
+  fill: var(--color-page-wave-2);
+  animation: pageWaveDrift 20s ease-in-out infinite reverse;
+}
+
+.pageBackdrop__wave--front {
+  fill: var(--color-page-wave-3);
+}
+
+@keyframes pageWaveDrift {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(-1.5%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pageBackdrop__wave--back,
+  .pageBackdrop__wave--mid {
+    animation: none;
+  }
 }

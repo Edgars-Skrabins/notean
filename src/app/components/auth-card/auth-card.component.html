@@ -1,0 +1,23 @@
+<div class="authCard">
+  <div class="authCard__corner">
+    <ng-content select="[card-corner]"></ng-content>
+  </div>
+
+  <div class="authCard__body">
+    <h2 class="authCard__title">{{ title }}</h2>
+    <p class="authCard__subtitle" *ngIf="subtitle">{{ subtitle }}</p>
+
+    <ng-content></ng-content>
+  </div>
+
+  <div class="authCard__waves" aria-hidden="true">
+    <svg class="authCard__wavesSvg" viewBox="0 0 736 200" preserveAspectRatio="none">
+      <path class="authCard__wave authCard__wave--back"
+            d="M0,120 C120,180 240,60 380,110 C500,150 620,80 736,130 L736,200 L0,200 Z"/>
+      <path class="authCard__wave authCard__wave--mid"
+            d="M0,150 C140,90 280,170 420,130 C560,90 640,160 736,120 L736,200 L0,200 Z"/>
+      <path class="authCard__wave authCard__wave--front"
+            d="M0,170 C160,130 320,190 480,150 C600,120 680,170 736,150 L736,200 L0,200 Z"/>
+    </svg>
+  </div>
+</div>
