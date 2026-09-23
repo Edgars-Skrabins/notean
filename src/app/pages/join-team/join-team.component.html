@@ -1,30 +1,32 @@
-<main>
-  <div class="formContainer">
-    <h2 class="h2 center">{{ PHRASES.JOIN_TEAM | translate }}</h2>
+<app-auth-card
+  [title]="PHRASES.JOIN_TEAM | translate"
+  [subtitle]="PHRASES.JOIN_TEAM_SUBTITLE | translate"
+>
+  <button card-corner class="authCornerLink" (click)="handleGoToCreateTeam()">
+    {{ PHRASES.CREATE_TEAM | translate }}
+    <span class="authCornerLink__arrow" aria-hidden="true">&rarr;</span>
+  </button>
 
-    <label class="inputLabel" for="teamCodeInput">
-      {{ PHRASES.TEAM_CODE | translate }}
-      <input
-        [(ngModel)]="teamCode"
-        id="teamCodeInput"
-        maxlength="32"
-        type="text"
-      />
-    </label>
-
-    <label class="inputLabel" for="teamPasswordInput">
-      {{ PHRASES.PASSWORD | translate }}
-      <input
-        [(ngModel)]="teamPassword"
-        id="teamPasswordInput"
-        maxlength="24"
-        type="password"
-      />
-    </label>
-
-    <button (click)="handleJoinTeam()">{{ PHRASES.JOIN_TEAM | translate }}</button>
-    <p> {{ alertMessage }} </p>
-    <p>{{ PHRASES.DONT_HAVE_TEAM_CODE | translate }}</p>
-    <button (click)="handleGoToCreateTeam()">{{ PHRASES.CREATE_TEAM | translate }}</button>
+  <div class="authField">
+    <label class="authField__label" for="teamCodeInput">{{ PHRASES.TEAM_CODE | translate }}</label>
+    <input
+      [(ngModel)]="teamCode"
+      id="teamCodeInput"
+      maxlength="32"
+      type="text"
+    />
   </div>
-</main>
+
+  <div class="authField">
+    <label class="authField__label" for="teamPasswordInput">{{ PHRASES.PASSWORD | translate }}</label>
+    <input
+      [(ngModel)]="teamPassword"
+      id="teamPasswordInput"
+      maxlength="24"
+      type="password"
+    />
+  </div>
+
+  <button class="authButton" (click)="handleJoinTeam()">{{ PHRASES.JOIN_TEAM | translate }}</button>
+  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+</app-auth-card>

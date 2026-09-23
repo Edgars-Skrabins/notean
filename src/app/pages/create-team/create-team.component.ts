@@ -6,6 +6,7 @@ import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
 import {AppRoutes} from "../../app/app.routes";
 import {PHRASES} from "@config/phrases";
+import {AuthCardComponent} from "@components/auth-card/auth-card.component";
 
 @Component({
   selector: 'app-create-team',
@@ -13,7 +14,8 @@ import {PHRASES} from "@config/phrases";
   imports: [
     FormsModule,
     NgIf,
-    TranslateModule
+    TranslateModule,
+    AuthCardComponent
   ],
   templateUrl: './create-team.component.html',
   styleUrl: './create-team.component.css'
@@ -51,5 +53,9 @@ export class CreateTeamComponent {
 
   handleContinueToDashboard() {
     this.navigationService.navigate(AppRoutes.DASHBOARD);
+  }
+
+  handleGoToJoinTeam() {
+    this.navigationService.navigate(AppRoutes.JOIN_TEAM);
   }
 }

@@ -3,12 +3,14 @@ import {TranslateModule} from "@ngx-translate/core";
 import {NavigationService} from "@services/navigation.service";
 import {AppRoutes} from "../../app/app.routes";
 import {PHRASES} from "@config/phrases";
+import {AuthCardComponent} from "@components/auth-card/auth-card.component";
 
 @Component({
   selector: 'app-team-selection',
   standalone: true,
   imports: [
-    TranslateModule
+    TranslateModule,
+    AuthCardComponent
   ],
   templateUrl: './team-selection.component.html',
   styleUrl: './team-selection.component.css'

@@ -1,17 +1,21 @@
 import {Component} from '@angular/core';
 import {FormsModule} from "@angular/forms";
+import {NgIf} from "@angular/common";
 import {TranslateModule} from "@ngx-translate/core";
 import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
 import {AppRoutes} from "../../app/app.routes";
 import {PHRASES} from "@config/phrases";
+import {AuthCardComponent} from "@components/auth-card/auth-card.component";
 
 @Component({
   selector: 'app-join-team',
   standalone: true,
   imports: [
     FormsModule,
-    TranslateModule
+    NgIf,
+    TranslateModule,
+    AuthCardComponent
   ],
   templateUrl: './join-team.component.html',
   styleUrl: './join-team.component.css'

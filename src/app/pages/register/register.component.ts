@@ -1,17 +1,21 @@
 import {Component} from '@angular/core';
 import {FormsModule} from "@angular/forms";
+import {NgIf} from "@angular/common";
 import {AppRoutes} from "../../app/app.routes";
 import {NavigationService} from "@services/navigation.service";
 import {AuthService} from "@services/auth.service";
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
+import {AuthCardComponent} from "@components/auth-card/auth-card.component";
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [
     FormsModule,
-    TranslateModule
+    NgIf,
+    TranslateModule,
+    AuthCardComponent
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'

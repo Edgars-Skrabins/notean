@@ -1,40 +1,42 @@
-<main>
-  <div class="formContainer">
-    <h2 class="h2 center"> {{ PHRASES.CREATE_ACCOUNT | translate }}</h2>
+<app-auth-card
+  [title]="PHRASES.CREATE_ACCOUNT | translate"
+  [subtitle]="PHRASES.REGISTER_SUBTITLE | translate"
+>
+  <button card-corner class="authCornerLink" (click)="handleGoToLogin()">
+    {{ PHRASES.LOGIN | translate }}
+    <span class="authCornerLink__arrow" aria-hidden="true">&rarr;</span>
+  </button>
 
-    <label class="inputLabel" for="emailInput">
-      {{ PHRASES.EMAIL | translate }}
-      <input
-        [(ngModel)]="email"
-        [placeholder]="PHRASES.ENTER_EMAIL | translate"
-        id="emailInput"
-        type="email"
-      />
-    </label>
-
-    <label class="inputLabel" for="usernameInput">
-      {{ PHRASES.USERNAME | translate }}
-      <input
-        [(ngModel)]="username"
-        [placeholder]="PHRASES.ENTER_USERNAME | translate"
-        id="usernameInput"
-        type="text"
-      />
-    </label>
-
-    <label class="inputLabel" for="passwordInput">
-      {{ PHRASES.PASSWORD | translate }}
-      <input
-        [(ngModel)]="password"
-        [placeholder]="PHRASES.ENTER_PASSWORD | translate"
-        id="passwordInput"
-        type="password"
-      />
-    </label>
-
-    <button (click)="handleRegister()">{{ PHRASES.REGISTER | translate }}</button>
-    <p> {{ alertMessage }} </p>
-    <p> {{ PHRASES.ALREADY_HAVE_ACCOUNT | translate }} </p>
-    <button (click)="handleGoToLogin()">{{ PHRASES.LOGIN | translate }}</button>
+  <div class="authField">
+    <label class="authField__label" for="emailInput">{{ PHRASES.EMAIL | translate }}</label>
+    <input
+      [(ngModel)]="email"
+      [placeholder]="PHRASES.ENTER_EMAIL | translate"
+      id="emailInput"
+      type="email"
+    />
   </div>
-</main>
+
+  <div class="authField">
+    <label class="authField__label" for="usernameInput">{{ PHRASES.USERNAME | translate }}</label>
+    <input
+      [(ngModel)]="username"
+      [placeholder]="PHRASES.ENTER_USERNAME | translate"
+      id="usernameInput"
+      type="text"
+    />
+  </div>
+
+  <div class="authField">
+    <label class="authField__label" for="passwordInput">{{ PHRASES.PASSWORD | translate }}</label>
+    <input
+      [(ngModel)]="password"
+      [placeholder]="PHRASES.ENTER_PASSWORD | translate"
+      id="passwordInput"
+      type="password"
+    />
+  </div>
+
+  <button class="authButton" (click)="handleRegister()">{{ PHRASES.REGISTER | translate }}</button>
+  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+</app-auth-card>

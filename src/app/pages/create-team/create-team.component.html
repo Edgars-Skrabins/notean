@@ -1,34 +1,38 @@
-<main>
-  <div class="formContainer" *ngIf="!createdTeamCode">
-    <h2 class="h2 center">{{ PHRASES.CREATE_TEAM | translate }}</h2>
+<app-auth-card
+  [title]="(createdTeamCode ? PHRASES.TEAM_CREATED : PHRASES.CREATE_TEAM) | translate"
+  [subtitle]="createdTeamCode ? (PHRASES.TEAM_CODE_SHARE_NOTICE | translate) : (PHRASES.CREATE_TEAM_SUBTITLE | translate)"
+>
+  <button card-corner class="authCornerLink" *ngIf="!createdTeamCode" (click)="handleGoToJoinTeam()">
+    {{ PHRASES.JOIN_TEAM | translate }}
+    <span class="authCornerLink__arrow" aria-hidden="true">&rarr;</span>
+  </button>
 
-    <label class="inputLabel" for="teamNameInput">
-      {{ PHRASES.TEAM_NAME | translate }}
+  <ng-container *ngIf="!createdTeamCode; else createdView">
+    <div class="authField">
+      <label class="authField__label" for="teamNameInput">{{ PHRASES.TEAM_NAME | translate }}</label>
       <input
         [(ngModel)]="teamName"
         id="teamNameInput"
         type="text"
       />
-    </label>
+    </div>
 
-    <label class="inputLabel" for="teamPasswordInput">
-      {{ PHRASES.PASSWORD | translate }}
+    <div class="authField">
+      <label class="authField__label" for="teamPasswordInput">{{ PHRASES.PASSWORD | translate }}</label>
       <input
         [(ngModel)]="teamPassword"
         id="teamPasswordInput"
         maxlength="24"
         type="password"
       />
-    </label>
+    </div>
 
-    <button (click)="handleCreateTeam()">{{ PHRASES.CREATE_TEAM | translate }}</button>
-    <p> {{ alertMessage }} </p>
-  </div>
+    <button class="authButton" (click)="handleCreateTeam()">{{ PHRASES.CREATE_TEAM | translate }}</button>
+    <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+  </ng-container>
 
-  <div class="formContainer" *ngIf="createdTeamCode">
-    <h2 class="h2 center">{{ PHRASES.TEAM_CREATED | translate }}</h2>
-    <p>{{ PHRASES.TEAM_CODE_SHARE_NOTICE | translate }}</p>
-    <p class="center"><strong>{{ createdTeamCode }}</strong></p>
-    <button (click)="handleContinueToDashboard()">{{ PHRASES.CONTINUE | translate }}</button>
-  </div>
-</main>
+  <ng-template #createdView>
+    <p class="authCodeDisplay">{{ createdTeamCode }}</p>
+    <button class="authButton" (click)="handleContinueToDashboard()">{{ PHRASES.CONTINUE | translate }}</button>
+  </ng-template>
+</app-auth-card>

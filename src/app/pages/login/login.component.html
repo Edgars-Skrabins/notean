@@ -1,30 +1,32 @@
-<main>
-  <div class="formContainer">
-    <h2 class="h2 center"> {{ PHRASES.WELCOME_BACK | translate }}</h2>
+<app-auth-card
+  [title]="PHRASES.WELCOME_BACK | translate"
+  [subtitle]="PHRASES.LOGIN_SUBTITLE | translate"
+>
+  <button card-corner class="authCornerLink" (click)="handleGoToRegister()">
+    {{ PHRASES.REGISTER | translate }}
+    <span class="authCornerLink__arrow" aria-hidden="true">&rarr;</span>
+  </button>
 
-    <label class="inputLabel" for="emailInput">
-      {{ PHRASES.EMAIL | translate }}
-      <input
-        [(ngModel)]="email"
-        [placeholder]="PHRASES.ENTER_EMAIL | translate"
-        id="emailInput"
-        type="email"
-      />
-    </label>
-
-    <label class="inputLabel" for="passwordInput">
-      {{ PHRASES.PASSWORD | translate }}
-      <input
-        [(ngModel)]="password"
-        [placeholder]="PHRASES.ENTER_PASSWORD | translate"
-        id="passwordInput"
-        type="password"
-      />
-    </label>
-
-    <button (click)="handleLogin()">{{ PHRASES.LOGIN | translate }}</button>
-    <p> {{ alertMessage }} </p>
-    <p> {{ PHRASES.NO_ACCOUNT_YET | translate }} </p>
-    <button (click)="handleGoToRegister()">{{ PHRASES.REGISTER | translate }}</button>
+  <div class="authField">
+    <label class="authField__label" for="emailInput">{{ PHRASES.EMAIL | translate }}</label>
+    <input
+      [(ngModel)]="email"
+      [placeholder]="PHRASES.ENTER_EMAIL | translate"
+      id="emailInput"
+      type="email"
+    />
   </div>
-</main>
+
+  <div class="authField">
+    <label class="authField__label" for="passwordInput">{{ PHRASES.PASSWORD | translate }}</label>
+    <input
+      [(ngModel)]="password"
+      [placeholder]="PHRASES.ENTER_PASSWORD | translate"
+      id="passwordInput"
+      type="password"
+    />
+  </div>
+
+  <button class="authButton" (click)="handleLogin()">{{ PHRASES.LOGIN | translate }}</button>
+  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+</app-auth-card>
