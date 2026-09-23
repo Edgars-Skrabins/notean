@@ -19,5 +19,5 @@ export type CreateTeamResponse =
   | { success: false; statusMessage: string };
 
 export type JoinTeamResponse =
-  | { success: true }
+  | { success: true; team: Team }
   | { success: false; statusMessage: string };

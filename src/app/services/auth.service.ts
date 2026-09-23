@@ -8,8 +8,17 @@ import {AuthCredentials, AuthResponseError, AuthResponseSuccess, AuthUser, Regis
 export class AuthService {
   private loginUrl = '/auth/login';
   private registerUrl = '/auth/register';
-  private token: string | null = null;
-  private user: AuthUser | null = null;
+  private tokenStorageKey = 'authToken';
+  private userStorageKey = 'authUser';
+
+  private token: string | null = localStorage.getItem(this.tokenStorageKey);
+  private user: AuthUser | null = this.readStoredUser();
+
+  constructor() {
+    if (this.token) {
+      setAuthToken(this.token);
+    }
+  }
 
   isAuthenticated(): boolean {
     return this.token !== null;
@@ -17,6 +26,10 @@ export class AuthService {
 
   getCurrentUser(): AuthUser | null {
     return this.user;
+  }
+
+  getToken(): string | null {
+    return this.token;
   }
 
   async login(credentials: AuthCredentials): Promise<string | null> {
@@ -45,11 +58,28 @@ export class AuthService {
     this.token = null;
     this.user = null;
     setAuthToken(null);
+    localStorage.removeItem(this.tokenStorageKey);
+    localStorage.removeItem(this.userStorageKey);
   }
 
   private setSession(response: AuthResponseSuccess) {
     this.token = response.token;
     this.user = response.user;
     setAuthToken(response.token);
+    localStorage.setItem(this.tokenStorageKey, response.token);
+    localStorage.setItem(this.userStorageKey, JSON.stringify(response.user));
+  }
+
+  private readStoredUser(): AuthUser | null {
+    const raw = localStorage.getItem(this.userStorageKey);
+    if (!raw) {
+      return null;
+    }
+
+    try {
+      return JSON.parse(raw) as AuthUser;
+    } catch {
+      return null;
+    }
   }
 }
