@@ -10,14 +10,33 @@ import {
   SavePageParams
 } from "@models/page.model";
 
-function mapPageUser(raw: any): PageUser {
+interface RawPageUser {
+  id: number;
+  username: string;
+}
+
+interface RawPageSummary {
+  id: number;
+  title: string;
+  creator: RawPageUser;
+  created_at: string;
+  updated_at: string;
+}
+
+interface RawPageDetail extends RawPageSummary {
+  content: string;
+  contributors?: RawPageUser[];
+  currently_editing: RawPageUser | null;
+}
+
+export function mapPageUser(raw: RawPageUser): PageUser {
   return {
     id: raw.id,
     username: raw.username,
   };
 }
 
-function mapPageSummary(raw: any): PageSummary {
+export function mapPageSummary(raw: RawPageSummary): PageSummary {
   return {
     id: raw.id,
     title: raw.title,
@@ -27,7 +46,7 @@ function mapPageSummary(raw: any): PageSummary {
   };
 }
 
-function mapPageDetail(raw: any): PageDetail {
+export function mapPageDetail(raw: RawPageDetail): PageDetail {
   return {
     ...mapPageSummary(raw),
     content: raw.content,
@@ -47,7 +66,7 @@ export class PageService {
   async listPages(teamCode: string, search?: string): Promise<ListPagesResponse> {
     return axiosInstance.get(this.pagesUrl(teamCode), {params: search ? {search} : undefined})
       .then((response) => {
-        const pages = (response.data.pages ?? response.data) as any[];
+        const pages = (response.data.pages ?? response.data) as RawPageSummary[];
         return {success: true, pages: pages.map(mapPageSummary)} satisfies ListPagesResponse;
       })
       .catch((error) => {
