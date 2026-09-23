@@ -20,6 +20,7 @@ export class RegisterComponent {
   protected readonly PHRASES = PHRASES;
 
   email = '';
+  username = '';
   password = '';
   alertMessage = '';
 
@@ -27,7 +28,7 @@ export class RegisterComponent {
   }
 
   handleRegister() {
-    this.authService.register({email: this.email, password: this.password})
+    this.authService.register({email: this.email, username: this.username, password: this.password})
       .then((errorMessage) => {
         if (errorMessage) {
           this.alertMessage = errorMessage;

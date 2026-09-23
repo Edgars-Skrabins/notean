@@ -12,6 +12,16 @@
       />
     </label>
 
+    <label class="inputLabel" for="usernameInput">
+      {{ PHRASES.USERNAME | translate }}
+      <input
+        [(ngModel)]="username"
+        [placeholder]="PHRASES.ENTER_USERNAME | translate"
+        id="usernameInput"
+        type="text"
+      />
+    </label>
+
     <label class="inputLabel" for="passwordInput">
       {{ PHRASES.PASSWORD | translate }}
       <input
