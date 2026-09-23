@@ -11,7 +11,7 @@ Tracking doc for what the Ruby backend needs to support, based on what the front
   - success: `{ user: { id, email, username }, token, statusMessage }` (JWT)
   - error: `{ statusMessage }`
 - Auth is bearer-token based (`Authorization: Bearer <token>`), no cookies/sessions.
-- Frontend keeps the token in memory only (no localStorage), so it's lost on refresh. No refresh-token flow exists yet — needs a decision on whether/how to add one.
+- Frontend now persists the token + user in `localStorage`, so a page refresh keeps you logged in. No refresh-token/expiry flow exists yet — a token just lasts as long as the JWT itself is valid; no decision made yet on what happens once it expires (still silently treated as logged-in client-side until the first request 401s).
 
 ## Teams — done
 
@@ -22,9 +22,10 @@ Tracking doc for what the Ruby backend needs to support, based on what the front
   - success: `{ team: {...}, statusMessage }`
   - error: `{ statusMessage }`
 - `GET /teams/:code` — requires auth, not yet called by the frontend but available for a future "resume last team" flow
-- Still missing: list teams for current user, leave a team
+- `GET /teams/mine` — **spec'd, not yet built** (see `backend/TODO.md`) — used on login to skip team selection if the user already belongs to a team
+- Frontend also persists the current team in `localStorage` (same as auth), so refreshing while in the dashboard doesn't bounce you back to team selection even before `/teams/mine` exists
+- Still missing: list ALL of a user's teams (only "most recent" via `/teams/mine`), leave a team
 - Per-team roles beyond owner/member (viewer, admin) and permission enforcement — not started
-- Not yet handled by the frontend: what happens if a user already belongs to a team on login (currently every login/register always lands on the create/join team screen)
 
 ## Workspaces
 
