@@ -1,1 +1,11 @@
-<p>{{ PHRASES.DASHBOARD_PLACEHOLDER | translate }}</p>
+<div class="dashboardShell">
+  <app-dashboard-header></app-dashboard-header>
+
+  <div class="dashboardShell__body">
+    <app-dashboard-sidebar></app-dashboard-sidebar>
+
+    <div class="dashboardShell__content">
+      <router-outlet/>
+    </div>
+  </div>
+</div>

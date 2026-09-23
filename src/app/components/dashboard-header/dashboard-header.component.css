@@ -1,0 +1,123 @@
+:host {
+  display: block;
+}
+
+.dashboardHeader {
+  height: 64px;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(160deg, var(--color-card-bg) 0%, var(--color-card-bg-alt) 100%);
+  border-bottom: 1px solid var(--color-input-border);
+  position: relative;
+  z-index: 10;
+}
+
+.dashboardHeader__brand {
+  color: var(--color-text-heading);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.01em;
+}
+
+.dashboardHeader__menu {
+  position: relative;
+}
+
+.dashboardHeader__trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: var(--radius-md);
+  transition: background var(--transition-fast);
+}
+
+.dashboardHeader__trigger:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.dashboardHeader__username {
+  color: var(--color-text-heading);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.dashboardHeader__iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.dashboardHeader__iconButton svg {
+  width: 16px;
+  height: 16px;
+}
+
+.dashboardHeader__dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 180px;
+  background: linear-gradient(160deg, var(--color-card-bg) 0%, var(--color-card-bg-alt) 100%);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  animation: dropdownEnter 150ms ease both;
+}
+
+.dashboardHeader__dropdownItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  font-family: inherit;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.dashboardHeader__dropdownItem:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-text-heading);
+}
+
+.dashboardHeader__dropdownItem svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+.dashboardHeader__dropdownItem--danger:hover {
+  color: #ff9d9d;
+}
+
+@keyframes dropdownEnter {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

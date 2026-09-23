@@ -9,6 +9,12 @@
   z-index: 1;
 }
 
+.appContainer--full {
+  display: block;
+  min-height: 100vh;
+  padding: 0;
+}
+
 .pageBackdrop {
   position: fixed;
   inset: 0;

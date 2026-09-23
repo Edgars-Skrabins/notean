@@ -1,8 +1,10 @@
-import {RouterOutlet} from '@angular/router';
+import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
 import {Component} from "@angular/core";
 import {TranslateService} from "@ngx-translate/core";
+import {filter} from "rxjs";
 import {getBrowserLanguage} from "@utils/browserInformation";
 import {defaultLanguage, supportedTranslations} from "@config/translationConfig";
+import {AppRoutes} from "./app.routes";
 
 @Component({
   selector: 'app-root',
@@ -15,8 +17,16 @@ import {defaultLanguage, supportedTranslations} from "@config/translationConfig"
 })
 
 export class AppComponent {
-  constructor(private translationService: TranslateService) {
+  isDashboardRoute = false;
+
+  constructor(private translationService: TranslateService, private router: Router) {
     this.setDefaultLanguageSettings();
+
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.isDashboardRoute = this.router.url.startsWith(`/${AppRoutes.DASHBOARD}`);
+      });
   }
 
   private setDefaultLanguageSettings() {

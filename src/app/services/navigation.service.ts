@@ -16,9 +16,9 @@ export class NavigationService {
     return this.isNavigating;
   }
 
-  navigate(route: AppRoutes) {
+  navigate(...routeSegments: AppRoutes[]) {
     this.isNavigating = true;
-    this.router.navigate([route])
+    this.router.navigate(routeSegments)
       .then(() => {
         this.isNavigating = false;
       })
