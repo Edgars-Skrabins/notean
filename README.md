@@ -1,6 +1,6 @@
 # Notean
 
-This project only contains the frontend, it relies on the [notean-backend](../backend) project for the backend — the app won't work without that running too.
+This project only contains the frontend, it relies on the [notean-backend](https://github.com/Edgars-Skrabins/notean-backend) project for the backend — the app won't work without that running too.
 
 ## Prerequisites
 
@@ -18,7 +18,7 @@ The frontend expects the backend to be running at `http://127.0.0.1:3000`.
 
 ## Running the full app (backend + frontend)
 
-1. Set up and start the [backend](../backend) first — see its README. It needs to be running at `http://127.0.0.1:3000` before you log in or register.
+1. Set up and start the [backend](https://github.com/Edgars-Skrabins/notean-backend) first — see its README. It needs to be running at `http://127.0.0.1:3000` before you log in or register.
 2. In a separate terminal, run `npm run dev` here and open `http://localhost:4200/`.
 
 ## Create components
