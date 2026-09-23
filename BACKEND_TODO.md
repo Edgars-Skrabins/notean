@@ -1,29 +1,29 @@
 # Backend TODO
 
-Temporary tracking doc for what the Ruby backend needs to support, based on what the frontend currently assumes or will soon need. Ruby backend work is paused for now — this is so we don't lose context when we get back to it. Delete this file once the backend catches up and real API docs exist.
+Tracking doc for what the Ruby backend needs to support, based on what the frontend currently assumes or will soon need.
 
-## Auth (frontend already built against this)
+## Auth — done
 
-- `POST /auth/login` — body `{ email, password }`
-  - success: `{ token }` (JWT)
+- `POST /auth/register` — body `{ user: { email, username, password } }`
+  - success: `{ user: { id, email, username }, token, statusMessage }` (JWT)
   - error: `{ statusMessage }`
-- `POST /auth/register` — body `{ email, password }`
-  - success: `{ token }` (JWT)
+- `POST /auth/login` — body `{ user: { email, password } }`
+  - success: `{ user: { id, email, username }, token, statusMessage }` (JWT)
   - error: `{ statusMessage }`
 - Auth is bearer-token based (`Authorization: Bearer <token>`), no cookies/sessions.
 - Frontend keeps the token in memory only (no localStorage), so it's lost on refresh. No refresh-token flow exists yet — needs a decision on whether/how to add one.
 
-## Teams (frontend already built against this)
+## Teams — done
 
-- `POST /teams` — create a team. body `{ name, password }`
-  - success: `{ team: { id, name, code } }` — `code` is a randomly generated 32-character string, shown to the creator once so they can share it
+- `POST /teams` — create a team, requires auth. body `{ team: { name, password } }`
+  - success: `{ team: { id, name, code }, statusMessage }` — `code` is a server-generated, unique 32-character string, shown to the creator once so they can share it. The client never supplies a code on create.
   - error: `{ statusMessage }`
-- `POST /teams/join` — join a team. body `{ code, password }`
-  - success: 2xx
+- `POST /actions/jointeam` — join a team, requires auth. body `{ team: { code, password } }`
+  - success: `{ team: {...}, statusMessage }`
   - error: `{ statusMessage }`
-- List teams for current user
-- Per-team roles: viewer, member, admin, owner
-  - Needs endpoints to assign/change a member's role, and to enforce permissions server-side
+- `GET /teams/:code` — requires auth, not yet called by the frontend but available for a future "resume last team" flow
+- Still missing: list teams for current user, leave a team
+- Per-team roles beyond owner/member (viewer, admin) and permission enforcement — not started
 - Not yet handled by the frontend: what happens if a user already belongs to a team on login (currently every login/register always lands on the create/join team screen)
 
 ## Workspaces
