@@ -8,7 +8,7 @@ export interface RegisterCredentials extends AuthCredentials {
 }
 
 export interface AuthUser {
-  id: string;
+  id: number;
   email: string;
   username: string;
 }
