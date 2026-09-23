@@ -12,10 +12,11 @@ import {
   providedIn: 'root',
 })
 export class TeamService {
-  private teamsUrl = '/teams';
+  private createTeamUrl = '/teams';
+  private joinTeamUrl = '/teams/join';
 
   async createTeam(params: CreateTeamParams): Promise<CreateTeamResponse> {
-    return axiosInstance.post(this.teamsUrl, params)
+    return axiosInstance.post(this.createTeamUrl, params)
       .then((response) => {
         return {success: true, team: response.data.team as Team} satisfies CreateTeamResponse;
       })
@@ -26,7 +27,7 @@ export class TeamService {
   }
 
   async joinTeam(params: JoinTeamParams): Promise<JoinTeamResponse> {
-    return axiosInstance.post(`${this.teamsUrl}/join`, params)
+    return axiosInstance.post(this.joinTeamUrl, params)
       .then(() => {
         return {success: true} satisfies JoinTeamResponse;
       })

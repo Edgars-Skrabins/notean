@@ -6,7 +6,8 @@ import {AuthCredentials, AuthResponseError, AuthResponseSuccess} from "@models/a
   providedIn: 'root',
 })
 export class AuthService {
-  private authUrl = '/auth';
+  private loginUrl = '/auth/login';
+  private registerUrl = '/auth/register';
   private token: string | null = null;
 
   isAuthenticated(): boolean {
@@ -14,7 +15,7 @@ export class AuthService {
   }
 
   async login(credentials: AuthCredentials): Promise<string | null> {
-    return axiosInstance.post(`${this.authUrl}/login`, credentials)
+    return axiosInstance.post(this.loginUrl, credentials)
       .then((response) => {
         this.setToken((response.data as AuthResponseSuccess).token);
         return null;
@@ -25,7 +26,7 @@ export class AuthService {
   }
 
   async register(credentials: AuthCredentials): Promise<string | null> {
-    return axiosInstance.post(`${this.authUrl}/register`, credentials)
+    return axiosInstance.post(this.registerUrl, credentials)
       .then((response) => {
         this.setToken((response.data as AuthResponseSuccess).token);
         return null;
