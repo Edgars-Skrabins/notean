@@ -260,3 +260,19 @@ body {
 .authCodeDisplay__copyButton--copied {
   color: #7ee8a8;
 }
+
+.dashboardStub {
+  color: var(--color-text-heading);
+}
+
+.dashboardStub__title {
+  margin: 0 0 var(--space-2);
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+.dashboardStub__body {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
