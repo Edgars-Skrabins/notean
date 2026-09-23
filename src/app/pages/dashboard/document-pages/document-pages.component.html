@@ -1,0 +1,29 @@
+<div class="pagesView">
+  <div class="pagesView__toolbar">
+    <input
+      type="text"
+      class="pagesView__search"
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="handleSearchChange()"
+      [placeholder]="PHRASES.SEARCH_PAGES | translate"
+    />
+    <button type="button" class="pagesView__newButton" (click)="handleCreatePage()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      {{ PHRASES.NEW_PAGE | translate }}
+    </button>
+  </div>
+
+  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+
+  <div class="pagesView__list" *ngIf="!isLoading && pages.length">
+    <button type="button" class="pagesView__row" *ngFor="let page of pages" (click)="handleOpenPage(page)">
+      <span class="pagesView__rowTitle">{{ page.title }}</span>
+      <span class="pagesView__rowMeta">{{ page.creator.username }} &middot; {{ page.updatedAt | date }}</span>
+    </button>
+  </div>
+
+  <p class="dashboardStub__body" *ngIf="!isLoading && !pages.length">{{ PHRASES.NO_PAGES_YET | translate }}</p>
+</div>

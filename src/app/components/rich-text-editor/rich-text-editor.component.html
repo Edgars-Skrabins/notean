@@ -1,0 +1,35 @@
+<div class="richTextEditor">
+  <div class="richTextEditor__toolbar" *ngIf="editable">
+    <button type="button" class="richTextEditor__toolbarButton" [class.richTextEditor__toolbarButton--active]="isActive('bold')" (click)="toggleBold()">
+      <strong>B</strong>
+    </button>
+    <button type="button" class="richTextEditor__toolbarButton" [class.richTextEditor__toolbarButton--active]="isActive('italic')" (click)="toggleItalic()">
+      <em>I</em>
+    </button>
+    <button type="button" class="richTextEditor__toolbarButton" [class.richTextEditor__toolbarButton--active]="isActive('heading', {level: 2})" (click)="toggleHeading()">
+      H2
+    </button>
+    <button type="button" class="richTextEditor__toolbarButton" [class.richTextEditor__toolbarButton--active]="isActive('bulletList')" (click)="toggleBulletList()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="9" y1="6" x2="20" y2="6"></line>
+        <line x1="9" y1="12" x2="20" y2="12"></line>
+        <line x1="9" y1="18" x2="20" y2="18"></line>
+        <circle cx="4" cy="6" r="1.5"></circle>
+        <circle cx="4" cy="12" r="1.5"></circle>
+        <circle cx="4" cy="18" r="1.5"></circle>
+      </svg>
+    </button>
+    <button type="button" class="richTextEditor__toolbarButton" [class.richTextEditor__toolbarButton--active]="isActive('orderedList')" (click)="toggleOrderedList()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="10" y1="6" x2="20" y2="6"></line>
+        <line x1="10" y1="12" x2="20" y2="12"></line>
+        <line x1="10" y1="18" x2="20" y2="18"></line>
+        <text x="2" y="9" font-size="7" fill="currentColor" stroke="none">1</text>
+        <text x="2" y="15" font-size="7" fill="currentColor" stroke="none">2</text>
+        <text x="2" y="21" font-size="7" fill="currentColor" stroke="none">3</text>
+      </svg>
+    </button>
+  </div>
+
+  <div class="richTextEditor__host" #editorHost></div>
+</div>

@@ -1,0 +1,95 @@
+.pagesView__toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.pagesView__search {
+  flex: 1;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  padding: 11px 16px;
+  color: var(--color-text-heading);
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.pagesView__search::placeholder {
+  color: var(--color-text-faint);
+}
+
+.pagesView__search:focus {
+  border-color: var(--color-input-border-focus);
+  box-shadow: 0 0 0 3px rgba(156, 107, 255, 0.18);
+}
+
+.pagesView__newButton {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-shrink: 0;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 11px 18px;
+  background: var(--color-primary-gradient);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: var(--shadow-button);
+  transition: transform var(--transition-fast), filter var(--transition-fast);
+}
+
+.pagesView__newButton:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+.pagesView__newButton svg {
+  width: 16px;
+  height: 16px;
+}
+
+.pagesView__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.pagesView__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  width: 100%;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.pagesView__row:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--color-input-border-focus);
+}
+
+.pagesView__rowTitle {
+  color: var(--color-text-heading);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.pagesView__rowMeta {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
