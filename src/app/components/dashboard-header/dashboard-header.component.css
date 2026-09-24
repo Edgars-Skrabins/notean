@@ -37,38 +37,12 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 6px 8px;
-  border-radius: var(--radius-md);
-  transition: background var(--transition-fast);
-}
-
-.dashboardHeader__trigger:hover {
-  background: rgba(255, 255, 255, 0.06);
 }
 
 .dashboardHeader__username {
   color: var(--color-text-heading);
   font-size: 0.9rem;
   font-weight: 500;
-}
-
-.dashboardHeader__iconButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: var(--radius-sm);
-  color: var(--color-text-muted);
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.dashboardHeader__iconButton svg {
-  width: 16px;
-  height: 16px;
 }
 
 .dashboardHeader__dropdown {

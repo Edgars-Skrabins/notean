@@ -5,16 +5,15 @@
     <app-language-switcher></app-language-switcher>
 
     <div class="dashboardHeader__menu">
-      <button type="button" class="dashboardHeader__trigger" (click)="toggleMenu()">
+      <div class="dashboardHeader__trigger">
         <span class="dashboardHeader__username">{{ username }}</span>
-        <span class="dashboardHeader__iconButton" [attr.aria-label]="PHRASES.MENU | translate">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <line x1="3" y1="12" x2="21" y2="12"></line>
-            <line x1="3" y1="18" x2="21" y2="18"></line>
-          </svg>
-        </span>
-      </button>
+        <app-icon-button
+          icon="menu"
+          [tooltip]="PHRASES.MENU | translate"
+          [size]="28"
+          (pressed)="toggleMenu()"
+        ></app-icon-button>
+      </div>
 
       <div class="dashboardHeader__dropdown" *ngIf="isMenuOpen">
         <button type="button" class="dashboardHeader__dropdownItem" (click)="handleGoToProfile()">
