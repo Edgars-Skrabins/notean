@@ -139,6 +139,7 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
 
   private graph: Graph | null = null;
   private nextNodeOffset = 0;
+  private lastEmittedContent: string | null = null;
 
   constructor(private translateService: TranslateService) {
   }
@@ -220,7 +221,12 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes['content'] && this.graph && !changes['content'].isFirstChange()) {
+    if (
+      changes['content'] &&
+      this.graph &&
+      !changes['content'].isFirstChange() &&
+      changes['content'].currentValue !== this.lastEmittedContent
+    ) {
       this.loadContent();
     }
   }
@@ -337,7 +343,9 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
       return;
     }
     this.isEmpty = this.graph.getCells().length === 0;
-    this.contentChange.emit(JSON.stringify(this.graph.toJSON()));
+    const content = JSON.stringify(this.graph.toJSON());
+    this.lastEmittedContent = content;
+    this.contentChange.emit(content);
   }
 
   private injectGradientDef() {
