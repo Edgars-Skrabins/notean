@@ -59,6 +59,12 @@ export class DocumentPagesComponent implements OnInit, OnDestroy {
     this.searchDebounceHandle = setTimeout(() => this.loadPages(), 300);
   }
 
+  handleCreateFolder(){
+    const untitledTitle = this.translateService.instant(PHRASES.UNTITLED_FOLDER);
+
+    this.pagese
+  }
+
   handleCreatePage() {
     const untitledTitle = this.translateService.instant(PHRASES.UNTITLED_PAGE);
 
