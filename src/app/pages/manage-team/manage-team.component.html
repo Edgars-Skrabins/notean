@@ -1,0 +1,35 @@
+<button type="button" class="pageBackButton" (click)="handleGoBack()">
+  <span class="pageBackButton__arrow" aria-hidden="true">&larr;</span>
+  {{ PHRASES.BACK_TO_DASHBOARD | translate }}
+</button>
+
+<div class="manageTeam">
+  <h2 class="manageTeam__title">{{ PHRASES.MANAGE_TEAM | translate }}</h2>
+
+  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+
+  <section class="manageTeam__section">
+    <h3 class="manageTeam__sectionTitle">{{ PHRASES.RENAME_TEAM | translate }}</h3>
+    <div class="authField">
+      <label class="authField__label" for="teamNameInput">{{ PHRASES.TEAM_NAME | translate }}</label>
+      <input [(ngModel)]="teamName" id="teamNameInput" type="text" />
+    </div>
+    <button class="authButton" (click)="handleRenameTeam()">{{ PHRASES.SAVE | translate }}</button>
+    <p class="authStatus" *ngIf="renameStatusMessage">{{ renameStatusMessage }}</p>
+  </section>
+
+  <section class="manageTeam__section">
+    <h3 class="manageTeam__sectionTitle">{{ PHRASES.TEAM_MEMBERS | translate }}</h3>
+    <div class="manageTeam__memberList" *ngIf="!isLoadingMembers && members.length">
+      <div class="manageTeam__memberRow" *ngFor="let member of members">
+        <span class="manageTeam__memberName">{{ member.username }}</span>
+        <span class="manageTeam__memberRole">{{ teamRoleLabel(member.role) | translate }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="manageTeam__section" *ngIf="showDeleteTeam">
+    <h3 class="manageTeam__sectionTitle">{{ PHRASES.DELETE_TEAM | translate }}</h3>
+    <button type="button" class="manageTeam__deleteButton" (click)="handleDeleteTeam()">{{ PHRASES.DELETE_TEAM | translate }}</button>
+  </section>
+</div>
