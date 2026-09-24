@@ -1,0 +1,9 @@
+<button
+  [type]="type"
+  class="button button--{{ variant }}"
+  [disabled]="disabled"
+  (click)="pressed.emit()"
+>
+  <app-icon *ngIf="icon" [name]="icon" class="button__icon"></app-icon>
+  <ng-content></ng-content>
+</button>
