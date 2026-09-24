@@ -4,6 +4,8 @@ export enum AppRoutes {
   TEAM_SELECTION = 'team-selection',
   CREATE_TEAM = 'create-team',
   JOIN_TEAM = 'join-team',
+  SWITCH_TEAM = 'switch-team',
+  MANAGE_TEAM = 'manage-team',
   DASHBOARD = 'dashboard',
   DASHBOARD_HOME = 'home',
   PROJECTS = 'projects',

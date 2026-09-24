@@ -4,6 +4,8 @@ import {RegisterComponent} from "../pages/register/register.component";
 import {TeamSelectionComponent} from "../pages/team-selection/team-selection.component";
 import {CreateTeamComponent} from "../pages/create-team/create-team.component";
 import {JoinTeamComponent} from "../pages/join-team/join-team.component";
+import {SwitchTeamComponent} from "../pages/switch-team/switch-team.component";
+import {ManageTeamComponent} from "../pages/manage-team/manage-team.component";
 import {DashboardComponent} from "../pages/dashboard/dashboard.component";
 import {HomeComponent} from "../pages/dashboard/home/home.component";
 import {ProjectsComponent} from "../pages/dashboard/projects/projects.component";
@@ -16,6 +18,7 @@ import {ProfileComponent} from "../pages/dashboard/profile/profile.component";
 import {SettingsComponent} from "../pages/dashboard/settings/settings.component";
 import {authGuard} from "../guards/auth.guard";
 import {teamGuard} from "../guards/team.guard";
+import {teamRoleGuard} from "../guards/team-role.guard";
 import {AppRoutes} from "./app-routes.enum";
 
 export const routes: Routes = [
@@ -25,6 +28,8 @@ export const routes: Routes = [
   {path: AppRoutes.TEAM_SELECTION, component: TeamSelectionComponent, canActivate: [authGuard]},
   {path: AppRoutes.CREATE_TEAM, component: CreateTeamComponent, canActivate: [authGuard]},
   {path: AppRoutes.JOIN_TEAM, component: JoinTeamComponent, canActivate: [authGuard]},
+  {path: AppRoutes.SWITCH_TEAM, component: SwitchTeamComponent, canActivate: [authGuard, teamGuard]},
+  {path: AppRoutes.MANAGE_TEAM, component: ManageTeamComponent, canActivate: [authGuard, teamGuard, teamRoleGuard]},
   {path: AppRoutes.PROFILE, component: ProfileComponent, canActivate: [authGuard, teamGuard]},
   {path: AppRoutes.SETTINGS, component: SettingsComponent, canActivate: [authGuard, teamGuard]},
   {
