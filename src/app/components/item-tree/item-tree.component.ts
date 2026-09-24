@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
 import {DatePipe, NgFor, NgIf, NgTemplateOutlet} from '@angular/common';
-import {CdkDrag, CdkDragDrop, CdkDropList, CdkDropListGroup} from '@angular/cdk/drag-drop';
+import {CdkDrag, CdkDragEnd, CdkDragMove} from '@angular/cdk/drag-drop';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {IconComponent} from '@components/icon/icon.component';
@@ -48,8 +48,6 @@ type DropTarget =
     IconComponent,
     IconButtonComponent,
     DeleteFolderDialogComponent,
-    CdkDropListGroup,
-    CdkDropList,
     CdkDrag
   ],
   templateUrl: './item-tree.component.html',
@@ -73,15 +71,10 @@ export class ItemTreeComponent implements OnChanges {
   rootItems: TreeItem[] = [];
   folderPendingDeletion: TreeFolder | null = null;
   draggingNode: DragNode | null = null;
-  readonly rootDropTarget: DropTarget = {kind: 'root'};
+  hoveredTarget: DropTarget | null = null;
+  readonly rootTarget: DropTarget = {kind: 'root'};
 
   private expandedFolderIds = new Set<number>();
-
-  readonly dropPredicate = (drag: CdkDrag<DragNode>, drop: CdkDropList<DropTarget>): boolean => {
-    return this.isValidDropTarget(drag.data, drop.data!);
-  };
-
-  readonly neverAcceptsDrop = (): boolean => false;
 
   ngOnChanges() {
     this.rootFolders = this.buildFolders(null);
@@ -127,25 +120,32 @@ export class ItemTreeComponent implements OnChanges {
 
   handleDragStarted(node: DragNode) {
     this.draggingNode = node;
+    this.hoveredTarget = null;
   }
 
-  handleDragEnded() {
+  handleDragMoved(event: CdkDragMove<DragNode>) {
+    const target = this.resolveDropTarget(event.pointerPosition.x, event.pointerPosition.y);
+    this.hoveredTarget = target && this.isValidDropTarget(event.source.data, target) ? target : null;
+  }
+
+  handleDragEnded(event: CdkDragEnd<DragNode>) {
+    const dragData = event.source.data;
+    const target = this.resolveDropTarget(event.dropPoint.x, event.dropPoint.y);
+
     this.draggingNode = null;
-  }
+    this.hoveredTarget = null;
+    event.source.reset();
 
-  handleDrop(event: CdkDragDrop<DropTarget, DropTarget, DragNode>) {
-    if (event.previousContainer === event.container) {
+    if (!target || !this.isValidDropTarget(dragData, target)) {
       return;
     }
 
-    const dragData = event.item.data;
-    const dropData = event.container.data!;
+    const targetFolderId = target.kind === 'root' ? null : target.folder.id;
+    const currentFolderId = dragData.kind === 'item' ? dragData.item.folderId : dragData.folder.parentId;
 
-    if (!this.isValidDropTarget(dragData, dropData)) {
+    if (currentFolderId === targetFolderId) {
       return;
     }
-
-    const targetFolderId = dropData.kind === 'root' ? null : dropData.folder.id;
 
     if (dragData.kind === 'item') {
       this.moveItem.emit({itemId: dragData.item.id, folderId: targetFolderId});
@@ -158,6 +158,18 @@ export class ItemTreeComponent implements OnChanges {
     return this.draggingNode !== null && !this.isValidDropTarget(this.draggingNode, target);
   }
 
+  isHovered(target: DropTarget): boolean {
+    if (!this.hoveredTarget) {
+      return false;
+    }
+
+    if (target.kind === 'root') {
+      return this.hoveredTarget.kind === 'root';
+    }
+
+    return this.hoveredTarget.kind === 'folder' && this.hoveredTarget.folder.id === target.folder.id;
+  }
+
   toFolderDrag(folder: TreeFolder): DragNode {
     return {kind: 'folder', folder};
   }
@@ -168,6 +180,28 @@ export class ItemTreeComponent implements OnChanges {
 
   toFolderDrop(folder: TreeFolder): DropTarget {
     return {kind: 'folder', folder};
+  }
+
+  private resolveDropTarget(x: number, y: number): DropTarget | null {
+    const el = document.elementFromPoint(x, y);
+    if (!el) {
+      return null;
+    }
+
+    if (el.closest('[data-drop-root]')) {
+      return {kind: 'root'};
+    }
+
+    const folderZone = el.closest<HTMLElement>('[data-drop-folder-id]');
+    if (folderZone) {
+      const folderId = Number(folderZone.dataset['dropFolderId']);
+      const folder = this.folders.find((f) => f.id === folderId);
+      if (folder) {
+        return {kind: 'folder', folder};
+      }
+    }
+
+    return null;
   }
 
   private isValidDropTarget(drag: DragNode, target: DropTarget): boolean {

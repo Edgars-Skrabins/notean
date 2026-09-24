@@ -1,59 +1,54 @@
 <ng-template #levelTemplate let-folders let-items="items" let-depth="depth">
   <ng-container *ngFor="let folder of folders">
     <div
-      cdkDropList
-      class="itemTree__dropZone"
-      [class.itemTree__dropZone--invalid]="isDropZoneInvalid(toFolderDrop(folder))"
-      [cdkDropListData]="toFolderDrop(folder)"
-      [cdkDropListEnterPredicate]="dropPredicate"
-      (cdkDropListDropped)="handleDrop($event)"
+      cdkDrag
+      [cdkDragData]="toFolderDrag(folder)"
+      (cdkDragStarted)="handleDragStarted(toFolderDrag(folder))"
+      (cdkDragMoved)="handleDragMoved($event)"
+      (cdkDragEnded)="handleDragEnded($event)"
+      [attr.data-drop-folder-id]="folder.id"
+      class="itemTree__row itemTree__row--folder"
+      [class.itemTree__row--invalidTarget]="isDropZoneInvalid(toFolderDrop(folder))"
+      [class.itemTree__row--hoverTarget]="isHovered(toFolderDrop(folder))"
+      [style.paddingLeft.px]="depth * 20"
     >
-      <div
-        cdkDrag
-        [cdkDragData]="toFolderDrag(folder)"
-        (cdkDragStarted)="handleDragStarted(toFolderDrag(folder))"
-        (cdkDragEnded)="handleDragEnded()"
-        class="itemTree__row itemTree__row--folder"
-        [style.paddingLeft.px]="depth * 20"
-      >
-        <div class="itemTree__chevronSlot">
-          <app-icon-button
-            *ngIf="hasContents(folder)"
-            icon="chevron-right"
-            [tooltip]="(isExpanded(folder.id) ? PHRASES.COLLAPSE_FOLDER : PHRASES.EXPAND_FOLDER) | translate"
-            [size]="28"
-            class="itemTree__chevron"
-            [class.itemTree__chevron--expanded]="isExpanded(folder.id)"
-            (pressed)="toggleExpand(folder)"
-          ></app-icon-button>
-        </div>
+      <div class="itemTree__chevronSlot">
+        <app-icon-button
+          *ngIf="hasContents(folder)"
+          icon="chevron-right"
+          [tooltip]="(isExpanded(folder.id) ? PHRASES.COLLAPSE_FOLDER : PHRASES.EXPAND_FOLDER) | translate"
+          [size]="28"
+          class="itemTree__chevron"
+          [class.itemTree__chevron--expanded]="isExpanded(folder.id)"
+          (pressed)="toggleExpand(folder)"
+        ></app-icon-button>
+      </div>
 
-        <button type="button" class="itemTree__rowMain" (click)="toggleExpand(folder)">
-          <app-icon name="folder" class="itemTree__rowIcon"></app-icon>
-          <span class="itemTree__rowTitle">{{ folder.title }}</span>
-        </button>
+      <button type="button" class="itemTree__rowMain" (click)="toggleExpand(folder)">
+        <app-icon name="folder" class="itemTree__rowIcon"></app-icon>
+        <span class="itemTree__rowTitle">{{ folder.title }}</span>
+      </button>
 
-        <div class="itemTree__rowActions">
-          <app-icon-button
-            icon="folder-plus"
-            [tooltip]="PHRASES.NEW_FOLDER | translate"
-            [size]="28"
-            (pressed)="createFolder.emit({ parentId: folder.id })"
-          ></app-icon-button>
-          <app-icon-button
-            icon="plus"
-            [tooltip]="itemLabel"
-            [size]="28"
-            (pressed)="createItem.emit({ parentId: folder.id })"
-          ></app-icon-button>
-          <app-icon-button
-            icon="trash"
-            variant="danger"
-            [tooltip]="PHRASES.DELETE_FOLDER | translate"
-            [size]="28"
-            (pressed)="requestDeleteFolder(folder)"
-          ></app-icon-button>
-        </div>
+      <div class="itemTree__rowActions">
+        <app-icon-button
+          icon="folder-plus"
+          [tooltip]="PHRASES.NEW_FOLDER | translate"
+          [size]="28"
+          (pressed)="createFolder.emit({ parentId: folder.id })"
+        ></app-icon-button>
+        <app-icon-button
+          icon="plus"
+          [tooltip]="itemLabel"
+          [size]="28"
+          (pressed)="createItem.emit({ parentId: folder.id })"
+        ></app-icon-button>
+        <app-icon-button
+          icon="trash"
+          variant="danger"
+          [tooltip]="PHRASES.DELETE_FOLDER | translate"
+          [size]="28"
+          (pressed)="requestDeleteFolder(folder)"
+        ></app-icon-button>
       </div>
     </div>
 
@@ -65,33 +60,30 @@
   </ng-container>
 
   <ng-container *ngFor="let item of items">
-    <div cdkDropList class="itemTree__dropZone" [cdkDropListEnterPredicate]="neverAcceptsDrop">
-      <button
-        type="button"
-        cdkDrag
-        [cdkDragData]="toItemDrag(item)"
-        (cdkDragStarted)="handleDragStarted(toItemDrag(item))"
-        (cdkDragEnded)="handleDragEnded()"
-        class="itemTree__row itemTree__row--item"
-        [style.paddingLeft.px]="depth * 20 + 36"
-        (click)="openItem.emit(item)"
-      >
-        <app-icon name="edit" class="itemTree__rowIcon"></app-icon>
-        <span class="itemTree__rowTitle">{{ item.title }}</span>
-        <span class="itemTree__rowMeta">{{ item.meta.creator.username }} &middot; {{ item.meta.updatedAt | date }}</span>
-      </button>
-    </div>
+    <button
+      type="button"
+      cdkDrag
+      [cdkDragData]="toItemDrag(item)"
+      (cdkDragStarted)="handleDragStarted(toItemDrag(item))"
+      (cdkDragMoved)="handleDragMoved($event)"
+      (cdkDragEnded)="handleDragEnded($event)"
+      class="itemTree__row itemTree__row--item"
+      [style.paddingLeft.px]="depth * 20 + 36"
+      (click)="openItem.emit(item)"
+    >
+      <app-icon name="edit" class="itemTree__rowIcon"></app-icon>
+      <span class="itemTree__rowTitle">{{ item.title }}</span>
+      <span class="itemTree__rowMeta">{{ item.meta.creator.username }} &middot; {{ item.meta.updatedAt | date }}</span>
+    </button>
   </ng-container>
 </ng-template>
 
-<div class="itemTree" cdkDropListGroup>
+<div class="itemTree">
   <div
-    cdkDropList
+    data-drop-root
     class="itemTree__rootDropZone"
     [class.itemTree__rootDropZone--active]="draggingNode !== null"
-    [cdkDropListData]="rootDropTarget"
-    [cdkDropListEnterPredicate]="dropPredicate"
-    (cdkDropListDropped)="handleDrop($event)"
+    [class.itemTree__rootDropZone--hoverTarget]="isHovered(rootTarget)"
   ></div>
 
   <ng-container
