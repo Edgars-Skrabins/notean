@@ -35,6 +35,11 @@ export class DashboardHeaderComponent {
     return this.authService.getCurrentUser()?.username ?? '';
   }
 
+  get showManageTeam(): boolean {
+    const role = this.teamService.getCurrentRole();
+    return role === 'admin' || role === 'owner';
+  }
+
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }
@@ -63,6 +68,11 @@ export class DashboardHeaderComponent {
   handleGoToTeams() {
     this.closeMenu();
     this.navigationService.navigate(AppRoutes.TEAM_SELECTION);
+  }
+
+  handleGoToManageTeam() {
+    this.closeMenu();
+    this.navigationService.navigate(AppRoutes.MANAGE_TEAM);
   }
 
   handleLogout() {
