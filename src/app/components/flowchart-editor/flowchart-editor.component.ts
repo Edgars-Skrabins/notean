@@ -7,6 +7,7 @@ import {Selection} from '@antv/x6-plugin-selection';
 import {Snapline} from '@antv/x6-plugin-snapline';
 import {Keyboard} from '@antv/x6-plugin-keyboard';
 import {PHRASES} from "@config/phrases";
+import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 
 const GRADIENT_ID = 'flowchartNodeFill';
 
@@ -117,7 +118,8 @@ interface EditingLabel {
   imports: [
     NgIf,
     FormsModule,
-    TranslateModule
+    TranslateModule,
+    IconButtonComponent
   ],
   templateUrl: './flowchart-editor.component.html',
   styleUrl: './flowchart-editor.component.css',
