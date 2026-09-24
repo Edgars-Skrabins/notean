@@ -12,6 +12,8 @@ import {NavigationService} from "@services/navigation.service";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {DiagramDetail, DiagramUser} from "@models/diagram.model";
 import {FlowchartEditorComponent} from "@components/flowchart-editor/flowchart-editor.component";
+import {IconButtonComponent} from "@components/icon-button/icon-button.component";
+import {ButtonComponent} from "@components/button/button.component";
 
 @Component({
   selector: 'app-diagram-detail',
@@ -22,7 +24,9 @@ import {FlowchartEditorComponent} from "@components/flowchart-editor/flowchart-e
     NgFor,
     DatePipe,
     TranslateModule,
-    FlowchartEditorComponent
+    FlowchartEditorComponent,
+    IconButtonComponent,
+    ButtonComponent
   ],
   templateUrl: './diagram-detail.component.html',
   styleUrl: './diagram-detail.component.css'

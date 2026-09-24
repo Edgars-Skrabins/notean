@@ -1,67 +1,71 @@
-<div class="pageDetail" *ngIf="page">
-  <div class="pageDetail__editingBanner" *ngIf="showEditingBanner">
-    <strong>{{ editingUser?.username }}</strong> {{ PHRASES.BEING_EDITED_BY | translate }}
-  </div>
+<div class="pageDetailOverlay" *ngIf="page">
+  <div class="pageDetailOverlay__backdrop" (click)="handleGoBack()"></div>
 
-  <div class="pageDetail__header">
-    <button type="button" class="pageDetail__backLink" (click)="handleGoBack()">&larr; {{ PHRASES.BACK_TO_PAGES | translate }}</button>
-
-    <div class="pageDetail__actions" *ngIf="mode === 'view'">
-      <button type="button" class="pageDetail__actionButton pageDetail__actionButton--ghost" (click)="handleDelete()">{{ PHRASES.DELETE | translate }}</button>
-      <button type="button" class="pageDetail__actionButton" (click)="handleEdit()">{{ PHRASES.EDIT | translate }}</button>
-    </div>
-    <div class="pageDetail__actions" *ngIf="mode === 'edit'">
-      <button type="button" class="pageDetail__actionButton pageDetail__actionButton--ghost" (click)="handleCancel()">{{ PHRASES.CANCEL | translate }}</button>
-      <button type="button" class="pageDetail__actionButton" (click)="handleSave()">{{ PHRASES.SAVE | translate }}</button>
-    </div>
-  </div>
-
-  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
-
-  <div class="pageDetail__body">
-    <div class="pageDetail__main">
-      <ng-container *ngIf="mode === 'view'">
-        <h1 class="pageDetail__title">{{ page.title }}</h1>
-        <div class="pageDetail__content" [innerHTML]="page.content"></div>
-      </ng-container>
-
-      <ng-container *ngIf="mode === 'edit'">
-        <input
-          type="text"
-          class="pageDetail__titleInput"
-          [(ngModel)]="draftTitle"
-          [placeholder]="PHRASES.PAGE_TITLE_PLACEHOLDER | translate"
-        />
-        <app-rich-text-editor
-          [content]="draftContent"
-          [editable]="true"
-          (contentChange)="handleContentChange($event)"
-        ></app-rich-text-editor>
-      </ng-container>
+  <div class="pageDetail">
+    <div class="pageDetail__editingBanner" *ngIf="showEditingBanner">
+      <strong>{{ editingUser?.username }}</strong> {{ PHRASES.BEING_EDITED_BY | translate }}
     </div>
 
-    <div class="pageDetail__sidebar">
-      <div class="pageDetail__sidebarSection">
-        <h3 class="pageDetail__sidebarLabel">{{ PHRASES.OWNER | translate }}</h3>
-        <p class="pageDetail__sidebarValue">{{ page.creator.username }}</p>
+    <div class="pageDetail__header">
+      <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE | translate" (pressed)="handleGoBack()"></app-icon-button>
+
+      <div class="pageDetail__actions" *ngIf="mode === 'view'">
+        <app-button variant="ghost" (pressed)="handleDelete()">{{ PHRASES.DELETE | translate }}</app-button>
+        <app-button variant="primary" (pressed)="handleEdit()">{{ PHRASES.EDIT | translate }}</app-button>
+      </div>
+      <div class="pageDetail__actions" *ngIf="mode === 'edit'">
+        <app-button variant="ghost" (pressed)="handleCancel()">{{ PHRASES.CANCEL | translate }}</app-button>
+        <app-button variant="primary" (pressed)="handleSave()">{{ PHRASES.SAVE | translate }}</app-button>
+      </div>
+    </div>
+
+    <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+
+    <div class="pageDetail__body">
+      <div class="pageDetail__main">
+        <ng-container *ngIf="mode === 'view'">
+          <h1 class="pageDetail__title">{{ page.title }}</h1>
+          <div class="pageDetail__content" [innerHTML]="page.content"></div>
+        </ng-container>
+
+        <ng-container *ngIf="mode === 'edit'">
+          <input
+            type="text"
+            class="pageDetail__titleInput"
+            [(ngModel)]="draftTitle"
+            [placeholder]="PHRASES.PAGE_TITLE_PLACEHOLDER | translate"
+          />
+          <app-rich-text-editor
+            [content]="draftContent"
+            [editable]="true"
+            (contentChange)="handleContentChange($event)"
+          ></app-rich-text-editor>
+        </ng-container>
       </div>
 
-      <div class="pageDetail__sidebarSection">
-        <h3 class="pageDetail__sidebarLabel">{{ PHRASES.CONTRIBUTORS | translate }}</h3>
-        <p class="pageDetail__sidebarValue" *ngIf="page.contributors.length">
-          <span *ngFor="let contributor of page.contributors; let last = last">{{ contributor.username }}{{ last ? '' : ', ' }}</span>
-        </p>
-        <p class="pageDetail__sidebarValue pageDetail__sidebarValue--muted" *ngIf="!page.contributors.length">&mdash;</p>
-      </div>
+      <div class="pageDetail__sidebar">
+        <div class="pageDetail__sidebarSection">
+          <h3 class="pageDetail__sidebarLabel">{{ PHRASES.OWNER | translate }}</h3>
+          <p class="pageDetail__sidebarValue">{{ page.creator.username }}</p>
+        </div>
 
-      <div class="pageDetail__sidebarSection">
-        <h3 class="pageDetail__sidebarLabel">{{ PHRASES.CREATED | translate }}</h3>
-        <p class="pageDetail__sidebarValue">{{ page.createdAt | date }}</p>
-      </div>
+        <div class="pageDetail__sidebarSection">
+          <h3 class="pageDetail__sidebarLabel">{{ PHRASES.CONTRIBUTORS | translate }}</h3>
+          <p class="pageDetail__sidebarValue" *ngIf="page.contributors.length">
+            <span *ngFor="let contributor of page.contributors; let last = last">{{ contributor.username }}{{ last ? '' : ', ' }}</span>
+          </p>
+          <p class="pageDetail__sidebarValue pageDetail__sidebarValue--muted" *ngIf="!page.contributors.length">&mdash;</p>
+        </div>
 
-      <div class="pageDetail__sidebarSection">
-        <h3 class="pageDetail__sidebarLabel">{{ PHRASES.LAST_EDITED | translate }}</h3>
-        <p class="pageDetail__sidebarValue">{{ page.updatedAt | date }}</p>
+        <div class="pageDetail__sidebarSection">
+          <h3 class="pageDetail__sidebarLabel">{{ PHRASES.CREATED | translate }}</h3>
+          <p class="pageDetail__sidebarValue">{{ page.createdAt | date }}</p>
+        </div>
+
+        <div class="pageDetail__sidebarSection">
+          <h3 class="pageDetail__sidebarLabel">{{ PHRASES.LAST_EDITED | translate }}</h3>
+          <p class="pageDetail__sidebarValue">{{ page.updatedAt | date }}</p>
+        </div>
       </div>
     </div>
   </div>

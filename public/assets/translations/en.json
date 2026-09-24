@@ -55,7 +55,6 @@
   "CONTRIBUTORS": "Contributors",
   "CREATED": "Created",
   "LAST_EDITED": "Last edited",
-  "BACK_TO_PAGES": "Back to pages",
   "BACK_TO_DASHBOARD": "Back to dashboard",
   "COLLAPSE_SIDEBAR": "Collapse sidebar",
   "EXPAND_SIDEBAR": "Expand sidebar",
@@ -76,12 +75,12 @@
   "NO_DIAGRAMS_YET": "No diagrams yet — create one to get started.",
   "UNTITLED_DIAGRAM": "Untitled",
   "CONFIRM_DELETE_DIAGRAM": "Delete this diagram? This can't be undone.",
-  "BACK_TO_DIAGRAMS": "Back to diagrams",
   "FLOWCHART_START_END": "Start/End",
   "FLOWCHART_PROCESS": "Process",
   "FLOWCHART_DECISION": "Decision",
   "FLOWCHART_INPUT_OUTPUT": "Input/Output",
   "FLOWCHART_DELETE_SELECTED": "Delete selected",
   "FLOWCHART_ZOOM_TO_FIT": "Zoom to fit",
-  "FLOWCHART_EMPTY_HINT": "Add a shape from the toolbar to get started."
+  "FLOWCHART_EMPTY_HINT": "Add a shape from the toolbar to get started.",
+  "CLOSE": "Close"
 }

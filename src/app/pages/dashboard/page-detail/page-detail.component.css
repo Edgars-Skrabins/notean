@@ -1,3 +1,30 @@
+:host {
+  display: block;
+}
+
+.pageDetailOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+}
+
+.pageDetailOverlay__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 4, 15, 0.6);
+}
+
+.pageDetail {
+  position: absolute;
+  inset: 3vh 4vw;
+  overflow-y: auto;
+  background: linear-gradient(165deg, var(--color-page-bg-start) 0%, var(--color-page-bg-end) 100%);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-6);
+}
+
 .pageDetail__editingBanner {
   background: rgba(156, 107, 255, 0.15);
   border: 1px solid var(--color-input-border-focus);
@@ -15,48 +42,9 @@
   margin-bottom: var(--space-5);
 }
 
-.pageDetail__backLink {
-  background: none;
-  border: none;
-  color: var(--color-text-muted);
-  font-size: 0.85rem;
-  font-family: inherit;
-  cursor: pointer;
-  padding: 4px 6px;
-  transition: color var(--transition-fast);
-}
-
-.pageDetail__backLink:hover {
-  color: var(--color-text-heading);
-}
-
 .pageDetail__actions {
   display: flex;
   gap: var(--space-2);
-}
-
-.pageDetail__actionButton {
-  border: none;
-  border-radius: var(--radius-md);
-  padding: 9px 20px;
-  background: var(--color-primary-gradient);
-  color: #ffffff;
-  font-weight: 600;
-  font-size: 0.85rem;
-  font-family: inherit;
-  cursor: pointer;
-  transition: transform var(--transition-fast), filter var(--transition-fast);
-}
-
-.pageDetail__actionButton:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.08);
-}
-
-.pageDetail__actionButton--ghost {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid var(--color-input-border);
-  box-shadow: none;
 }
 
 .pageDetail__body {
