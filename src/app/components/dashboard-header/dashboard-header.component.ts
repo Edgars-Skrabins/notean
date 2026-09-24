@@ -5,6 +5,7 @@ import {PHRASES} from "@config/phrases";
 import {NavigationService} from "@services/navigation.service";
 import {AuthService} from "@services/auth.service";
 import {TeamService} from "@services/team.service";
+import {LanguageSwitcherComponent} from "@components/language-switcher/language-switcher.component";
 import {AppRoutes} from "../../app/app-routes.enum";
 
 @Component({
@@ -12,7 +13,8 @@ import {AppRoutes} from "../../app/app-routes.enum";
   standalone: true,
   imports: [
     TranslateModule,
-    NgIf
+    NgIf,
+    LanguageSwitcherComponent
   ],
   templateUrl: './dashboard-header.component.html',
   styleUrl: './dashboard-header.component.css'

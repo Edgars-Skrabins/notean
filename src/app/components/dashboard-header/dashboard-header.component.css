@@ -23,6 +23,12 @@
   letter-spacing: -0.01em;
 }
 
+.dashboardHeader__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
 .dashboardHeader__menu {
   position: relative;
 }
