@@ -9,4 +9,5 @@
 >
   <button class="authButton" (click)="handleGoToCreateTeam()">{{ PHRASES.CREATE_TEAM | translate }}</button>
   <button class="authButton authButton--secondary" (click)="handleGoToJoinTeam()">{{ PHRASES.JOIN_TEAM | translate }}</button>
+  <button class="authButton authButton--secondary" *ngIf="showSwitchTeam" (click)="handleGoToSwitchTeam()">{{ PHRASES.SWITCH_TEAMS | translate }}</button>
 </app-auth-card>

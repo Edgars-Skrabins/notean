@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {TranslateModule} from "@ngx-translate/core";
 import {NgIf} from "@angular/common";
 import {NavigationService} from "@services/navigation.service";
@@ -18,8 +18,10 @@ import {AuthCardComponent} from "@components/auth-card/auth-card.component";
   templateUrl: './team-selection.component.html',
   styleUrl: './team-selection.component.css'
 })
-export class TeamSelectionComponent {
+export class TeamSelectionComponent implements OnInit {
   protected readonly PHRASES = PHRASES;
+
+  teamCount = 0;
 
   constructor(
     private navigationService: NavigationService,
@@ -31,12 +33,26 @@ export class TeamSelectionComponent {
     return this.teamService.getCurrentTeam() !== null;
   }
 
+  get showSwitchTeam(): boolean {
+    return this.teamCount > 1;
+  }
+
+  ngOnInit() {
+    this.teamService.fetchMyTeams().then((teams) => {
+      this.teamCount = teams.length;
+    });
+  }
+
   handleGoToCreateTeam() {
     this.navigationService.navigate(AppRoutes.CREATE_TEAM);
   }
 
   handleGoToJoinTeam() {
     this.navigationService.navigate(AppRoutes.JOIN_TEAM);
+  }
+
+  handleGoToSwitchTeam() {
+    this.navigationService.navigate(AppRoutes.SWITCH_TEAM);
   }
 
   handleGoBack() {
