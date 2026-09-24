@@ -7,23 +7,24 @@
       (ngModelChange)="handleSearchChange()"
       [placeholder]="PHRASES.SEARCH_DIAGRAMS | translate"
     />
-    <button type="button" class="diagramsView__newButton" (click)="handleCreateDiagram()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-      </svg>
-      {{ PHRASES.NEW_DIAGRAM | translate }}
-    </button>
+    <app-button variant="ghost" icon="folder-plus" (pressed)="handleCreateFolder(null)">{{ PHRASES.NEW_FOLDER | translate }}</app-button>
+    <app-button variant="primary" icon="plus" (pressed)="handleCreateDiagram(null)">{{ PHRASES.NEW_DIAGRAM | translate }}</app-button>
   </div>
 
   <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
 
-  <div class="diagramsView__list" *ngIf="!isLoading && diagrams.length">
-    <button type="button" class="diagramsView__row" *ngFor="let diagram of diagrams" (click)="handleOpenDiagram(diagram)">
-      <span class="diagramsView__rowTitle">{{ diagram.title }}</span>
-      <span class="diagramsView__rowMeta">{{ diagram.creator.username }} &middot; {{ diagram.updatedAt | date }}</span>
-    </button>
-  </div>
+  <app-item-tree
+    *ngIf="!isLoading"
+    [folders]="folders"
+    [items]="items"
+    [itemLabel]="PHRASES.NEW_DIAGRAM | translate"
+    (openItem)="handleOpenDiagram($event)"
+    (createFolder)="handleCreateFolder($event.parentId)"
+    (createItem)="handleCreateDiagram($event.parentId)"
+    (deleteFolder)="handleDeleteFolder($event)"
+    (moveItem)="handleMoveItem($event)"
+    (moveFolder)="handleMoveFolder($event)"
+  ></app-item-tree>
 
-  <p class="dashboardStub__body" *ngIf="!isLoading && !diagrams.length">{{ PHRASES.NO_DIAGRAMS_YET | translate }}</p>
+  <p class="dashboardStub__body" *ngIf="!isLoading && !folders.length && !items.length">{{ PHRASES.NO_DIAGRAMS_YET | translate }}</p>
 </div>

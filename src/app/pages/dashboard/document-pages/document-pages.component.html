@@ -7,30 +7,24 @@
       (ngModelChange)="handleSearchChange()"
       [placeholder]="PHRASES.SEARCH_PAGES | translate"
     />
-    <button type="button" class="pagesView__newButton" (click)="handleCreatePage()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-      </svg>
-      {{ PHRASES.NEW_FOLDER | translate }}
-    </button>
-    <button type="button" class="pagesView__newButton" (click)="handleCreatePage()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="12" y1="5" x2="12" y2="19"></line>
-        <line x1="5" y1="12" x2="19" y2="12"></line>
-      </svg>
-      {{ PHRASES.NEW_PAGE | translate }}
-    </button>
+    <app-button variant="ghost" icon="folder-plus" (pressed)="handleCreateFolder(null)">{{ PHRASES.NEW_FOLDER | translate }}</app-button>
+    <app-button variant="primary" icon="plus" (pressed)="handleCreatePage(null)">{{ PHRASES.NEW_PAGE | translate }}</app-button>
   </div>
 
   <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
 
-  <div class="pagesView__list" *ngIf="!isLoading && pages.length">
-    <button type="button" class="pagesView__row" *ngFor="let page of pages" (click)="handleOpenPage(page)">
-      <span class="pagesView__rowTitle">{{ page.title }}</span>
-      <span class="pagesView__rowMeta">{{ page.creator.username }} &middot; {{ page.updatedAt | date }}</span>
-    </button>
-  </div>
+  <app-item-tree
+    *ngIf="!isLoading"
+    [folders]="folders"
+    [items]="items"
+    [itemLabel]="PHRASES.NEW_PAGE | translate"
+    (openItem)="handleOpenPage($event)"
+    (createFolder)="handleCreateFolder($event.parentId)"
+    (createItem)="handleCreatePage($event.parentId)"
+    (deleteFolder)="handleDeleteFolder($event)"
+    (moveItem)="handleMoveItem($event)"
+    (moveFolder)="handleMoveFolder($event)"
+  ></app-item-tree>
 
-  <p class="dashboardStub__body" *ngIf="!isLoading && !pages.length">{{ PHRASES.NO_PAGES_YET | translate }}</p>
+  <p class="dashboardStub__body" *ngIf="!isLoading && !folders.length && !items.length">{{ PHRASES.NO_PAGES_YET | translate }}</p>
 </div>
