@@ -1,0 +1,58 @@
+<div class="flowchartEditor">
+  <div class="flowchartEditor__toolbar" *ngIf="editable">
+    <button type="button" class="flowchartEditor__toolButton" [title]="PHRASES.FLOWCHART_START_END | translate" (click)="handleAddShape('flow-terminator')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <ellipse cx="12" cy="12" rx="9" ry="6"></ellipse>
+      </svg>
+    </button>
+    <button type="button" class="flowchartEditor__toolButton" [title]="PHRASES.FLOWCHART_PROCESS | translate" (click)="handleAddShape('flow-process')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="4" y="6" width="16" height="12" rx="3"></rect>
+      </svg>
+    </button>
+    <button type="button" class="flowchartEditor__toolButton" [title]="PHRASES.FLOWCHART_DECISION | translate" (click)="handleAddShape('flow-decision')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="12,3 21,12 12,21 3,12"></polygon>
+      </svg>
+    </button>
+    <button type="button" class="flowchartEditor__toolButton" [title]="PHRASES.FLOWCHART_INPUT_OUTPUT | translate" (click)="handleAddShape('flow-io')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="7,6 21,6 17,18 3,18"></polygon>
+      </svg>
+    </button>
+
+    <span class="flowchartEditor__toolbarDivider"></span>
+
+    <button type="button" class="flowchartEditor__toolButton" [title]="PHRASES.FLOWCHART_DELETE_SELECTED | translate" (click)="handleDeleteSelected()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="3 6 5 6 21 6"></polyline>
+        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+        <path d="M10 11v6M14 11v6M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+      </svg>
+    </button>
+
+    <button type="button" class="flowchartEditor__toolButton" [title]="PHRASES.FLOWCHART_ZOOM_TO_FIT | translate" (click)="handleZoomToFit()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"></path>
+      </svg>
+    </button>
+  </div>
+
+  <div class="flowchartEditor__canvasWrap">
+    <div #canvasHost class="flowchartEditor__canvas"></div>
+
+    <p class="flowchartEditor__emptyHint" *ngIf="isEmpty && editable">{{ PHRASES.FLOWCHART_EMPTY_HINT | translate }}</p>
+
+    <input
+      *ngIf="editingLabel"
+      class="flowchartEditor__labelInput"
+      [style.top.px]="editingLabel.top"
+      [style.left.px]="editingLabel.left"
+      [style.width.px]="editingLabel.width"
+      [(ngModel)]="editingLabel.value"
+      (blur)="handleLabelInputBlur()"
+      (keydown)="handleLabelInputKeydown($event)"
+      autofocus
+    />
+  </div>
+</div>

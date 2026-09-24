@@ -1,0 +1,68 @@
+<div class="diagramDetail" *ngIf="diagram">
+  <div class="diagramDetail__editingBanner" *ngIf="showEditingBanner">
+    <strong>{{ editingUser?.username }}</strong> {{ PHRASES.BEING_EDITED_BY | translate }}
+  </div>
+
+  <div class="diagramDetail__header">
+    <button type="button" class="diagramDetail__backLink" (click)="handleGoBack()">&larr; {{ PHRASES.BACK_TO_DIAGRAMS | translate }}</button>
+
+    <div class="diagramDetail__actions" *ngIf="mode === 'view'">
+      <button type="button" class="diagramDetail__actionButton diagramDetail__actionButton--ghost" (click)="handleDelete()">{{ PHRASES.DELETE | translate }}</button>
+      <button type="button" class="diagramDetail__actionButton" (click)="handleEdit()">{{ PHRASES.EDIT | translate }}</button>
+    </div>
+    <div class="diagramDetail__actions" *ngIf="mode === 'edit'">
+      <button type="button" class="diagramDetail__actionButton diagramDetail__actionButton--ghost" (click)="handleCancel()">{{ PHRASES.CANCEL | translate }}</button>
+      <button type="button" class="diagramDetail__actionButton" (click)="handleSave()">{{ PHRASES.SAVE | translate }}</button>
+    </div>
+  </div>
+
+  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+
+  <div class="diagramDetail__body">
+    <div class="diagramDetail__main">
+      <ng-container *ngIf="mode === 'view'">
+        <h1 class="diagramDetail__title">{{ diagram.title }}</h1>
+        <app-flowchart-editor [content]="diagram.content" [editable]="false"></app-flowchart-editor>
+      </ng-container>
+
+      <ng-container *ngIf="mode === 'edit'">
+        <input
+          type="text"
+          class="diagramDetail__titleInput"
+          [(ngModel)]="draftTitle"
+          [placeholder]="PHRASES.PAGE_TITLE_PLACEHOLDER | translate"
+        />
+        <app-flowchart-editor
+          [content]="draftContent"
+          [editable]="true"
+          (contentChange)="handleContentChange($event)"
+        ></app-flowchart-editor>
+      </ng-container>
+    </div>
+
+    <div class="diagramDetail__sidebar">
+      <div class="diagramDetail__sidebarSection">
+        <h3 class="diagramDetail__sidebarLabel">{{ PHRASES.OWNER | translate }}</h3>
+        <p class="diagramDetail__sidebarValue">{{ diagram.creator.username }}</p>
+      </div>
+
+      <div class="diagramDetail__sidebarSection">
+        <h3 class="diagramDetail__sidebarLabel">{{ PHRASES.CONTRIBUTORS | translate }}</h3>
+        <p class="diagramDetail__sidebarValue" *ngIf="diagram.contributors.length">
+          <span *ngFor="let contributor of diagram.contributors; let last = last">{{ contributor.username }}{{ last ? '' : ', ' }}</span>
+        </p>
+        <p class="diagramDetail__sidebarValue diagramDetail__sidebarValue--muted" *ngIf="!diagram.contributors.length">&mdash;</p>
+      </div>
+
+      <div class="diagramDetail__sidebarSection">
+        <h3 class="diagramDetail__sidebarLabel">{{ PHRASES.CREATED | translate }}</h3>
+        <p class="diagramDetail__sidebarValue">{{ diagram.createdAt | date }}</p>
+      </div>
+
+      <div class="diagramDetail__sidebarSection">
+        <h3 class="diagramDetail__sidebarLabel">{{ PHRASES.LAST_EDITED | translate }}</h3>
+        <p class="diagramDetail__sidebarValue">{{ diagram.updatedAt | date }}</p>
+      </div>
+    </div>
+  </div>
+</div>

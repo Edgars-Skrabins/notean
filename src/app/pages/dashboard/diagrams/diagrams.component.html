@@ -1,4 +1,29 @@
-<div class="dashboardStub">
-  <h2 class="dashboardStub__title">{{ PHRASES.DIAGRAMS | translate }}</h2>
-  <p class="dashboardStub__body">{{ PHRASES.COMING_SOON | translate }}</p>
+<div class="diagramsView">
+  <div class="diagramsView__toolbar">
+    <input
+      type="text"
+      class="diagramsView__search"
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="handleSearchChange()"
+      [placeholder]="PHRASES.SEARCH_DIAGRAMS | translate"
+    />
+    <button type="button" class="diagramsView__newButton" (click)="handleCreateDiagram()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"></line>
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+      </svg>
+      {{ PHRASES.NEW_DIAGRAM | translate }}
+    </button>
+  </div>
+
+  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+
+  <div class="diagramsView__list" *ngIf="!isLoading && diagrams.length">
+    <button type="button" class="diagramsView__row" *ngFor="let diagram of diagrams" (click)="handleOpenDiagram(diagram)">
+      <span class="diagramsView__rowTitle">{{ diagram.title }}</span>
+      <span class="diagramsView__rowMeta">{{ diagram.creator.username }} &middot; {{ diagram.updatedAt | date }}</span>
+    </button>
+  </div>
+
+  <p class="dashboardStub__body" *ngIf="!isLoading && !diagrams.length">{{ PHRASES.NO_DIAGRAMS_YET | translate }}</p>
 </div>

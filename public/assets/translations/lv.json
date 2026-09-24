@@ -58,5 +58,18 @@
   "BACK_TO_PAGES": "Atpakaļ uz lapām",
   "BACK_TO_DASHBOARD": "Atpakaļ uz sākumpaneli",
   "COLLAPSE_SIDEBAR": "Sakļaut sānjoslu",
-  "EXPAND_SIDEBAR": "Izvērst sānjoslu"
+  "EXPAND_SIDEBAR": "Izvērst sānjoslu",
+  "SEARCH_DIAGRAMS": "Meklēt diagrammas pēc nosaukuma",
+  "NEW_DIAGRAM": "Jauna diagramma",
+  "NO_DIAGRAMS_YET": "Vēl nav diagrammu — izveidojiet vienu, lai sāktu.",
+  "UNTITLED_DIAGRAM": "Bez nosaukuma",
+  "CONFIRM_DELETE_DIAGRAM": "Dzēst šo diagrammu? To nevar atsaukt.",
+  "BACK_TO_DIAGRAMS": "Atpakaļ uz diagrammām",
+  "FLOWCHART_START_END": "Sākums/Beigas",
+  "FLOWCHART_PROCESS": "Process",
+  "FLOWCHART_DECISION": "Lēmums",
+  "FLOWCHART_INPUT_OUTPUT": "Ievade/Izvade",
+  "FLOWCHART_DELETE_SELECTED": "Dzēst atlasīto",
+  "FLOWCHART_ZOOM_TO_FIT": "Ietilpināt skatā",
+  "FLOWCHART_EMPTY_HINT": "Pievienojiet figūru no rīkjoslas, lai sāktu."
 }
