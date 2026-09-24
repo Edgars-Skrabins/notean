@@ -1,20 +1,31 @@
 .manageTeam {
+  width: 560px;
+  max-width: calc(100vw - 48px);
+  box-sizing: border-box;
   color: var(--color-text-heading);
+  background: linear-gradient(160deg, var(--color-card-bg) 0%, var(--color-card-bg-alt) 100%);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 56px 48px 64px;
 }
 
 .manageTeam__title {
-  margin: 0 0 var(--space-5);
-  font-size: 1.4rem;
+  margin: 0 0 var(--space-7);
+  font-size: 1.6rem;
   font-weight: 700;
 }
 
 .manageTeam__section {
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-7);
+}
+
+.manageTeam__section:last-child {
+  margin-bottom: 0;
 }
 
 .manageTeam__sectionTitle {
-  margin: 0 0 var(--space-3);
-  font-size: 1rem;
+  margin: 0 0 var(--space-4);
+  font-size: 1.05rem;
   font-weight: 600;
   color: var(--color-text-heading);
 }
@@ -22,7 +33,7 @@
 .manageTeam__memberList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-2);
+  gap: var(--space-3);
 }
 
 .manageTeam__memberRow {
@@ -33,7 +44,7 @@
   background: var(--color-input-bg);
   border: 1px solid var(--color-input-border);
   border-radius: var(--radius-md);
-  padding: 14px 18px;
+  padding: 16px 20px;
 }
 
 .manageTeam__memberName {
@@ -50,7 +61,7 @@
 .manageTeam__deleteButton {
   border: 1px solid rgba(255, 87, 87, 0.4);
   border-radius: var(--radius-md);
-  padding: 11px 18px;
+  padding: 14px 20px;
   background: rgba(255, 87, 87, 0.14);
   color: #ff9d9d;
   font-weight: 600;
@@ -62,4 +73,11 @@
 
 .manageTeam__deleteButton:hover {
   background: rgba(255, 87, 87, 0.22);
+}
+
+@media (max-width: 480px) {
+  .manageTeam {
+    width: 100%;
+    padding: 40px 24px 48px;
+  }
 }
