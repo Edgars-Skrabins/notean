@@ -18,14 +18,15 @@
       >
         <app-icon-button
           icon="chevron-right"
-          [tooltip]="folder.title"
+          [tooltip]="(isExpanded(folder.id) ? PHRASES.COLLAPSE_FOLDER : PHRASES.EXPAND_FOLDER) | translate"
           [size]="28"
+          [disabled]="!hasContents(folder)"
           class="itemTree__chevron"
           [class.itemTree__chevron--expanded]="isExpanded(folder.id)"
-          (pressed)="toggleExpand(folder.id)"
+          (pressed)="toggleExpand(folder)"
         ></app-icon-button>
 
-        <button type="button" class="itemTree__rowMain" (click)="toggleExpand(folder.id)">
+        <button type="button" class="itemTree__rowMain" (click)="toggleExpand(folder)">
           <app-icon name="folder" class="itemTree__rowIcon"></app-icon>
           <span class="itemTree__rowTitle">{{ folder.title }}</span>
         </button>

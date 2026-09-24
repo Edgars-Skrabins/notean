@@ -92,11 +92,19 @@ export class ItemTreeComponent implements OnChanges {
     return this.expandedFolderIds.has(folderId);
   }
 
-  toggleExpand(folderId: number) {
-    if (this.expandedFolderIds.has(folderId)) {
-      this.expandedFolderIds.delete(folderId);
+  hasContents(folder: BuiltFolder): boolean {
+    return folder.children.length > 0 || folder.items.length > 0;
+  }
+
+  toggleExpand(folder: BuiltFolder) {
+    if (!this.hasContents(folder)) {
+      return;
+    }
+
+    if (this.expandedFolderIds.has(folder.id)) {
+      this.expandedFolderIds.delete(folder.id);
     } else {
-      this.expandedFolderIds.add(folderId);
+      this.expandedFolderIds.add(folder.id);
     }
   }
 

@@ -49,6 +49,8 @@
   "DELETE_FOLDER": "Delete folder",
   "DELETE_FOLDER_CONFIRM_TITLE": "Delete",
   "DELETE_FOLDER_KEEP_CONTENTS_CHECKBOX": "Delete nested contents",
+  "EXPAND_FOLDER": "Expand folder",
+  "COLLAPSE_FOLDER": "Collapse folder",
   "PAGE_TITLE_PLACEHOLDER": "Page title",
   "EDIT": "Edit",
   "DELETE": "Delete",

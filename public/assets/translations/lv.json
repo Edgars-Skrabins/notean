@@ -49,6 +49,8 @@
   "DELETE_FOLDER": "Dzēst mapi",
   "DELETE_FOLDER_CONFIRM_TITLE": "Dzēst",
   "DELETE_FOLDER_KEEP_CONTENTS_CHECKBOX": "Dzēst arī saturu",
+  "EXPAND_FOLDER": "Izvērst mapi",
+  "COLLAPSE_FOLDER": "Sakļaut mapi",
   "PAGE_TITLE_PLACEHOLDER": "Lapas nosaukums",
   "EDIT": "Rediģēt",
   "DELETE": "Dzēst",
