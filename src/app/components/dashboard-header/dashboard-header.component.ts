@@ -50,12 +50,12 @@ export class DashboardHeaderComponent {
 
   handleGoToProfile() {
     this.closeMenu();
-    this.navigationService.navigate(AppRoutes.DASHBOARD, AppRoutes.PROFILE);
+    this.navigationService.navigate(AppRoutes.PROFILE);
   }
 
   handleGoToSettings() {
     this.closeMenu();
-    this.navigationService.navigate(AppRoutes.DASHBOARD, AppRoutes.SETTINGS);
+    this.navigationService.navigate(AppRoutes.SETTINGS);
   }
 
   handleGoToTeams() {

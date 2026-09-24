@@ -24,6 +24,8 @@ export const routes: Routes = [
   {path: AppRoutes.TEAM_SELECTION, component: TeamSelectionComponent, canActivate: [authGuard]},
   {path: AppRoutes.CREATE_TEAM, component: CreateTeamComponent, canActivate: [authGuard]},
   {path: AppRoutes.JOIN_TEAM, component: JoinTeamComponent, canActivate: [authGuard]},
+  {path: AppRoutes.PROFILE, component: ProfileComponent, canActivate: [authGuard, teamGuard]},
+  {path: AppRoutes.SETTINGS, component: SettingsComponent, canActivate: [authGuard, teamGuard]},
   {
     path: AppRoutes.DASHBOARD,
     component: DashboardComponent,
@@ -36,8 +38,6 @@ export const routes: Routes = [
       {path: `${AppRoutes.DOCUMENT_PAGES}/:id`, component: PageDetailComponent},
       {path: AppRoutes.DIAGRAMS, component: DiagramsComponent},
       {path: AppRoutes.KANBAN_BOARDS, component: KanbanBoardsComponent},
-      {path: AppRoutes.PROFILE, component: ProfileComponent},
-      {path: AppRoutes.SETTINGS, component: SettingsComponent},
     ],
   },
 ];
