@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {DatePipe, NgFor, NgIf} from '@angular/common';
-import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {DiagramService} from "@services/diagram.service";
 import {DiagramEditingService} from "@services/diagram-editing.service";
@@ -14,6 +14,7 @@ import {DiagramDetail, DiagramUser} from "@models/diagram.model";
 import {FlowchartEditorComponent} from "@components/flowchart-editor/flowchart-editor.component";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {ButtonComponent} from "@components/button/button.component";
+import {ConfirmDeleteDialogComponent} from "@components/confirm-delete-dialog/confirm-delete-dialog.component";
 
 @Component({
   selector: 'app-diagram-detail',
@@ -26,7 +27,8 @@ import {ButtonComponent} from "@components/button/button.component";
     TranslateModule,
     FlowchartEditorComponent,
     IconButtonComponent,
-    ButtonComponent
+    ButtonComponent,
+    ConfirmDeleteDialogComponent
   ],
   templateUrl: './diagram-detail.component.html',
   styleUrl: './diagram-detail.component.css'
@@ -41,6 +43,7 @@ export class DiagramDetailComponent implements OnInit, OnDestroy {
   editingUser: DiagramUser | null = null;
   isLoading = true;
   alertMessage = '';
+  showDeleteConfirm = false;
 
   private teamCode: string;
   private diagramId = 0;
@@ -51,8 +54,7 @@ export class DiagramDetailComponent implements OnInit, OnDestroy {
     private diagramEditingService: DiagramEditingService,
     private teamService: TeamService,
     private authService: AuthService,
-    private navigationService: NavigationService,
-    private translateService: TranslateService
+    private navigationService: NavigationService
   ) {
     this.teamCode = this.teamService.getCurrentTeam()!.code;
   }
@@ -96,7 +98,20 @@ export class DiagramDetailComponent implements OnInit, OnDestroy {
   }
 
   handleDelete() {
-    if (!this.diagram || !confirm(this.translateService.instant(PHRASES.CONFIRM_DELETE_DIAGRAM))) {
+    if (!this.diagram) {
+      return;
+    }
+    this.showDeleteConfirm = true;
+  }
+
+  handleCancelDelete() {
+    this.showDeleteConfirm = false;
+  }
+
+  handleConfirmDelete() {
+    this.showDeleteConfirm = false;
+
+    if (!this.diagram) {
       return;
     }
 

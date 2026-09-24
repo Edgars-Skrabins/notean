@@ -33,3 +33,10 @@
     <button type="button" class="manageTeam__deleteButton" (click)="handleDeleteTeam()">{{ PHRASES.DELETE_TEAM | translate }}</button>
   </section>
 </div>
+
+<app-confirm-delete-dialog
+  *ngIf="showDeleteConfirm"
+  [message]="PHRASES.CONFIRM_DELETE_TEAM | translate"
+  (confirmed)="handleConfirmDeleteTeam()"
+  (cancelled)="handleCancelDeleteTeam()"
+></app-confirm-delete-dialog>

@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {DatePipe, NgFor, NgIf} from '@angular/common';
-import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {PageService} from "@services/page.service";
 import {PageEditingService} from "@services/page-editing.service";
@@ -14,6 +14,7 @@ import {PageDetail, PageUser} from "@models/page.model";
 import {RichTextEditorComponent} from "@components/rich-text-editor/rich-text-editor.component";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {ButtonComponent} from "@components/button/button.component";
+import {ConfirmDeleteDialogComponent} from "@components/confirm-delete-dialog/confirm-delete-dialog.component";
 
 @Component({
   selector: 'app-page-detail',
@@ -26,7 +27,8 @@ import {ButtonComponent} from "@components/button/button.component";
     TranslateModule,
     RichTextEditorComponent,
     IconButtonComponent,
-    ButtonComponent
+    ButtonComponent,
+    ConfirmDeleteDialogComponent
   ],
   templateUrl: './page-detail.component.html',
   styleUrl: './page-detail.component.css'
@@ -41,6 +43,7 @@ export class PageDetailComponent implements OnInit, OnDestroy {
   editingUser: PageUser | null = null;
   isLoading = true;
   alertMessage = '';
+  showDeleteConfirm = false;
 
   private teamCode: string;
   private pageId = 0;
@@ -51,8 +54,7 @@ export class PageDetailComponent implements OnInit, OnDestroy {
     private pageEditingService: PageEditingService,
     private teamService: TeamService,
     private authService: AuthService,
-    private navigationService: NavigationService,
-    private translateService: TranslateService
+    private navigationService: NavigationService
   ) {
     this.teamCode = this.teamService.getCurrentTeam()!.code;
   }
@@ -96,7 +98,20 @@ export class PageDetailComponent implements OnInit, OnDestroy {
   }
 
   handleDelete() {
-    if (!this.page || !confirm(this.translateService.instant(PHRASES.CONFIRM_DELETE_PAGE))) {
+    if (!this.page) {
+      return;
+    }
+    this.showDeleteConfirm = true;
+  }
+
+  handleCancelDelete() {
+    this.showDeleteConfirm = false;
+  }
+
+  handleConfirmDelete() {
+    this.showDeleteConfirm = false;
+
+    if (!this.page) {
       return;
     }
 

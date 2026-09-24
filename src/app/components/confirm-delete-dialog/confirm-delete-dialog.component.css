@@ -1,0 +1,42 @@
+:host {
+  display: block;
+}
+
+.confirmDeleteDialogOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.confirmDeleteDialogOverlay__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 4, 15, 0.6);
+}
+
+.confirmDeleteDialog {
+  position: relative;
+  width: 360px;
+  max-width: calc(100vw - 48px);
+  background: linear-gradient(160deg, var(--color-card-bg) 0%, var(--color-card-bg-alt) 100%);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-5);
+}
+
+.confirmDeleteDialog__message {
+  margin: 0 0 var(--space-5);
+  color: var(--color-text-heading);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.confirmDeleteDialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}

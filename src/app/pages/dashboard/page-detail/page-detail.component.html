@@ -69,4 +69,11 @@
       </div>
     </div>
   </div>
+
+  <app-confirm-delete-dialog
+    *ngIf="showDeleteConfirm"
+    [message]="PHRASES.CONFIRM_DELETE_PAGE | translate"
+    (confirmed)="handleConfirmDelete()"
+    (cancelled)="handleCancelDelete()"
+  ></app-confirm-delete-dialog>
 </div>

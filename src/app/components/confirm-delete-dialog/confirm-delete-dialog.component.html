@@ -1,0 +1,12 @@
+<div class="confirmDeleteDialogOverlay">
+  <div class="confirmDeleteDialogOverlay__backdrop" (click)="handleCancel()"></div>
+
+  <div class="confirmDeleteDialog">
+    <p class="confirmDeleteDialog__message">{{ message }}</p>
+
+    <div class="confirmDeleteDialog__actions">
+      <app-button variant="ghost" (pressed)="handleCancel()">{{ PHRASES.CANCEL | translate }}</app-button>
+      <app-button variant="danger" (pressed)="handleConfirm()">{{ PHRASES.DELETE | translate }}</app-button>
+    </div>
+  </div>
+</div>
