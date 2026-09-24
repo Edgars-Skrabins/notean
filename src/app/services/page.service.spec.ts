@@ -13,6 +13,7 @@ describe('mapPageSummary', () => {
     const result = mapPageSummary({
       id: 1,
       title: 'My Page',
+      folder_id: null,
       creator: {id: 2, username: 'bob'},
       created_at: '2024-01-01T00:00:00Z',
       updated_at: '2024-01-02T00:00:00Z',
@@ -21,6 +22,7 @@ describe('mapPageSummary', () => {
     expect(result).toEqual({
       id: 1,
       title: 'My Page',
+      folderId: null,
       creator: {id: 2, username: 'bob'},
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-02T00:00:00Z',
@@ -32,6 +34,7 @@ describe('mapPageDetail', () => {
   const baseRaw = {
     id: 1,
     title: 'My Page',
+    folder_id: null,
     creator: {id: 2, username: 'bob'},
     created_at: '2024-01-01T00:00:00Z',
     updated_at: '2024-01-02T00:00:00Z',

@@ -18,6 +18,7 @@ interface RawPageUser {
 interface RawPageSummary {
   id: number;
   title: string;
+  folder_id: number | null;
   creator: RawPageUser;
   created_at: string;
   updated_at: string;
@@ -40,6 +41,7 @@ export function mapPageSummary(raw: RawPageSummary): PageSummary {
   return {
     id: raw.id,
     title: raw.title,
+    folderId: raw.folder_id,
     creator: mapPageUser(raw.creator),
     createdAt: raw.created_at,
     updatedAt: raw.updated_at,
@@ -104,6 +106,17 @@ export class PageService {
       })
       .catch((error) => {
         const statusMessage = error.response?.data?.statusMessage ?? 'Failed to save page';
+        return {success: false, statusMessage} satisfies PageResponse;
+      });
+  }
+
+  async moveToFolder(teamCode: string, id: number, folderId: number | null): Promise<PageResponse> {
+    return axiosInstance.patch(`${this.pagesUrl(teamCode)}/${id}`, {page: {folder_id: folderId}})
+      .then((response) => {
+        return {success: true, page: mapPageDetail(response.data.page)} satisfies PageResponse;
+      })
+      .catch((error) => {
+        const statusMessage = error.response?.data?.statusMessage ?? 'Failed to move page';
         return {success: false, statusMessage} satisfies PageResponse;
       });
   }

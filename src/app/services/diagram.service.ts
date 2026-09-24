@@ -18,6 +18,7 @@ interface RawDiagramUser {
 interface RawDiagramSummary {
   id: number;
   title: string;
+  folder_id: number | null;
   creator: RawDiagramUser;
   created_at: string;
   updated_at: string;
@@ -40,6 +41,7 @@ export function mapDiagramSummary(raw: RawDiagramSummary): DiagramSummary {
   return {
     id: raw.id,
     title: raw.title,
+    folderId: raw.folder_id,
     creator: mapDiagramUser(raw.creator),
     createdAt: raw.created_at,
     updatedAt: raw.updated_at,
@@ -104,6 +106,17 @@ export class DiagramService {
       })
       .catch((error) => {
         const statusMessage = error.response?.data?.statusMessage ?? 'Failed to save diagram';
+        return {success: false, statusMessage} satisfies DiagramResponse;
+      });
+  }
+
+  async moveToFolder(teamCode: string, id: number, folderId: number | null): Promise<DiagramResponse> {
+    return axiosInstance.patch(`${this.diagramsUrl(teamCode)}/${id}`, {diagram: {folder_id: folderId}})
+      .then((response) => {
+        return {success: true, diagram: mapDiagramDetail(response.data.diagram)} satisfies DiagramResponse;
+      })
+      .catch((error) => {
+        const statusMessage = error.response?.data?.statusMessage ?? 'Failed to move diagram';
         return {success: false, statusMessage} satisfies DiagramResponse;
       });
   }

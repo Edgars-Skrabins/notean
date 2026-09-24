@@ -6,6 +6,7 @@ export interface PageUser {
 export interface PageSummary {
   id: number;
   title: string;
+  folderId: number | null;
   creator: PageUser;
   createdAt: string;
   updatedAt: string;

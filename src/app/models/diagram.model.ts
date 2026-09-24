@@ -6,6 +6,7 @@ export interface DiagramUser {
 export interface DiagramSummary {
   id: number;
   title: string;
+  folderId: number | null;
   creator: DiagramUser;
   createdAt: string;
   updatedAt: string;
