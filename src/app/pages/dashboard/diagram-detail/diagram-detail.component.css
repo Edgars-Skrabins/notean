@@ -17,6 +17,9 @@
 .diagramDetail {
   position: absolute;
   inset: 3vh 4vw;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
   overflow-y: auto;
   background: linear-gradient(165deg, var(--color-page-bg-start) 0%, var(--color-page-bg-end) 100%);
   border: 1px solid var(--color-input-border);
@@ -49,16 +52,24 @@
 
 .diagramDetail__body {
   display: flex;
+  flex: 1;
+  min-height: 0;
   gap: var(--space-6);
-  align-items: flex-start;
+  align-items: stretch;
 }
 
 .diagramDetail__main {
   flex: 1;
   min-width: 0;
+  min-height: 0;
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
+}
+
+.diagramDetail__main app-flowchart-editor {
+  flex: 1;
+  min-height: 0;
 }
 
 .diagramDetail__title {
