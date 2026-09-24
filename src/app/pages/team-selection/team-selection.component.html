@@ -1,7 +1,13 @@
+<button type="button" class="pageBackButton" *ngIf="hasTeam" (click)="handleGoBack()">
+  <span class="pageBackButton__arrow" aria-hidden="true">&larr;</span>
+  {{ PHRASES.BACK_TO_DASHBOARD | translate }}
+</button>
+
 <app-auth-card
   [title]="PHRASES.TEAM_SELECTION_PROMPT | translate"
   [subtitle]="PHRASES.TEAM_SELECTION_SUBTITLE | translate"
 >
   <button class="authButton" (click)="handleGoToCreateTeam()">{{ PHRASES.CREATE_TEAM | translate }}</button>
   <button class="authButton authButton--secondary" (click)="handleGoToJoinTeam()">{{ PHRASES.JOIN_TEAM | translate }}</button>
+  <button class="authButton authButton--secondary" *ngIf="showSwitchTeam" (click)="handleGoToSwitchTeam()">{{ PHRASES.SWITCH_TEAMS | translate }}</button>
 </app-auth-card>

@@ -16,4 +16,10 @@ import {PHRASES} from "@config/phrases";
 })
 export class DashboardSidebarComponent {
   protected readonly PHRASES = PHRASES;
+
+  collapsed = false;
+
+  toggleCollapsed() {
+    this.collapsed = !this.collapsed;
+  }
 }

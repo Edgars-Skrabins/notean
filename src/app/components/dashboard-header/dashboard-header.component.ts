@@ -5,6 +5,8 @@ import {PHRASES} from "@config/phrases";
 import {NavigationService} from "@services/navigation.service";
 import {AuthService} from "@services/auth.service";
 import {TeamService} from "@services/team.service";
+import {LanguageSwitcherComponent} from "@components/language-switcher/language-switcher.component";
+import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {AppRoutes} from "../../app/app-routes.enum";
 
 @Component({
@@ -12,7 +14,9 @@ import {AppRoutes} from "../../app/app-routes.enum";
   standalone: true,
   imports: [
     TranslateModule,
-    NgIf
+    NgIf,
+    LanguageSwitcherComponent,
+    IconButtonComponent
   ],
   templateUrl: './dashboard-header.component.html',
   styleUrl: './dashboard-header.component.css'
@@ -33,6 +37,11 @@ export class DashboardHeaderComponent {
     return this.authService.getCurrentUser()?.username ?? '';
   }
 
+  get showManageTeam(): boolean {
+    const role = this.teamService.getCurrentRole();
+    return role === 'admin' || role === 'owner';
+  }
+
   toggleMenu() {
     this.isMenuOpen = !this.isMenuOpen;
   }
@@ -50,17 +59,22 @@ export class DashboardHeaderComponent {
 
   handleGoToProfile() {
     this.closeMenu();
-    this.navigationService.navigate(AppRoutes.DASHBOARD, AppRoutes.PROFILE);
+    this.navigationService.navigate(AppRoutes.PROFILE);
   }
 
   handleGoToSettings() {
     this.closeMenu();
-    this.navigationService.navigate(AppRoutes.DASHBOARD, AppRoutes.SETTINGS);
+    this.navigationService.navigate(AppRoutes.SETTINGS);
   }
 
   handleGoToTeams() {
     this.closeMenu();
     this.navigationService.navigate(AppRoutes.TEAM_SELECTION);
+  }
+
+  handleGoToManageTeam() {
+    this.closeMenu();
+    this.navigationService.navigate(AppRoutes.MANAGE_TEAM);
   }
 
   handleLogout() {

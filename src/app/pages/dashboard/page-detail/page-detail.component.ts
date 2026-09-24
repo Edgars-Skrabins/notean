@@ -12,6 +12,8 @@ import {NavigationService} from "@services/navigation.service";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {PageDetail, PageUser} from "@models/page.model";
 import {RichTextEditorComponent} from "@components/rich-text-editor/rich-text-editor.component";
+import {IconButtonComponent} from "@components/icon-button/icon-button.component";
+import {ButtonComponent} from "@components/button/button.component";
 
 @Component({
   selector: 'app-page-detail',
@@ -22,7 +24,9 @@ import {RichTextEditorComponent} from "@components/rich-text-editor/rich-text-ed
     NgFor,
     DatePipe,
     TranslateModule,
-    RichTextEditorComponent
+    RichTextEditorComponent,
+    IconButtonComponent,
+    ButtonComponent
   ],
   templateUrl: './page-detail.component.html',
   styleUrl: './page-detail.component.css'

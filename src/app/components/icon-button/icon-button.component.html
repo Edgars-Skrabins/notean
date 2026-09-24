@@ -1,0 +1,10 @@
+<button
+  type="button"
+  class="iconButton iconButton--{{ variant }} iconButton--size{{ size }}"
+  [title]="tooltip"
+  [attr.aria-label]="tooltip"
+  [disabled]="disabled"
+  (click)="pressed.emit()"
+>
+  <app-icon [name]="icon" class="iconButton__icon"></app-icon>
+</button>

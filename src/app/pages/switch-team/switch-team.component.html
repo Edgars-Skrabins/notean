@@ -1,0 +1,26 @@
+<button type="button" class="pageBackButton" (click)="handleGoBack()">
+  <span class="pageBackButton__arrow" aria-hidden="true">&larr;</span>
+  {{ PHRASES.BACK_TO_DASHBOARD | translate }}
+</button>
+
+<div class="switchTeam">
+  <h2 class="switchTeam__title">{{ PHRASES.SWITCH_TEAMS | translate }}</h2>
+  <p class="switchTeam__subtitle">{{ PHRASES.SWITCH_TEAM_SUBTITLE | translate }}</p>
+
+  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+
+  <div class="switchTeam__list" *ngIf="!isLoading && teams.length">
+    <button
+      type="button"
+      class="switchTeam__row"
+      [class.switchTeam__row--active]="isActive(team)"
+      *ngFor="let team of teams"
+      (click)="handleSelectTeam(team)"
+    >
+      <span class="switchTeam__rowName">{{ team.name }}</span>
+      <span class="switchTeam__rowRole">{{ teamRoleLabel(team.role) | translate }}</span>
+    </button>
+  </div>
+
+  <p class="dashboardStub__body" *ngIf="!isLoading && !teams.length">{{ PHRASES.NO_OTHER_TEAMS | translate }}</p>
+</div>
