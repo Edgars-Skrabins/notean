@@ -56,5 +56,7 @@
   "CREATED": "Created",
   "LAST_EDITED": "Last edited",
   "BACK_TO_PAGES": "Back to pages",
-  "BACK_TO_DASHBOARD": "Back to dashboard"
+  "BACK_TO_DASHBOARD": "Back to dashboard",
+  "COLLAPSE_SIDEBAR": "Collapse sidebar",
+  "EXPAND_SIDEBAR": "Expand sidebar"
 }
