@@ -55,7 +55,6 @@
 
 .dashboardShell__body {
   position: relative;
-  z-index: 20;
   display: flex;
   flex: 1;
   min-height: 0;
