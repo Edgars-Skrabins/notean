@@ -1,0 +1,17 @@
+<div class="deleteFolderDialogOverlay">
+  <div class="deleteFolderDialogOverlay__backdrop" (click)="handleCancel()"></div>
+
+  <div class="deleteFolderDialog">
+    <h3 class="deleteFolderDialog__title">{{ PHRASES.DELETE_FOLDER_CONFIRM_TITLE | translate }} '{{ folderTitle }}'?</h3>
+
+    <label class="deleteFolderDialog__checkboxRow">
+      <input type="checkbox" [(ngModel)]="deleteNestedContents" />
+      {{ PHRASES.DELETE_FOLDER_KEEP_CONTENTS_CHECKBOX | translate }}
+    </label>
+
+    <div class="deleteFolderDialog__actions">
+      <app-button variant="ghost" (pressed)="handleCancel()">{{ PHRASES.CANCEL | translate }}</app-button>
+      <app-button variant="danger" (pressed)="handleConfirm()">{{ PHRASES.DELETE | translate }}</app-button>
+    </div>
+  </div>
+</div>
