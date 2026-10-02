@@ -84,7 +84,6 @@ const PORT_ATTRS = {
     stroke: '#9c6bff',
     strokeWidth: 1.5,
     fill: '#1b1042',
-    style: {visibility: 'hidden'},
   },
 };
 
@@ -155,7 +154,7 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
       interacting: () => this.editable,
       grid: {visible: true, type: 'dot', size: 16, args: {color: 'rgba(255,255,255,0.12)', thickness: 1}},
       connecting: {
-        router: 'orthogonal',
+        router: 'orth',
         connector: {name: 'rounded', args: {radius: 8}},
         anchor: 'center',
         connectionPoint: 'boundary',
