@@ -45,15 +45,16 @@
   background: var(--color-input-bg);
   border: 1px solid var(--color-input-border);
   padding: 12px 16px;
-  cursor: pointer;
-  text-align: left;
-  font-family: inherit;
   transition: background var(--transition-fast), border-color var(--transition-fast);
 }
 
 .itemTree__row--item:hover {
   background: rgba(255, 255, 255, 0.08);
   border-color: var(--color-input-border-focus);
+}
+
+.itemTree__row--item .itemTree__rowMain {
+  padding: 0;
 }
 
 .itemTree__chevronSlot {
@@ -141,7 +142,7 @@
   transition: opacity var(--transition-fast);
 }
 
-.itemTree__row--folder:hover .itemTree__rowActions {
+.itemTree__row:hover .itemTree__rowActions {
   opacity: 1;
 }
 

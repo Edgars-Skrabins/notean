@@ -7,6 +7,7 @@ import {PHRASES} from '@config/phrases';
 import {IconComponent} from '@components/icon/icon.component';
 import {IconButtonComponent} from '@components/icon-button/icon-button.component';
 import {DeleteFolderDialogComponent} from '@components/delete-folder-dialog/delete-folder-dialog.component';
+import {ConfirmDeleteDialogComponent} from '@components/confirm-delete-dialog/confirm-delete-dialog.component';
 
 export interface TreeFolder {
   id: number;
@@ -50,6 +51,7 @@ type DropTarget =
     IconComponent,
     IconButtonComponent,
     DeleteFolderDialogComponent,
+    ConfirmDeleteDialogComponent,
     CdkDrag
   ],
   templateUrl: './item-tree.component.html',
@@ -61,11 +63,13 @@ export class ItemTreeComponent implements OnChanges {
   @Input() folders: TreeFolder[] = [];
   @Input() items: TreeItem[] = [];
   @Input() itemLabel = '';
+  @Input({required: true}) deleteItemConfirmMessage!: string;
 
   @Output() openItem = new EventEmitter<TreeItem>();
   @Output() createFolder = new EventEmitter<{ parentId: number | null }>();
   @Output() createItem = new EventEmitter<{ parentId: number | null }>();
   @Output() deleteFolder = new EventEmitter<{ folderId: number; mode: 'cascade' | 'promote' }>();
+  @Output() deleteItem = new EventEmitter<{ itemId: number }>();
   @Output() renameFolder = new EventEmitter<{ folderId: number; title: string }>();
   @Output() moveItem = new EventEmitter<{ itemId: number; folderId: number | null }>();
   @Output() moveFolder = new EventEmitter<{ folderId: number; parentId: number | null }>();
@@ -73,6 +77,7 @@ export class ItemTreeComponent implements OnChanges {
   rootFolders: BuiltFolder[] = [];
   rootItems: TreeItem[] = [];
   folderPendingDeletion: TreeFolder | null = null;
+  itemPendingDeletion: TreeItem | null = null;
   renamingFolderId: number | null = null;
   renameDraftTitle = '';
   draggingNode: DragNode | null = null;
@@ -121,6 +126,23 @@ export class ItemTreeComponent implements OnChanges {
 
   handleDeleteCancelled() {
     this.folderPendingDeletion = null;
+  }
+
+  requestDeleteItem(item: TreeItem) {
+    this.itemPendingDeletion = item;
+  }
+
+  handleDeleteItemConfirmed() {
+    if (!this.itemPendingDeletion) {
+      return;
+    }
+
+    this.deleteItem.emit({itemId: this.itemPendingDeletion.id});
+    this.itemPendingDeletion = null;
+  }
+
+  handleDeleteItemCancelled() {
+    this.itemPendingDeletion = null;
   }
 
   startRenameFolder(folder: TreeFolder) {

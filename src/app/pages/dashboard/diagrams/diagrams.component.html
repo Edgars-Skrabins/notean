@@ -18,11 +18,13 @@
     [folders]="displayFolders"
     [items]="displayItems"
     [itemLabel]="PHRASES.NEW_DIAGRAM | translate"
+    [deleteItemConfirmMessage]="PHRASES.CONFIRM_DELETE_DIAGRAM | translate"
     (openItem)="handleOpenDiagram($event)"
     (createFolder)="handleCreateFolder($event.parentId)"
     (createItem)="handleCreateDiagram($event.parentId)"
     (renameFolder)="handleRenameFolder($event)"
     (deleteFolder)="handleDeleteFolder($event)"
+    (deleteItem)="handleDeleteItem($event)"
     (moveItem)="handleMoveItem($event)"
     (moveFolder)="handleMoveFolder($event)"
   ></app-item-tree>

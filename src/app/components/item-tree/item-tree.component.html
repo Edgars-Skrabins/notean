@@ -85,8 +85,7 @@
   </ng-container>
 
   <ng-container *ngFor="let item of items">
-    <button
-      type="button"
+    <div
       cdkDrag
       [cdkDragData]="toItemDrag(item)"
       (cdkDragStarted)="handleDragStarted(toItemDrag(item))"
@@ -94,12 +93,23 @@
       (cdkDragEnded)="handleDragEnded($event)"
       class="itemTree__row itemTree__row--item"
       [style.paddingLeft.px]="depth * 20 + 36"
-      (click)="openItem.emit(item)"
     >
-      <app-icon name="edit" class="itemTree__rowIcon"></app-icon>
-      <span class="itemTree__rowTitle">{{ item.title }}</span>
-      <span class="itemTree__rowMeta">{{ item.meta.creator.username }} &middot; {{ item.meta.updatedAt | date }}</span>
-    </button>
+      <button type="button" class="itemTree__rowMain" (click)="openItem.emit(item)">
+        <app-icon name="edit" class="itemTree__rowIcon"></app-icon>
+        <span class="itemTree__rowTitle">{{ item.title }}</span>
+        <span class="itemTree__rowMeta">{{ item.meta.creator.username }} &middot; {{ item.meta.updatedAt | date }}</span>
+      </button>
+
+      <div class="itemTree__rowActions">
+        <app-icon-button
+          icon="trash"
+          variant="danger"
+          [tooltip]="PHRASES.DELETE | translate"
+          [size]="28"
+          (pressed)="requestDeleteItem(item)"
+        ></app-icon-button>
+      </div>
+    </div>
   </ng-container>
 </ng-template>
 
@@ -122,3 +132,10 @@
   (confirmed)="handleDeleteConfirmed($event)"
   (cancelled)="handleDeleteCancelled()"
 ></app-delete-folder-dialog>
+
+<app-confirm-delete-dialog
+  *ngIf="itemPendingDeletion"
+  [message]="deleteItemConfirmMessage"
+  (confirmed)="handleDeleteItemConfirmed()"
+  (cancelled)="handleDeleteItemCancelled()"
+></app-confirm-delete-dialog>
