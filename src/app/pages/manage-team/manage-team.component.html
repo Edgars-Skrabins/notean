@@ -9,6 +9,11 @@
   <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
 
   <section class="manageTeam__section">
+    <h3 class="manageTeam__sectionTitle">{{ PHRASES.TEAM_CODE | translate }}</h3>
+    <app-team-code-display [code]="teamCode"></app-team-code-display>
+  </section>
+
+  <section class="manageTeam__section">
     <h3 class="manageTeam__sectionTitle">{{ PHRASES.RENAME_TEAM | translate }}</h3>
     <div class="authField">
       <label class="authField__label" for="teamNameInput">{{ PHRASES.TEAM_NAME | translate }}</label>
@@ -29,7 +34,6 @@
   </section>
 
   <section class="manageTeam__section" *ngIf="showDeleteTeam">
-    <h3 class="manageTeam__sectionTitle">{{ PHRASES.DELETE_TEAM | translate }}</h3>
     <button type="button" class="manageTeam__deleteButton" (click)="handleDeleteTeam()">{{ PHRASES.DELETE_TEAM | translate }}</button>
   </section>
 </div>

@@ -9,6 +9,7 @@ import {teamRoleLabel} from "@utils/teamRoleLabel";
 import {TeamMember} from "@models/team.model";
 import {AppRoutes} from "../../app/app-routes.enum";
 import {ConfirmDeleteDialogComponent} from "@components/confirm-delete-dialog/confirm-delete-dialog.component";
+import {TeamCodeDisplayComponent} from "@components/team-code-display/team-code-display.component";
 
 @Component({
   selector: 'app-manage-team',
@@ -18,7 +19,8 @@ import {ConfirmDeleteDialogComponent} from "@components/confirm-delete-dialog/co
     NgFor,
     NgIf,
     TranslateModule,
-    ConfirmDeleteDialogComponent
+    ConfirmDeleteDialogComponent,
+    TeamCodeDisplayComponent
   ],
   templateUrl: './manage-team.component.html',
   styleUrl: './manage-team.component.css'
@@ -34,7 +36,7 @@ export class ManageTeamComponent implements OnInit {
   renameStatusMessage = '';
   showDeleteConfirm = false;
 
-  private teamCode: string;
+  protected teamCode: string;
 
   constructor(
     private navigationService: NavigationService,
