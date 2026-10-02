@@ -28,3 +28,9 @@
 
   <p class="dashboardStub__body" *ngIf="!isLoading && !folders.length && !items.length">{{ PHRASES.NO_DIAGRAMS_YET | translate }}</p>
 </div>
+
+<app-create-folder-dialog
+  *ngIf="isCreateFolderDialogOpen"
+  (confirmed)="handleCreateFolderConfirmed($event)"
+  (cancelled)="handleCreateFolderCancelled()"
+></app-create-folder-dialog>

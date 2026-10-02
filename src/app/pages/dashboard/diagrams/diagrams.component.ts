@@ -10,6 +10,7 @@ import {TeamService} from "@services/team.service";
 import {DiagramSummary} from "@models/diagram.model";
 import {ButtonComponent} from "@components/button/button.component";
 import {ItemTreeComponent, TreeFolder, TreeItem} from "@components/item-tree/item-tree.component";
+import {CreateFolderDialogComponent} from "@components/create-folder-dialog/create-folder-dialog.component";
 
 @Component({
   selector: 'app-diagrams',
@@ -19,7 +20,8 @@ import {ItemTreeComponent, TreeFolder, TreeItem} from "@components/item-tree/ite
     NgIf,
     TranslateModule,
     ButtonComponent,
-    ItemTreeComponent
+    ItemTreeComponent,
+    CreateFolderDialogComponent
   ],
   templateUrl: './diagrams.component.html',
   styleUrl: './diagrams.component.css'
@@ -32,7 +34,9 @@ export class DiagramsComponent implements OnInit, OnDestroy {
   searchQuery = '';
   isLoading = true;
   alertMessage = '';
+  isCreateFolderDialogOpen = false;
 
+  private pendingCreateFolderParentId: number | null = null;
   private teamCode: string;
   private searchDebounceHandle: ReturnType<typeof setTimeout> | null = null;
   private requestSequence = 0;
@@ -69,9 +73,15 @@ export class DiagramsComponent implements OnInit, OnDestroy {
   }
 
   handleCreateFolder(parentId: number | null) {
-    const untitledTitle = this.translateService.instant(PHRASES.UNTITLED_FOLDER);
+    this.pendingCreateFolderParentId = parentId;
+    this.isCreateFolderDialogOpen = true;
+  }
 
-    this.folderService.createFolder(this.teamCode, 'Diagram', untitledTitle, parentId)
+  handleCreateFolderConfirmed(event: { title: string }) {
+    const parentId = this.pendingCreateFolderParentId;
+    this.isCreateFolderDialogOpen = false;
+
+    this.folderService.createFolder(this.teamCode, 'Diagram', event.title, parentId)
       .then((response) => {
         if (!response.success) {
           this.alertMessage = response.statusMessage;
@@ -81,6 +91,10 @@ export class DiagramsComponent implements OnInit, OnDestroy {
         this.alertMessage = '';
         this.loadData();
       });
+  }
+
+  handleCreateFolderCancelled() {
+    this.isCreateFolderDialogOpen = false;
   }
 
   handleCreateDiagram(parentId: number | null) {
