@@ -7,6 +7,7 @@ import {TeamService} from "@services/team.service";
 import {AppRoutes} from "../../app/app-routes.enum";
 import {PHRASES} from "@config/phrases";
 import {AuthCardComponent} from "@components/auth-card/auth-card.component";
+import {TeamCodeDisplayComponent} from "@components/team-code-display/team-code-display.component";
 
 @Component({
   selector: 'app-create-team',
@@ -15,7 +16,8 @@ import {AuthCardComponent} from "@components/auth-card/auth-card.component";
     FormsModule,
     NgIf,
     TranslateModule,
-    AuthCardComponent
+    AuthCardComponent,
+    TeamCodeDisplayComponent
   ],
   templateUrl: './create-team.component.html',
   styleUrl: './create-team.component.css'
@@ -27,7 +29,6 @@ export class CreateTeamComponent {
   teamPassword = '';
   alertMessage = '';
   createdTeamCode: string | null = null;
-  codeCopied = false;
 
   constructor(private navigationService: NavigationService, private teamService: TeamService) {
   }
@@ -58,18 +59,5 @@ export class CreateTeamComponent {
 
   handleGoToJoinTeam() {
     this.navigationService.navigate(AppRoutes.JOIN_TEAM);
-  }
-
-  handleCopyCode() {
-    if (!this.createdTeamCode) {
-      return;
-    }
-
-    navigator.clipboard.writeText(this.createdTeamCode).then(() => {
-      this.codeCopied = true;
-      setTimeout(() => {
-        this.codeCopied = false;
-      }, 1500);
-    });
   }
 }
