@@ -24,10 +24,29 @@
         ></app-icon-button>
       </div>
 
-      <button type="button" class="itemTree__rowMain" (click)="toggleExpand(folder)">
+      <button
+        *ngIf="renamingFolderId !== folder.id"
+        type="button"
+        class="itemTree__rowMain"
+        (click)="toggleExpand(folder)"
+      >
         <app-icon name="folder" class="itemTree__rowIcon"></app-icon>
         <span class="itemTree__rowTitle">{{ folder.title }}</span>
       </button>
+
+      <div *ngIf="renamingFolderId === folder.id" class="itemTree__rowMain itemTree__rowMain--renaming">
+        <app-icon name="folder" class="itemTree__rowIcon"></app-icon>
+        <input
+          type="text"
+          class="itemTree__renameInput"
+          [(ngModel)]="renameDraftTitle"
+          (click)="$event.stopPropagation()"
+          (keydown.enter)="commitRenameFolder(folder)"
+          (keydown.escape)="cancelRenameFolder()"
+          (blur)="commitRenameFolder(folder)"
+          autofocus
+        />
+      </div>
 
       <div class="itemTree__rowActions">
         <app-icon-button
@@ -41,6 +60,12 @@
           [tooltip]="itemLabel"
           [size]="28"
           (pressed)="createItem.emit({ parentId: folder.id })"
+        ></app-icon-button>
+        <app-icon-button
+          icon="edit"
+          [tooltip]="PHRASES.RENAME_FOLDER | translate"
+          [size]="28"
+          (pressed)="startRenameFolder(folder)"
         ></app-icon-button>
         <app-icon-button
           icon="trash"

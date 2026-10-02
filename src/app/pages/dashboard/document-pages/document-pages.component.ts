@@ -144,6 +144,19 @@ export class DocumentPagesComponent implements OnInit, OnDestroy {
       });
   }
 
+  handleRenameFolder(event: { folderId: number; title: string }) {
+    this.folderService.renameFolder(this.teamCode, event.folderId, event.title)
+      .then((response) => {
+        if (!response.success) {
+          this.alertMessage = response.statusMessage;
+          return;
+        }
+
+        this.alertMessage = '';
+        this.loadData();
+      });
+  }
+
   handleDeleteFolder(event: { folderId: number; mode: 'cascade' | 'promote' }) {
     this.folderService.deleteFolder(this.teamCode, event.folderId, event.mode)
       .then((response) => {

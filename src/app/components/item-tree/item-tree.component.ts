@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
 import {DatePipe, NgFor, NgIf, NgTemplateOutlet} from '@angular/common';
+import {FormsModule} from '@angular/forms';
 import {CdkDrag, CdkDragEnd, CdkDragMove} from '@angular/cdk/drag-drop';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
@@ -44,6 +45,7 @@ type DropTarget =
     NgIf,
     NgTemplateOutlet,
     DatePipe,
+    FormsModule,
     TranslateModule,
     IconComponent,
     IconButtonComponent,
@@ -64,12 +66,15 @@ export class ItemTreeComponent implements OnChanges {
   @Output() createFolder = new EventEmitter<{ parentId: number | null }>();
   @Output() createItem = new EventEmitter<{ parentId: number | null }>();
   @Output() deleteFolder = new EventEmitter<{ folderId: number; mode: 'cascade' | 'promote' }>();
+  @Output() renameFolder = new EventEmitter<{ folderId: number; title: string }>();
   @Output() moveItem = new EventEmitter<{ itemId: number; folderId: number | null }>();
   @Output() moveFolder = new EventEmitter<{ folderId: number; parentId: number | null }>();
 
   rootFolders: BuiltFolder[] = [];
   rootItems: TreeItem[] = [];
   folderPendingDeletion: TreeFolder | null = null;
+  renamingFolderId: number | null = null;
+  renameDraftTitle = '';
   draggingNode: DragNode | null = null;
   hoveredTarget: DropTarget | null = null;
   readonly rootTarget: DropTarget = {kind: 'root'};
@@ -116,6 +121,28 @@ export class ItemTreeComponent implements OnChanges {
 
   handleDeleteCancelled() {
     this.folderPendingDeletion = null;
+  }
+
+  startRenameFolder(folder: TreeFolder) {
+    this.renamingFolderId = folder.id;
+    this.renameDraftTitle = folder.title;
+  }
+
+  commitRenameFolder(folder: TreeFolder) {
+    if (this.renamingFolderId !== folder.id) {
+      return;
+    }
+
+    const title = this.renameDraftTitle.trim();
+    this.renamingFolderId = null;
+
+    if (title && title !== folder.title) {
+      this.renameFolder.emit({folderId: folder.id, title});
+    }
+  }
+
+  cancelRenameFolder() {
+    this.renamingFolderId = null;
   }
 
   handleDragStarted(node: DragNode) {

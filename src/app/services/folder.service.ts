@@ -91,6 +91,26 @@ export class FolderService {
       } satisfies FolderResponse));
   }
 
+  async renameFolder(
+    teamCode: string,
+    id: number,
+    title: string,
+  ): Promise<FolderResponse> {
+    return axiosInstance
+      .patch(`${this.foldersUrl(teamCode)}/${id}`, {
+        folder: { title },
+      })
+      .then((response) => ({
+        success: true,
+        folder: mapFolderSummary(response.data.folder),
+      } satisfies FolderResponse))
+      .catch((error) => ({
+        success: false,
+        statusMessage:
+          error.response?.data?.statusMessage ?? 'Failed to rename folder',
+      } satisfies FolderResponse));
+  }
+
   async moveFolder(
     teamCode: string,
     id: number,
