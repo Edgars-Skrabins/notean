@@ -55,6 +55,22 @@ export class DiagramsComponent implements OnInit, OnDestroy {
     this.loadData();
   }
 
+  get isSearching(): boolean {
+    return this.searchQuery.trim().length > 0;
+  }
+
+  get displayFolders(): TreeFolder[] {
+    return this.isSearching ? [] : this.folders;
+  }
+
+  get displayItems(): TreeItem[] {
+    if (!this.isSearching) {
+      return this.items;
+    }
+
+    return this.items.map((item) => ({...item, folderId: null}));
+  }
+
   ngOnDestroy() {
     if (this.searchDebounceHandle) {
       clearTimeout(this.searchDebounceHandle);
@@ -119,6 +135,10 @@ export class DiagramsComponent implements OnInit, OnDestroy {
   }
 
   handleMoveItem(event: { itemId: number; folderId: number | null }) {
+    if (this.isSearching) {
+      return;
+    }
+
     this.diagramService.moveToFolder(this.teamCode, event.itemId, event.folderId)
       .then((response) => {
         if (!response.success) {

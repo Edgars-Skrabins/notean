@@ -15,8 +15,8 @@
 
   <app-item-tree
     *ngIf="!isLoading"
-    [folders]="folders"
-    [items]="items"
+    [folders]="displayFolders"
+    [items]="displayItems"
     [itemLabel]="PHRASES.NEW_PAGE | translate"
     (openItem)="handleOpenPage($event)"
     (createFolder)="handleCreateFolder($event.parentId)"
@@ -27,7 +27,8 @@
     (moveFolder)="handleMoveFolder($event)"
   ></app-item-tree>
 
-  <p class="dashboardStub__body" *ngIf="!isLoading && !folders.length && !items.length">{{ PHRASES.NO_PAGES_YET | translate }}</p>
+  <p class="dashboardStub__body" *ngIf="!isLoading && isSearching && !displayItems.length">{{ PHRASES.NO_SEARCH_RESULTS | translate }}</p>
+  <p class="dashboardStub__body" *ngIf="!isLoading && !isSearching && !displayFolders.length && !displayItems.length">{{ PHRASES.NO_PAGES_YET | translate }}</p>
 </div>
 
 <app-create-folder-dialog
