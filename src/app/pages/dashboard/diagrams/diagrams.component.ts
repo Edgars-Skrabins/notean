@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
 import {Router} from '@angular/router';
@@ -7,10 +7,12 @@ import {PHRASES} from "@config/phrases";
 import {DiagramService} from "@services/diagram.service";
 import {FolderService} from "@services/folder.service";
 import {TeamService} from "@services/team.service";
-import {DiagramSummary} from "@models/diagram.model";
+import {FolderItemType} from "@models/folder.model";
+import {AppRoutes} from "../../../app/app-routes.enum";
 import {ButtonComponent} from "@components/button/button.component";
-import {ItemTreeComponent, TreeFolder, TreeItem} from "@components/item-tree/item-tree.component";
-import {CreateFolderDialogComponent} from "@components/create-folder-dialog/create-folder-dialog.component";
+import {ItemTreeComponent, TreeItem} from "@components/item-tree/item-tree.component";
+import {CreateNamedItemDialogComponent} from "@components/create-named-item-dialog/create-named-item-dialog.component";
+import {FolderedItemSummary, FolderedListPageComponent} from "../foldered-list-page.base";
 
 @Component({
   selector: 'app-diagrams',
@@ -21,96 +23,27 @@ import {CreateFolderDialogComponent} from "@components/create-folder-dialog/crea
     TranslateModule,
     ButtonComponent,
     ItemTreeComponent,
-    CreateFolderDialogComponent
+    CreateNamedItemDialogComponent
   ],
   templateUrl: './diagrams.component.html',
   styleUrl: './diagrams.component.css'
 })
-export class DiagramsComponent implements OnInit, OnDestroy {
+export class DiagramsComponent extends FolderedListPageComponent {
   protected readonly PHRASES = PHRASES;
-
-  folders: TreeFolder[] = [];
-  items: TreeItem[] = [];
-  searchQuery = '';
-  isLoading = true;
-  alertMessage = '';
-  isCreateFolderDialogOpen = false;
-
-  private pendingCreateFolderParentId: number | null = null;
-  private teamCode: string;
-  private searchDebounceHandle: ReturnType<typeof setTimeout> | null = null;
-  private requestSequence = 0;
+  protected readonly itemType: FolderItemType = 'Diagram';
 
   constructor(
     private router: Router,
     private diagramService: DiagramService,
-    private folderService: FolderService,
-    private teamService: TeamService,
+    folderService: FolderService,
+    teamService: TeamService,
     private translateService: TranslateService
   ) {
-    this.teamCode = this.teamService.getCurrentTeam()!.code;
-  }
-
-  ngOnInit() {
-    this.loadData();
-  }
-
-  get isSearching(): boolean {
-    return this.searchQuery.trim().length > 0;
-  }
-
-  get displayFolders(): TreeFolder[] {
-    return this.isSearching ? [] : this.folders;
-  }
-
-  get displayItems(): TreeItem[] {
-    if (!this.isSearching) {
-      return this.items;
-    }
-
-    return this.items.map((item) => ({...item, folderId: null}));
-  }
-
-  ngOnDestroy() {
-    if (this.searchDebounceHandle) {
-      clearTimeout(this.searchDebounceHandle);
-    }
-  }
-
-  handleSearchChange() {
-    if (this.searchDebounceHandle) {
-      clearTimeout(this.searchDebounceHandle);
-    }
-    this.searchDebounceHandle = setTimeout(() => this.loadData(), 300);
+    super(folderService, teamService);
   }
 
   handleOpenDiagram(item: TreeItem) {
-    this.router.navigate(['/dashboard/diagrams', item.id]);
-  }
-
-  handleCreateFolder(parentId: number | null) {
-    this.pendingCreateFolderParentId = parentId;
-    this.isCreateFolderDialogOpen = true;
-  }
-
-  handleCreateFolderConfirmed(event: { title: string }) {
-    const parentId = this.pendingCreateFolderParentId;
-    this.isCreateFolderDialogOpen = false;
-
-    this.folderService.createFolder(this.teamCode, 'Diagram', event.title, parentId)
-      .then((response) => {
-        if (!response.success) {
-          this.alertMessage = response.statusMessage;
-          return;
-        }
-
-        this.alertMessage = '';
-        this.loadData();
-      });
-  }
-
-  handleCreateFolderCancelled() {
-    this.isCreateFolderDialogOpen = false;
+    this.router.navigate([AppRoutes.DASHBOARD, AppRoutes.DIAGRAMS, item.id]);
   }
 
   handleCreateDiagram(parentId: number | null) {
@@ -129,120 +62,28 @@ export class DiagramsComponent implements OnInit, OnDestroy {
           : Promise.resolve(response);
 
         afterMove.then(() => {
-          this.router.navigate(['/dashboard/diagrams', diagramId], {queryParams: {edit: true}});
+          this.router.navigate([AppRoutes.DASHBOARD, AppRoutes.DIAGRAMS, diagramId], {queryParams: {edit: true}});
         });
       });
   }
 
-  handleMoveItem(event: { itemId: number; folderId: number | null }) {
-    if (this.isSearching) {
-      return;
-    }
-
-    this.diagramService.moveToFolder(this.teamCode, event.itemId, event.folderId)
-      .then((response) => {
-        if (!response.success) {
-          this.alertMessage = response.statusMessage;
-          return;
-        }
-
-        this.alertMessage = '';
-        this.loadData();
-      });
-  }
-
-  handleMoveFolder(event: { folderId: number; parentId: number | null }) {
-    this.folderService.moveFolder(this.teamCode, event.folderId, event.parentId)
-      .then((response) => {
-        if (!response.success) {
-          this.alertMessage = response.statusMessage;
-          return;
-        }
-
-        this.alertMessage = '';
-        this.loadData();
-      });
-  }
-
-  handleRenameFolder(event: { folderId: number; title: string }) {
-    this.folderService.renameFolder(this.teamCode, event.folderId, event.title)
-      .then((response) => {
-        if (!response.success) {
-          this.alertMessage = response.statusMessage;
-          return;
-        }
-
-        this.alertMessage = '';
-        this.loadData();
-      });
-  }
-
-  handleDeleteItem(event: { itemId: number }) {
-    this.diagramService.deleteDiagram(this.teamCode, event.itemId)
-      .then((response) => {
-        if (!response.success) {
-          this.alertMessage = response.statusMessage;
-          return;
-        }
-
-        this.alertMessage = '';
-        this.loadData();
-      });
-  }
-
-  handleDeleteFolder(event: { folderId: number; mode: 'cascade' | 'promote' }) {
-    this.folderService.deleteFolder(this.teamCode, event.folderId, event.mode)
-      .then((response) => {
-        if (!response.success) {
-          this.alertMessage = response.statusMessage;
-          return;
-        }
-
-        this.alertMessage = '';
-        this.loadData();
-      });
-  }
-
-  private loadData() {
-    const sequence = ++this.requestSequence;
-
-    Promise.all([
-      this.folderService.listFolders(this.teamCode, 'Diagram'),
-      this.diagramService.listDiagrams(this.teamCode, this.searchQuery || undefined)
-    ]).then(([foldersResponse, diagramsResponse]) => {
-      if (sequence !== this.requestSequence) {
-        return;
+  protected listItems(search?: string): Promise<
+    | { success: true; items: FolderedItemSummary[] }
+    | { success: false; statusMessage: string }
+  > {
+    return this.diagramService.listDiagrams(this.teamCode, search).then((response) => {
+      if (!response.success) {
+        return response;
       }
-      this.isLoading = false;
-
-      if (!foldersResponse.success) {
-        this.alertMessage = foldersResponse.statusMessage;
-        return;
-      }
-      if (!diagramsResponse.success) {
-        this.alertMessage = diagramsResponse.statusMessage;
-        return;
-      }
-
-      this.alertMessage = '';
-      this.folders = foldersResponse.folders.map((folder) => ({
-        id: folder.id,
-        title: folder.title,
-        parentId: folder.parentId,
-      }));
-      this.items = diagramsResponse.diagrams.map((diagram) => this.toTreeItem(diagram));
+      return {success: true, items: response.diagrams};
     });
   }
 
-  private toTreeItem(diagram: DiagramSummary): TreeItem {
-    return {
-      id: diagram.id,
-      title: diagram.title,
-      folderId: diagram.folderId,
-      meta: {
-        creator: {username: diagram.creator.username},
-        updatedAt: diagram.updatedAt,
-      },
-    };
+  protected moveItemToFolder(itemId: number, folderId: number | null) {
+    return this.diagramService.moveToFolder(this.teamCode, itemId, folderId);
+  }
+
+  protected deleteItemById(itemId: number) {
+    return this.diagramService.deleteDiagram(this.teamCode, itemId);
   }
 }

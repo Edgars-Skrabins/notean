@@ -1,0 +1,20 @@
+<div class="createNamedItemDialogOverlay">
+  <div class="createNamedItemDialogOverlay__backdrop" (click)="handleCancel()"></div>
+
+  <div class="createNamedItemDialog">
+    <h3 class="createNamedItemDialog__title">{{ dialogTitle }}</h3>
+
+    <input
+      type="text"
+      class="createNamedItemDialog__input"
+      [(ngModel)]="itemTitle"
+      [placeholder]="defaultValue"
+      autofocus
+    />
+
+    <div class="createNamedItemDialog__actions">
+      <app-button variant="ghost" (pressed)="handleCancel()">{{ PHRASES.CANCEL | translate }}</app-button>
+      <app-button variant="primary" (pressed)="handleConfirm()">{{ PHRASES.CREATE | translate }}</app-button>
+    </div>
+  </div>
+</div>

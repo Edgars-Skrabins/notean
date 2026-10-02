@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
 import {Router} from '@angular/router';
@@ -7,10 +7,12 @@ import {PHRASES} from "@config/phrases";
 import {PageService} from "@services/page.service";
 import {FolderService} from "@services/folder.service";
 import {TeamService} from "@services/team.service";
-import {PageSummary} from "@models/page.model";
+import {FolderItemType} from "@models/folder.model";
+import {AppRoutes} from "../../../app/app-routes.enum";
 import {ButtonComponent} from "@components/button/button.component";
-import {ItemTreeComponent, TreeFolder, TreeItem} from "@components/item-tree/item-tree.component";
-import {CreateFolderDialogComponent} from "@components/create-folder-dialog/create-folder-dialog.component";
+import {ItemTreeComponent, TreeItem} from "@components/item-tree/item-tree.component";
+import {CreateNamedItemDialogComponent} from "@components/create-named-item-dialog/create-named-item-dialog.component";
+import {FolderedItemSummary, FolderedListPageComponent} from "../foldered-list-page.base";
 
 @Component({
   selector: 'app-document-pages',
@@ -21,96 +23,27 @@ import {CreateFolderDialogComponent} from "@components/create-folder-dialog/crea
     TranslateModule,
     ButtonComponent,
     ItemTreeComponent,
-    CreateFolderDialogComponent
+    CreateNamedItemDialogComponent
   ],
   templateUrl: './document-pages.component.html',
   styleUrl: './document-pages.component.css'
 })
-export class DocumentPagesComponent implements OnInit, OnDestroy {
+export class DocumentPagesComponent extends FolderedListPageComponent {
   protected readonly PHRASES = PHRASES;
-
-  folders: TreeFolder[] = [];
-  items: TreeItem[] = [];
-  searchQuery = '';
-  isLoading = true;
-  alertMessage = '';
-  isCreateFolderDialogOpen = false;
-
-  private pendingCreateFolderParentId: number | null = null;
-  private teamCode: string;
-  private searchDebounceHandle: ReturnType<typeof setTimeout> | null = null;
-  private requestSequence = 0;
+  protected readonly itemType: FolderItemType = 'Page';
 
   constructor(
     private router: Router,
     private pageService: PageService,
-    private folderService: FolderService,
-    private teamService: TeamService,
+    folderService: FolderService,
+    teamService: TeamService,
     private translateService: TranslateService
   ) {
-    this.teamCode = this.teamService.getCurrentTeam()!.code;
-  }
-
-  ngOnInit() {
-    this.loadData();
-  }
-
-  get isSearching(): boolean {
-    return this.searchQuery.trim().length > 0;
-  }
-
-  get displayFolders(): TreeFolder[] {
-    return this.isSearching ? [] : this.folders;
-  }
-
-  get displayItems(): TreeItem[] {
-    if (!this.isSearching) {
-      return this.items;
-    }
-
-    return this.items.map((item) => ({...item, folderId: null}));
-  }
-
-  ngOnDestroy() {
-    if (this.searchDebounceHandle) {
-      clearTimeout(this.searchDebounceHandle);
-    }
-  }
-
-  handleSearchChange() {
-    if (this.searchDebounceHandle) {
-      clearTimeout(this.searchDebounceHandle);
-    }
-    this.searchDebounceHandle = setTimeout(() => this.loadData(), 300);
+    super(folderService, teamService);
   }
 
   handleOpenPage(item: TreeItem) {
-    this.router.navigate(['/dashboard/pages', item.id]);
-  }
-
-  handleCreateFolder(parentId: number | null) {
-    this.pendingCreateFolderParentId = parentId;
-    this.isCreateFolderDialogOpen = true;
-  }
-
-  handleCreateFolderConfirmed(event: { title: string }) {
-    const parentId = this.pendingCreateFolderParentId;
-    this.isCreateFolderDialogOpen = false;
-
-    this.folderService.createFolder(this.teamCode, 'Page', event.title, parentId)
-      .then((response) => {
-        if (!response.success) {
-          this.alertMessage = response.statusMessage;
-          return;
-        }
-
-        this.alertMessage = '';
-        this.loadData();
-      });
-  }
-
-  handleCreateFolderCancelled() {
-    this.isCreateFolderDialogOpen = false;
+    this.router.navigate([AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES, item.id]);
   }
 
   handleCreatePage(parentId: number | null) {
@@ -129,120 +62,28 @@ export class DocumentPagesComponent implements OnInit, OnDestroy {
           : Promise.resolve(response);
 
         afterMove.then(() => {
-          this.router.navigate(['/dashboard/pages', pageId], {queryParams: {edit: true}});
+          this.router.navigate([AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES, pageId], {queryParams: {edit: true}});
         });
       });
   }
 
-  handleMoveItem(event: { itemId: number; folderId: number | null }) {
-    if (this.isSearching) {
-      return;
-    }
-
-    this.pageService.moveToFolder(this.teamCode, event.itemId, event.folderId)
-      .then((response) => {
-        if (!response.success) {
-          this.alertMessage = response.statusMessage;
-          return;
-        }
-
-        this.alertMessage = '';
-        this.loadData();
-      });
-  }
-
-  handleMoveFolder(event: { folderId: number; parentId: number | null }) {
-    this.folderService.moveFolder(this.teamCode, event.folderId, event.parentId)
-      .then((response) => {
-        if (!response.success) {
-          this.alertMessage = response.statusMessage;
-          return;
-        }
-
-        this.alertMessage = '';
-        this.loadData();
-      });
-  }
-
-  handleRenameFolder(event: { folderId: number; title: string }) {
-    this.folderService.renameFolder(this.teamCode, event.folderId, event.title)
-      .then((response) => {
-        if (!response.success) {
-          this.alertMessage = response.statusMessage;
-          return;
-        }
-
-        this.alertMessage = '';
-        this.loadData();
-      });
-  }
-
-  handleDeleteItem(event: { itemId: number }) {
-    this.pageService.deletePage(this.teamCode, event.itemId)
-      .then((response) => {
-        if (!response.success) {
-          this.alertMessage = response.statusMessage;
-          return;
-        }
-
-        this.alertMessage = '';
-        this.loadData();
-      });
-  }
-
-  handleDeleteFolder(event: { folderId: number; mode: 'cascade' | 'promote' }) {
-    this.folderService.deleteFolder(this.teamCode, event.folderId, event.mode)
-      .then((response) => {
-        if (!response.success) {
-          this.alertMessage = response.statusMessage;
-          return;
-        }
-
-        this.alertMessage = '';
-        this.loadData();
-      });
-  }
-
-  private loadData() {
-    const sequence = ++this.requestSequence;
-
-    Promise.all([
-      this.folderService.listFolders(this.teamCode, 'Page'),
-      this.pageService.listPages(this.teamCode, this.searchQuery || undefined)
-    ]).then(([foldersResponse, pagesResponse]) => {
-      if (sequence !== this.requestSequence) {
-        return;
+  protected listItems(search?: string): Promise<
+    | { success: true; items: FolderedItemSummary[] }
+    | { success: false; statusMessage: string }
+  > {
+    return this.pageService.listPages(this.teamCode, search).then((response) => {
+      if (!response.success) {
+        return response;
       }
-      this.isLoading = false;
-
-      if (!foldersResponse.success) {
-        this.alertMessage = foldersResponse.statusMessage;
-        return;
-      }
-      if (!pagesResponse.success) {
-        this.alertMessage = pagesResponse.statusMessage;
-        return;
-      }
-
-      this.alertMessage = '';
-      this.folders = foldersResponse.folders.map((folder) => ({
-        id: folder.id,
-        title: folder.title,
-        parentId: folder.parentId,
-      }));
-      this.items = pagesResponse.pages.map((page) => this.toTreeItem(page));
+      return {success: true, items: response.pages};
     });
   }
 
-  private toTreeItem(page: PageSummary): TreeItem {
-    return {
-      id: page.id,
-      title: page.title,
-      folderId: page.folderId,
-      meta: {
-        creator: {username: page.creator.username},
-        updatedAt: page.updatedAt,
-      },
-    };
+  protected moveItemToFolder(itemId: number, folderId: number | null) {
+    return this.pageService.moveToFolder(this.teamCode, itemId, folderId);
+  }
+
+  protected deleteItemById(itemId: number) {
+    return this.pageService.deletePage(this.teamCode, itemId);
   }
 }
