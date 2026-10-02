@@ -91,5 +91,16 @@
   "FLOWCHART_DELETE_SELECTED": "Delete selected",
   "FLOWCHART_ZOOM_TO_FIT": "Zoom to fit",
   "FLOWCHART_EMPTY_HINT": "Add a shape from the toolbar to get started.",
-  "CLOSE": "Close"
+  "CLOSE": "Close",
+  "SEARCH_BOARDS": "Search boards by title",
+  "NEW_BOARD": "New board",
+  "UNTITLED_BOARD": "Untitled board",
+  "NO_BOARDS_YET": "No boards yet — create one to get started.",
+  "CONFIRM_DELETE_BOARD": "Delete this board? This can't be undone.",
+  "RENAME_BOARD": "Rename board",
+  "ADD_COLUMN": "Add column",
+  "UNTITLED_COLUMN": "Untitled column",
+  "RENAME_COLUMN": "Rename column",
+  "DELETE_COLUMN": "Delete column",
+  "CONFIRM_DELETE_COLUMN": "Delete this column? This can't be undone."
 }

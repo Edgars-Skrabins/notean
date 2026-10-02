@@ -1,0 +1,74 @@
+<div class="kanbanBoardOverlay" *ngIf="board">
+  <div class="kanbanBoardOverlay__backdrop" (click)="handleGoBack()"></div>
+
+  <div class="kanbanBoard">
+    <div class="kanbanBoard__header">
+      <div class="kanbanBoard__headerLeft">
+        <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE | translate" (pressed)="handleGoBack()"></app-icon-button>
+
+        <h1 *ngIf="!isRenamingBoard" class="kanbanBoard__title">{{ board.title }}</h1>
+        <input
+          *ngIf="isRenamingBoard"
+          type="text"
+          class="kanbanBoard__titleInput"
+          [(ngModel)]="boardRenameDraft"
+          (keydown.enter)="commitRenameBoard()"
+          (keydown.escape)="cancelRenameBoard()"
+          (blur)="commitRenameBoard()"
+          autofocus
+        />
+        <app-icon-button
+          *ngIf="!isRenamingBoard"
+          icon="edit"
+          [tooltip]="PHRASES.RENAME_BOARD | translate"
+          [size]="28"
+          (pressed)="startRenameBoard()"
+        ></app-icon-button>
+      </div>
+
+      <app-icon-button
+        icon="trash"
+        variant="danger"
+        [tooltip]="PHRASES.DELETE | translate"
+        (pressed)="handleDeleteBoard()"
+      ></app-icon-button>
+    </div>
+
+    <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+
+    <div class="kanbanBoard__columns" *ngIf="!isLoading">
+      <app-kanban-column
+        *ngFor="let column of board.columns"
+        [column]="column"
+        (renameColumn)="handleRenameColumn(column, $event.title)"
+        (deleteColumn)="requestDeleteColumn(column)"
+      ></app-kanban-column>
+
+      <app-button variant="ghost" icon="plus" class="kanbanBoard__addColumn" (pressed)="handleAddColumn()">
+        {{ PHRASES.ADD_COLUMN | translate }}
+      </app-button>
+    </div>
+  </div>
+
+  <app-confirm-delete-dialog
+    *ngIf="showDeleteBoardConfirm"
+    [message]="PHRASES.CONFIRM_DELETE_BOARD | translate"
+    (confirmed)="handleConfirmDeleteBoard()"
+    (cancelled)="handleCancelDeleteBoard()"
+  ></app-confirm-delete-dialog>
+
+  <app-confirm-delete-dialog
+    *ngIf="columnPendingDeletion"
+    [message]="PHRASES.CONFIRM_DELETE_COLUMN | translate"
+    (confirmed)="handleConfirmDeleteColumn()"
+    (cancelled)="handleCancelDeleteColumn()"
+  ></app-confirm-delete-dialog>
+</div>
+
+<app-create-named-item-dialog
+  *ngIf="isCreateColumnDialogOpen"
+  [dialogTitle]="PHRASES.ADD_COLUMN | translate"
+  [defaultValue]="PHRASES.UNTITLED_COLUMN | translate"
+  (confirmed)="handleCreateColumnConfirmed($event)"
+  (cancelled)="handleCreateColumnCancelled()"
+></app-create-named-item-dialog>

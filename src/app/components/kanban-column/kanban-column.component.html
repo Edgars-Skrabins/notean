@@ -1,0 +1,33 @@
+<div class="kanbanColumn">
+  <div class="kanbanColumn__header">
+    <span *ngIf="!isRenaming" class="kanbanColumn__title">{{ column.title }}</span>
+    <input
+      *ngIf="isRenaming"
+      type="text"
+      class="kanbanColumn__titleInput"
+      [(ngModel)]="renameDraft"
+      (keydown.enter)="commitRename()"
+      (keydown.escape)="cancelRename()"
+      (blur)="commitRename()"
+      autofocus
+    />
+
+    <div class="kanbanColumn__actions">
+      <app-icon-button
+        icon="edit"
+        [tooltip]="PHRASES.RENAME_COLUMN | translate"
+        [size]="28"
+        (pressed)="startRename()"
+      ></app-icon-button>
+      <app-icon-button
+        icon="trash"
+        variant="danger"
+        [tooltip]="PHRASES.DELETE_COLUMN | translate"
+        [size]="28"
+        (pressed)="deleteColumn.emit()"
+      ></app-icon-button>
+    </div>
+  </div>
+
+  <div class="kanbanColumn__body"></div>
+</div>

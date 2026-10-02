@@ -91,5 +91,16 @@
   "FLOWCHART_DELETE_SELECTED": "Dzēst atlasīto",
   "FLOWCHART_ZOOM_TO_FIT": "Ietilpināt skatā",
   "FLOWCHART_EMPTY_HINT": "Pievienojiet figūru no rīkjoslas, lai sāktu.",
-  "CLOSE": "Aizvērt"
+  "CLOSE": "Aizvērt",
+  "SEARCH_BOARDS": "Meklēt dēļus pēc nosaukuma",
+  "NEW_BOARD": "Jauns dēlis",
+  "UNTITLED_BOARD": "Dēlis bez nosaukuma",
+  "NO_BOARDS_YET": "Vēl nav dēļu — izveidojiet vienu, lai sāktu.",
+  "CONFIRM_DELETE_BOARD": "Dzēst šo dēli? To nevar atsaukt.",
+  "RENAME_BOARD": "Pārdēvēt dēli",
+  "ADD_COLUMN": "Pievienot kolonnu",
+  "UNTITLED_COLUMN": "Kolonna bez nosaukuma",
+  "RENAME_COLUMN": "Pārdēvēt kolonnu",
+  "DELETE_COLUMN": "Dzēst kolonnu",
+  "CONFIRM_DELETE_COLUMN": "Dzēst šo kolonnu? To nevar atsaukt."
 }

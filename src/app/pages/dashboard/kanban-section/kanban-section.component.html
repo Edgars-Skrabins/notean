@@ -1,0 +1,48 @@
+<div class="boardsView">
+  <div class="boardsView__toolbar">
+    <input
+      type="text"
+      class="boardsView__search"
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="handleSearchChange()"
+      [placeholder]="PHRASES.SEARCH_BOARDS | translate"
+    />
+    <app-button variant="primary" icon="plus" (pressed)="handleCreateBoard()">{{ PHRASES.NEW_BOARD | translate }}</app-button>
+  </div>
+
+  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+
+  <div class="boardsView__list" *ngIf="!isLoading && boards.length">
+    <div class="boardsView__row" *ngFor="let board of boards">
+      <button type="button" class="boardsView__rowMain" (click)="handleOpenBoard(board)">
+        <span class="boardsView__rowTitle">{{ board.title }}</span>
+        <span class="boardsView__rowMeta">{{ board.creator.username }} &middot; {{ board.updatedAt | date }}</span>
+      </button>
+
+      <app-icon-button
+        icon="trash"
+        variant="danger"
+        [tooltip]="PHRASES.DELETE | translate"
+        [size]="28"
+        (pressed)="requestDeleteBoard(board)"
+      ></app-icon-button>
+    </div>
+  </div>
+
+  <p class="dashboardStub__body" *ngIf="!isLoading && !boards.length">{{ PHRASES.NO_BOARDS_YET | translate }}</p>
+</div>
+
+<app-create-named-item-dialog
+  *ngIf="isCreateDialogOpen"
+  [dialogTitle]="PHRASES.NEW_BOARD | translate"
+  [defaultValue]="PHRASES.UNTITLED_BOARD | translate"
+  (confirmed)="handleCreateConfirmed($event)"
+  (cancelled)="handleCreateCancelled()"
+></app-create-named-item-dialog>
+
+<app-confirm-delete-dialog
+  *ngIf="boardPendingDeletion"
+  [message]="PHRASES.CONFIRM_DELETE_BOARD | translate"
+  (confirmed)="handleDeleteConfirmed()"
+  (cancelled)="handleDeleteCancelled()"
+></app-confirm-delete-dialog>

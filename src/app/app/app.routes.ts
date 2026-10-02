@@ -13,7 +13,8 @@ import {DocumentPagesComponent} from "../pages/dashboard/document-pages/document
 import {PageDetailComponent} from "../pages/dashboard/page-detail/page-detail.component";
 import {DiagramsComponent} from "../pages/dashboard/diagrams/diagrams.component";
 import {DiagramDetailComponent} from "../pages/dashboard/diagram-detail/diagram-detail.component";
-import {KanbanBoardsComponent} from "../pages/dashboard/kanban-boards/kanban-boards.component";
+import {KanbanSectionComponent} from "../pages/dashboard/kanban-section/kanban-section.component";
+import {KanbanBoardComponent} from "../pages/dashboard/kanban-board/kanban-board.component";
 import {ProfileComponent} from "../pages/dashboard/profile/profile.component";
 import {SettingsComponent} from "../pages/dashboard/settings/settings.component";
 import {authGuard} from "../guards/auth.guard";
@@ -44,7 +45,8 @@ export const routes: Routes = [
       {path: `${AppRoutes.DOCUMENT_PAGES}/:id`, component: PageDetailComponent},
       {path: AppRoutes.DIAGRAMS, component: DiagramsComponent},
       {path: `${AppRoutes.DIAGRAMS}/:id`, component: DiagramDetailComponent},
-      {path: AppRoutes.KANBAN_BOARDS, component: KanbanBoardsComponent},
+      {path: AppRoutes.KANBAN_BOARDS, component: KanbanSectionComponent},
+      {path: `${AppRoutes.KANBAN_BOARDS}/:id`, component: KanbanBoardComponent},
     ],
   },
 ];
