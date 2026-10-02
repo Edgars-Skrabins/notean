@@ -172,7 +172,6 @@ export class DiagramsComponent implements OnInit, OnDestroy {
 
   private loadData() {
     const sequence = ++this.requestSequence;
-    this.isLoading = true;
 
     Promise.all([
       this.folderService.listFolders(this.teamCode, 'Diagram'),
