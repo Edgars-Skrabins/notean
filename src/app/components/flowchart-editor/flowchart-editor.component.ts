@@ -106,6 +106,7 @@ interface EditingLabel {
   kind: 'node' | 'edge';
   cell: Node | Edge;
   value: string;
+  originalValue: string;
   top: number;
   left: number;
   width: number;
@@ -280,7 +281,7 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
       this.commitLabelEditor();
     } else if (event.key === 'Escape') {
       event.preventDefault();
-      this.editingLabel = null;
+      this.cancelLabelEditor();
     }
   }
 
@@ -291,17 +292,23 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
 
     const rect = this.graph.localToClient(cell.getBBox());
     const hostRect = this.canvasHost.nativeElement.getBoundingClientRect();
+    const currentValue = kind === 'node'
+      ? (cell as Node).getAttrByPath<string>('text/text') ?? ''
+      : String((cell as Edge).getLabelAt(0)?.['attrs']?.['label']?.['text'] ?? '');
 
     this.editingLabel = {
       kind,
       cell,
-      value: kind === 'node'
-        ? (cell as Node).getAttrByPath<string>('text/text') ?? ''
-        : String((cell as Edge).getLabelAt(0)?.['attrs']?.['label']?.['text'] ?? ''),
+      value: currentValue,
+      originalValue: currentValue,
       top: rect.y - hostRect.top + rect.height / 2 - 14,
       left: rect.x - hostRect.left + rect.width / 2 - 60,
       width: 120,
     };
+
+    // Hide the cell's own rendered label while editing, otherwise it shows through
+    // the semi-transparent input and looks like the title got duplicated.
+    this.setCellLabel(kind, cell, '');
   }
 
   private commitLabelEditor() {
@@ -310,13 +317,26 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
     }
 
     const {kind, cell, value} = this.editingLabel;
+    this.setCellLabel(kind, cell, value);
+    this.editingLabel = null;
+  }
+
+  private cancelLabelEditor() {
+    if (!this.editingLabel) {
+      return;
+    }
+
+    const {kind, cell, originalValue} = this.editingLabel;
+    this.setCellLabel(kind, cell, originalValue);
+    this.editingLabel = null;
+  }
+
+  private setCellLabel(kind: 'node' | 'edge', cell: Node | Edge, value: string) {
     if (kind === 'node') {
       (cell as Node).setAttrByPath('text/text', value);
     } else {
       (cell as Edge).setLabels(value ? [value] : []);
     }
-
-    this.editingLabel = null;
   }
 
   private loadContent() {

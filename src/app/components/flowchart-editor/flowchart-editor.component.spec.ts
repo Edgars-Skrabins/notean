@@ -105,6 +105,17 @@ describe('FlowchartEditorComponent', () => {
       expect(node.getAttrByPath('text/text')).toBe(originalLabel);
     });
 
+    it('hides the shape\'s own label while editing, so it cannot show through the input and look duplicated', () => {
+      component.handleAddShape('flow-process');
+      const node = getGraph().getNodes()[0];
+      expect(node.getAttrByPath('text/text')).toBe(PHRASES.FLOWCHART_PROCESS);
+
+      (component as any).openLabelEditor('node', node);
+
+      expect(node.getAttrByPath('text/text')).toBe('');
+      expect(component.editingLabel!.value).toBe(PHRASES.FLOWCHART_PROCESS);
+    });
+
     it('renames an edge label the same way as a node label', () => {
       component.handleAddShape('flow-terminator');
       component.handleAddShape('flow-process');
