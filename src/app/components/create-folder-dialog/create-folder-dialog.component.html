@@ -1,0 +1,20 @@
+<div class="createFolderDialogOverlay">
+  <div class="createFolderDialogOverlay__backdrop" (click)="handleCancel()"></div>
+
+  <div class="createFolderDialog">
+    <h3 class="createFolderDialog__title">{{ PHRASES.NEW_FOLDER | translate }}</h3>
+
+    <input
+      type="text"
+      class="createFolderDialog__input"
+      [(ngModel)]="folderTitle"
+      [placeholder]="PHRASES.UNTITLED_FOLDER | translate"
+      autofocus
+    />
+
+    <div class="createFolderDialog__actions">
+      <app-button variant="ghost" (pressed)="handleCancel()">{{ PHRASES.CANCEL | translate }}</app-button>
+      <app-button variant="primary" (pressed)="handleConfirm()">{{ PHRASES.CREATE | translate }}</app-button>
+    </div>
+  </div>
+</div>
