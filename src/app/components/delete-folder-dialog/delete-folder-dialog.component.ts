@@ -1,16 +1,16 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {FormsModule} from '@angular/forms';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ButtonComponent} from '@components/button/button.component';
+import {CheckboxComponent} from '@components/checkbox/checkbox.component';
 
 @Component({
   selector: 'app-delete-folder-dialog',
   standalone: true,
   imports: [
-    FormsModule,
     TranslateModule,
-    ButtonComponent
+    ButtonComponent,
+    CheckboxComponent
   ],
   templateUrl: './delete-folder-dialog.component.html',
   styleUrl: './delete-folder-dialog.component.css'

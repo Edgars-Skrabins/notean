@@ -4,10 +4,11 @@
   <div class="deleteFolderDialog">
     <h3 class="deleteFolderDialog__title">{{ PHRASES.DELETE_FOLDER_CONFIRM_TITLE | translate }} '{{ folderTitle }}'?</h3>
 
-    <label class="deleteFolderDialog__checkboxRow">
-      <input type="checkbox" [(ngModel)]="deleteNestedContents" />
-      {{ PHRASES.DELETE_FOLDER_KEEP_CONTENTS_CHECKBOX | translate }}
-    </label>
+    <app-checkbox
+      class="deleteFolderDialog__checkboxRow"
+      [checked]="deleteNestedContents"
+      (checkedChange)="deleteNestedContents = $event"
+    >{{ PHRASES.DELETE_FOLDER_KEEP_CONTENTS_CHECKBOX | translate }}</app-checkbox>
 
     <div class="deleteFolderDialog__actions">
       <app-button variant="ghost" (pressed)="handleCancel()">{{ PHRASES.CANCEL | translate }}</app-button>
