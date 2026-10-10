@@ -115,5 +115,19 @@
   "NICKNAME_INVALID_CHARACTERS": "Nickname can only contain letters a–z",
   "NICKNAME_TAKEN": "This nickname is already taken in this team",
   "NETWORK_ERROR": "Network error. Check your connection and try again",
-  "NICKNAME_UPDATE_FAILED": "Could not update nickname"
+  "NICKNAME_UPDATE_FAILED": "Could not update nickname",
+  "FAVORITES": "Favorites",
+  "ADD_TO_FAVORITES": "Add to favorites",
+  "REMOVE_FROM_FAVORITES": "Remove from favorites",
+  "NO_FAVORITES_HOME": "Star a page, diagram, board or card to see it here.",
+  "NO_FAVORITES_SIDEBAR": "No favorites yet.",
+  "FAVORITE_UPDATE_FAILED": "Could not update favorites",
+  "ITEM_TYPE_PAGE": "Page",
+  "ITEM_TYPE_DIAGRAM": "Diagram",
+  "ITEM_TYPE_BOARD": "Board",
+  "ITEM_TYPE_CARD": "Card",
+  "SHOW_FAVORITES_ON_HOME": "Show favorites on Home",
+  "SHOW_FAVORITES_IN_SIDEBAR": "Show favorites in the sidebar",
+  "SETTINGS_SAVED": "Settings saved",
+  "SETTINGS_SAVE_FAILED": "Could not save settings"
 }

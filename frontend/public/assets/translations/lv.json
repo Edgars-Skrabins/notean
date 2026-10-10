@@ -115,5 +115,19 @@
   "NICKNAME_INVALID_CHARACTERS": "Segvārds var saturēt tikai burtus a–z",
   "NICKNAME_TAKEN": "Šis segvārds šajā komandā jau ir aizņemts",
   "NETWORK_ERROR": "Tīkla kļūda. Pārbaudiet savienojumu un mēģiniet vēlreiz",
-  "NICKNAME_UPDATE_FAILED": "Neizdevās atjaunināt segvārdu"
+  "NICKNAME_UPDATE_FAILED": "Neizdevās atjaunināt segvārdu",
+  "FAVORITES": "Izlase",
+  "ADD_TO_FAVORITES": "Pievienot izlasei",
+  "REMOVE_FROM_FAVORITES": "Noņemt no izlases",
+  "NO_FAVORITES_HOME": "Atzīmējiet lapu, diagrammu, dēli vai kartiņu ar zvaigznīti, lai to redzētu šeit.",
+  "NO_FAVORITES_SIDEBAR": "Izlasē vēl nekā nav.",
+  "FAVORITE_UPDATE_FAILED": "Neizdevās atjaunināt izlasi",
+  "ITEM_TYPE_PAGE": "Lapa",
+  "ITEM_TYPE_DIAGRAM": "Diagramma",
+  "ITEM_TYPE_BOARD": "Dēlis",
+  "ITEM_TYPE_CARD": "Kartiņa",
+  "SHOW_FAVORITES_ON_HOME": "Rādīt izlasi sākumā",
+  "SHOW_FAVORITES_IN_SIDEBAR": "Rādīt izlasi sānjoslā",
+  "SETTINGS_SAVED": "Iestatījumi saglabāti",
+  "SETTINGS_SAVE_FAILED": "Neizdevās saglabāt iestatījumus"
 }

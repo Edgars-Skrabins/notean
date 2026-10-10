@@ -4,7 +4,7 @@ import {NgSwitch, NgSwitchCase} from '@angular/common';
 export type IconName =
   | 'plus' | 'folder' | 'folder-plus' | 'chevron-right'
   | 'trash' | 'edit' | 'save' | 'x'
-  | 'menu' | 'zoom-fit'
+  | 'menu' | 'zoom-fit' | 'star' | 'star-filled'
   | 'flow-terminator' | 'flow-process' | 'flow-decision' | 'flow-io';
 
 @Component({
