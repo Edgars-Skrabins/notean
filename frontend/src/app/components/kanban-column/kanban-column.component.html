@@ -1,0 +1,51 @@
+<div class="kanbanColumn">
+  <div class="kanbanColumn__header">
+    <span *ngIf="!isRenaming" class="kanbanColumn__title">{{ column.title }}</span>
+    <input
+      *ngIf="isRenaming"
+      type="text"
+      class="kanbanColumn__titleInput"
+      [(ngModel)]="renameDraft"
+      (keydown.enter)="commitRename()"
+      (keydown.escape)="cancelRename()"
+      (blur)="commitRename()"
+      autofocus
+    />
+
+    <div class="kanbanColumn__actions">
+      <app-icon-button
+        icon="edit"
+        [tooltip]="PHRASES.RENAME_COLUMN | translate"
+        [size]="28"
+        (pressed)="startRename()"
+      ></app-icon-button>
+      <app-icon-button
+        icon="trash"
+        variant="danger"
+        [tooltip]="PHRASES.DELETE_COLUMN | translate"
+        [size]="28"
+        (pressed)="deleteColumn.emit()"
+      ></app-icon-button>
+    </div>
+  </div>
+
+  <div
+    class="kanbanColumn__body"
+    cdkDropList
+    [cdkDropListData]="column.cards"
+    (cdkDropListDropped)="cardDropped.emit($event)"
+  >
+    <app-kanban-card
+      *ngFor="let card of column.cards"
+      cdkDrag
+      [cdkDragData]="card"
+      [card]="card"
+      (opened)="openCard.emit(card)"
+      (deleteCard)="deleteCard.emit(card)"
+    ></app-kanban-card>
+  </div>
+
+  <app-button variant="ghost" icon="plus" class="kanbanColumn__addCard" (pressed)="addCard.emit()">
+    {{ PHRASES.ADD_CARD | translate }}
+  </app-button>
+</div>

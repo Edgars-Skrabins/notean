@@ -1,0 +1,48 @@
+.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 0;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.iconButton:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-heading);
+}
+
+.iconButton:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.iconButton--danger:hover:not(:disabled) {
+  background: rgba(255, 157, 157, 0.12);
+  color: #ff9d9d;
+}
+
+.iconButton--size28 {
+  width: 28px;
+  height: 28px;
+}
+
+.iconButton--size28 .iconButton__icon {
+  width: 16px;
+  height: 16px;
+}
+
+.iconButton--size36 {
+  width: 36px;
+  height: 36px;
+}
+
+.iconButton--size36 .iconButton__icon {
+  width: 19px;
+  height: 19px;
+}

@@ -1,0 +1,36 @@
+:host {
+  display: block;
+}
+
+.languageSwitcher {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.languageSwitcher__flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: none;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.languageSwitcher__flag:hover {
+  opacity: 0.85;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.languageSwitcher__flag--active {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: var(--color-input-border);
+}

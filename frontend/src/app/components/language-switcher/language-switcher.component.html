@@ -1,0 +1,12 @@
+<div class="languageSwitcher">
+  <button
+    type="button"
+    *ngFor="let language of languages"
+    class="languageSwitcher__flag"
+    [ngClass]="{'languageSwitcher__flag--active': language.code === currentLanguage}"
+    [attr.aria-label]="language.label"
+    [attr.aria-pressed]="language.code === currentLanguage"
+    [title]="language.label"
+    (click)="handleSelectLanguage(language.code)"
+  >{{ language.flag }}</button>
+</div>

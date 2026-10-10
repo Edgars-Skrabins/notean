@@ -1,0 +1,86 @@
+import {Component} from '@angular/core';
+import {FormsModule} from "@angular/forms";
+import {NgIf} from "@angular/common";
+import {TranslateModule} from "@ngx-translate/core";
+import {NavigationService} from "@services/navigation.service";
+import {TeamService} from "@services/team.service";
+import {AppRoutes} from "../../app/app-routes.enum";
+import {PHRASES} from "@config/phrases";
+import {ToastService} from "@services/toast.service";
+import {ToastType} from "@models/toast.model";
+import {NicknameError} from "@models/team.model";
+import {nicknameErrorPhrase, validateNickname} from "@utils/nicknameValidation";
+import {AuthCardComponent} from "@components/auth-card/auth-card.component";
+import {TeamCodeDisplayComponent} from "@components/team-code-display/team-code-display.component";
+
+@Component({
+  selector: 'app-create-team',
+  standalone: true,
+  imports: [
+    FormsModule,
+    NgIf,
+    TranslateModule,
+    AuthCardComponent,
+    TeamCodeDisplayComponent
+  ],
+  templateUrl: './create-team.component.html',
+  styleUrl: './create-team.component.css'
+})
+export class CreateTeamComponent {
+  protected readonly PHRASES = PHRASES;
+
+  teamName = '';
+  teamPassword = '';
+  nickname = '';
+  alertMessage = '';
+  createdTeamCode: string | null = null;
+
+  constructor(
+    private navigationService: NavigationService,
+    private teamService: TeamService,
+    private toastService: ToastService
+  ) {
+  }
+
+  handleCreateTeam() {
+    if (!this.doesFormHaveValidData()) {
+      this.alertMessage = 'Invalid data';
+      return;
+    }
+
+    const nicknameError = validateNickname(this.nickname);
+    if (nicknameError) {
+      this.showNicknameError(nicknameError);
+      return;
+    }
+
+    this.teamService.createTeam({name: this.teamName, password: this.teamPassword, nickname: this.nickname.trim()})
+      .then((response) => {
+        if (!response.success) {
+          if (response.nicknameError) {
+            this.showNicknameError(response.nicknameError);
+            return;
+          }
+          this.alertMessage = response.statusMessage;
+          return;
+        }
+        this.createdTeamCode = response.team.code;
+      });
+  }
+
+  doesFormHaveValidData() {
+    return this.teamName !== '' && this.teamPassword !== '';
+  }
+
+  showNicknameError(error: NicknameError) {
+    this.toastService.show({type: ToastType.ERROR, message: nicknameErrorPhrase(error)});
+  }
+
+  handleContinueToDashboard() {
+    this.navigationService.navigate(AppRoutes.DASHBOARD);
+  }
+
+  handleGoToJoinTeam() {
+    this.navigationService.navigate(AppRoutes.JOIN_TEAM);
+  }
+}

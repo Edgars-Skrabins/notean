@@ -1,0 +1,13 @@
+<div
+  class="toast toast--{{ toast.type }}"
+  [class.toast--leaving]="toast.leaving"
+  [attr.role]="role"
+>
+  <span class="toast__message">{{ toast.message | translate }}</span>
+  <app-icon-button
+    icon="x"
+    [tooltip]="PHRASES.CLOSE | translate"
+    [size]="28"
+    (pressed)="closed.emit()"
+  ></app-icon-button>
+</div>

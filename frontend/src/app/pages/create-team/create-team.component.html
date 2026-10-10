@@ -1,0 +1,48 @@
+<app-auth-card
+  [title]="(createdTeamCode ? PHRASES.TEAM_CREATED : PHRASES.CREATE_TEAM) | translate"
+  [subtitle]="createdTeamCode ? (PHRASES.TEAM_CODE_SHARE_NOTICE | translate) : (PHRASES.CREATE_TEAM_SUBTITLE | translate)"
+>
+  <button card-corner class="authCornerLink" *ngIf="!createdTeamCode" (click)="handleGoToJoinTeam()">
+    {{ PHRASES.JOIN_TEAM | translate }}
+    <span class="authCornerLink__arrow" aria-hidden="true">&rarr;</span>
+  </button>
+
+  <ng-container *ngIf="!createdTeamCode; else createdView">
+    <div class="authField">
+      <label class="authField__label" for="teamNameInput">{{ PHRASES.TEAM_NAME | translate }}</label>
+      <input
+        [(ngModel)]="teamName"
+        id="teamNameInput"
+        type="text"
+      />
+    </div>
+
+    <div class="authField">
+      <label class="authField__label" for="teamPasswordInput">{{ PHRASES.PASSWORD | translate }}</label>
+      <input
+        [(ngModel)]="teamPassword"
+        id="teamPasswordInput"
+        maxlength="24"
+        type="password"
+      />
+    </div>
+
+    <div class="authField">
+      <label class="authField__label" for="nicknameInput">{{ PHRASES.NICKNAME | translate }}</label>
+      <input
+        [(ngModel)]="nickname"
+        [placeholder]="PHRASES.ENTER_NICKNAME | translate"
+        id="nicknameInput"
+        type="text"
+      />
+    </div>
+
+    <button class="authButton" (click)="handleCreateTeam()">{{ PHRASES.CREATE_TEAM | translate }}</button>
+    <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+  </ng-container>
+
+  <ng-template #createdView>
+    <app-team-code-display class="createTeam__codeDisplay" [code]="createdTeamCode!"></app-team-code-display>
+    <button class="authButton" (click)="handleContinueToDashboard()">{{ PHRASES.CONTINUE | translate }}</button>
+  </ng-template>
+</app-auth-card>

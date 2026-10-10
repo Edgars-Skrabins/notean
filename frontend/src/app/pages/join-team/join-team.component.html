@@ -1,0 +1,42 @@
+<app-auth-card
+  [title]="PHRASES.JOIN_TEAM | translate"
+  [subtitle]="PHRASES.JOIN_TEAM_SUBTITLE | translate"
+>
+  <button card-corner class="authCornerLink" (click)="handleGoToCreateTeam()">
+    {{ PHRASES.CREATE_TEAM | translate }}
+    <span class="authCornerLink__arrow" aria-hidden="true">&rarr;</span>
+  </button>
+
+  <div class="authField">
+    <label class="authField__label" for="teamCodeInput">{{ PHRASES.TEAM_CODE | translate }}</label>
+    <input
+      [(ngModel)]="teamCode"
+      id="teamCodeInput"
+      maxlength="32"
+      type="text"
+    />
+  </div>
+
+  <div class="authField">
+    <label class="authField__label" for="teamPasswordInput">{{ PHRASES.PASSWORD | translate }}</label>
+    <input
+      [(ngModel)]="teamPassword"
+      id="teamPasswordInput"
+      maxlength="24"
+      type="password"
+    />
+  </div>
+
+  <div class="authField">
+    <label class="authField__label" for="nicknameInput">{{ PHRASES.NICKNAME | translate }}</label>
+    <input
+      [(ngModel)]="nickname"
+      [placeholder]="PHRASES.ENTER_NICKNAME | translate"
+      id="nicknameInput"
+      type="text"
+    />
+  </div>
+
+  <button class="authButton" [disabled]="isSubmitting" (click)="handleJoinTeam()">{{ PHRASES.JOIN_TEAM | translate }}</button>
+  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+</app-auth-card>

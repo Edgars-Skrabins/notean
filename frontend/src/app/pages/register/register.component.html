@@ -1,0 +1,34 @@
+<app-auth-card
+  [title]="PHRASES.CREATE_ACCOUNT | translate"
+  [subtitle]="PHRASES.REGISTER_SUBTITLE | translate"
+>
+  <button card-corner class="authCornerLink" (click)="handleGoToLogin()">
+    {{ PHRASES.LOGIN | translate }}
+    <span class="authCornerLink__arrow" aria-hidden="true">&rarr;</span>
+  </button>
+
+  <div class="authField">
+    <label class="authField__label" for="emailInput">{{ PHRASES.EMAIL | translate }}</label>
+    <input
+      [(ngModel)]="email"
+      [placeholder]="PHRASES.ENTER_EMAIL | translate"
+      id="emailInput"
+      (keydown.enter)="handleRegister()"
+      type="email"
+    />
+  </div>
+
+  <div class="authField">
+    <label class="authField__label" for="passwordInput">{{ PHRASES.PASSWORD | translate }}</label>
+    <input
+      [(ngModel)]="password"
+      [placeholder]="PHRASES.ENTER_PASSWORD | translate"
+      id="passwordInput"
+      (keydown.enter)="handleRegister()"
+      type="password"
+    />
+  </div>
+
+  <button class="authButton" [disabled]="isSubmitting" (click)="handleRegister()">{{ PHRASES.REGISTER | translate }}</button>
+  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+</app-auth-card>

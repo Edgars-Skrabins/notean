@@ -1,0 +1,42 @@
+<div class="diagramsView">
+  <div class="diagramsView__toolbar">
+    <input
+      type="text"
+      class="diagramsView__search"
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="handleSearchChange()"
+      [placeholder]="PHRASES.SEARCH_DIAGRAMS | translate"
+    />
+    <app-button variant="ghost" icon="folder-plus" (pressed)="handleCreateFolder(null)">{{ PHRASES.NEW_FOLDER | translate }}</app-button>
+    <app-button variant="primary" icon="plus" (pressed)="handleCreateDiagram(null)">{{ PHRASES.NEW_DIAGRAM | translate }}</app-button>
+  </div>
+
+  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+
+  <app-item-tree
+    *ngIf="!isLoading"
+    [folders]="displayFolders"
+    [items]="displayItems"
+    [itemLabel]="PHRASES.NEW_DIAGRAM | translate"
+    [deleteItemConfirmMessage]="PHRASES.CONFIRM_DELETE_DIAGRAM | translate"
+    (openItem)="handleOpenDiagram($event)"
+    (createFolder)="handleCreateFolder($event.parentId)"
+    (createItem)="handleCreateDiagram($event.parentId)"
+    (renameFolder)="handleRenameFolder($event)"
+    (deleteFolder)="handleDeleteFolder($event)"
+    (deleteItem)="handleDeleteItem($event)"
+    (moveItem)="handleMoveItem($event)"
+    (moveFolder)="handleMoveFolder($event)"
+  ></app-item-tree>
+
+  <p class="dashboardStub__body" *ngIf="!isLoading && isSearching && !displayItems.length">{{ PHRASES.NO_SEARCH_RESULTS | translate }}</p>
+  <p class="dashboardStub__body" *ngIf="!isLoading && !isSearching && !displayFolders.length && !displayItems.length">{{ PHRASES.NO_DIAGRAMS_YET | translate }}</p>
+</div>
+
+<app-create-named-item-dialog
+  *ngIf="isCreateFolderDialogOpen"
+  [dialogTitle]="PHRASES.NEW_FOLDER | translate"
+  [defaultValue]="PHRASES.UNTITLED_FOLDER | translate"
+  (confirmed)="handleCreateFolderConfirmed($event)"
+  (cancelled)="handleCreateFolderCancelled()"
+></app-create-named-item-dialog>

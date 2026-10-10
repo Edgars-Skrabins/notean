@@ -1,0 +1,7 @@
+<div class="toastContainer">
+  <app-toast
+    *ngFor="let toast of toastService.toasts$ | async; trackBy: trackById"
+    [toast]="toast"
+    (closed)="toastService.dismiss(toast.id)"
+  ></app-toast>
+</div>

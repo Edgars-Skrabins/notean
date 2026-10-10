@@ -1,0 +1,74 @@
+:host {
+  display: block;
+}
+
+.richTextEditor__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  margin-bottom: var(--space-3);
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+}
+
+.richTextEditor__toolbarButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.richTextEditor__toolbarButton svg {
+  width: 16px;
+  height: 16px;
+}
+
+.richTextEditor__toolbarButton:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-text-heading);
+}
+
+.richTextEditor__toolbarButton--active {
+  background: var(--color-primary-gradient);
+  color: #ffffff;
+}
+
+.richTextEditor__host {
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  min-height: 240px;
+  color: var(--color-text-heading);
+}
+
+.richTextEditor__host .ProseMirror {
+  outline: none;
+  min-height: 220px;
+}
+
+.richTextEditor__host p {
+  margin: 0 0 var(--space-3);
+}
+
+.richTextEditor__host h2 {
+  margin: var(--space-4) 0 var(--space-2);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.richTextEditor__host ul,
+.richTextEditor__host ol {
+  margin: 0 0 var(--space-3);
+  padding-left: 1.4rem;
+}

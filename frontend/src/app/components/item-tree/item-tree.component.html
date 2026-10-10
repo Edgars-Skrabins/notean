@@ -1,0 +1,141 @@
+<ng-template #levelTemplate let-folders let-items="items" let-depth="depth">
+  <ng-container *ngFor="let folder of folders">
+    <div
+      cdkDrag
+      [cdkDragData]="toFolderDrag(folder)"
+      (cdkDragStarted)="handleDragStarted(toFolderDrag(folder))"
+      (cdkDragMoved)="handleDragMoved($event)"
+      (cdkDragEnded)="handleDragEnded($event)"
+      [attr.data-drop-folder-id]="folder.id"
+      class="itemTree__row itemTree__row--folder"
+      [class.itemTree__row--invalidTarget]="isDropZoneInvalid(toFolderDrop(folder))"
+      [class.itemTree__row--hoverTarget]="isHovered(toFolderDrop(folder))"
+      [style.paddingLeft.px]="depth * 20"
+    >
+      <div class="itemTree__chevronSlot">
+        <app-icon-button
+          *ngIf="hasContents(folder)"
+          icon="chevron-right"
+          [tooltip]="(isExpanded(folder.id) ? PHRASES.COLLAPSE_FOLDER : PHRASES.EXPAND_FOLDER) | translate"
+          [size]="28"
+          class="itemTree__chevron"
+          [class.itemTree__chevron--expanded]="isExpanded(folder.id)"
+          (pressed)="toggleExpand(folder)"
+        ></app-icon-button>
+      </div>
+
+      <button
+        *ngIf="renamingFolderId !== folder.id"
+        type="button"
+        class="itemTree__rowMain"
+        (click)="toggleExpand(folder)"
+      >
+        <app-icon name="folder" class="itemTree__rowIcon"></app-icon>
+        <span class="itemTree__rowTitle">{{ folder.title }}</span>
+      </button>
+
+      <div *ngIf="renamingFolderId === folder.id" class="itemTree__rowMain itemTree__rowMain--renaming">
+        <app-icon name="folder" class="itemTree__rowIcon"></app-icon>
+        <input
+          type="text"
+          class="itemTree__renameInput"
+          [(ngModel)]="renameDraftTitle"
+          (click)="$event.stopPropagation()"
+          (keydown.enter)="commitRenameFolder(folder)"
+          (keydown.escape)="cancelRenameFolder()"
+          (blur)="commitRenameFolder(folder)"
+          autofocus
+        />
+      </div>
+
+      <div class="itemTree__rowActions">
+        <app-icon-button
+          icon="folder-plus"
+          [tooltip]="PHRASES.NEW_FOLDER | translate"
+          [size]="28"
+          (pressed)="createFolder.emit({ parentId: folder.id })"
+        ></app-icon-button>
+        <app-icon-button
+          icon="plus"
+          [tooltip]="itemLabel"
+          [size]="28"
+          (pressed)="createItem.emit({ parentId: folder.id })"
+        ></app-icon-button>
+        <app-icon-button
+          icon="edit"
+          [tooltip]="PHRASES.RENAME_FOLDER | translate"
+          [size]="28"
+          (pressed)="startRenameFolder(folder)"
+        ></app-icon-button>
+        <app-icon-button
+          icon="trash"
+          variant="danger"
+          [tooltip]="PHRASES.DELETE_FOLDER | translate"
+          [size]="28"
+          (pressed)="requestDeleteFolder(folder)"
+        ></app-icon-button>
+      </div>
+    </div>
+
+    <ng-container *ngIf="isExpanded(folder.id)">
+      <ng-container
+        *ngTemplateOutlet="levelTemplate; context: { $implicit: folder.children, items: folder.items, depth: depth + 1 }"
+      ></ng-container>
+    </ng-container>
+  </ng-container>
+
+  <ng-container *ngFor="let item of items">
+    <div
+      cdkDrag
+      [cdkDragData]="toItemDrag(item)"
+      (cdkDragStarted)="handleDragStarted(toItemDrag(item))"
+      (cdkDragMoved)="handleDragMoved($event)"
+      (cdkDragEnded)="handleDragEnded($event)"
+      class="itemTree__row itemTree__row--item"
+      [style.paddingLeft.px]="depth * 20 + 36"
+    >
+      <button type="button" class="itemTree__rowMain" (click)="openItem.emit(item)">
+        <app-icon name="edit" class="itemTree__rowIcon"></app-icon>
+        <span class="itemTree__rowTitle">{{ item.title }}</span>
+        <span class="itemTree__rowMeta">{{ item.meta.creator.nickname }} &middot; {{ item.meta.updatedAt | date }}</span>
+      </button>
+
+      <div class="itemTree__rowActions">
+        <app-icon-button
+          icon="trash"
+          variant="danger"
+          [tooltip]="PHRASES.DELETE | translate"
+          [size]="28"
+          (pressed)="requestDeleteItem(item)"
+        ></app-icon-button>
+      </div>
+    </div>
+  </ng-container>
+</ng-template>
+
+<div class="itemTree">
+  <div
+    data-drop-root
+    class="itemTree__rootDropZone"
+    [class.itemTree__rootDropZone--active]="draggingNode !== null"
+    [class.itemTree__rootDropZone--hoverTarget]="isHovered(rootTarget)"
+  ></div>
+
+  <ng-container
+    *ngTemplateOutlet="levelTemplate; context: { $implicit: rootFolders, items: rootItems, depth: 0 }"
+  ></ng-container>
+</div>
+
+<app-delete-folder-dialog
+  *ngIf="folderPendingDeletion"
+  [folderTitle]="folderPendingDeletion.title"
+  (confirmed)="handleDeleteConfirmed($event)"
+  (cancelled)="handleDeleteCancelled()"
+></app-delete-folder-dialog>
+
+<app-confirm-dialog
+  *ngIf="itemPendingDeletion"
+  [message]="deleteItemConfirmMessage"
+  (confirmed)="handleDeleteItemConfirmed()"
+  (cancelled)="handleDeleteItemCancelled()"
+></app-confirm-dialog>

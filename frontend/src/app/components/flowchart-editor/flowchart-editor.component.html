@@ -1,0 +1,32 @@
+<div class="flowchartEditor">
+  <div class="flowchartEditor__toolbar" *ngIf="editable">
+    <app-icon-button icon="flow-terminator" [size]="36" [tooltip]="PHRASES.FLOWCHART_START_END | translate" (pressed)="handleAddShape('flow-terminator')"></app-icon-button>
+    <app-icon-button icon="flow-process" [size]="36" [tooltip]="PHRASES.FLOWCHART_PROCESS | translate" (pressed)="handleAddShape('flow-process')"></app-icon-button>
+    <app-icon-button icon="flow-decision" [size]="36" [tooltip]="PHRASES.FLOWCHART_DECISION | translate" (pressed)="handleAddShape('flow-decision')"></app-icon-button>
+    <app-icon-button icon="flow-io" [size]="36" [tooltip]="PHRASES.FLOWCHART_INPUT_OUTPUT | translate" (pressed)="handleAddShape('flow-io')"></app-icon-button>
+
+    <span class="flowchartEditor__toolbarDivider"></span>
+
+    <app-icon-button icon="trash" [size]="36" [tooltip]="PHRASES.FLOWCHART_DELETE_SELECTED | translate" (pressed)="handleDeleteSelected()"></app-icon-button>
+
+    <app-icon-button icon="zoom-fit" [size]="36" [tooltip]="PHRASES.FLOWCHART_ZOOM_TO_FIT | translate" (pressed)="handleZoomToFit()"></app-icon-button>
+  </div>
+
+  <div class="flowchartEditor__canvasWrap">
+    <div #canvasHost class="flowchartEditor__canvas"></div>
+
+    <p class="flowchartEditor__emptyHint" *ngIf="isEmpty && editable">{{ PHRASES.FLOWCHART_EMPTY_HINT | translate }}</p>
+
+    <input
+      *ngIf="editingLabel"
+      class="flowchartEditor__labelInput"
+      [style.top.px]="editingLabel.top"
+      [style.left.px]="editingLabel.left"
+      [style.width.px]="editingLabel.width"
+      [(ngModel)]="editingLabel.value"
+      (blur)="handleLabelInputBlur()"
+      (keydown)="handleLabelInputKeydown($event)"
+      autofocus
+    />
+  </div>
+</div>

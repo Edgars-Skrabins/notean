@@ -1,0 +1,31 @@
+<button type="button" class="pageBackButton" (click)="handleGoBack()">
+  <span class="pageBackButton__arrow" aria-hidden="true">&larr;</span>
+  {{ PHRASES.BACK_TO_DASHBOARD | translate }}
+</button>
+
+<div class="profile">
+  <h2 class="profile__title">{{ PHRASES.PROFILE | translate }}</h2>
+
+  <div class="authField">
+    <label class="authField__label" for="nicknameInput">{{ PHRASES.NICKNAME | translate }}</label>
+    <input
+      [(ngModel)]="nickname"
+      [placeholder]="PHRASES.ENTER_NICKNAME | translate"
+      id="nicknameInput"
+      (keydown.enter)="handleSave()"
+      type="text"
+    />
+  </div>
+
+  <button class="authButton" [disabled]="!hasUnsavedChanges || isSaving" (click)="handleSave()">
+    {{ PHRASES.SAVE | translate }}
+  </button>
+</div>
+
+<app-confirm-dialog
+  *ngIf="isLeaveConfirmOpen"
+  [message]="PHRASES.CONFIRM_LEAVE_UNSAVED_CHANGES | translate"
+  [confirmLabel]="PHRASES.LEAVE"
+  (confirmed)="handleConfirmLeave()"
+  (cancelled)="handleCancelLeave()"
+></app-confirm-dialog>
