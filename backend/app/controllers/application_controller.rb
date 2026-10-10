@@ -80,6 +80,10 @@ class ApplicationController < ActionController::API
     params.require(:settings).permit(:show_favorites_on_home, :show_favorites_in_sidebar)
   end
 
+  def update_avatar_params
+    params.require(:avatar).permit(:color, :image, :remove_image)
+  end
+
   def authenticate_user!
     render json: { statusMessage: 'Unauthorized' }, status: :unauthorized unless current_user
   end
@@ -95,6 +99,13 @@ class ApplicationController < ActionController::API
       return nil
     end
     membership
+  end
+
+  def avatar_json(user)
+    {
+      color: user.effective_avatar_color,
+      image_url: user.avatar_image.attached? ? rails_blob_path(user.avatar_image, only_path: true) : nil
+    }
   end
 
   def team_nicknames

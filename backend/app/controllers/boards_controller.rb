@@ -97,6 +97,6 @@ class BoardsController < ApplicationController
   end
 
   def user_json(user)
-    { id: user.id, nickname: team_nicknames[user.id] }
+    { id: user.id, nickname: team_nicknames[user.id], avatar: avatar_json(user) }
   end
 end

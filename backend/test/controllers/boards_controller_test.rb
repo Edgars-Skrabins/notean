@@ -54,7 +54,7 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     get "/teams/#{@team.code}/boards/#{board.id}", headers: @headers
 
     assert_response :success
-    assert_equal({ "id" => @user.id, "nickname" => "alice" }, JSON.parse(response.body)["board"]["creator"])
+    assert_equal({ "id" => @user.id, "nickname" => "alice", "avatar" => { "color" => @user.effective_avatar_color, "image_url" => nil } }, JSON.parse(response.body)["board"]["creator"])
   end
 
   test "update renames the board" do

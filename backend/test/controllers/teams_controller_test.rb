@@ -60,6 +60,16 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     assert_not members.first.key?("username")
   end
 
+  test "members returns each member's avatar" do
+    @user.update!(avatar_color: "pink")
+
+    get "/teams/#{@team.code}/members", headers: @headers
+
+    assert_response :success
+    member = JSON.parse(response.body)["members"].first
+    assert_equal({ "color" => "pink", "image_url" => nil }, member["avatar"])
+  end
+
   test "update_nickname changes the current user's nickname in the team" do
     patch "/teams/#{@team.code}/nickname", params: { membership: { nickname: "Ally" } }, headers: @headers, as: :json
 

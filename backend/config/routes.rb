@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   patch "teams/:code/nickname" => "teams#update_nickname"
   get "users/me/settings" => "users#settings"
   patch "users/me/settings" => "users#update_settings"
+  get "users/me/avatar" => "users#avatar"
+  patch "users/me/avatar" => "users#update_avatar"
   resources :teams, only: [:create, :show, :update, :destroy], param: :code do
     resources :folders, only: [:index, :create, :update, :destroy]
     resources :pages, only: [:index, :create, :show, :update, :destroy]

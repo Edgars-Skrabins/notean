@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!, only: [:settings, :update_settings]
+  before_action :authenticate_user!, only: [:settings, :update_settings, :avatar, :update_avatar]
 
   def create
     if User.exists?(email: user_params[:email])
@@ -26,6 +26,30 @@ class UsersController < ApplicationController
       render json: { settings: settings_json(current_user), statusMessage: 'Settings updated' }
     else
       render json: { statusMessage: 'Failed to update settings' }, status: :unprocessable_entity
+    end
+  end
+
+  def avatar
+    render json: { avatar: avatar_json(current_user), statusMessage: 'Avatar found' }
+  end
+
+  def update_avatar
+    color = update_avatar_params[:color]
+    image = update_avatar_params[:image]
+
+    if color.present? && !User::AVATAR_COLORS.include?(color)
+      render json: { statusMessage: 'Invalid color' }, status: :unprocessable_entity
+      return
+    end
+
+    current_user.avatar_color = color if color.present?
+    current_user.avatar_image = image if image.present?
+
+    if current_user.save
+      current_user.avatar_image.purge if image.blank? && update_avatar_params[:remove_image] == 'true'
+      render json: { avatar: avatar_json(current_user), statusMessage: 'Avatar updated' }
+    else
+      render json: { statusMessage: 'Invalid image' }, status: :unprocessable_entity
     end
   end
 

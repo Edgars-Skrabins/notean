@@ -34,7 +34,7 @@ class TeamsController < ApplicationController
     return unless require_team_role!(@team, :admin, :owner)
 
     render json: {
-      members: @team.memberships.includes(:user).map { |m| { id: m.user.id, nickname: m.nickname, role: m.role } }
+      members: @team.memberships.includes(user: { avatar_image_attachment: :blob }).map { |m| { id: m.user.id, nickname: m.nickname, role: m.role, avatar: avatar_json(m.user) } }
     }
   end
 

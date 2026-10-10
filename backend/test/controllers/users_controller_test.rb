@@ -48,4 +48,71 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unauthorized
   end
+
+  test "avatar returns the derived colour and no image by default" do
+    get "/users/me/avatar", headers: @headers
+
+    assert_response :success
+    avatar = JSON.parse(response.body)["avatar"]
+    assert_equal @user.effective_avatar_color, avatar["color"]
+    assert_nil avatar["image_url"]
+  end
+
+  test "update_avatar sets the colour" do
+    patch "/users/me/avatar", params: { avatar: { color: "cyan" } }, headers: @headers
+
+    assert_response :success
+    assert_equal "cyan", JSON.parse(response.body)["avatar"]["color"]
+    assert_equal "cyan", @user.reload.avatar_color
+  end
+
+  test "update_avatar rejects an unknown colour with 422" do
+    patch "/users/me/avatar", params: { avatar: { color: "magenta" } }, headers: @headers
+
+    assert_response :unprocessable_entity
+    assert_equal "Invalid color", JSON.parse(response.body)["statusMessage"]
+    assert_nil @user.reload.avatar_color
+  end
+
+  test "update_avatar uploads an image and returns its url" do
+    patch "/users/me/avatar", params: { avatar: { image: fixture_file_upload("avatar.png", "image/png") } }, headers: @headers
+
+    assert_response :success
+    assert_match %r{\A/rails/active_storage/blobs/redirect/}, JSON.parse(response.body)["avatar"]["image_url"]
+    assert @user.reload.avatar_image.attached?
+  end
+
+  test "update_avatar rejects an invalid image with 422 and keeps the old one" do
+    patch "/users/me/avatar", params: { avatar: { image: fixture_file_upload("avatar.png", "image/png") } }, headers: @headers
+    blob_id = @user.reload.avatar_image.blob.id
+
+    patch "/users/me/avatar", params: { avatar: { image: fixture_file_upload("avatar.gif", "image/gif") } }, headers: @headers
+
+    assert_response :unprocessable_entity
+    assert_equal "Invalid image", JSON.parse(response.body)["statusMessage"]
+    assert_equal blob_id, @user.reload.avatar_image.blob.id
+  end
+
+  test "update_avatar removes the image and keeps the colour" do
+    @user.update!(avatar_color: "brown")
+    patch "/users/me/avatar", params: { avatar: { image: fixture_file_upload("avatar.png", "image/png") } }, headers: @headers
+
+    patch "/users/me/avatar", params: { avatar: { remove_image: "true" } }, headers: @headers
+
+    assert_response :success
+    avatar = JSON.parse(response.body)["avatar"]
+    assert_nil avatar["image_url"]
+    assert_equal "brown", avatar["color"]
+    assert_not @user.reload.avatar_image.attached?
+  end
+
+  test "avatar and update_avatar return 401 without a token" do
+    get "/users/me/avatar"
+
+    assert_response :unauthorized
+
+    patch "/users/me/avatar", params: { avatar: { color: "red" } }
+
+    assert_response :unauthorized
+  end
 end
