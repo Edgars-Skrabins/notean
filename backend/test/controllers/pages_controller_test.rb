@@ -54,4 +54,31 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
     assert_equal "UNAUTHORIZED", JSON.parse(response.body)["code"]
   end
+
+  test "index runs the same number of queries for 1 and 10 pages" do
+    attach_avatar(@user)
+    members = 3.times.map { |index| create_member(@team, nickname_for(index), with_avatar: index.zero?) }
+    one = query_count { get "/teams/#{@team.code}/pages", headers: @headers }
+
+    9.times { |index| Page.create!(team: @team, creator: members[index % 3], title: "Page #{index}", content: "") }
+    ten = query_count { get "/teams/#{@team.code}/pages", headers: @headers }
+
+    assert_equal 10, JSON.parse(response.body)["pages"].length
+    assert_equal one, ten
+  end
+
+  test "show and update run the same number of queries for 1 and 10 contributors" do
+    attach_avatar(@user)
+    @page.page_contributors.create!(user: @user)
+    show_one = query_count { get "/teams/#{@team.code}/pages/#{@page.id}", headers: @headers }
+    update_one = query_count { patch "/teams/#{@team.code}/pages/#{@page.id}", params: { page: { title: "Notes" } }, headers: @headers, as: :json }
+
+    9.times { |index| @page.page_contributors.create!(user: create_member(@team, nickname_for(index), with_avatar: index.zero?)) }
+    show_ten = query_count { get "/teams/#{@team.code}/pages/#{@page.id}", headers: @headers }
+    update_ten = query_count { patch "/teams/#{@team.code}/pages/#{@page.id}", params: { page: { title: "Notes" } }, headers: @headers, as: :json }
+
+    assert_equal 10, JSON.parse(response.body)["page"]["contributors"].length
+    assert_equal show_one, show_ten
+    assert_equal update_one, update_ten
+  end
 end

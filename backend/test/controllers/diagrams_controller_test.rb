@@ -1,7 +1,39 @@
 require "test_helper"
 
 class DiagramsControllerTest < ActionDispatch::IntegrationTest
-  # test "the truth" do
-  #   assert true
-  # end
+  setup do
+    @team = Team.create!(name: "Engineering", password: "supersecret")
+    @user = User.create!(email: "alice@example.com", password: "supersecret")
+    Membership.create!(user: @user, team: @team, role: "owner", nickname: "Alice")
+    @diagram = Diagram.create!(team: @team, creator: @user, title: "Flow", content: "")
+    token = JsonWebToken.encode(user_id: @user.id)
+    @headers = { "Authorization" => "Bearer #{token}" }
+  end
+
+  test "index runs the same number of queries for 1 and 10 diagrams" do
+    attach_avatar(@user)
+    members = 3.times.map { |index| create_member(@team, nickname_for(index), with_avatar: index.zero?) }
+    one = query_count { get "/teams/#{@team.code}/diagrams", headers: @headers }
+
+    9.times { |index| Diagram.create!(team: @team, creator: members[index % 3], title: "Diagram #{index}", content: "") }
+    ten = query_count { get "/teams/#{@team.code}/diagrams", headers: @headers }
+
+    assert_equal 10, JSON.parse(response.body)["diagrams"].length
+    assert_equal one, ten
+  end
+
+  test "show and update run the same number of queries for 1 and 10 contributors" do
+    attach_avatar(@user)
+    @diagram.diagram_contributors.create!(user: @user)
+    show_one = query_count { get "/teams/#{@team.code}/diagrams/#{@diagram.id}", headers: @headers }
+    update_one = query_count { patch "/teams/#{@team.code}/diagrams/#{@diagram.id}", params: { diagram: { title: "Flow" } }, headers: @headers, as: :json }
+
+    9.times { |index| @diagram.diagram_contributors.create!(user: create_member(@team, nickname_for(index), with_avatar: index.zero?)) }
+    show_ten = query_count { get "/teams/#{@team.code}/diagrams/#{@diagram.id}", headers: @headers }
+    update_ten = query_count { patch "/teams/#{@team.code}/diagrams/#{@diagram.id}", params: { diagram: { title: "Flow" } }, headers: @headers, as: :json }
+
+    assert_equal 10, JSON.parse(response.body)["diagram"]["contributors"].length
+    assert_equal show_one, show_ten
+    assert_equal update_one, update_ten
+  end
 end

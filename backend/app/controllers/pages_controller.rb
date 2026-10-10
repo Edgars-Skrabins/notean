@@ -5,7 +5,7 @@ class PagesController < ApplicationController
   before_action :set_page, only: [ :show, :update, :destroy ]
 
   def index
-    pages = @team.pages.search_title(params[:search])
+    pages = @team.pages.includes(creator: User::AVATAR_PRELOAD).search_title(params[:search])
 
     render json: { pages: pages.map { |page| page_summary_json(page) } }
   end
@@ -33,7 +33,7 @@ class PagesController < ApplicationController
     if @page.save
       @page.page_contributors.find_or_create_by!(user: current_user)
       PageEditingStatus.stop(@page.id, current_user)
-      render json: { page: page_json(@page) }
+      render json: { page: page_json(find_page(@page.id)) }
     else
       render_error(ErrorCodes::Pages::PAGE_UPDATE_FAILED, :unprocessable_entity)
     end
@@ -46,8 +46,12 @@ class PagesController < ApplicationController
 
   private
 
+  def find_page(id)
+    @team.pages.includes(creator: User::AVATAR_PRELOAD, contributors: User::AVATAR_PRELOAD).find_by(id: id)
+  end
+
   def set_page
-    @page = @team.pages.find_by(id: params[:id])
+    @page = find_page(params[:id])
 
     render_error(ErrorCodes::Pages::PAGE_NOT_FOUND, :not_found) if @page.nil?
   end

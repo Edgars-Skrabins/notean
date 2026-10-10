@@ -5,7 +5,7 @@ class DiagramsController < ApplicationController
   before_action :set_diagram, only: [ :show, :update, :destroy ]
 
   def index
-    diagrams = @team.diagrams.search_title(params[:search])
+    diagrams = @team.diagrams.includes(creator: User::AVATAR_PRELOAD).search_title(params[:search])
 
     render json: { diagrams: diagrams.map { |diagram| diagram_summary_json(diagram) } }
   end
@@ -33,7 +33,7 @@ class DiagramsController < ApplicationController
     if @diagram.save
       @diagram.diagram_contributors.find_or_create_by!(user: current_user)
       DiagramEditingStatus.stop(@diagram.id, current_user)
-      render json: { diagram: diagram_json(@diagram) }
+      render json: { diagram: diagram_json(find_diagram(@diagram.id)) }
     else
       render_error(ErrorCodes::Diagrams::DIAGRAM_UPDATE_FAILED, :unprocessable_entity)
     end
@@ -46,8 +46,12 @@ class DiagramsController < ApplicationController
 
   private
 
+  def find_diagram(id)
+    @team.diagrams.includes(creator: User::AVATAR_PRELOAD, contributors: User::AVATAR_PRELOAD).find_by(id: id)
+  end
+
   def set_diagram
-    @diagram = @team.diagrams.find_by(id: params[:id])
+    @diagram = find_diagram(params[:id])
 
     render_error(ErrorCodes::Diagrams::DIAGRAM_NOT_FOUND, :not_found) if @diagram.nil?
   end

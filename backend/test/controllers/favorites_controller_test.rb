@@ -188,4 +188,21 @@ class FavoritesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :forbidden
   end
+
+  test "index runs the same number of queries for 4 and 10 favorites" do
+    favorite(@page, 0, 0)
+    favorite(@diagram, 1, 1)
+    favorite(@board, 2, 2)
+    favorite(@card, 3, 3)
+    four = query_count { get "/teams/#{@team.code}/favorites", headers: @headers }
+
+    6.times do |index|
+      page = Page.create!(team: @team, creator: @user, title: "Page #{index}", content: "")
+      favorite(page, 4 + index, 4 + index)
+    end
+    ten = query_count { get "/teams/#{@team.code}/favorites", headers: @headers }
+
+    assert_equal 10, JSON.parse(response.body)["favorites"].length
+    assert_equal four, ten
+  end
 end

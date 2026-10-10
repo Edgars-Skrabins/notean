@@ -11,5 +11,30 @@ module ActiveSupport
     fixtures :all
 
     # Add more helper methods to be used by all tests here...
+    IGNORED_QUERY = /\A\s*(BEGIN|COMMIT|SAVEPOINT|RELEASE|ROLLBACK)/i
+
+    def query_count(&block)
+      count = 0
+      counter = lambda do |*, payload|
+        count += 1 unless payload[:name] == "SCHEMA" || payload[:sql].match?(IGNORED_QUERY)
+      end
+      ActiveSupport::Notifications.subscribed(counter, "sql.active_record", &block)
+      count
+    end
+
+    def create_member(team, nickname, with_avatar: false)
+      user = User.create!(email: "#{nickname.downcase}@example.com", password: "supersecret")
+      Membership.create!(user: user, team: team, nickname: nickname)
+      attach_avatar(user) if with_avatar
+      user
+    end
+
+    def attach_avatar(user)
+      user.avatar_image.attach(io: file_fixture("avatar.png").open, filename: "avatar.png", content_type: "image/png")
+    end
+
+    def nickname_for(index)
+      "Member#{("a".."z").to_a[index]}"
+    end
   end
 end

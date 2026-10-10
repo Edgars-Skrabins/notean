@@ -2,6 +2,7 @@ class User < ApplicationRecord
   AVATAR_COLORS = %w[red orange green lime yellow blue cyan pink purple brown beige light_grey dark_grey].freeze
   AVATAR_IMAGE_TYPES = %w[image/png image/jpeg image/webp].freeze
   AVATAR_IMAGE_MAX_BYTES = 2.megabytes
+  AVATAR_PRELOAD = { avatar_image_attachment: :blob }.freeze
 
   has_secure_password
 

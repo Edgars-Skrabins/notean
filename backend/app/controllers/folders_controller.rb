@@ -7,7 +7,7 @@ class FoldersController < ApplicationController
   before_action :set_folder, only: [ :update, :destroy ]
 
   def index
-    folders = @team.folders.where(item_type: index_item_type_param)
+    folders = @team.folders.includes(creator: User::AVATAR_PRELOAD).where(item_type: index_item_type_param)
 
     render json: { folders: folders.map { |folder| folder_json(folder) } }
   end

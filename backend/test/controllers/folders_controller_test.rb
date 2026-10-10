@@ -72,4 +72,17 @@ class FoldersControllerTest < ActionDispatch::IntegrationTest
     assert_equal "FOLDER_PARENT_CIRCULAR", JSON.parse(response.body)["code"]
     assert_nil root.reload.parent_id
   end
+
+  test "index runs the same number of queries for 1 and 10 folders" do
+    attach_avatar(@user)
+    members = 3.times.map { |index| create_member(@team, nickname_for(index), with_avatar: index.zero?) }
+    Folder.create!(team: @team, creator: @user, item_type: "Page", title: "First")
+    one = query_count { get "/teams/#{@team.code}/folders", params: { item_type: "Page" }, headers: @headers }
+
+    9.times { |index| Folder.create!(team: @team, creator: members[index % 3], item_type: "Page", title: "Folder #{index}") }
+    ten = query_count { get "/teams/#{@team.code}/folders", params: { item_type: "Page" }, headers: @headers }
+
+    assert_equal 10, JSON.parse(response.body)["folders"].length
+    assert_equal one, ten
+  end
 end

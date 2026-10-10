@@ -144,4 +144,15 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
   end
+
+  test "members runs the same number of queries for 1 and 10 members" do
+    attach_avatar(@user)
+    one = query_count { get "/teams/#{@team.code}/members", headers: @headers }
+
+    9.times { |index| create_member(@team, nickname_for(index), with_avatar: index.zero?) }
+    ten = query_count { get "/teams/#{@team.code}/members", headers: @headers }
+
+    assert_equal 10, JSON.parse(response.body)["members"].length
+    assert_equal one, ten
+  end
 end
