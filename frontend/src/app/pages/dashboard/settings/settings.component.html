@@ -3,7 +3,29 @@
   {{ PHRASES.BACK_TO_DASHBOARD | translate }}
 </button>
 
-<div class="dashboardStub">
-  <h2 class="dashboardStub__title">{{ PHRASES.SETTINGS | translate }}</h2>
-  <p class="dashboardStub__body">{{ PHRASES.COMING_SOON | translate }}</p>
+<div class="settings">
+  <h2 class="settings__title">{{ PHRASES.SETTINGS | translate }}</h2>
+
+  <div class="settings__options">
+    <app-checkbox
+      [checked]="settings.showFavoritesOnHome"
+      (checkedChange)="handleShowFavoritesOnHomeChange($event)"
+    >{{ PHRASES.SHOW_FAVORITES_ON_HOME | translate }}</app-checkbox>
+    <app-checkbox
+      [checked]="settings.showFavoritesInSidebar"
+      (checkedChange)="handleShowFavoritesInSidebarChange($event)"
+    >{{ PHRASES.SHOW_FAVORITES_IN_SIDEBAR | translate }}</app-checkbox>
+  </div>
+
+  <button class="authButton" [disabled]="!hasUnsavedChanges || isSaving" (click)="handleSave()">
+    {{ PHRASES.SAVE | translate }}
+  </button>
 </div>
+
+<app-confirm-dialog
+  *ngIf="isLeaveConfirmOpen"
+  [message]="PHRASES.CONFIRM_LEAVE_UNSAVED_CHANGES | translate"
+  [confirmLabel]="PHRASES.LEAVE"
+  (confirmed)="handleConfirmLeave()"
+  (cancelled)="handleCancelLeave()"
+></app-confirm-dialog>

@@ -34,7 +34,7 @@ export const routes: Routes = [
   {path: AppRoutes.SWITCH_TEAM, component: SwitchTeamComponent, canActivate: [authGuard, teamGuard]},
   {path: AppRoutes.MANAGE_TEAM, component: ManageTeamComponent, canActivate: [authGuard, teamGuard, teamRoleGuard]},
   {path: AppRoutes.PROFILE, component: ProfileComponent, canActivate: [authGuard, teamGuard], canDeactivate: [unsavedChangesGuard]},
-  {path: AppRoutes.SETTINGS, component: SettingsComponent, canActivate: [authGuard, teamGuard]},
+  {path: AppRoutes.SETTINGS, component: SettingsComponent, canActivate: [authGuard, teamGuard], canDeactivate: [unsavedChangesGuard]},
   {
     path: AppRoutes.DASHBOARD,
     component: DashboardComponent,

@@ -1,0 +1,23 @@
+.settings {
+  width: 560px;
+  max-width: calc(100vw - 48px);
+  box-sizing: border-box;
+  color: var(--color-text-heading);
+  background: linear-gradient(160deg, var(--color-card-bg) 0%, var(--color-card-bg-alt) 100%);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  padding: 56px 48px 64px;
+}
+
+.settings__title {
+  margin: 0 0 var(--space-7);
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.settings__options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin-bottom: var(--space-7);
+}
