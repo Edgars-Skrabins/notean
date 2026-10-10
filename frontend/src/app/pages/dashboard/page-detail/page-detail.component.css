@@ -122,6 +122,16 @@
   font-size: 0.85rem;
 }
 
+.pageDetail__person {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.pageDetail__person + .pageDetail__person {
+  margin-top: var(--space-2);
+}
+
 .pageDetail__sidebarValue--muted {
   color: var(--color-text-faint);
 }

@@ -13,6 +13,7 @@ import {FavoriteService} from "@services/favorite.service";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {DiagramDetail, DiagramEditingUser} from "@models/diagram.model";
 import {FlowchartEditorComponent} from "@components/flowchart-editor/flowchart-editor.component";
+import {AvatarComponent} from "@components/avatar/avatar.component";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {ButtonComponent} from "@components/button/button.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
@@ -31,7 +32,8 @@ import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.com
     IconButtonComponent,
     ButtonComponent,
     ConfirmDialogComponent,
-    FavoriteStarComponent
+    FavoriteStarComponent,
+    AvatarComponent
   ],
   templateUrl: './diagram-detail.component.html',
   styleUrl: './diagram-detail.component.css'

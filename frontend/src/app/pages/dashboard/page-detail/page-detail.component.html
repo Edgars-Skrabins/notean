@@ -47,13 +47,17 @@
       <div class="pageDetail__sidebar">
         <div class="pageDetail__sidebarSection">
           <h3 class="pageDetail__sidebarLabel">{{ PHRASES.OWNER | translate }}</h3>
-          <p class="pageDetail__sidebarValue">{{ page.creator.nickname }}</p>
+          <p class="pageDetail__sidebarValue pageDetail__person">
+            <app-avatar [avatar]="page.creator.avatar" [nickname]="page.creator.nickname"></app-avatar>
+            {{ page.creator.nickname }}
+          </p>
         </div>
 
         <div class="pageDetail__sidebarSection">
           <h3 class="pageDetail__sidebarLabel">{{ PHRASES.CONTRIBUTORS | translate }}</h3>
-          <p class="pageDetail__sidebarValue" *ngIf="page.contributors.length">
-            <span *ngFor="let contributor of page.contributors; let last = last">{{ contributor.nickname }}{{ last ? '' : ', ' }}</span>
+          <p class="pageDetail__sidebarValue pageDetail__person" *ngFor="let contributor of page.contributors">
+            <app-avatar [avatar]="contributor.avatar" [nickname]="contributor.nickname"></app-avatar>
+            {{ contributor.nickname }}
           </p>
           <p class="pageDetail__sidebarValue pageDetail__sidebarValue--muted" *ngIf="!page.contributors.length">&mdash;</p>
         </div>

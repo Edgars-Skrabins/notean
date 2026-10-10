@@ -51,6 +51,12 @@
   padding: 16px 20px;
 }
 
+.manageTeam__memberIdentity {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
 .manageTeam__memberName {
   color: var(--color-text-heading);
   font-weight: 600;

@@ -10,6 +10,7 @@ import {TeamMember} from "@models/team.model";
 import {AppRoutes} from "../../app/app-routes.enum";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {TeamCodeDisplayComponent} from "@components/team-code-display/team-code-display.component";
+import {AvatarComponent} from "@components/avatar/avatar.component";
 
 @Component({
   selector: 'app-manage-team',
@@ -20,7 +21,8 @@ import {TeamCodeDisplayComponent} from "@components/team-code-display/team-code-
     NgIf,
     TranslateModule,
     ConfirmDialogComponent,
-    TeamCodeDisplayComponent
+    TeamCodeDisplayComponent,
+    AvatarComponent
   ],
   templateUrl: './manage-team.component.html',
   styleUrl: './manage-team.component.css'

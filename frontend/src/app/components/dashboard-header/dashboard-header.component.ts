@@ -1,13 +1,15 @@
 import {Component, HostListener} from '@angular/core';
 import {TranslateModule} from "@ngx-translate/core";
-import {NgIf} from "@angular/common";
+import {AsyncPipe, NgIf} from "@angular/common";
 import {PHRASES} from "@config/phrases";
 import {NavigationService} from "@services/navigation.service";
 import {AuthService} from "@services/auth.service";
 import {TeamService} from "@services/team.service";
 import {SettingsService} from "@services/settings.service";
+import {AvatarService} from "@services/avatar.service";
 import {LanguageSwitcherComponent} from "@components/language-switcher/language-switcher.component";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
+import {AvatarComponent} from "@components/avatar/avatar.component";
 import {AppRoutes} from "../../app/app-routes.enum";
 
 @Component({
@@ -16,8 +18,10 @@ import {AppRoutes} from "../../app/app-routes.enum";
   imports: [
     TranslateModule,
     NgIf,
+    AsyncPipe,
     LanguageSwitcherComponent,
-    IconButtonComponent
+    IconButtonComponent,
+    AvatarComponent
   ],
   templateUrl: './dashboard-header.component.html',
   styleUrl: './dashboard-header.component.css'
@@ -31,7 +35,8 @@ export class DashboardHeaderComponent {
     private navigationService: NavigationService,
     private authService: AuthService,
     private teamService: TeamService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    protected avatarService: AvatarService
   ) {
   }
 
@@ -84,6 +89,7 @@ export class DashboardHeaderComponent {
     this.authService.logout();
     this.teamService.clearCurrentTeam();
     this.settingsService.clear();
+    this.avatarService.clear();
     this.navigationService.navigate(AppRoutes.LOGIN);
   }
 }

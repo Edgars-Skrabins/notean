@@ -6,6 +6,7 @@
 
     <div class="dashboardHeader__menu">
       <div class="dashboardHeader__trigger">
+        <app-avatar [avatar]="avatarService.avatar$ | async" [nickname]="nickname"></app-avatar>
         <span class="dashboardHeader__nickname">{{ nickname }}</span>
         <app-icon-button
           icon="menu"

@@ -47,13 +47,17 @@
       <div class="diagramDetail__sidebar">
         <div class="diagramDetail__sidebarSection">
           <h3 class="diagramDetail__sidebarLabel">{{ PHRASES.OWNER | translate }}</h3>
-          <p class="diagramDetail__sidebarValue">{{ diagram.creator.nickname }}</p>
+          <p class="diagramDetail__sidebarValue diagramDetail__person">
+            <app-avatar [avatar]="diagram.creator.avatar" [nickname]="diagram.creator.nickname"></app-avatar>
+            {{ diagram.creator.nickname }}
+          </p>
         </div>
 
         <div class="diagramDetail__sidebarSection">
           <h3 class="diagramDetail__sidebarLabel">{{ PHRASES.CONTRIBUTORS | translate }}</h3>
-          <p class="diagramDetail__sidebarValue" *ngIf="diagram.contributors.length">
-            <span *ngFor="let contributor of diagram.contributors; let last = last">{{ contributor.nickname }}{{ last ? '' : ', ' }}</span>
+          <p class="diagramDetail__sidebarValue diagramDetail__person" *ngFor="let contributor of diagram.contributors">
+            <app-avatar [avatar]="contributor.avatar" [nickname]="contributor.nickname"></app-avatar>
+            {{ contributor.nickname }}
           </p>
           <p class="diagramDetail__sidebarValue diagramDetail__sidebarValue--muted" *ngIf="!diagram.contributors.length">&mdash;</p>
         </div>

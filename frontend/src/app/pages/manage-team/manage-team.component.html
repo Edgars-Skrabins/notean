@@ -27,7 +27,10 @@
     <h3 class="manageTeam__sectionTitle">{{ PHRASES.TEAM_MEMBERS | translate }}</h3>
     <div class="manageTeam__memberList" *ngIf="!isLoadingMembers && members.length">
       <div class="manageTeam__memberRow" *ngFor="let member of members">
-        <span class="manageTeam__memberName">{{ member.nickname }}</span>
+        <span class="manageTeam__memberIdentity">
+          <app-avatar [avatar]="member.avatar" [nickname]="member.nickname"></app-avatar>
+          <span class="manageTeam__memberName">{{ member.nickname }}</span>
+        </span>
         <span class="manageTeam__memberRole">{{ teamRoleLabel(member.role) | translate }}</span>
       </div>
     </div>

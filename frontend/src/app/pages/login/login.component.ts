@@ -6,6 +6,7 @@ import {NavigationService} from "@services/navigation.service";
 import {AuthService} from "@services/auth.service";
 import {TeamService} from "@services/team.service";
 import {SettingsService} from "@services/settings.service";
+import {AvatarService} from "@services/avatar.service";
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {AuthCardComponent} from "@components/auth-card/auth-card.component";
@@ -34,7 +35,8 @@ export class LoginComponent {
     private navigationService: NavigationService,
     private authService: AuthService,
     private teamService: TeamService,
-    private settingsService: SettingsService
+    private settingsService: SettingsService,
+    private avatarService: AvatarService
   ) {
   }
 
@@ -52,6 +54,7 @@ export class LoginComponent {
         }
 
         this.settingsService.load();
+        this.avatarService.load();
 
         return this.teamService.fetchMyTeam().then((team) => {
           if (team) {
