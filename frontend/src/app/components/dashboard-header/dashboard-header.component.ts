@@ -5,6 +5,7 @@ import {PHRASES} from "@config/phrases";
 import {NavigationService} from "@services/navigation.service";
 import {AuthService} from "@services/auth.service";
 import {TeamService} from "@services/team.service";
+import {SettingsService} from "@services/settings.service";
 import {LanguageSwitcherComponent} from "@components/language-switcher/language-switcher.component";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {AppRoutes} from "../../app/app-routes.enum";
@@ -29,7 +30,8 @@ export class DashboardHeaderComponent {
   constructor(
     private navigationService: NavigationService,
     private authService: AuthService,
-    private teamService: TeamService
+    private teamService: TeamService,
+    private settingsService: SettingsService
   ) {
   }
 
@@ -81,6 +83,7 @@ export class DashboardHeaderComponent {
     this.closeMenu();
     this.authService.logout();
     this.teamService.clearCurrentTeam();
+    this.settingsService.clear();
     this.navigationService.navigate(AppRoutes.LOGIN);
   }
 }

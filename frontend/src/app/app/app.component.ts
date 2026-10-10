@@ -3,6 +3,7 @@ import {Component} from "@angular/core";
 import {filter} from "rxjs";
 import {LanguageService} from "@services/language.service";
 import {AuthService} from "@services/auth.service";
+import {SettingsService} from "@services/settings.service";
 import {setUnauthorizedHandler} from "@config/axiosConfig";
 import {AppRoutes} from "./app-routes.enum";
 import {ToastContainerComponent} from "@components/toast-container/toast-container.component";
@@ -25,11 +26,13 @@ export class AppComponent {
     private languageService: LanguageService,
     private router: Router,
     private authService: AuthService,
+    private settingsService: SettingsService,
   ) {
     this.languageService.initLanguage();
 
     setUnauthorizedHandler(() => {
       this.authService.logout();
+      this.settingsService.clear();
       this.router.navigate([AppRoutes.LOGIN]);
     });
 

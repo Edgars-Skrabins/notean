@@ -1,7 +1,8 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
 import {DashboardHeaderComponent} from "@components/dashboard-header/dashboard-header.component";
 import {DashboardSidebarComponent} from "@components/dashboard-sidebar/dashboard-sidebar.component";
+import {FavoriteService} from "@services/favorite.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -14,5 +15,11 @@ import {DashboardSidebarComponent} from "@components/dashboard-sidebar/dashboard
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
-export class DashboardComponent {
+export class DashboardComponent implements OnInit {
+  constructor(private favoriteService: FavoriteService) {
+  }
+
+  ngOnInit() {
+    this.favoriteService.load();
+  }
 }
