@@ -1,16 +1,22 @@
-import {Component} from '@angular/core';
+import {Component, OnDestroy} from '@angular/core';
 import {FormsModule} from "@angular/forms";
-import {NgIf} from "@angular/common";
+import {NgFor, NgIf} from "@angular/common";
+import {Subscription} from "rxjs";
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
+import {AVATAR_COLORS, AVATAR_IMAGE_MAX_BYTES, AVATAR_IMAGE_TYPES, AvatarColor} from "@config/avatarColors";
 import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
 import {ToastService} from "@services/toast.service";
+import {AvatarService} from "@services/avatar.service";
 import {ToastType} from "@models/toast.model";
 import {NicknameError} from "@models/team.model";
+import {Avatar, AvatarUpdate} from "@models/avatar.model";
 import {HasUnsavedChanges} from "@models/unsaved-changes.model";
 import {nicknameErrorPhrase, validateNickname} from "@utils/nicknameValidation";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
+import {AvatarComponent} from "@components/avatar/avatar.component";
+import {ButtonComponent} from "@components/button/button.component";
 import {AppRoutes} from "../../../app/app-routes.enum";
 
 @Component({
@@ -19,62 +25,157 @@ import {AppRoutes} from "../../../app/app-routes.enum";
   imports: [
     FormsModule,
     NgIf,
+    NgFor,
     TranslateModule,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    AvatarComponent,
+    ButtonComponent
   ],
   templateUrl: './profile.component.html',
   styleUrl: './profile.component.css'
 })
-export class ProfileComponent implements HasUnsavedChanges {
+export class ProfileComponent implements HasUnsavedChanges, OnDestroy {
   protected readonly PHRASES = PHRASES;
+  protected readonly AVATAR_COLORS = AVATAR_COLORS;
+  protected readonly AVATAR_IMAGE_TYPES = AVATAR_IMAGE_TYPES;
 
   savedNickname: string;
   nickname: string;
+  savedAvatar: Avatar | null;
+  pendingColor: AvatarColor | null;
+  pendingImage: File | null = null;
+  pendingImagePreviewUrl: string | null = null;
+  pendingRemoveImage = false;
   isSaving = false;
   isLeaveConfirmOpen = false;
 
   private resolveLeave: ((canLeave: boolean) => void) | null = null;
+  private avatarSubscription: Subscription;
 
   constructor(
     private navigationService: NavigationService,
     private teamService: TeamService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private avatarService: AvatarService
   ) {
     this.savedNickname = this.teamService.getCurrentNickname() ?? '';
     this.nickname = this.savedNickname;
+    this.savedAvatar = this.avatarService.getAvatar();
+    this.pendingColor = this.savedAvatar?.color ?? null;
+    this.avatarSubscription = this.avatarService.avatar$.subscribe((avatar) => {
+      if (!this.hasAvatarChanges) {
+        this.savedAvatar = avatar;
+        this.pendingColor = avatar?.color ?? null;
+      }
+    });
+  }
+
+  get hasAvatarChanges(): boolean {
+    return this.pendingImage !== null
+      || this.pendingRemoveImage
+      || this.pendingColor !== (this.savedAvatar?.color ?? null);
   }
 
   get hasUnsavedChanges(): boolean {
-    return this.nickname !== this.savedNickname;
+    return this.nickname !== this.savedNickname || this.hasAvatarChanges;
   }
 
-  handleSave() {
+  get previewAvatar(): Avatar | null {
+    if (!this.pendingColor) {
+      return null;
+    }
+    return {
+      color: this.pendingColor,
+      imageUrl: this.pendingRemoveImage ? null : this.savedAvatar?.imageUrl ?? null,
+    };
+  }
+
+  get hasImage(): boolean {
+    return this.pendingImage !== null || (!this.pendingRemoveImage && !!this.savedAvatar?.imageUrl);
+  }
+
+  ngOnDestroy() {
+    this.avatarSubscription.unsubscribe();
+    this.revokePreviewUrl();
+  }
+
+  handleFileSelected(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    input.value = '';
+    if (!file) {
+      return;
+    }
+
+    if (!AVATAR_IMAGE_TYPES.includes(file.type)) {
+      this.toastService.show({type: ToastType.ERROR, message: PHRASES.IMAGE_INVALID_TYPE});
+      return;
+    }
+    if (file.size > AVATAR_IMAGE_MAX_BYTES) {
+      this.toastService.show({type: ToastType.ERROR, message: PHRASES.IMAGE_TOO_LARGE});
+      return;
+    }
+
+    this.revokePreviewUrl();
+    this.pendingImage = file;
+    this.pendingImagePreviewUrl = URL.createObjectURL(file);
+    this.pendingRemoveImage = false;
+  }
+
+  handleRemoveImage() {
+    this.revokePreviewUrl();
+    this.pendingImage = null;
+    this.pendingRemoveImage = !!this.savedAvatar?.imageUrl;
+  }
+
+  handleSelectColor(color: AvatarColor) {
+    this.pendingColor = color;
+  }
+
+  async handleSave() {
     if (!this.hasUnsavedChanges || this.isSaving) {
       return;
     }
 
-    const nicknameError = validateNickname(this.nickname);
-    if (nicknameError) {
-      this.showNicknameError(nicknameError);
-      return;
+    const nicknameChanged = this.nickname !== this.savedNickname;
+    if (nicknameChanged) {
+      const nicknameError = validateNickname(this.nickname);
+      if (nicknameError) {
+        this.showNicknameError(nicknameError);
+        return;
+      }
     }
 
     this.isSaving = true;
 
-    this.teamService.updateNickname(this.nickname.trim())
-      .then((response) => {
+    try {
+      if (nicknameChanged) {
+        const response = await this.teamService.updateNickname(this.nickname.trim());
         if (!response.success) {
           this.showNicknameError(response.error);
           return;
         }
-
         this.savedNickname = response.nickname;
         this.nickname = response.nickname;
-        this.toastService.show({type: ToastType.SUCCESS, message: PHRASES.PROFILE_UPDATED});
-      })
-      .finally(() => {
-        this.isSaving = false;
-      });
+      }
+
+      if (this.hasAvatarChanges) {
+        const response = await this.avatarService.update(this.buildAvatarUpdate());
+        if (!response.success) {
+          this.toastService.show({type: ToastType.ERROR, message: PHRASES.AVATAR_UPDATE_FAILED});
+          return;
+        }
+        this.revokePreviewUrl();
+        this.pendingImage = null;
+        this.pendingRemoveImage = false;
+        this.savedAvatar = response.avatar;
+        this.pendingColor = response.avatar.color;
+      }
+
+      this.toastService.show({type: ToastType.SUCCESS, message: PHRASES.PROFILE_UPDATED});
+    } finally {
+      this.isSaving = false;
+    }
   }
 
   confirmLeave(): boolean | Promise<boolean> {
@@ -100,6 +201,26 @@ export class ProfileComponent implements HasUnsavedChanges {
 
   handleGoBack() {
     this.navigationService.navigate(AppRoutes.DASHBOARD);
+  }
+
+  private buildAvatarUpdate(): AvatarUpdate {
+    const update: AvatarUpdate = {};
+    if (this.pendingColor && this.pendingColor !== this.savedAvatar?.color) {
+      update.color = this.pendingColor;
+    }
+    if (this.pendingImage) {
+      update.image = this.pendingImage;
+    } else if (this.pendingRemoveImage) {
+      update.removeImage = true;
+    }
+    return update;
+  }
+
+  private revokePreviewUrl() {
+    if (this.pendingImagePreviewUrl) {
+      URL.revokeObjectURL(this.pendingImagePreviewUrl);
+      this.pendingImagePreviewUrl = null;
+    }
   }
 
   private showNicknameError(error: NicknameError) {

@@ -6,6 +6,43 @@
 <div class="profile">
   <h2 class="profile__title">{{ PHRASES.PROFILE | translate }}</h2>
 
+  <div class="profile__avatar">
+    <app-avatar
+      [avatar]="previewAvatar"
+      [nickname]="nickname"
+      [previewUrl]="pendingImagePreviewUrl"
+      [size]="96"
+    ></app-avatar>
+
+    <div class="profile__avatarActions">
+      <input
+        #imageInput
+        class="profile__fileInput"
+        type="file"
+        [accept]="AVATAR_IMAGE_TYPES.join(',')"
+        (change)="handleFileSelected($event)"
+      />
+      <app-button variant="ghost" (pressed)="imageInput.click()">{{ PHRASES.UPLOAD_IMAGE | translate }}</app-button>
+      <app-button *ngIf="hasImage" variant="danger" (pressed)="handleRemoveImage()">{{ PHRASES.REMOVE_IMAGE | translate }}</app-button>
+    </div>
+  </div>
+
+  <div class="authField">
+    <span class="authField__label">{{ PHRASES.AVATAR_COLOR | translate }}</span>
+    <div class="profile__swatches">
+      <button
+        *ngFor="let color of AVATAR_COLORS"
+        type="button"
+        class="profile__swatch"
+        [class.profile__swatch--selected]="color.key === pendingColor"
+        [style.background]="color.hex"
+        [title]="color.phrase | translate"
+        [attr.aria-label]="color.phrase | translate"
+        (click)="handleSelectColor(color.key)"
+      ></button>
+    </div>
+  </div>
+
   <div class="authField">
     <label class="authField__label" for="nicknameInput">{{ PHRASES.NICKNAME | translate }}</label>
     <input

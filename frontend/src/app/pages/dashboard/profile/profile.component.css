@@ -14,3 +14,44 @@
   font-size: 1.6rem;
   font-weight: 700;
 }
+
+.profile__avatar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+
+.profile__avatarActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.profile__fileInput {
+  display: none;
+}
+
+.profile__swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.profile__swatch {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform var(--transition-fast);
+}
+
+.profile__swatch:hover {
+  transform: scale(1.1);
+}
+
+.profile__swatch--selected {
+  box-shadow: 0 0 0 2px var(--color-card-bg), 0 0 0 4px var(--color-text-heading);
+}
