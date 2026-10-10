@@ -8,6 +8,7 @@ import {IconComponent} from '@components/icon/icon.component';
 import {IconButtonComponent} from '@components/icon-button/icon-button.component';
 import {DeleteFolderDialogComponent} from '@components/delete-folder-dialog/delete-folder-dialog.component';
 import {ConfirmDialogComponent} from '@components/confirm-dialog/confirm-dialog.component';
+import {FavoriteStarComponent} from '@components/favorite-star/favorite-star.component';
 
 export interface TreeFolder {
   id: number;
@@ -52,6 +53,7 @@ type DropTarget =
     IconButtonComponent,
     DeleteFolderDialogComponent,
     ConfirmDialogComponent,
+    FavoriteStarComponent,
     CdkDrag
   ],
   templateUrl: './item-tree.component.html',
@@ -63,6 +65,7 @@ export class ItemTreeComponent implements OnChanges {
   @Input() folders: TreeFolder[] = [];
   @Input() items: TreeItem[] = [];
   @Input() itemLabel = '';
+  @Input({required: true}) favoritableType!: 'Page' | 'Diagram';
   @Input({required: true}) deleteItemConfirmMessage!: string;
 
   @Output() openItem = new EventEmitter<TreeItem>();

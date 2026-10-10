@@ -9,12 +9,14 @@ import {DiagramEditingService} from "@services/diagram-editing.service";
 import {TeamService} from "@services/team.service";
 import {AuthService} from "@services/auth.service";
 import {NavigationService} from "@services/navigation.service";
+import {FavoriteService} from "@services/favorite.service";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {DiagramDetail, DiagramUser} from "@models/diagram.model";
 import {FlowchartEditorComponent} from "@components/flowchart-editor/flowchart-editor.component";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {ButtonComponent} from "@components/button/button.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
+import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
 
 @Component({
   selector: 'app-diagram-detail',
@@ -28,7 +30,8 @@ import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.
     FlowchartEditorComponent,
     IconButtonComponent,
     ButtonComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    FavoriteStarComponent
   ],
   templateUrl: './diagram-detail.component.html',
   styleUrl: './diagram-detail.component.css'
@@ -54,7 +57,8 @@ export class DiagramDetailComponent implements OnInit, OnDestroy {
     private diagramEditingService: DiagramEditingService,
     private teamService: TeamService,
     private authService: AuthService,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private favoriteService: FavoriteService
   ) {
     this.teamCode = this.teamService.getCurrentTeam()!.code;
   }
@@ -115,13 +119,16 @@ export class DiagramDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.diagramService.deleteDiagram(this.teamCode, this.diagram.id)
+    const diagramId = this.diagram.id;
+
+    this.diagramService.deleteDiagram(this.teamCode, diagramId)
       .then((response) => {
         if (!response.success) {
           this.alertMessage = response.statusMessage;
           return;
         }
 
+        this.favoriteService.forgetItem('Diagram', diagramId);
         this.handleGoBack();
       });
   }
@@ -140,6 +147,7 @@ export class DiagramDetailComponent implements OnInit, OnDestroy {
 
         this.alertMessage = '';
         this.diagram = response.diagram;
+        this.favoriteService.renameItem('Diagram', response.diagram.id, response.diagram.title);
         this.mode = 'view';
         this.diagramEditingService.stopEditing();
       });

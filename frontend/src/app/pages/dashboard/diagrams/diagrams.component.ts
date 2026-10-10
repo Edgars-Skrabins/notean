@@ -7,6 +7,7 @@ import {PHRASES} from "@config/phrases";
 import {DiagramService} from "@services/diagram.service";
 import {FolderService} from "@services/folder.service";
 import {TeamService} from "@services/team.service";
+import {FavoriteService} from "@services/favorite.service";
 import {FolderItemType} from "@models/folder.model";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {ButtonComponent} from "@components/button/button.component";
@@ -37,9 +38,10 @@ export class DiagramsComponent extends FolderedListPageComponent {
     private diagramService: DiagramService,
     folderService: FolderService,
     teamService: TeamService,
+    favoriteService: FavoriteService,
     private translateService: TranslateService
   ) {
-    super(folderService, teamService);
+    super(folderService, teamService, favoriteService);
   }
 
   handleOpenDiagram(item: TreeItem) {

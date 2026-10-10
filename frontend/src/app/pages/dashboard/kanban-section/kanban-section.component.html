@@ -19,6 +19,7 @@
         <span class="boardsView__rowMeta">{{ board.creator.nickname }} &middot; {{ board.updatedAt | date }}</span>
       </button>
 
+      <app-favorite-star class="boardsView__star" type="Board" [itemId]="board.id" [title]="board.title"></app-favorite-star>
       <app-icon-button
         icon="trash"
         variant="danger"

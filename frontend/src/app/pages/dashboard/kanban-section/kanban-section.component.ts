@@ -6,12 +6,14 @@ import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {BoardService} from "@services/board.service";
 import {TeamService} from "@services/team.service";
+import {FavoriteService} from "@services/favorite.service";
 import {BoardSummary} from "@models/board.model";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {ButtonComponent} from "@components/button/button.component";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {CreateNamedItemDialogComponent} from "@components/create-named-item-dialog/create-named-item-dialog.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
+import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
 
 @Component({
   selector: 'app-kanban-section',
@@ -25,7 +27,8 @@ import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.
     ButtonComponent,
     IconButtonComponent,
     CreateNamedItemDialogComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    FavoriteStarComponent
   ],
   templateUrl: './kanban-section.component.html',
   styleUrl: './kanban-section.component.css'
@@ -47,7 +50,8 @@ export class KanbanSectionComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private boardService: BoardService,
-    private teamService: TeamService
+    private teamService: TeamService,
+    private favoriteService: FavoriteService
   ) {
     this.teamCode = this.teamService.getCurrentTeam()!.code;
   }
@@ -119,6 +123,7 @@ export class KanbanSectionComponent implements OnInit, OnDestroy {
         }
 
         this.alertMessage = '';
+        this.favoriteService.forgetItem('Board', boardId);
         this.loadData();
       });
   }

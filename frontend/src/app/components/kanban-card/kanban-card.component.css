@@ -37,12 +37,18 @@
 }
 
 .kanbanCard__actions {
+  display: flex;
+  gap: 2px;
   flex-shrink: 0;
   padding-right: var(--space-2);
+}
+
+.kanbanCard__actions > * {
   opacity: 0;
   transition: opacity var(--transition-fast);
 }
 
-.kanbanCard:hover .kanbanCard__actions {
+.kanbanCard:hover .kanbanCard__actions > *,
+.kanbanCard__actions > .favoriteStar--favorited {
   opacity: 1;
 }

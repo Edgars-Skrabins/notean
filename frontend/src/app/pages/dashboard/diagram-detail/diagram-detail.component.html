@@ -10,6 +10,7 @@
       <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE | translate" (pressed)="handleGoBack()"></app-icon-button>
 
       <div class="diagramDetail__actions" *ngIf="mode === 'view'">
+        <app-favorite-star type="Diagram" [itemId]="diagram.id" [title]="diagram.title" [size]="36"></app-favorite-star>
         <app-button variant="ghost" (pressed)="handleDelete()">{{ PHRASES.DELETE | translate }}</app-button>
         <app-button variant="primary" (pressed)="handleEdit()">{{ PHRASES.EDIT | translate }}</app-button>
       </div>

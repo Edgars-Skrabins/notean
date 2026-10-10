@@ -5,12 +5,15 @@
     <div class="cardDetail__header">
       <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE | translate" (pressed)="handleGoBack()"></app-icon-button>
 
-      <app-icon-button
-        icon="trash"
-        variant="danger"
-        [tooltip]="PHRASES.DELETE_CARD | translate"
-        (pressed)="handleDelete()"
-      ></app-icon-button>
+      <div class="cardDetail__headerActions">
+        <app-favorite-star type="Card" [itemId]="card.id" [title]="card.title" [size]="36"></app-favorite-star>
+        <app-icon-button
+          icon="trash"
+          variant="danger"
+          [tooltip]="PHRASES.DELETE_CARD | translate"
+          (pressed)="handleDelete()"
+        ></app-icon-button>
+      </div>
     </div>
 
     <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>

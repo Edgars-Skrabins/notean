@@ -9,12 +9,14 @@ import {PageEditingService} from "@services/page-editing.service";
 import {TeamService} from "@services/team.service";
 import {AuthService} from "@services/auth.service";
 import {NavigationService} from "@services/navigation.service";
+import {FavoriteService} from "@services/favorite.service";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {PageDetail, PageUser} from "@models/page.model";
 import {RichTextEditorComponent} from "@components/rich-text-editor/rich-text-editor.component";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {ButtonComponent} from "@components/button/button.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
+import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
 
 @Component({
   selector: 'app-page-detail',
@@ -28,7 +30,8 @@ import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.
     RichTextEditorComponent,
     IconButtonComponent,
     ButtonComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    FavoriteStarComponent
   ],
   templateUrl: './page-detail.component.html',
   styleUrl: './page-detail.component.css'
@@ -54,7 +57,8 @@ export class PageDetailComponent implements OnInit, OnDestroy {
     private pageEditingService: PageEditingService,
     private teamService: TeamService,
     private authService: AuthService,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private favoriteService: FavoriteService
   ) {
     this.teamCode = this.teamService.getCurrentTeam()!.code;
   }
@@ -115,13 +119,16 @@ export class PageDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.pageService.deletePage(this.teamCode, this.page.id)
+    const pageId = this.page.id;
+
+    this.pageService.deletePage(this.teamCode, pageId)
       .then((response) => {
         if (!response.success) {
           this.alertMessage = response.statusMessage;
           return;
         }
 
+        this.favoriteService.forgetItem('Page', pageId);
         this.handleGoBack();
       });
   }
@@ -140,6 +147,7 @@ export class PageDetailComponent implements OnInit, OnDestroy {
 
         this.alertMessage = '';
         this.page = response.page;
+        this.favoriteService.renameItem('Page', response.page.id, response.page.title);
         this.mode = 'view';
         this.pageEditingService.stopEditing();
       });

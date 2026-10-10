@@ -82,3 +82,13 @@
   flex-shrink: 0;
   padding-left: var(--space-4);
 }
+
+.boardsView__star {
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.boardsView__row:hover .boardsView__star,
+.boardsView__star.favoriteStar--favorited {
+  opacity: 1;
+}

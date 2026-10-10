@@ -18,6 +18,7 @@
     [folders]="displayFolders"
     [items]="displayItems"
     [itemLabel]="PHRASES.NEW_PAGE | translate"
+    favoritableType="Page"
     [deleteItemConfirmMessage]="PHRASES.CONFIRM_DELETE_PAGE | translate"
     (openItem)="handleOpenPage($event)"
     (createFolder)="handleCreateFolder($event.parentId)"

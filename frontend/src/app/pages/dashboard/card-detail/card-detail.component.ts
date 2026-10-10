@@ -6,10 +6,12 @@ import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {CardService} from "@services/card.service";
 import {TeamService} from "@services/team.service";
+import {FavoriteService} from "@services/favorite.service";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {CardDetail} from "@models/card.model";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
+import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
 
 @Component({
   selector: 'app-card-detail',
@@ -19,7 +21,8 @@ import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.
     NgIf,
     TranslateModule,
     IconButtonComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    FavoriteStarComponent
   ],
   templateUrl: './card-detail.component.html',
   styleUrl: './card-detail.component.css'
@@ -42,7 +45,8 @@ export class CardDetailComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private cardService: CardService,
-    private teamService: TeamService
+    private teamService: TeamService,
+    private favoriteService: FavoriteService
   ) {
     this.teamCode = this.teamService.getCurrentTeam()!.code;
   }
@@ -75,6 +79,7 @@ export class CardDetailComponent implements OnInit {
           return;
         }
 
+        this.favoriteService.forgetItem('Card', this.cardId);
         this.handleGoBack();
       });
   }
@@ -105,6 +110,7 @@ export class CardDetailComponent implements OnInit {
         this.alertMessage = '';
         this.card = response.card;
         this.titleDraft = response.card.title;
+        this.favoriteService.renameItem('Card', response.card.id, response.card.title);
       });
   }
 

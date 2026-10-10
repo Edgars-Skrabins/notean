@@ -18,6 +18,7 @@
     [folders]="displayFolders"
     [items]="displayItems"
     [itemLabel]="PHRASES.NEW_DIAGRAM | translate"
+    favoritableType="Diagram"
     [deleteItemConfirmMessage]="PHRASES.CONFIRM_DELETE_DIAGRAM | translate"
     (openItem)="handleOpenDiagram($event)"
     (createFolder)="handleCreateFolder($event.parentId)"

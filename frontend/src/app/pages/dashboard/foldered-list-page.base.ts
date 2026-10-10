@@ -1,6 +1,7 @@
 import {Directive, OnDestroy, OnInit} from '@angular/core';
 import {FolderService} from "@services/folder.service";
 import {TeamService} from "@services/team.service";
+import {FavoriteService} from "@services/favorite.service";
 import {FolderItemType} from "@models/folder.model";
 import {TreeFolder, TreeItem} from "@components/item-tree/item-tree.component";
 
@@ -32,7 +33,8 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
 
   protected constructor(
     private folderService: FolderService,
-    private teamService: TeamService
+    private teamService: TeamService,
+    private favoriteService: FavoriteService
   ) {
     this.teamCode = this.teamService.getCurrentTeam()!.code;
   }
@@ -131,6 +133,8 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   }
 
   handleDeleteFolder(event: { folderId: number; mode: 'cascade' | 'promote' }) {
+    const deletedItemIds = event.mode === 'cascade' ? this.itemIdsWithin(event.folderId) : [];
+
     this.folderService.deleteFolder(this.teamCode, event.folderId, event.mode)
       .then((response) => {
         if (!response.success) {
@@ -139,6 +143,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
         }
 
         this.alertMessage = '';
+        deletedItemIds.forEach((itemId) => this.favoriteService.forgetItem(this.itemType, itemId));
         this.loadData();
       });
   }
@@ -169,6 +174,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
         }
 
         this.alertMessage = '';
+        this.favoriteService.forgetItem(this.itemType, event.itemId);
         this.loadData();
       });
   }
@@ -202,6 +208,25 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
       }));
       this.items = itemsResponse.items.map((item) => this.toTreeItem(item));
     });
+  }
+
+  private itemIdsWithin(folderId: number): number[] {
+    const folderIds = new Set([folderId]);
+    let added = true;
+
+    while (added) {
+      added = false;
+      for (const folder of this.folders) {
+        if (folder.parentId !== null && folderIds.has(folder.parentId) && !folderIds.has(folder.id)) {
+          folderIds.add(folder.id);
+          added = true;
+        }
+      }
+    }
+
+    return this.items
+      .filter((item) => item.folderId !== null && folderIds.has(item.folderId))
+      .map((item) => item.id);
   }
 
   private toTreeItem(item: FolderedItemSummary): TreeItem {

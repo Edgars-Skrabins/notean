@@ -10,6 +10,7 @@ import {ColumnService} from "@services/column.service";
 import {CardService} from "@services/card.service";
 import {TeamService} from "@services/team.service";
 import {NavigationService} from "@services/navigation.service";
+import {FavoriteService} from "@services/favorite.service";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardColumn, BoardDetail} from "@models/board.model";
 import {CardSummary} from "@models/card.model";
@@ -18,6 +19,7 @@ import {ButtonComponent} from "@components/button/button.component";
 import {KanbanColumnComponent} from "@components/kanban-column/kanban-column.component";
 import {CreateNamedItemDialogComponent} from "@components/create-named-item-dialog/create-named-item-dialog.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
+import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
 
 @Component({
   selector: 'app-kanban-board',
@@ -32,6 +34,7 @@ import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.
     KanbanColumnComponent,
     CreateNamedItemDialogComponent,
     ConfirmDialogComponent,
+    FavoriteStarComponent,
     CdkDropListGroup
   ],
   templateUrl: './kanban-board.component.html',
@@ -64,7 +67,8 @@ export class KanbanBoardComponent implements OnInit {
     private columnService: ColumnService,
     private cardService: CardService,
     private teamService: TeamService,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private favoriteService: FavoriteService
   ) {
     this.teamCode = this.teamService.getCurrentTeam()!.code;
   }
@@ -96,6 +100,7 @@ export class KanbanBoardComponent implements OnInit {
           return;
         }
 
+        this.favoriteService.forgetItem('Board', this.boardId);
         this.handleGoBack();
       });
   }
@@ -131,6 +136,7 @@ export class KanbanBoardComponent implements OnInit {
         if (this.board) {
           this.board.title = response.board.title;
         }
+        this.favoriteService.renameItem('Board', this.boardId, response.board.title);
       });
   }
 
@@ -175,6 +181,7 @@ export class KanbanBoardComponent implements OnInit {
         }
 
         this.alertMessage = '';
+        column.cards.forEach((card) => this.favoriteService.forgetItem('Card', card.id));
         if (this.board) {
           this.board.columns = this.board.columns.filter((existing) => existing.id !== column.id);
         }
@@ -232,6 +239,7 @@ export class KanbanBoardComponent implements OnInit {
         }
 
         this.alertMessage = '';
+        this.favoriteService.forgetItem('Card', card.id);
         column.cards = column.cards.filter((existing) => existing.id !== card.id);
       });
   }

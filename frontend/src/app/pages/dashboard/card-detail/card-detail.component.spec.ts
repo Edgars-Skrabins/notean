@@ -3,18 +3,21 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {CardDetailComponent} from "./card-detail.component";
 import {CardService} from "@services/card.service";
 import {TeamService} from "@services/team.service";
+import {FavoriteService} from "@services/favorite.service";
 import {CardDetail} from "@models/card.model";
 
 describe('CardDetailComponent editing', () => {
   let component: CardDetailComponent;
   let cardService: jasmine.SpyObj<CardService>;
+  let favoriteService: jasmine.SpyObj<FavoriteService>;
   let card: CardDetail;
 
   beforeEach(() => {
     cardService = jasmine.createSpyObj('CardService', ['updateCard']);
+    favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem', 'renameItem']);
     const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeam']);
     teamService.getCurrentTeam.and.returnValue({id: 1, name: 'Team A', code: 'aaa'});
-    component = new CardDetailComponent({} as ActivatedRoute, {} as Router, cardService, teamService);
+    component = new CardDetailComponent({} as ActivatedRoute, {} as Router, cardService, teamService, favoriteService);
 
     card = {
       id: 1,
@@ -58,6 +61,7 @@ describe('CardDetailComponent editing', () => {
     expect(cardService.updateCard).toHaveBeenCalledWith('aaa', 0, 0, {title: 'Renamed'});
     expect(component.card?.title).toBe('Renamed');
     expect(component.titleDraft).toBe('Renamed');
+    expect(favoriteService.renameItem).toHaveBeenCalledWith('Card', 1, 'Renamed');
   }));
 
   it('commitTitle shows the error and keeps the draft when the request fails', fakeAsync(() => {

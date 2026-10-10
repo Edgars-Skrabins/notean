@@ -101,6 +101,7 @@
       </button>
 
       <div class="itemTree__rowActions">
+        <app-favorite-star [type]="favoritableType" [itemId]="item.id" [title]="item.title"></app-favorite-star>
         <app-icon-button
           icon="trash"
           variant="danger"

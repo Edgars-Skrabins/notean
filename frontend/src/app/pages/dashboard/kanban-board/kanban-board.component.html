@@ -26,12 +26,15 @@
         ></app-icon-button>
       </div>
 
-      <app-icon-button
-        icon="trash"
-        variant="danger"
-        [tooltip]="PHRASES.DELETE | translate"
-        (pressed)="handleDeleteBoard()"
-      ></app-icon-button>
+      <div class="kanbanBoard__headerActions">
+        <app-favorite-star type="Board" [itemId]="board.id" [title]="board.title" [size]="36"></app-favorite-star>
+        <app-icon-button
+          icon="trash"
+          variant="danger"
+          [tooltip]="PHRASES.DELETE | translate"
+          (pressed)="handleDeleteBoard()"
+        ></app-icon-button>
+      </div>
     </div>
 
     <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>

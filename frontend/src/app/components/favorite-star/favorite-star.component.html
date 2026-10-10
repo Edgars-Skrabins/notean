@@ -1,0 +1,6 @@
+<app-icon-button
+  [icon]="favorited ? 'star-filled' : 'star'"
+  [tooltip]="(favorited ? PHRASES.REMOVE_FROM_FAVORITES : PHRASES.ADD_TO_FAVORITES) | translate"
+  [size]="size"
+  (click)="handleClick($event)"
+></app-icon-button>

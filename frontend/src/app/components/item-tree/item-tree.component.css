@@ -138,11 +138,15 @@
   display: flex;
   gap: 2px;
   flex-shrink: 0;
+}
+
+.itemTree__rowActions > * {
   opacity: 0;
   transition: opacity var(--transition-fast);
 }
 
-.itemTree__row:hover .itemTree__rowActions {
+.itemTree__row:hover .itemTree__rowActions > *,
+.itemTree__rowActions > .favoriteStar--favorited {
   opacity: 1;
 }
 

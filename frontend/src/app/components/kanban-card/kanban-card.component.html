@@ -4,6 +4,7 @@
   </button>
 
   <div class="kanbanCard__actions">
+    <app-favorite-star type="Card" [itemId]="card.id" [title]="card.title"></app-favorite-star>
     <app-icon-button
       icon="trash"
       variant="danger"

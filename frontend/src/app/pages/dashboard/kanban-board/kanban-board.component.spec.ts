@@ -7,10 +7,11 @@ import {ColumnService} from "@services/column.service";
 import {CardService} from "@services/card.service";
 import {TeamService} from "@services/team.service";
 import {NavigationService} from "@services/navigation.service";
+import {FavoriteService} from "@services/favorite.service";
 import {BoardColumn} from "@models/board.model";
 import {CardDetail, CardSummary} from "@models/card.model";
 
-function createComponent(cardService: CardService) {
+function createComponent(cardService: CardService, favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem', 'renameItem'])) {
   const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeam']);
   teamService.getCurrentTeam.and.returnValue({id: 1, name: 'Team A', code: 'aaa'});
 
@@ -21,7 +22,8 @@ function createComponent(cardService: CardService) {
     {} as ColumnService,
     cardService,
     teamService,
-    {} as NavigationService
+    {} as NavigationService,
+    favoriteService
   );
 }
 
@@ -115,13 +117,15 @@ describe('KanbanBoardComponent.handleCardDropped', () => {
 describe('KanbanBoardComponent card create and delete', () => {
   let component: KanbanBoardComponent;
   let cardService: jasmine.SpyObj<CardService>;
+  let favoriteService: jasmine.SpyObj<FavoriteService>;
   let column: BoardColumn;
   let first: CardSummary;
   let second: CardSummary;
 
   beforeEach(() => {
     cardService = jasmine.createSpyObj('CardService', ['createCard', 'deleteCard']);
-    component = createComponent(cardService);
+    favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem', 'renameItem']);
+    component = createComponent(cardService, favoriteService);
 
     first = {id: 1, title: 'First', position: 0};
     second = {id: 2, title: 'Second', position: 1};
@@ -144,6 +148,7 @@ describe('KanbanBoardComponent card create and delete', () => {
     expect(component.cardPendingDeletion).toBeNull();
     expect(cardService.deleteCard).toHaveBeenCalledWith('aaa', 0, 1);
     expect(column.cards).toEqual([second]);
+    expect(favoriteService.forgetItem).toHaveBeenCalledWith('Card', 1);
   }));
 
   it('handleConfirmDeleteCard keeps the card and shows the error when the request fails', fakeAsync(() => {
