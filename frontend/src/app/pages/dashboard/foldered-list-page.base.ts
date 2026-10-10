@@ -1,10 +1,11 @@
-import {Directive, OnDestroy, OnInit} from '@angular/core';
+import {Directive, OnInit} from '@angular/core';
 import {FolderService} from "@services/folder.service";
 import {TeamService} from "@services/team.service";
 import {FavoriteService} from "@services/favorite.service";
-import {FolderDeleteMode, FolderItemType} from "@models/folder.model";
+import {FolderDeleteMode, FolderItemType, FolderSummary} from "@models/folder.model";
 import {TreeFolder, TreeItem} from "@components/item-tree/item-tree.component";
 import {errorPhrase} from "@utils/errorPhrase";
+import {itemIdsWithin, promoteFolderContents, removeFolderCascade} from "@utils/folderTree";
 import {Router} from "@angular/router";
 import {TranslateService} from "@ngx-translate/core";
 import {ErrorCode} from "@config/errorCodes";
@@ -13,7 +14,7 @@ import {FolderedItemService} from "@services/foldered-item.service";
 import {AppRoutes} from "../../app/app-routes.enum";
 
 @Directive()
-export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
+export abstract class FolderedListPageComponent implements OnInit {
   protected abstract readonly itemType: FolderItemType;
   protected abstract readonly itemRoute: AppRoutes;
   protected abstract readonly untitledItemPhrase: string;
@@ -27,8 +28,6 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
 
   protected readonly teamCode: string;
   private pendingCreateFolderParentId: number | null = null;
-  private searchDebounceHandle: ReturnType<typeof setTimeout> | null = null;
-  private requestSequence = 0;
 
   protected constructor(
     private itemService: FolderedItemService<ErrorCode>,
@@ -79,24 +78,14 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
       return this.items;
     }
 
-    return this.items.map((item) => ({...item, folderId: null}));
+    const query = this.searchQuery.trim().toLowerCase();
+    return this.items
+      .filter((item) => item.title.toLowerCase().includes(query))
+      .map((item) => ({...item, folderId: null}));
   }
 
   ngOnInit() {
     this.loadData();
-  }
-
-  ngOnDestroy() {
-    if (this.searchDebounceHandle) {
-      clearTimeout(this.searchDebounceHandle);
-    }
-  }
-
-  handleSearchChange() {
-    if (this.searchDebounceHandle) {
-      clearTimeout(this.searchDebounceHandle);
-    }
-    this.searchDebounceHandle = setTimeout(() => this.loadData(), 300);
   }
 
   handleCreateFolder(parentId: number | null) {
@@ -116,7 +105,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
         }
 
         this.alertMessage = '';
-        this.loadData();
+        this.folders = [...this.folders, this.toTreeFolder(response.folder)];
       });
   }
 
@@ -133,7 +122,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
         }
 
         this.alertMessage = '';
-        this.loadData();
+        this.replaceFolder(this.toTreeFolder(response.folder));
       });
   }
 
@@ -146,12 +135,12 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
         }
 
         this.alertMessage = '';
-        this.loadData();
+        this.replaceFolder(this.toTreeFolder(response.folder));
       });
   }
 
   handleDeleteFolder(event: { folderId: number; mode: FolderDeleteMode }) {
-    const deletedItemIds = event.mode === 'cascade' ? this.itemIdsWithin(event.folderId) : [];
+    const deletedItemIds = event.mode === 'cascade' ? itemIdsWithin(this.folders, this.items, event.folderId) : [];
 
     this.folderService.deleteFolder(this.teamCode, event.folderId, event.mode)
       .then((response) => {
@@ -162,7 +151,11 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
 
         this.alertMessage = '';
         deletedItemIds.forEach((itemId) => this.favoriteService.forgetItem(this.itemType, itemId));
-        this.loadData();
+        const updated = event.mode === 'cascade'
+          ? removeFolderCascade(this.folders, this.items, event.folderId)
+          : promoteFolderContents(this.folders, this.items, event.folderId);
+        this.folders = updated.folders;
+        this.items = updated.items;
       });
   }
 
@@ -179,7 +172,8 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
         }
 
         this.alertMessage = '';
-        this.loadData();
+        const moved = this.toTreeItem(response.item);
+        this.items = this.items.map((item) => item.id === moved.id ? moved : item);
       });
   }
 
@@ -193,20 +187,15 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
 
         this.alertMessage = '';
         this.favoriteService.forgetItem(this.itemType, event.itemId);
-        this.loadData();
+        this.items = this.items.filter((item) => item.id !== event.itemId);
       });
   }
 
-  protected loadData() {
-    const sequence = ++this.requestSequence;
-
+  private loadData() {
     Promise.all([
       this.folderService.listFolders(this.teamCode, this.itemType),
-      this.itemService.list(this.teamCode, this.searchQuery || undefined)
+      this.itemService.list(this.teamCode)
     ]).then(([foldersResponse, itemsResponse]) => {
-      if (sequence !== this.requestSequence) {
-        return;
-      }
       this.isLoading = false;
 
       if (!foldersResponse.success) {
@@ -219,32 +208,21 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
       }
 
       this.alertMessage = '';
-      this.folders = foldersResponse.folders.map((folder) => ({
-        id: folder.id,
-        title: folder.title,
-        parentId: folder.parentId,
-      }));
+      this.folders = foldersResponse.folders.map((folder) => this.toTreeFolder(folder));
       this.items = itemsResponse.items.map((item) => this.toTreeItem(item));
     });
   }
 
-  private itemIdsWithin(folderId: number): number[] {
-    const folderIds = new Set([folderId]);
-    let added = true;
+  private replaceFolder(updated: TreeFolder) {
+    this.folders = this.folders.map((folder) => folder.id === updated.id ? updated : folder);
+  }
 
-    while (added) {
-      added = false;
-      for (const folder of this.folders) {
-        if (folder.parentId !== null && folderIds.has(folder.parentId) && !folderIds.has(folder.id)) {
-          folderIds.add(folder.id);
-          added = true;
-        }
-      }
-    }
-
-    return this.items
-      .filter((item) => item.folderId !== null && folderIds.has(item.folderId))
-      .map((item) => item.id);
+  private toTreeFolder(folder: FolderSummary): TreeFolder {
+    return {
+      id: folder.id,
+      title: folder.title,
+      parentId: folder.parentId,
+    };
   }
 
   private toTreeItem(item: FolderedItemSummary): TreeItem {

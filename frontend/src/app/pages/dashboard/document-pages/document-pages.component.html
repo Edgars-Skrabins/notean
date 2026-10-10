@@ -4,7 +4,6 @@
       type="text"
       class="pagesView__search"
       [(ngModel)]="searchQuery"
-      (ngModelChange)="handleSearchChange()"
       [placeholder]="PHRASES.SEARCH_PAGES | translate"
     />
     <app-button variant="ghost" icon="folder-plus" (pressed)="handleCreateFolder(null)">{{ PHRASES.NEW_FOLDER | translate }}</app-button>

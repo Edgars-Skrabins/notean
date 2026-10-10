@@ -106,9 +106,9 @@ describe('FolderedItemService', () => {
   it('lists items from the resource key of the subclass', async () => {
     const get = spyOn(axiosInstance, 'get').and.returnValue(Promise.resolve({data: {diagrams: [rawItem]}}));
 
-    const response = await new DiagramService().list('abc', 'flo');
+    const response = await new DiagramService().list('abc');
 
-    expect(get).toHaveBeenCalledWith('/teams/abc/diagrams', {params: {search: 'flo'}});
+    expect(get).toHaveBeenCalledWith('/teams/abc/diagrams');
     expect(response.success && response.items.map((item) => item.id)).toEqual([7]);
   });
 

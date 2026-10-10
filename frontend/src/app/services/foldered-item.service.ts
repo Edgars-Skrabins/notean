@@ -80,9 +80,9 @@ export abstract class FolderedItemService<E extends ErrorCode> {
   protected abstract readonly resource: string;
   protected abstract readonly key: string;
 
-  async list(teamCode: string, search?: string): Promise<ListFolderedItemsResponse> {
+  async list(teamCode: string): Promise<ListFolderedItemsResponse> {
     return apiRequest<ListFolderedItemsResponse>(
-      axiosInstance.get(this.itemsUrl(teamCode), {params: search ? {search} : undefined}),
+      axiosInstance.get(this.itemsUrl(teamCode)),
       (data) => ({success: true, items: (data[this.resource] as RawFolderedItemSummary[]).map(mapFolderedItemSummary)}),
     );
   }
