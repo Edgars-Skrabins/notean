@@ -7,7 +7,7 @@ Notean is a team workspace app for documents, diagrams and kanban boards. This m
 - `frontend/`: an Angular single-page app served at `http://localhost:4200`.
 - `backend/`: a Rails API-only app served at `http://127.0.0.1:3000`.
 
-The frontend talks to the API at `http://127.0.0.1:3000` (`baseUrl` in `frontend/src/app/config/axiosConfig.ts`), and the API's CORS only allows `http://localhost:4200`. Both must be running for the app to work.
+The frontend talks to the API at `http://127.0.0.1:3000` (`apiUrl` in `frontend/src/environments/environment.ts`), and the API's CORS only allows `http://localhost:4200` (overridable with `FRONTEND_ORIGIN`). Both must be running for the app to work.
 
 `backend/config/master.key` is committed on purpose for early dev convenience. It must be rotated and gitignored before any real deployment.
 
@@ -79,9 +79,10 @@ src/app/
 ├── services/     API access and app state, all providedIn: 'root'
 ├── models/       TypeScript interfaces and response union types
 ├── guards/       functional route guards
-├── config/       axios instance, i18n config, language options, PHRASES
+├── config/       axios instance, i18n config, language options, PHRASES, errorCodes/
 └── utils/        small pure helpers
 public/assets/translations/   en.json, lv.json
+src/environments/             environment.ts (apiUrl)
 ```
 
 #### App and routing
@@ -98,8 +99,11 @@ public/assets/translations/   en.json, lv.json
 #### Services and HTTP
 - All HTTP goes through `axiosInstance` from `@config/axiosConfig`, not Angular's `HttpClient`. `HttpClient` is only used to load translation files.
 - `setAuthToken` sets the Bearer header, and a 401 response triggers the handler registered via `setUnauthorizedHandler`.
-- Services convert the API's snake_case JSON into camelCase models using `map*` functions, such as `mapPageSummary` in `page.service.ts`.
-- Service methods return discriminated unions such as `{ success: true; page } | { success: false; statusMessage }`. Errors are converted with `toErrorResult` from `@utils/httpError`.
+- The API base URL comes from `environment.apiUrl` in `src/environments/`.
+- Services convert the API's snake_case JSON into camelCase models using `map*` functions, such as `mapFolderedItemSummary` in `foldered-item.service.ts`.
+- Service methods return `Result<T, E>` from `@models/result.model`: `{ success: true, ...payload }` or `{ success: false, code }`, where `code` is one of the error codes the request can return. Wrap requests in `apiRequest` from `@utils/apiRequest`, which maps the success data and turns failures into a code via `toErrorResult`.
+- Build team-scoped URLs with `teamPath(teamCode, ...segments)` from `@utils/teamPath`.
+- Pages and diagrams share `FolderedItemService`, `EditingService`, `FolderedListPageComponent`, `FolderedItemDetailComponent` and `ItemDetailLayoutComponent`; the page and diagram classes only configure them.
 - Session state lives in services backed by `localStorage`: `AuthService` stores `authToken` and `authUser`, and `TeamService` stores `currentTeam` and `currentTeamRole`.
 - Realtime features open an ActionCable consumer at `ws://…/cable?token=<jwt>` from a dedicated service and subscribe to the matching backend channel.
 
@@ -109,6 +113,7 @@ Import with the tsconfig aliases instead of relative paths: `@components/*`, `@c
 #### i18n
 - All user-facing text goes through ngx-translate. Add the key to `PHRASES` in `config/phrases.ts`, then to both `en.json` and `lv.json`.
 - Templates use `{{ PHRASES.KEY | translate }}`.
+- API error codes live per domain in `config/errorCodes/` and mirror the backend's `ErrorCodes` modules. Translations sit under `ERRORS.<DOMAIN>.<CODE>` in both JSON files, and `errorPhrase(code)` from `@utils/errorPhrase` returns the key. `NETWORK_ERROR` and `UNKNOWN_ERROR` are frontend-only. Never show backend text to users.
 
 #### Style
 - Code uses 2-space indentation and single quotes in `.ts` files (see `.editorconfig`).
@@ -131,8 +136,9 @@ Import with the tsconfig aliases instead of relative paths: `@components/*`, `@c
 ```
 app/
 ├── controllers/   one controller per resource
-├── models/        ActiveRecord models plus cache-backed *EditingStatus classes
-└── channels/      ActionCable connection and editing presence channels
+├── models/        ActiveRecord models plus cache-backed *EditingStatus classes (on EditingStatus)
+├── errors/        error_codes/, one ErrorCodes module per domain
+└── channels/      ActionCable connection and editing presence channels (on EditingChannel)
 config/
 ├── routes.rb
 └── initializers/  cors.rb, rack_attack.rb
@@ -150,22 +156,25 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 - Everything inherits from `ActionController::API`.
 - Strong params are defined centrally as private methods in `ApplicationController` (`create_page_params`, `update_page_params` and so on). Add new ones there.
 - Auth: `before_action :authenticate_user!` reads `Authorization: Bearer <jwt>` through `current_user`.
-- Team scoping follows a `before_action` chain: `set_team` (found by `params[:team_code]`), then `authorize_team_member!`, then `set_<resource>` scoped through `@team`.
+- Team scoping follows a `before_action` chain: `set_team` (found by `params[:team_code]`), then `authorize_team_member!`, then `set_<resource>` scoped through `@team`. `set_team`, `authorize_team_member!`, `member_json`, `team_json` and `title_or_default` are shared in `ApplicationController`.
 - Role checks use `require_team_role!(team, :admin, :owner)`, which returns nil after rendering 403.
-- JSON is built by hand with private `*_json` and `*_summary_json` helper methods in each controller. There is no jbuilder or serializer gem.
-- Response convention: every response includes a `statusMessage`, and the payload sits under a resource key (`{ page: ..., statusMessage: 'Page found' }`). Errors are `{ statusMessage: '...' }` with the right status (401, 403, 404 or 422). Keys are snake_case.
+- JSON is built by hand with private `*_json` and `*_summary_json` helper methods. There is no jbuilder or serializer gem.
+- Response convention: success responses carry only the payload under a resource key (`{ page: ... }`). Errors are rendered with `render_error(ErrorCodes::Pages::PAGE_NOT_FOUND, :not_found)`, producing `{ code: "PAGE_NOT_FOUND" }` with the right status. Add new codes to the matching module in `app/errors/error_codes/` and to the frontend's `config/errorCodes/` plus both translation files. Keys are snake_case.
 - User-supplied rich-text HTML is sanitised with `Rails::Html::SafeListSanitizer` before saving.
 
 #### Models
 - Creators are stored as `created_by_user_id` with a `creator` association to `User`.
 - `Membership` joins users and teams. Its `role` enum is `user`, `admin` and `owner`, with exactly one owner per team.
 - Short-lived state, such as who is currently editing, lives in `Rails.cache` through plain Ruby classes (`*EditingStatus`), not tables. Changes are broadcast over ActionCable.
+- Title search uses the `TitleSearchable` concern's `search_title` scope.
 
 #### Channels
 - `ApplicationCable::Connection` authenticates with the JWT passed as the `?token=` query param.
+- Editing channels only subscribe members of the item's team.
 
 #### Security
-- rack-attack throttles the auth and join-team endpoints. A throttled request gets a 429 with a JSON `statusMessage`.
+- rack-attack throttles the auth and join-team endpoints. A throttled request gets a 429 with `{ code: "RATE_LIMITED" }`.
+- The CORS origin comes from `FRONTEND_ORIGIN` (default `http://localhost:4200`).
 
 #### Tests
 - Minitest with `fixtures :all` and parallel workers.
