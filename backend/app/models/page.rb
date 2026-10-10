@@ -5,6 +5,7 @@ class Page < ApplicationRecord
 
   has_many :page_contributors, dependent: :destroy
   has_many :contributors, through: :page_contributors, source: :user
+  has_many :favorites, as: :favoritable, dependent: :destroy
 
   validates :title, presence: true
 end

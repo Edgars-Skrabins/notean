@@ -5,6 +5,7 @@ class Diagram < ApplicationRecord
 
   has_many :diagram_contributors, dependent: :destroy
   has_many :contributors, through: :diagram_contributors, source: :user
+  has_many :favorites, as: :favoritable, dependent: :destroy
 
   validates :title, presence: true
 end
