@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!, only: [ :settings, :update_settings, :avatar, :update_avatar ]
+  before_action :authenticate_user!, only: [ :me, :update_settings, :update_avatar ]
 
   def create
     if User.exists?(email: user_params[:email])
@@ -17,8 +17,13 @@ class UsersController < ApplicationController
     end
   end
 
-  def settings
-    render json: { settings: settings_json(current_user) }
+  def me
+    render json: {
+      user: current_user.as_json(only: [ :id, :email ]),
+      settings: settings_json(current_user),
+      avatar: avatar_json(current_user),
+      team: active_team_json(current_user)
+    }
   end
 
   def update_settings
@@ -27,10 +32,6 @@ class UsersController < ApplicationController
     else
       render_error(ErrorCodes::Users::SETTINGS_UPDATE_FAILED, :unprocessable_entity)
     end
-  end
-
-  def avatar
-    render json: { avatar: avatar_json(current_user) }
   end
 
   def update_avatar
@@ -54,6 +55,11 @@ class UsersController < ApplicationController
   end
 
   private
+
+  def active_team_json(user)
+    membership = active_membership(user)
+    membership && { team: team_json(membership.team), role: membership.role, nickname: membership.nickname }
+  end
 
   def settings_json(user)
     {

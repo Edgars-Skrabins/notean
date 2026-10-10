@@ -3,7 +3,7 @@ class TeamsController < ApplicationController
   before_action :set_team, only: [ :activate, :members, :show, :update_nickname, :update, :destroy ]
 
   def mine
-    membership = current_user.memberships.order(last_active_at: :desc).first
+    membership = active_membership(current_user)
     render json: {
       team: membership&.team&.then { |team| team_json(team) },
       role: membership&.role,
@@ -30,7 +30,7 @@ class TeamsController < ApplicationController
     return unless require_team_role!(@team, :admin, :owner)
 
     render json: {
-      members: @team.memberships.includes(user: { avatar_image_attachment: :blob }).map { |m| member_json(m.user).merge(role: m.role) }
+      members: @team.memberships.includes(user: User::AVATAR_PRELOAD).map { |m| member_json(m.user).merge(role: m.role) }
     }
   end
 

@@ -108,6 +108,10 @@ class ApplicationController < ActionController::API
     render_error(ErrorCodes::Common::UNAUTHORIZED, :unauthorized) unless current_user
   end
 
+  def active_membership(user)
+    user.memberships.includes(:team).order(last_active_at: :desc).first
+  end
+
   def membership_for(team)
     team.memberships.find_by(user: current_user)
   end

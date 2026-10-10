@@ -7,13 +7,37 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     @headers = { "Authorization" => "Bearer #{token}" }
   end
 
-  test "settings default to showing favorites on home and in the sidebar" do
-    get "/users/me/settings", headers: @headers
+  test "me returns the user, default settings, avatar and no team" do
+    get "/users/me", headers: @headers
 
     assert_response :success
-    settings = JSON.parse(response.body)["settings"]
-    assert_equal true, settings["show_favorites_on_home"]
-    assert_equal true, settings["show_favorites_in_sidebar"]
+    body = JSON.parse(response.body)
+    assert_equal({ "id" => @user.id, "email" => "alice@example.com" }, body["user"])
+    assert_equal({ "show_favorites_on_home" => true, "show_favorites_in_sidebar" => true }, body["settings"])
+    assert_equal({ "color" => @user.effective_avatar_color, "image_url" => nil }, body["avatar"])
+    assert_nil body["team"]
+  end
+
+  test "me returns the most recently active team with role and nickname" do
+    older = Team.create!(name: "Older", password: "supersecret")
+    newer = Team.create!(name: "Newer", password: "supersecret")
+    Membership.create!(user: @user, team: older, role: "owner", nickname: "Alice", last_active_at: 2.days.ago)
+    Membership.create!(user: @user, team: newer, role: "admin", nickname: "Ally", last_active_at: 1.hour.ago)
+
+    get "/users/me", headers: @headers
+
+    team = JSON.parse(response.body)["team"]
+    assert_equal "Newer", team["team"]["name"]
+    assert_equal "admin", team["role"]
+    assert_equal "Ally", team["nickname"]
+    assert_not team["team"].key?("password_digest")
+  end
+
+  test "me returns 401 without a token" do
+    get "/users/me"
+
+    assert_response :unauthorized
+    assert_equal "UNAUTHORIZED", JSON.parse(response.body)["code"]
   end
 
   test "update_settings changes one setting and leaves the other" do
@@ -39,23 +63,10 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal true, @user.reload.show_favorites_on_home
   end
 
-  test "settings and update_settings return 401 without a token" do
-    get "/users/me/settings"
-
-    assert_response :unauthorized
-
+  test "update_settings returns 401 without a token" do
     patch "/users/me/settings", params: { settings: { show_favorites_on_home: false } }, as: :json
 
     assert_response :unauthorized
-  end
-
-  test "avatar returns the derived colour and no image by default" do
-    get "/users/me/avatar", headers: @headers
-
-    assert_response :success
-    avatar = JSON.parse(response.body)["avatar"]
-    assert_equal @user.effective_avatar_color, avatar["color"]
-    assert_nil avatar["image_url"]
   end
 
   test "update_avatar sets the colour" do
@@ -106,11 +117,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_not @user.reload.avatar_image.attached?
   end
 
-  test "avatar and update_avatar return 401 without a token" do
-    get "/users/me/avatar"
-
-    assert_response :unauthorized
-
+  test "update_avatar returns 401 without a token" do
     patch "/users/me/avatar", params: { avatar: { color: "red" } }
 
     assert_response :unauthorized
