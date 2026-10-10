@@ -175,7 +175,7 @@ describe('KanbanBoardComponent card create and delete', () => {
       position: 2,
       description: '',
       columnId: 10,
-      creator: {id: 4, nickname: 'bob'},
+      creator: {id: 4, nickname: 'bob', avatar: {color: 'red', imageUrl: null}},
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-01T00:00:00Z',
     };

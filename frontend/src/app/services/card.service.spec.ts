@@ -7,7 +7,7 @@ describe('mapCardDetail', () => {
     position: 2,
     description: 'Details',
     column_id: 3,
-    creator: {id: 4, nickname: 'bob'},
+    creator: {id: 4, nickname: 'bob', avatar: {color: 'red' as const, image_url: null}},
     created_at: '2024-01-01T00:00:00Z',
     updated_at: '2024-01-02T00:00:00Z',
   };
@@ -21,7 +21,7 @@ describe('mapCardDetail', () => {
       position: 2,
       description: 'Details',
       columnId: 3,
-      creator: {id: 4, nickname: 'bob'},
+      creator: {id: 4, nickname: 'bob', avatar: {color: 'red', imageUrl: null}},
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-02T00:00:00Z',
     });

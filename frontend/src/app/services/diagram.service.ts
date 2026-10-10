@@ -1,17 +1,25 @@
 import {Injectable} from '@angular/core';
 import {axiosInstance} from "@config/axiosConfig";
 import {toErrorResult} from "@utils/httpError";
+import {mapAvatar, RawAvatar} from "@services/avatar.service";
 import {
   DeleteDiagramResponse,
   DiagramDetail,
   DiagramResponse,
   DiagramSummary,
+  DiagramEditingUser,
   DiagramUser,
   ListDiagramsResponse,
   SaveDiagramParams
 } from "@models/diagram.model";
 
 interface RawDiagramUser {
+  id: number;
+  nickname: string;
+  avatar: RawAvatar;
+}
+
+interface RawDiagramEditingUser {
   id: number;
   nickname: string;
 }
@@ -28,10 +36,18 @@ interface RawDiagramSummary {
 interface RawDiagramDetail extends RawDiagramSummary {
   content: string;
   contributors?: RawDiagramUser[];
-  currently_editing: RawDiagramUser | null;
+  currently_editing: RawDiagramEditingUser | null;
 }
 
 export function mapDiagramUser(raw: RawDiagramUser): DiagramUser {
+  return {
+    id: raw.id,
+    nickname: raw.nickname,
+    avatar: mapAvatar(raw.avatar),
+  };
+}
+
+export function mapDiagramEditingUser(raw: RawDiagramEditingUser): DiagramEditingUser {
   return {
     id: raw.id,
     nickname: raw.nickname,
@@ -54,7 +70,7 @@ export function mapDiagramDetail(raw: RawDiagramDetail): DiagramDetail {
     ...mapDiagramSummary(raw),
     content: raw.content,
     contributors: (raw.contributors ?? []).map(mapDiagramUser),
-    currentlyEditing: raw.currently_editing ? mapDiagramUser(raw.currently_editing) : null,
+    currentlyEditing: raw.currently_editing ? mapDiagramEditingUser(raw.currently_editing) : null,
   };
 }
 

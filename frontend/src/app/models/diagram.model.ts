@@ -1,4 +1,12 @@
+import {Avatar} from "@models/avatar.model";
+
 export interface DiagramUser {
+  id: number;
+  nickname: string;
+  avatar: Avatar;
+}
+
+export interface DiagramEditingUser {
   id: number;
   nickname: string;
 }
@@ -15,7 +23,7 @@ export interface DiagramSummary {
 export interface DiagramDetail extends DiagramSummary {
   content: string;
   contributors: DiagramUser[];
-  currentlyEditing: DiagramUser | null;
+  currentlyEditing: DiagramEditingUser | null;
 }
 
 export interface SaveDiagramParams {

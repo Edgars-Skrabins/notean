@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {createConsumer, Consumer, Subscription} from '@rails/actioncable';
 import {baseUrl} from "@config/axiosConfig";
 import {AuthService} from "@services/auth.service";
-import {DiagramUser} from "@models/diagram.model";
+import {DiagramEditingUser} from "@models/diagram.model";
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +14,7 @@ export class DiagramEditingService {
   constructor(private authService: AuthService) {
   }
 
-  connect(diagramId: number, onEditingChange: (editor: DiagramUser | null) => void) {
+  connect(diagramId: number, onEditingChange: (editor: DiagramEditingUser | null) => void) {
     this.disconnect();
 
     const token = this.authService.getToken();
@@ -24,7 +24,7 @@ export class DiagramEditingService {
     this.subscription = this.consumer.subscriptions.create(
       {channel: 'DiagramEditingChannel', diagram_id: diagramId},
       {
-        received: (data: { editing: DiagramUser | null }) => {
+        received: (data: { editing: DiagramEditingUser | null }) => {
           onEditingChange(data.editing ?? null);
         },
       }

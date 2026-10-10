@@ -3,6 +3,7 @@ import {axiosInstance} from "@config/axiosConfig";
 import {toErrorResult} from "@utils/httpError";
 import {CardDetail, CardResponse, DeleteCardResponse} from "@models/card.model";
 import {mapBoardUser, mapCardSummary} from "@services/board.service";
+import {RawAvatar} from "@services/avatar.service";
 
 interface RawCardDetail {
   id: number;
@@ -10,7 +11,7 @@ interface RawCardDetail {
   position: number;
   description: string;
   column_id: number;
-  creator: { id: number; nickname: string };
+  creator: { id: number; nickname: string; avatar: RawAvatar };
   created_at: string;
   updated_at: string;
 }

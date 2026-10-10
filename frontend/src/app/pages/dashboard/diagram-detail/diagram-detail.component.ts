@@ -11,7 +11,7 @@ import {AuthService} from "@services/auth.service";
 import {NavigationService} from "@services/navigation.service";
 import {FavoriteService} from "@services/favorite.service";
 import {AppRoutes} from "../../../app/app-routes.enum";
-import {DiagramDetail, DiagramUser} from "@models/diagram.model";
+import {DiagramDetail, DiagramEditingUser} from "@models/diagram.model";
 import {FlowchartEditorComponent} from "@components/flowchart-editor/flowchart-editor.component";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {ButtonComponent} from "@components/button/button.component";
@@ -43,7 +43,7 @@ export class DiagramDetailComponent implements OnInit, OnDestroy {
   mode: 'view' | 'edit' = 'view';
   draftTitle = '';
   draftContent = '';
-  editingUser: DiagramUser | null = null;
+  editingUser: DiagramEditingUser | null = null;
   isLoading = true;
   alertMessage = '';
   showDeleteConfirm = false;

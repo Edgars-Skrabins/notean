@@ -1,10 +1,10 @@
 import {mapBoardColumn, mapBoardDetail, mapBoardSummary, mapBoardUser, mapCardSummary} from "./board.service";
 
 describe('mapBoardUser', () => {
-  it('maps id and nickname', () => {
-    const result = mapBoardUser({id: 1, nickname: 'alice'});
+  it('maps id, nickname and avatar', () => {
+    const result = mapBoardUser({id: 1, nickname: 'alice', avatar: {color: 'blue', image_url: '/img'}});
 
-    expect(result).toEqual({id: 1, nickname: 'alice'});
+    expect(result).toEqual({id: 1, nickname: 'alice', avatar: {color: 'blue', imageUrl: '/img'}});
   });
 });
 
@@ -43,7 +43,7 @@ describe('mapBoardSummary', () => {
     const result = mapBoardSummary({
       id: 1,
       title: 'My Board',
-      creator: {id: 2, nickname: 'bob'},
+      creator: {id: 2, nickname: 'bob', avatar: {color: 'red', image_url: null}},
       created_at: '2024-01-01T00:00:00Z',
       updated_at: '2024-01-02T00:00:00Z',
     });
@@ -51,7 +51,7 @@ describe('mapBoardSummary', () => {
     expect(result).toEqual({
       id: 1,
       title: 'My Board',
-      creator: {id: 2, nickname: 'bob'},
+      creator: {id: 2, nickname: 'bob', avatar: {color: 'red', imageUrl: null}},
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-02T00:00:00Z',
     });
@@ -63,7 +63,7 @@ describe('mapBoardDetail', () => {
     const result = mapBoardDetail({
       id: 1,
       title: 'My Board',
-      creator: {id: 2, nickname: 'bob'},
+      creator: {id: 2, nickname: 'bob', avatar: {color: 'red', image_url: null}},
       created_at: '2024-01-01T00:00:00Z',
       updated_at: '2024-01-02T00:00:00Z',
       columns: [

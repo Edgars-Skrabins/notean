@@ -1,3 +1,5 @@
+import {Avatar} from "@models/avatar.model";
+
 export type TeamRole = 'user' | 'admin' | 'owner';
 
 export enum NicknameError {
@@ -24,6 +26,7 @@ export interface TeamMember {
   id: number;
   nickname: string;
   role: TeamRole;
+  avatar: Avatar;
 }
 
 export interface CreateTeamParams {

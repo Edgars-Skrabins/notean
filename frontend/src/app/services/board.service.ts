@@ -11,10 +11,12 @@ import {
   ListBoardsResponse,
 } from "@models/board.model";
 import {CardSummary} from "@models/card.model";
+import {mapAvatar, RawAvatar} from "@services/avatar.service";
 
 interface RawBoardUser {
   id: number;
   nickname: string;
+  avatar: RawAvatar;
 }
 
 interface RawCardSummary {
@@ -46,6 +48,7 @@ export function mapBoardUser(raw: RawBoardUser): BoardUser {
   return {
     id: raw.id,
     nickname: raw.nickname,
+    avatar: mapAvatar(raw.avatar),
   };
 }
 

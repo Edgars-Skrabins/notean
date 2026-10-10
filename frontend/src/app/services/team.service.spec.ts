@@ -1,7 +1,15 @@
 import {AxiosError, AxiosHeaders} from "axios";
-import {TeamService} from "./team.service";
+import {mapTeamMember, TeamService} from "./team.service";
 import {axiosInstance} from "@config/axiosConfig";
 import {NicknameError} from "@models/team.model";
+
+describe('mapTeamMember', () => {
+  it('maps id, nickname, role and avatar', () => {
+    const result = mapTeamMember({id: 1, nickname: 'alice', role: 'admin', avatar: {color: 'lime', image_url: null}});
+
+    expect(result).toEqual({id: 1, nickname: 'alice', role: 'admin', avatar: {color: 'lime', imageUrl: null}});
+  });
+});
 
 describe('TeamService role persistence', () => {
   afterEach(() => {

@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {createConsumer, Consumer, Subscription} from '@rails/actioncable';
 import {baseUrl} from "@config/axiosConfig";
 import {AuthService} from "@services/auth.service";
-import {PageUser} from "@models/page.model";
+import {PageEditingUser} from "@models/page.model";
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +14,7 @@ export class PageEditingService {
   constructor(private authService: AuthService) {
   }
 
-  connect(pageId: number, onEditingChange: (editor: PageUser | null) => void) {
+  connect(pageId: number, onEditingChange: (editor: PageEditingUser | null) => void) {
     this.disconnect();
 
     const token = this.authService.getToken();
@@ -24,7 +24,7 @@ export class PageEditingService {
     this.subscription = this.consumer.subscriptions.create(
       {channel: 'PageEditingChannel', page_id: pageId},
       {
-        received: (data: { editing: PageUser | null }) => {
+        received: (data: { editing: PageEditingUser | null }) => {
           onEditingChange(data.editing ?? null);
         },
       }

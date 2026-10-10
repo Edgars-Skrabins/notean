@@ -1,17 +1,25 @@
 import {Injectable} from '@angular/core';
 import {axiosInstance} from "@config/axiosConfig";
 import {toErrorResult} from "@utils/httpError";
+import {mapAvatar, RawAvatar} from "@services/avatar.service";
 import {
   DeletePageResponse,
   ListPagesResponse,
   PageDetail,
   PageResponse,
   PageSummary,
+  PageEditingUser,
   PageUser,
   SavePageParams
 } from "@models/page.model";
 
 interface RawPageUser {
+  id: number;
+  nickname: string;
+  avatar: RawAvatar;
+}
+
+interface RawPageEditingUser {
   id: number;
   nickname: string;
 }
@@ -28,10 +36,18 @@ interface RawPageSummary {
 interface RawPageDetail extends RawPageSummary {
   content: string;
   contributors?: RawPageUser[];
-  currently_editing: RawPageUser | null;
+  currently_editing: RawPageEditingUser | null;
 }
 
 export function mapPageUser(raw: RawPageUser): PageUser {
+  return {
+    id: raw.id,
+    nickname: raw.nickname,
+    avatar: mapAvatar(raw.avatar),
+  };
+}
+
+export function mapPageEditingUser(raw: RawPageEditingUser): PageEditingUser {
   return {
     id: raw.id,
     nickname: raw.nickname,
@@ -54,7 +70,7 @@ export function mapPageDetail(raw: RawPageDetail): PageDetail {
     ...mapPageSummary(raw),
     content: raw.content,
     contributors: (raw.contributors ?? []).map(mapPageUser),
-    currentlyEditing: raw.currently_editing ? mapPageUser(raw.currently_editing) : null,
+    currentlyEditing: raw.currently_editing ? mapPageEditingUser(raw.currently_editing) : null,
   };
 }
 

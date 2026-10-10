@@ -17,6 +17,23 @@ import {
   TeamWithRole,
   UpdateNicknameResponse
 } from "@models/team.model";
+import {mapAvatar, RawAvatar} from "@services/avatar.service";
+
+interface RawTeamMember {
+  id: number;
+  nickname: string;
+  role: TeamRole;
+  avatar: RawAvatar;
+}
+
+export function mapTeamMember(raw: RawTeamMember): TeamMember {
+  return {
+    id: raw.id,
+    nickname: raw.nickname,
+    role: raw.role,
+    avatar: mapAvatar(raw.avatar),
+  };
+}
 
 @Injectable({
   providedIn: 'root',
@@ -125,7 +142,7 @@ export class TeamService {
 
   async fetchTeamMembers(code: string): Promise<TeamMember[]> {
     return axiosInstance.get(`${this.teamUrl(code)}/members`)
-      .then((response) => response.data.members as TeamMember[])
+      .then((response) => (response.data.members as RawTeamMember[]).map(mapTeamMember))
       .catch(() => []);
   }
 

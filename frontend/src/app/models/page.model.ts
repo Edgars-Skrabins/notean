@@ -1,4 +1,12 @@
+import {Avatar} from "@models/avatar.model";
+
 export interface PageUser {
+  id: number;
+  nickname: string;
+  avatar: Avatar;
+}
+
+export interface PageEditingUser {
   id: number;
   nickname: string;
 }
@@ -15,7 +23,7 @@ export interface PageSummary {
 export interface PageDetail extends PageSummary {
   content: string;
   contributors: PageUser[];
-  currentlyEditing: PageUser | null;
+  currentlyEditing: PageEditingUser | null;
 }
 
 export interface SavePageParams {

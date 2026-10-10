@@ -1,8 +1,10 @@
 import {CardSummary} from './card.model';
+import {Avatar} from "@models/avatar.model";
 
 export interface BoardUser {
   id: number;
   nickname: string;
+  avatar: Avatar;
 }
 
 export interface BoardColumn {
