@@ -5,7 +5,7 @@ class ActionsController < ApplicationController
     @team = Team.find_by(code: team_params[:code])
 
     if @team.nil?
-      render json: { statusMessage: "Team not found" }, status: :not_found
+      render_error(ErrorCodes::Teams::TEAM_NOT_FOUND, :not_found)
       return
     end
 
@@ -21,14 +21,9 @@ class ActionsController < ApplicationController
         return
       end
 
-      render json: {
-        team: @team.as_json(except: [ :password, :password_digest ]),
-        role: membership.role,
-        nickname: membership.nickname,
-        statusMessage: "Team joined successfully" },
-             status: :ok
+      render json: { team: team_json(@team), role: membership.role, nickname: membership.nickname }
     else
-      render json: { statusMessage: "Wrong password" }, status: :unauthorized
+      render_error(ErrorCodes::Teams::WRONG_TEAM_PASSWORD, :unauthorized)
     end
   end
 end

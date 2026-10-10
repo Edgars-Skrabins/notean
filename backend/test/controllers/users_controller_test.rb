@@ -70,7 +70,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     patch "/users/me/avatar", params: { avatar: { color: "magenta" } }, headers: @headers
 
     assert_response :unprocessable_entity
-    assert_equal "Invalid color", JSON.parse(response.body)["statusMessage"]
+    assert_equal "AVATAR_COLOR_INVALID", JSON.parse(response.body)["code"]
     assert_nil @user.reload.avatar_color
   end
 
@@ -89,7 +89,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     patch "/users/me/avatar", params: { avatar: { image: fixture_file_upload("avatar.gif", "image/gif") } }, headers: @headers
 
     assert_response :unprocessable_entity
-    assert_equal "Invalid image", JSON.parse(response.body)["statusMessage"]
+    assert_equal "AVATAR_IMAGE_INVALID", JSON.parse(response.body)["code"]
     assert_equal blob_id, @user.reload.avatar_image.blob.id
   end
 

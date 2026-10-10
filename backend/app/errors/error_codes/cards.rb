@@ -1,0 +1,7 @@
+module ErrorCodes
+  module Cards
+    CARD_NOT_FOUND = "CARD_NOT_FOUND"
+    CARD_CREATE_FAILED = "CARD_CREATE_FAILED"
+    CARD_UPDATE_FAILED = "CARD_UPDATE_FAILED"
+  end
+end

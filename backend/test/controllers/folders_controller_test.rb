@@ -55,6 +55,7 @@ class FoldersControllerTest < ActionDispatch::IntegrationTest
       as: :json
 
     assert_response :unprocessable_entity
+    assert_equal "FOLDER_PARENT_TYPE_MISMATCH", JSON.parse(response.body)["code"]
     assert_nil diagram_folder.reload.parent_id
   end
 
@@ -68,6 +69,7 @@ class FoldersControllerTest < ActionDispatch::IntegrationTest
       as: :json
 
     assert_response :unprocessable_entity
+    assert_equal "FOLDER_PARENT_CIRCULAR", JSON.parse(response.body)["code"]
     assert_nil root.reload.parent_id
   end
 end

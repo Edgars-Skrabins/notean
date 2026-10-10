@@ -26,7 +26,7 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    assert_equal "Invalid nickname", JSON.parse(response.body)["statusMessage"]
+    assert_equal "NICKNAME_INVALID", JSON.parse(response.body)["code"]
   end
 
   test "create rejects a missing nickname with 422 and leaves no team behind" do
@@ -60,6 +60,23 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     assert_not members.first.key?("username")
   end
 
+  test "members returns FORBIDDEN for a regular member" do
+    bob = User.create!(email: "bob@example.com", password: "supersecret")
+    Membership.create!(user: bob, team: @team, nickname: "Bob")
+
+    get "/teams/#{@team.code}/members", headers: { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: bob.id)}" }
+
+    assert_response :forbidden
+    assert_equal "FORBIDDEN", JSON.parse(response.body)["code"]
+  end
+
+  test "destroy deletes the team and returns no content" do
+    delete "/teams/#{@team.code}", headers: @headers
+
+    assert_response :no_content
+    assert_not Team.exists?(@team.id)
+  end
+
   test "members returns each member's avatar" do
     @user.update!(avatar_color: "pink")
 
@@ -76,7 +93,6 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     body = JSON.parse(response.body)
     assert_equal "Ally", body["nickname"]
-    assert_equal "Nickname updated", body["statusMessage"]
     assert_equal "Ally", @membership.reload.nickname
   end
 
@@ -96,7 +112,7 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     patch "/teams/#{@team.code}/nickname", params: { membership: { nickname: "Bob" } }, headers: @headers, as: :json
 
     assert_response :conflict
-    assert_equal "Nickname already taken in this team", JSON.parse(response.body)["statusMessage"]
+    assert_equal "NICKNAME_TAKEN", JSON.parse(response.body)["code"]
     assert_equal "Alice", @membership.reload.nickname
   end
 
@@ -104,7 +120,7 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     patch "/teams/#{@team.code}/nickname", params: { membership: { nickname: "Al" } }, headers: @headers, as: :json
 
     assert_response :unprocessable_entity
-    assert_equal "Invalid nickname", JSON.parse(response.body)["statusMessage"]
+    assert_equal "NICKNAME_INVALID", JSON.parse(response.body)["code"]
   end
 
   test "update_nickname returns 401 without a token" do
@@ -120,6 +136,7 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     patch "/teams/#{@team.code}/nickname", params: { membership: { nickname: "Mallory" } }, headers: { "Authorization" => "Bearer #{token}" }, as: :json
 
     assert_response :forbidden
+    assert_equal "NOT_TEAM_MEMBER", JSON.parse(response.body)["code"]
   end
 
   test "update_nickname returns 404 for an unknown team" do

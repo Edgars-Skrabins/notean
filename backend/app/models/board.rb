@@ -1,4 +1,6 @@
 class Board < ApplicationRecord
+  include TitleSearchable
+
   DEFAULT_COLUMN_TITLES = [ "To Do", "Doing", "Done" ].freeze
 
   belongs_to :team

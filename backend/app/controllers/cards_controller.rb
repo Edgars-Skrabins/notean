@@ -9,23 +9,23 @@ class CardsController < ApplicationController
     column = @board.columns.find_by(id: create_card_params[:column_id])
 
     if column.nil?
-      render json: { statusMessage: "Column not found" }, status: :not_found
+      render_error(ErrorCodes::Boards::COLUMN_NOT_FOUND, :not_found)
       return
     end
 
     next_position = (column.cards.maximum(:position) || -1) + 1
     @card = column.cards.new(team: @team, created_by_user_id: current_user.id, position: next_position)
-    @card.title = create_card_params[:title].presence || "Untitled"
+    @card.title = title_or_default(create_card_params[:title])
 
     if @card.save
-      render json: { card: card_json(@card), statusMessage: "Card created successfully" }, status: :created
+      render json: { card: card_json(@card) }, status: :created
     else
-      render json: { statusMessage: "Failed to create card" }, status: :unprocessable_entity
+      render_error(ErrorCodes::Cards::CARD_CREATE_FAILED, :unprocessable_entity)
     end
   end
 
   def show
-    render json: { card: card_json(@card), statusMessage: "Card found" }
+    render json: { card: card_json(@card) }
   end
 
   def update
@@ -37,9 +37,9 @@ class CardsController < ApplicationController
     end
 
     if @card.save
-      render json: { card: card_json(@card), statusMessage: "Card updated successfully" }
+      render json: { card: card_json(@card) }
     else
-      render json: { statusMessage: "Failed to update card" }, status: :unprocessable_entity
+      render_error(ErrorCodes::Cards::CARD_UPDATE_FAILED, :unprocessable_entity)
     end
   end
 
@@ -50,33 +50,23 @@ class CardsController < ApplicationController
 
   private
 
-  def set_team
-    @team = Team.find_by(code: params[:team_code])
-
-    render json: { statusMessage: "Team not found" }, status: :not_found if @team.nil?
-  end
-
-  def authorize_team_member!
-    render json: { statusMessage: "Forbidden" }, status: :forbidden unless current_user.memberships.exists?(team: @team)
-  end
-
   def set_board
     @board = @team.boards.find_by(id: params[:board_id])
 
-    render json: { statusMessage: "Board not found" }, status: :not_found if @board.nil?
+    render_error(ErrorCodes::Boards::BOARD_NOT_FOUND, :not_found) if @board.nil?
   end
 
   def set_card
     @card = @board.cards.find_by(id: params[:id])
 
-    render json: { statusMessage: "Card not found" }, status: :not_found if @card.nil?
+    render_error(ErrorCodes::Cards::CARD_NOT_FOUND, :not_found) if @card.nil?
   end
 
   def move_card
     target_column = @board.columns.find_by(id: update_card_params[:column_id] || @card.column_id)
 
     if target_column.nil?
-      render json: { statusMessage: "Column not found" }, status: :not_found
+      render_error(ErrorCodes::Boards::COLUMN_NOT_FOUND, :not_found)
       return false
     end
 
@@ -102,13 +92,9 @@ class CardsController < ApplicationController
       description: card.description,
       column_id: card.column_id,
       position: card.position,
-      creator: user_json(card.creator),
+      creator: member_json(card.creator),
       created_at: card.created_at,
       updated_at: card.updated_at
     }
-  end
-
-  def user_json(user)
-    { id: user.id, nickname: team_nicknames[user.id], avatar: avatar_json(user) }
   end
 end

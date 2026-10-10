@@ -1,0 +1,7 @@
+module ErrorCodes
+  module Pages
+    PAGE_NOT_FOUND = "PAGE_NOT_FOUND"
+    PAGE_CREATE_FAILED = "PAGE_CREATE_FAILED"
+    PAGE_UPDATE_FAILED = "PAGE_UPDATE_FAILED"
+  end
+end

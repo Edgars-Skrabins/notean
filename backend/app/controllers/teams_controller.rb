@@ -1,10 +1,11 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_team, only: [ :activate, :members, :show, :update_nickname, :update, :destroy ]
 
   def mine
     membership = current_user.memberships.order(last_active_at: :desc).first
     render json: {
-      team: membership&.team&.as_json(except: [ :password, :password_digest ]),
+      team: membership&.team&.then { |team| team_json(team) },
       role: membership&.role,
       nickname: membership&.nickname
     }
@@ -13,39 +14,28 @@ class TeamsController < ApplicationController
   def mine_all
     memberships = current_user.memberships.includes(:team).order(last_active_at: :desc)
     render json: {
-      teams: memberships.map { |m| m.team.as_json(except: [ :password, :password_digest ]).merge(role: m.role, nickname: m.nickname) }
+      teams: memberships.map { |m| team_json(m.team).merge(role: m.role, nickname: m.nickname) }
     }
   end
 
   def activate
-    @team = Team.find_by(code: params[:code])
-    return render json: { statusMessage: "Team not found" }, status: :not_found unless @team
-
     membership = membership_for(@team)
-    return render json: { statusMessage: "Not a member of this team" }, status: :forbidden unless membership
+    return render_error(ErrorCodes::Teams::NOT_TEAM_MEMBER, :forbidden) unless membership
 
     membership.update!(last_active_at: Time.current)
-    render json: { team: @team.as_json(except: [ :password, :password_digest ]), role: membership.role, nickname: membership.nickname }
+    render json: { team: team_json(@team), role: membership.role, nickname: membership.nickname }
   end
 
   def members
-    @team = Team.find_by(code: params[:code])
-    return render json: { statusMessage: "Team not found" }, status: :not_found unless @team
     return unless require_team_role!(@team, :admin, :owner)
 
     render json: {
-      members: @team.memberships.includes(user: { avatar_image_attachment: :blob }).map { |m| { id: m.user.id, nickname: m.nickname, role: m.role, avatar: avatar_json(m.user) } }
+      members: @team.memberships.includes(user: { avatar_image_attachment: :blob }).map { |m| member_json(m.user).merge(role: m.role) }
     }
   end
 
   def show
-    @team = Team.find_by(code: params[:code])
-
-    if @team
-      render json: { team: @team.as_json(except: [ :password, :password_digest ]), statusMessage: "Team found" }
-    else
-      render json: { statusMessage: "Team not found" }, status: :not_found
-    end
+    render json: { team: team_json(@team) }
   end
 
   def create
@@ -60,46 +50,45 @@ class TeamsController < ApplicationController
     end
 
     if membership.nil?
-      render json: { statusMessage: "Failed to create team" }, status: :unprocessable_entity
+      render_error(ErrorCodes::Teams::TEAM_CREATE_FAILED, :unprocessable_entity)
     elsif membership.persisted?
-      render json: { team: @team.as_json(except: [ :password, :password_digest ]), role: "owner", nickname: membership.nickname, statusMessage: "Team created successfully" }, status: :created
+      render json: { team: team_json(@team), role: "owner", nickname: membership.nickname }, status: :created
     else
       render_nickname_error(membership)
     end
   end
 
   def update_nickname
-    @team = Team.find_by(code: params[:code])
-    return render json: { statusMessage: "Team not found" }, status: :not_found unless @team
-
     membership = membership_for(@team)
-    return render json: { statusMessage: "Forbidden" }, status: :forbidden unless membership
+    return render_error(ErrorCodes::Teams::NOT_TEAM_MEMBER, :forbidden) unless membership
 
     if membership.update(nickname: update_membership_params[:nickname])
-      render json: { nickname: membership.nickname, statusMessage: "Nickname updated" }
+      render json: { nickname: membership.nickname }
     else
       render_nickname_error(membership)
     end
   end
 
   def update
-    @team = Team.find_by(code: params[:code])
-    return render json: { statusMessage: "Team not found" }, status: :not_found unless @team
     return unless require_team_role!(@team, :admin, :owner)
 
     if @team.update(update_team_params)
-      render json: { team: @team.as_json(except: [ :password, :password_digest ]), statusMessage: "Team renamed successfully" }
+      render json: { team: team_json(@team) }
     else
-      render json: { statusMessage: "Failed to rename team" }, status: :unprocessable_entity
+      render_error(ErrorCodes::Teams::TEAM_RENAME_FAILED, :unprocessable_entity)
     end
   end
 
   def destroy
-    @team = Team.find_by(code: params[:code])
-    return render json: { statusMessage: "Team not found" }, status: :not_found unless @team
     return unless require_team_role!(@team, :owner)
 
     @team.destroy!
-    render json: { statusMessage: "Team deleted successfully" }, status: :ok
+    head :no_content
+  end
+
+  private
+
+  def team_code
+    params[:code]
   end
 end

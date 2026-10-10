@@ -14,7 +14,7 @@ class Folder < ApplicationRecord
   private
 
   def parent_has_same_item_type
-    errors.add(:parent_id, "must be a folder of the same type") if parent && parent.item_type != item_type
+    errors.add(:parent_id, :type_mismatch, message: "must be a folder of the same type") if parent && parent.item_type != item_type
   end
 
   def parent_is_not_self_or_descendant
@@ -23,7 +23,7 @@ class Folder < ApplicationRecord
     node = parent
     while node
       if node.id == id
-        errors.add(:parent_id, "can't be this folder or one of its own descendants")
+        errors.add(:parent_id, :circular, message: "can't be this folder or one of its own descendants")
         return
       end
       node = node.parent

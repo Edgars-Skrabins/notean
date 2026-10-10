@@ -5,25 +5,24 @@ class PagesController < ApplicationController
   before_action :set_page, only: [ :show, :update, :destroy ]
 
   def index
-    pages = @team.pages
-    pages = pages.where("LOWER(title) LIKE ?", "%#{params[:search].downcase}%") if params[:search].present?
+    pages = @team.pages.search_title(params[:search])
 
-    render json: { pages: pages.map { |page| page_summary_json(page) }, statusMessage: "Pages found" }
+    render json: { pages: pages.map { |page| page_summary_json(page) } }
   end
 
   def create
     @page = @team.pages.new(created_by_user_id: current_user.id, content: "")
-    @page.title = create_page_params[:title].presence || "Untitled"
+    @page.title = title_or_default(create_page_params[:title])
 
     if @page.save
-      render json: { page: page_json(@page), statusMessage: "Page created successfully" }, status: :created
+      render json: { page: page_json(@page) }, status: :created
     else
-      render json: { statusMessage: "Failed to create page" }, status: :unprocessable_entity
+      render_error(ErrorCodes::Pages::PAGE_CREATE_FAILED, :unprocessable_entity)
     end
   end
 
   def show
-    render json: { page: page_json(@page), statusMessage: "Page found" }
+    render json: { page: page_json(@page) }
   end
 
   def update
@@ -34,9 +33,9 @@ class PagesController < ApplicationController
     if @page.save
       @page.page_contributors.find_or_create_by!(user: current_user)
       PageEditingStatus.stop(@page.id, current_user)
-      render json: { page: page_json(@page), statusMessage: "Page updated successfully" }
+      render json: { page: page_json(@page) }
     else
-      render json: { statusMessage: "Failed to update page" }, status: :unprocessable_entity
+      render_error(ErrorCodes::Pages::PAGE_UPDATE_FAILED, :unprocessable_entity)
     end
   end
 
@@ -47,20 +46,10 @@ class PagesController < ApplicationController
 
   private
 
-  def set_team
-    @team = Team.find_by(code: params[:team_code])
-
-    render json: { statusMessage: "Team not found" }, status: :not_found if @team.nil?
-  end
-
-  def authorize_team_member!
-    render json: { statusMessage: "Forbidden" }, status: :forbidden unless current_user.memberships.exists?(team: @team)
-  end
-
   def set_page
     @page = @team.pages.find_by(id: params[:id])
 
-    render json: { statusMessage: "Page not found" }, status: :not_found if @page.nil?
+    render_error(ErrorCodes::Pages::PAGE_NOT_FOUND, :not_found) if @page.nil?
   end
 
   def page_summary_json(page)
@@ -68,7 +57,7 @@ class PagesController < ApplicationController
       id: page.id,
       title: page.title,
       folder_id: page.folder_id,
-      creator: user_json(page.creator),
+      creator: member_json(page.creator),
       created_at: page.created_at,
       updated_at: page.updated_at
     }
@@ -82,15 +71,11 @@ class PagesController < ApplicationController
       title: page.title,
       content: page.content,
       folder_id: page.folder_id,
-      creator: user_json(page.creator),
-      contributors: page.contributors.map { |user| user_json(user) },
+      creator: member_json(page.creator),
+      contributors: page.contributors.map { |user| member_json(user) },
       created_at: page.created_at,
       updated_at: page.updated_at,
       currently_editing: editing && { id: editing[:user_id], nickname: editing[:nickname] }
     }
-  end
-
-  def user_json(user)
-    { id: user.id, nickname: team_nicknames[user.id], avatar: avatar_json(user) }
   end
 end

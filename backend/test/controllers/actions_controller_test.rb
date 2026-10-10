@@ -26,7 +26,7 @@ class ActionsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :conflict
-    assert_equal "Nickname already taken in this team", JSON.parse(response.body)["statusMessage"]
+    assert_equal "NICKNAME_TAKEN", JSON.parse(response.body)["code"]
   end
 
   test "join_team returns 422 for an invalid nickname" do
@@ -35,7 +35,7 @@ class ActionsControllerTest < ActionDispatch::IntegrationTest
     end
 
     assert_response :unprocessable_entity
-    assert_equal "Invalid nickname", JSON.parse(response.body)["statusMessage"]
+    assert_equal "NICKNAME_INVALID", JSON.parse(response.body)["code"]
   end
 
   test "re-joining keeps the existing nickname and ignores the submitted one" do

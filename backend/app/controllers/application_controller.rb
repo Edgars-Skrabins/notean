@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::API
+  DEFAULT_TITLE = "Untitled"
+
   private
   def team_params
     params.require(:team).permit(:code, :password, :nickname)
@@ -84,8 +86,26 @@ class ApplicationController < ActionController::API
     params.require(:avatar).permit(:color, :image, :remove_image)
   end
 
+  def render_error(code, status)
+    render json: { code: code }, status: status
+  end
+
+  def set_team
+    @team = Team.find_by(code: team_code)
+
+    render_error(ErrorCodes::Teams::TEAM_NOT_FOUND, :not_found) if @team.nil?
+  end
+
+  def team_code
+    params[:team_code]
+  end
+
+  def authorize_team_member!
+    render_error(ErrorCodes::Teams::NOT_TEAM_MEMBER, :forbidden) unless current_user.memberships.exists?(team: @team)
+  end
+
   def authenticate_user!
-    render json: { statusMessage: "Unauthorized" }, status: :unauthorized unless current_user
+    render_error(ErrorCodes::Common::UNAUTHORIZED, :unauthorized) unless current_user
   end
 
   def membership_for(team)
@@ -95,10 +115,22 @@ class ApplicationController < ActionController::API
   def require_team_role!(team, *roles)
     membership = membership_for(team)
     unless membership && roles.map(&:to_s).include?(membership.role)
-      render json: { statusMessage: "Forbidden" }, status: :forbidden
+      render_error(ErrorCodes::Common::FORBIDDEN, :forbidden)
       return nil
     end
     membership
+  end
+
+  def title_or_default(title)
+    title.presence || DEFAULT_TITLE
+  end
+
+  def team_json(team)
+    team.as_json(except: [ :password, :password_digest ])
+  end
+
+  def member_json(user)
+    { id: user.id, nickname: team_nicknames[user.id], avatar: avatar_json(user) }
   end
 
   def avatar_json(user)
@@ -114,9 +146,9 @@ class ApplicationController < ActionController::API
 
   def render_nickname_error(membership)
     if membership.errors.of_kind?(:nickname, :taken)
-      render json: { statusMessage: "Nickname already taken in this team" }, status: :conflict
+      render_error(ErrorCodes::Teams::NICKNAME_TAKEN, :conflict)
     else
-      render json: { statusMessage: "Invalid nickname" }, status: :unprocessable_entity
+      render_error(ErrorCodes::Teams::NICKNAME_INVALID, :unprocessable_entity)
     end
   end
 

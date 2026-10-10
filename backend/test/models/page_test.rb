@@ -18,4 +18,12 @@ class PageTest < ActiveSupport::TestCase
 
     assert page.valid?
   end
+
+  test "search_title matches case-insensitively and treats wildcards literally" do
+    Page.create!(team: @team, creator: @user, title: "Release 50% done", content: "")
+    Page.create!(team: @team, creator: @user, title: "Release 500 done", content: "")
+
+    assert_equal [ "Release 50% done" ], @team.pages.search_title("50%").pluck(:title)
+    assert_equal 2, @team.pages.search_title("RELEASE").count
+  end
 end

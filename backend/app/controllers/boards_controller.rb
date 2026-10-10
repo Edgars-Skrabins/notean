@@ -5,38 +5,37 @@ class BoardsController < ApplicationController
   before_action :set_board, only: [ :show, :update, :destroy ]
 
   def index
-    boards = @team.boards
-    boards = boards.where("LOWER(title) LIKE ?", "%#{params[:search].downcase}%") if params[:search].present?
+    boards = @team.boards.search_title(params[:search])
 
-    render json: { boards: boards.map { |board| board_summary_json(board) }, statusMessage: "Boards found" }
+    render json: { boards: boards.map { |board| board_summary_json(board) } }
   end
 
   def create
     @board = @team.boards.new(created_by_user_id: current_user.id)
-    @board.title = create_board_params[:title].presence || "Untitled"
+    @board.title = title_or_default(create_board_params[:title])
 
     if @board.save
       Board::DEFAULT_COLUMN_TITLES.each_with_index do |title, index|
         @board.columns.create!(title: title, position: index)
       end
 
-      render json: { board: board_json(@board), statusMessage: "Board created successfully" }, status: :created
+      render json: { board: board_json(@board) }, status: :created
     else
-      render json: { statusMessage: "Failed to create board" }, status: :unprocessable_entity
+      render_error(ErrorCodes::Boards::BOARD_CREATE_FAILED, :unprocessable_entity)
     end
   end
 
   def show
-    render json: { board: board_json(@board), statusMessage: "Board found" }
+    render json: { board: board_json(@board) }
   end
 
   def update
     @board.title = update_board_params[:title] if update_board_params[:title].present?
 
     if @board.save
-      render json: { board: board_json(@board), statusMessage: "Board updated successfully" }
+      render json: { board: board_json(@board) }
     else
-      render json: { statusMessage: "Failed to update board" }, status: :unprocessable_entity
+      render_error(ErrorCodes::Boards::BOARD_UPDATE_FAILED, :unprocessable_entity)
     end
   end
 
@@ -47,27 +46,17 @@ class BoardsController < ApplicationController
 
   private
 
-  def set_team
-    @team = Team.find_by(code: params[:team_code])
-
-    render json: { statusMessage: "Team not found" }, status: :not_found if @team.nil?
-  end
-
-  def authorize_team_member!
-    render json: { statusMessage: "Forbidden" }, status: :forbidden unless current_user.memberships.exists?(team: @team)
-  end
-
   def set_board
     @board = @team.boards.find_by(id: params[:id])
 
-    render json: { statusMessage: "Board not found" }, status: :not_found if @board.nil?
+    render_error(ErrorCodes::Boards::BOARD_NOT_FOUND, :not_found) if @board.nil?
   end
 
   def board_summary_json(board)
     {
       id: board.id,
       title: board.title,
-      creator: user_json(board.creator),
+      creator: member_json(board.creator),
       created_at: board.created_at,
       updated_at: board.updated_at
     }
@@ -94,9 +83,5 @@ class BoardsController < ApplicationController
       title: card.title,
       position: card.position
     }
-  end
-
-  def user_json(user)
-    { id: user.id, nickname: team_nicknames[user.id], avatar: avatar_json(user) }
   end
 end

@@ -30,5 +30,7 @@ module NoteanBackend
     config.api_only = true
 
     config.middleware.use Rack::Attack
+
+    config.x.frontend_origin = ENV.fetch("FRONTEND_ORIGIN", "http://localhost:4200")
   end
 end
