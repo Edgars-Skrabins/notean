@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_10_120000) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_10_130100) do
   create_table "boards", force: :cascade do |t|
     t.integer "team_id", null: false
     t.integer "created_by_user_id", null: false
@@ -65,6 +65,21 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_10_120000) do
     t.index ["created_by_user_id"], name: "index_diagrams_on_created_by_user_id"
     t.index ["folder_id"], name: "index_diagrams_on_folder_id"
     t.index ["team_id"], name: "index_diagrams_on_team_id"
+  end
+
+  create_table "favorites", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "team_id", null: false
+    t.string "favoritable_type", null: false
+    t.integer "favoritable_id", null: false
+    t.integer "home_position", null: false
+    t.integer "sidebar_position", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["favoritable_type", "favoritable_id"], name: "index_favorites_on_favoritable"
+    t.index ["team_id"], name: "index_favorites_on_team_id"
+    t.index ["user_id", "favoritable_type", "favoritable_id"], name: "index_favorites_on_user_and_favoritable", unique: true
+    t.index ["user_id", "team_id"], name: "index_favorites_on_user_id_and_team_id"
   end
 
   create_table "folders", force: :cascade do |t|
@@ -133,6 +148,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_10_120000) do
     t.string "password_digest", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "show_favorites_on_home", default: true, null: false
+    t.boolean "show_favorites_in_sidebar", default: true, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
@@ -147,6 +164,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_10_120000) do
   add_foreign_key "diagrams", "folders"
   add_foreign_key "diagrams", "teams"
   add_foreign_key "diagrams", "users", column: "created_by_user_id"
+  add_foreign_key "favorites", "teams"
+  add_foreign_key "favorites", "users"
   add_foreign_key "folders", "folders", column: "parent_id"
   add_foreign_key "folders", "teams"
   add_foreign_key "folders", "users", column: "created_by_user_id"
