@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   post "teams/:code/activate" => "teams#activate"
   get "teams/:code/members" => "teams#members"
   patch "teams/:code/nickname" => "teams#update_nickname"
+  get "users/me/settings" => "users#settings"
+  patch "users/me/settings" => "users#update_settings"
   resources :teams, only: [:create, :show, :update, :destroy], param: :code do
     resources :folders, only: [:index, :create, :update, :destroy]
     resources :pages, only: [:index, :create, :show, :update, :destroy]
@@ -14,6 +16,7 @@ Rails.application.routes.draw do
       resources :columns, only: [:create, :update, :destroy]
       resources :cards, only: [:create, :show, :update, :destroy]
     end
+    resources :favorites, only: [:index, :create, :update, :destroy]
   end
 
   post "actions/jointeam" => "actions#join_team"

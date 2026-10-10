@@ -68,6 +68,18 @@ class ApplicationController < ActionController::API
     params.require(:card).permit(:title, :description, :column_id, :position)
   end
 
+  def create_favorite_params
+    params.require(:favorite).permit(:favoritable_type, :favoritable_id)
+  end
+
+  def update_favorite_params
+    params.require(:favorite).permit(:surface, :position)
+  end
+
+  def update_settings_params
+    params.require(:settings).permit(:show_favorites_on_home, :show_favorites_in_sidebar)
+  end
+
   def authenticate_user!
     render json: { statusMessage: 'Unauthorized' }, status: :unauthorized unless current_user
   end
