@@ -1,0 +1,72 @@
+.favoritesGrid {
+  margin-top: var(--space-6);
+}
+
+.favoritesGrid__title {
+  margin: 0 0 var(--space-4);
+  color: var(--color-text-heading);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.favoritesGrid__tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+.favoritesGrid__tile {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: 200px;
+  padding: var(--space-3) var(--space-4) var(--space-4);
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.favoritesGrid__tile:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--color-input-border-focus);
+}
+
+.favoritesGrid__tileHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.favoritesGrid__icon {
+  width: 18px;
+  height: 18px;
+  color: var(--color-text-muted);
+}
+
+.favoritesGrid__tileTitle {
+  color: var(--color-text-heading);
+  font-weight: 600;
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.favoritesGrid__tileMeta {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.favoritesGrid__tile.cdk-drag-preview {
+  box-shadow: var(--shadow-card);
+}
+
+.favoritesGrid__tile.cdk-drag-placeholder {
+  opacity: 0.4;
+}

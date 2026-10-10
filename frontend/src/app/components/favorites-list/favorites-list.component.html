@@ -1,0 +1,26 @@
+<h3 class="favoritesList__title">{{ PHRASES.FAVORITES | translate }}</h3>
+
+<ng-container *ngIf="favoriteService.sidebarFavorites$ | async as favorites">
+  <div
+    *ngIf="favorites.length"
+    class="favoritesList__rows"
+    cdkDropList
+    [cdkDropListData]="favorites"
+    (cdkDropListDropped)="handleDrop($event)"
+  >
+    <div
+      *ngFor="let favorite of favorites; trackBy: trackById"
+      class="favoritesList__row"
+      cdkDrag
+      cdkDragLockAxis="y"
+      [cdkDragData]="favorite"
+      (click)="handleOpen(favorite)"
+    >
+      <app-icon [name]="favoriteTypeIcon(favorite.favoritableType)" class="favoritesList__icon"></app-icon>
+      <span class="favoritesList__rowTitle">{{ favorite.title }}</span>
+      <app-favorite-star [type]="favorite.favoritableType" [itemId]="favorite.favoritableId" [title]="favorite.title"></app-favorite-star>
+    </div>
+  </div>
+
+  <p class="favoritesList__empty" *ngIf="!favorites.length">{{ PHRASES.NO_FAVORITES_SIDEBAR | translate }}</p>
+</ng-container>

@@ -1,0 +1,31 @@
+<section class="favoritesGrid" *ngIf="favoriteService.homeFavorites$ | async as favorites">
+  <h3 class="favoritesGrid__title">{{ PHRASES.FAVORITES | translate }}</h3>
+
+  <div
+    *ngIf="favorites.length"
+    class="favoritesGrid__tiles"
+    cdkDropList
+    cdkDropListOrientation="mixed"
+    [cdkDropListData]="favorites"
+    (cdkDropListDropped)="handleDrop($event)"
+  >
+    <div
+      *ngFor="let favorite of favorites; trackBy: trackById"
+      class="favoritesGrid__tile"
+      cdkDrag
+      [cdkDragData]="favorite"
+      (click)="handleOpen(favorite)"
+    >
+      <div class="favoritesGrid__tileHeader">
+        <app-icon [name]="favoriteTypeIcon(favorite.favoritableType)" class="favoritesGrid__icon"></app-icon>
+        <app-favorite-star [type]="favorite.favoritableType" [itemId]="favorite.favoritableId" [title]="favorite.title"></app-favorite-star>
+      </div>
+      <span class="favoritesGrid__tileTitle">{{ favorite.title }}</span>
+      <span class="favoritesGrid__tileMeta">
+        {{ favoriteTypeLabel(favorite.favoritableType) | translate }}<ng-container *ngIf="favorite.boardTitle"> &middot; {{ favorite.boardTitle }}</ng-container>
+      </span>
+    </div>
+  </div>
+
+  <p class="dashboardStub__body" *ngIf="!favorites.length">{{ PHRASES.NO_FAVORITES_HOME | translate }}</p>
+</section>
