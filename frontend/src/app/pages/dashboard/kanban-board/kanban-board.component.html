@@ -37,7 +37,7 @@
       </div>
     </div>
 
-    <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+    <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
     <div class="kanbanBoard__columns" cdkDropListGroup *ngIf="!isLoading">
       <app-kanban-column

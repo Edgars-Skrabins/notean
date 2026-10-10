@@ -1,3 +1,5 @@
+import {Result} from "@models/result.model";
+import {TeamsErrorCode} from "@config/errorCodes";
 import {Avatar} from "@models/avatar.model";
 
 export type TeamRole = 'user' | 'admin' | 'owner';
@@ -6,9 +8,6 @@ export enum NicknameError {
   TOO_SHORT = 'TOO_SHORT',
   TOO_LONG = 'TOO_LONG',
   INVALID_CHARACTERS = 'INVALID_CHARACTERS',
-  TAKEN = 'TAKEN',
-  NETWORK = 'NETWORK',
-  UNKNOWN = 'UNKNOWN',
 }
 
 export interface Team {
@@ -41,26 +40,14 @@ export interface JoinTeamParams {
   nickname: string;
 }
 
-export type CreateTeamResponse =
-  | { success: true; team: Team; role: TeamRole; nickname: string }
-  | { success: false; statusMessage: string; nicknameError: NicknameError | null };
+export type CreateTeamResponse = Result<{ team: Team; role: TeamRole; nickname: string }, TeamsErrorCode>;
 
-export type JoinTeamResponse =
-  | { success: true; team: Team; role: TeamRole; nickname: string }
-  | { success: false; statusMessage: string; nicknameError: NicknameError | null };
+export type JoinTeamResponse = Result<{ team: Team; role: TeamRole; nickname: string }, TeamsErrorCode>;
 
-export type ActivateTeamResponse =
-  | { success: true; team: Team; role: TeamRole; nickname: string }
-  | { success: false; statusMessage: string };
+export type ActivateTeamResponse = Result<{ team: Team; role: TeamRole; nickname: string }, TeamsErrorCode>;
 
-export type RenameTeamResponse =
-  | { success: true; team: Team }
-  | { success: false; statusMessage: string };
+export type RenameTeamResponse = Result<{ team: Team }, TeamsErrorCode>;
 
-export type DeleteTeamResponse =
-  | { success: true }
-  | { success: false; statusMessage: string };
+export type DeleteTeamResponse = Result<object, TeamsErrorCode>;
 
-export type UpdateNicknameResponse =
-  | { success: true; nickname: string }
-  | { success: false; error: NicknameError };
+export type UpdateNicknameResponse = Result<{ nickname: string }, TeamsErrorCode>;

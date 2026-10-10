@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {axiosInstance} from "@config/axiosConfig";
 import {AvatarColor} from "@config/avatarColors";
-import {toErrorResult} from "@utils/httpError";
+import {apiRequest} from "@utils/apiRequest";
 import {AuthService} from "@services/auth.service";
 import {Avatar, AvatarResponse, AvatarUpdate} from "@models/avatar.model";
 
@@ -38,13 +38,14 @@ export class AvatarService {
   }
 
   async load(): Promise<AvatarResponse> {
-    return axiosInstance.get(this.avatarUrl)
-      .then((response) => {
-        const avatar = mapAvatar(response.data.avatar);
+    return apiRequest<AvatarResponse>(
+      axiosInstance.get(this.avatarUrl),
+      (data) => {
+        const avatar = mapAvatar(data.avatar);
         this.avatarSubject.next(avatar);
-        return {success: true, avatar} satisfies AvatarResponse;
-      })
-      .catch((error) => toErrorResult<AvatarResponse>(error, 'Failed to load avatar'));
+        return {success: true, avatar};
+      },
+    );
   }
 
   async update(update: AvatarUpdate): Promise<AvatarResponse> {
@@ -59,13 +60,14 @@ export class AvatarService {
       formData.append('avatar[remove_image]', 'true');
     }
 
-    return axiosInstance.patch(this.avatarUrl, formData)
-      .then((response) => {
-        const avatar = mapAvatar(response.data.avatar);
+    return apiRequest<AvatarResponse>(
+      axiosInstance.patch(this.avatarUrl, formData),
+      (data) => {
+        const avatar = mapAvatar(data.avatar);
         this.avatarSubject.next(avatar);
-        return {success: true, avatar} satisfies AvatarResponse;
-      })
-      .catch((error) => toErrorResult<AvatarResponse>(error, 'Failed to update avatar'));
+        return {success: true, avatar};
+      },
+    );
   }
 
   clear() {

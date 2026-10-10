@@ -3,7 +3,6 @@ import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
 import {ToastService} from "@services/toast.service";
 import {ToastType} from "@models/toast.model";
-import {NicknameError} from "@models/team.model";
 import {PHRASES} from "@config/phrases";
 import {fakeAsync, tick} from "@angular/core/testing";
 
@@ -68,24 +67,24 @@ describe('JoinTeamComponent.handleJoinTeam', () => {
   });
 
   it('shows a toast for a nickname failure from the request', fakeAsync(() => {
-    teamService.joinTeam.and.returnValue(Promise.resolve({success: false, statusMessage: 'taken', nicknameError: NicknameError.TAKEN}));
+    teamService.joinTeam.and.returnValue(Promise.resolve({success: false, code: 'NICKNAME_TAKEN'}));
     component.nickname = 'Alice';
 
     component.handleJoinTeam();
     tick();
 
-    expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: PHRASES.NICKNAME_TAKEN});
+    expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: 'ERRORS.TEAMS.NICKNAME_TAKEN'});
     expect(component.alertMessage).toBe('');
   }));
 
   it('keeps other failures inline', fakeAsync(() => {
-    teamService.joinTeam.and.returnValue(Promise.resolve({success: false, statusMessage: 'Wrong password', nicknameError: null}));
+    teamService.joinTeam.and.returnValue(Promise.resolve({success: false, code: 'WRONG_TEAM_PASSWORD'}));
     component.nickname = 'Alice';
 
     component.handleJoinTeam();
     tick();
 
-    expect(component.alertMessage).toBe('Wrong password');
+    expect(component.alertMessage).toBe('ERRORS.TEAMS.WRONG_TEAM_PASSWORD');
     expect(toastService.show).not.toHaveBeenCalled();
   }));
 });

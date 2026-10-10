@@ -9,6 +9,7 @@ import {AvatarService} from "@services/avatar.service";
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {AuthCardComponent} from "@components/auth-card/auth-card.component";
+import {errorPhrase} from "@utils/errorPhrase";
 
 @Component({
   selector: 'app-register',
@@ -45,9 +46,9 @@ export class RegisterComponent {
     this.isSubmitting = true;
 
     this.authService.register({email: this.email, password: this.password})
-      .then((errorMessage) => {
-        if (errorMessage) {
-          this.alertMessage = errorMessage;
+      .then((response) => {
+        if (!response.success) {
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
         this.settingsService.load();

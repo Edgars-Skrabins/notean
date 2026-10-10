@@ -7,6 +7,7 @@ import {TeamService} from "@services/team.service";
 import {teamRoleLabel} from "@utils/teamRoleLabel";
 import {TeamWithRole} from "@models/team.model";
 import {AppRoutes} from "../../app/app-routes.enum";
+import {errorPhrase} from "@utils/errorPhrase";
 
 @Component({
   selector: 'app-switch-team',
@@ -52,7 +53,7 @@ export class SwitchTeamComponent implements OnInit {
     this.teamService.activateTeam(team.code)
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 

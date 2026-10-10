@@ -1,0 +1,10 @@
+export const BOARDS_ERROR_CODES = [
+  'BOARD_NOT_FOUND',
+  'BOARD_CREATE_FAILED',
+  'BOARD_UPDATE_FAILED',
+  'COLUMN_NOT_FOUND',
+  'COLUMN_CREATE_FAILED',
+  'COLUMN_UPDATE_FAILED',
+] as const;
+
+export type BoardsErrorCode = typeof BOARDS_ERROR_CODES[number];

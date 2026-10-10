@@ -1,3 +1,6 @@
+import {Result} from "@models/result.model";
+import {FavoritesErrorCode, TeamAccessErrorCode} from "@config/errorCodes";
+
 export type FavoritableType = 'Page' | 'Diagram' | 'Board' | 'Card';
 
 export type FavoriteSurface = 'home' | 'sidebar';
@@ -13,14 +16,8 @@ export interface Favorite {
   sidebarPosition: number;
 }
 
-export type ListFavoritesResponse =
-  | { success: true; favorites: Favorite[] }
-  | { success: false; statusMessage: string };
+export type ListFavoritesResponse = Result<{ favorites: Favorite[] }, TeamAccessErrorCode>;
 
-export type FavoriteResponse =
-  | { success: true; favorite: Favorite }
-  | { success: false; statusMessage: string };
+export type FavoriteResponse = Result<{ favorite: Favorite }, TeamAccessErrorCode | FavoritesErrorCode>;
 
-export type DeleteFavoriteResponse =
-  | { success: true }
-  | { success: false; statusMessage: string };
+export type DeleteFavoriteResponse = Result<object, TeamAccessErrorCode | FavoritesErrorCode>;

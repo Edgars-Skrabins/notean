@@ -8,10 +8,10 @@ import {AppRoutes} from "../../app/app-routes.enum";
 import {PHRASES} from "@config/phrases";
 import {ToastService} from "@services/toast.service";
 import {ToastType} from "@models/toast.model";
-import {NicknameError} from "@models/team.model";
-import {nicknameErrorPhrase, validateNickname} from "@utils/nicknameValidation";
+import {isNicknameErrorCode, nicknameErrorPhrase, validateNickname} from "@utils/nicknameValidation";
 import {AuthCardComponent} from "@components/auth-card/auth-card.component";
 import {TeamCodeDisplayComponent} from "@components/team-code-display/team-code-display.component";
+import {errorPhrase} from "@utils/errorPhrase";
 
 @Component({
   selector: 'app-create-team',
@@ -44,24 +44,24 @@ export class CreateTeamComponent {
 
   handleCreateTeam() {
     if (!this.doesFormHaveValidData()) {
-      this.alertMessage = 'Invalid data';
+      this.alertMessage = PHRASES.INVALID_FORM_DATA;
       return;
     }
 
     const nicknameError = validateNickname(this.nickname);
     if (nicknameError) {
-      this.showNicknameError(nicknameError);
+      this.showError(nicknameErrorPhrase(nicknameError));
       return;
     }
 
     this.teamService.createTeam({name: this.teamName, password: this.teamPassword, nickname: this.nickname.trim()})
       .then((response) => {
         if (!response.success) {
-          if (response.nicknameError) {
-            this.showNicknameError(response.nicknameError);
+          if (isNicknameErrorCode(response.code)) {
+            this.showError(errorPhrase(response.code));
             return;
           }
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
         this.createdTeamCode = response.team.code;
@@ -72,8 +72,8 @@ export class CreateTeamComponent {
     return this.teamName !== '' && this.teamPassword !== '';
   }
 
-  showNicknameError(error: NicknameError) {
-    this.toastService.show({type: ToastType.ERROR, message: nicknameErrorPhrase(error)});
+  showError(message: string) {
+    this.toastService.show({type: ToastType.ERROR, message});
   }
 
   handleContinueToDashboard() {

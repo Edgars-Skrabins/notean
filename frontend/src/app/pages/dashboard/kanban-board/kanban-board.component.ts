@@ -20,6 +20,7 @@ import {KanbanColumnComponent} from "@components/kanban-column/kanban-column.com
 import {CreateNamedItemDialogComponent} from "@components/create-named-item-dialog/create-named-item-dialog.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
+import {errorPhrase} from "@utils/errorPhrase";
 
 @Component({
   selector: 'app-kanban-board',
@@ -70,7 +71,7 @@ export class KanbanBoardComponent implements OnInit {
     private navigationService: NavigationService,
     private favoriteService: FavoriteService
   ) {
-    this.teamCode = this.teamService.getCurrentTeam()!.code;
+    this.teamCode = this.teamService.getCurrentTeamCode();
   }
 
   ngOnInit() {
@@ -96,7 +97,7 @@ export class KanbanBoardComponent implements OnInit {
     this.boardService.deleteBoard(this.teamCode, this.boardId)
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
@@ -128,7 +129,7 @@ export class KanbanBoardComponent implements OnInit {
     this.boardService.renameBoard(this.teamCode, this.boardId, title)
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
@@ -148,7 +149,7 @@ export class KanbanBoardComponent implements OnInit {
     this.columnService.renameColumn(this.teamCode, this.boardId, column.id, title)
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
@@ -176,7 +177,7 @@ export class KanbanBoardComponent implements OnInit {
     this.columnService.deleteColumn(this.teamCode, this.boardId, column.id)
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
@@ -198,7 +199,7 @@ export class KanbanBoardComponent implements OnInit {
     this.columnService.createColumn(this.teamCode, this.boardId, event.title)
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
@@ -234,7 +235,7 @@ export class KanbanBoardComponent implements OnInit {
     this.cardService.deleteCard(this.teamCode, this.boardId, card.id)
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
@@ -259,7 +260,7 @@ export class KanbanBoardComponent implements OnInit {
     this.cardService.createCard(this.teamCode, this.boardId, column.id, event.title)
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
@@ -287,7 +288,7 @@ export class KanbanBoardComponent implements OnInit {
     this.cardService.moveCard(this.teamCode, this.boardId, card.id, {columnId: column.id, position: event.currentIndex})
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           this.loadBoard();
           return;
         }
@@ -304,7 +305,7 @@ export class KanbanBoardComponent implements OnInit {
         this.isLoading = false;
 
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 

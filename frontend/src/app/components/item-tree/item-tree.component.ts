@@ -9,6 +9,7 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
 import {DeleteFolderDialogComponent} from '@components/delete-folder-dialog/delete-folder-dialog.component';
 import {ConfirmDialogComponent} from '@components/confirm-dialog/confirm-dialog.component';
 import {FavoriteStarComponent} from '@components/favorite-star/favorite-star.component';
+import {FolderDeleteMode} from "@models/folder.model";
 
 export interface TreeFolder {
   id: number;
@@ -71,7 +72,7 @@ export class ItemTreeComponent implements OnChanges {
   @Output() openItem = new EventEmitter<TreeItem>();
   @Output() createFolder = new EventEmitter<{ parentId: number | null }>();
   @Output() createItem = new EventEmitter<{ parentId: number | null }>();
-  @Output() deleteFolder = new EventEmitter<{ folderId: number; mode: 'cascade' | 'promote' }>();
+  @Output() deleteFolder = new EventEmitter<{ folderId: number; mode: FolderDeleteMode }>();
   @Output() deleteItem = new EventEmitter<{ itemId: number }>();
   @Output() renameFolder = new EventEmitter<{ folderId: number; title: string }>();
   @Output() moveItem = new EventEmitter<{ itemId: number; folderId: number | null }>();
@@ -118,7 +119,7 @@ export class ItemTreeComponent implements OnChanges {
     this.folderPendingDeletion = folder;
   }
 
-  handleDeleteConfirmed(event: { mode: 'cascade' | 'promote' }) {
+  handleDeleteConfirmed(event: { mode: FolderDeleteMode }) {
     if (!this.folderPendingDeletion) {
       return;
     }

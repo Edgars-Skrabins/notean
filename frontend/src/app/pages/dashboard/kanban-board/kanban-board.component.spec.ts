@@ -12,8 +12,8 @@ import {BoardColumn} from "@models/board.model";
 import {CardDetail, CardSummary} from "@models/card.model";
 
 function createComponent(cardService: CardService, favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem', 'renameItem'])) {
-  const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeam']);
-  teamService.getCurrentTeam.and.returnValue({id: 1, name: 'Team A', code: 'aaa'});
+  const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeamCode']);
+  teamService.getCurrentTeamCode.and.returnValue('aaa');
 
   return new KanbanBoardComponent(
     {} as ActivatedRoute,
@@ -91,14 +91,14 @@ describe('KanbanBoardComponent.handleCardDropped', () => {
   });
 
   it('shows the error and reloads the board when the move fails', fakeAsync(() => {
-    cardService.moveCard.and.returnValue(Promise.resolve({success: false, statusMessage: 'Failed'}));
+    cardService.moveCard.and.returnValue(Promise.resolve({success: false, code: 'CARD_UPDATE_FAILED'}));
     const cards = [first, second];
     const column: BoardColumn = {id: 10, title: 'To do', position: 0, cards};
 
     component.handleCardDropped(createDropEvent(cards, cards, 0, 1), column);
     flushMicrotasks();
 
-    expect(component.alertMessage).toBe('Failed');
+    expect(component.alertMessage).toBe('ERRORS.CARDS.CARD_UPDATE_FAILED');
     expect(loadBoard).toHaveBeenCalled();
   }));
 
@@ -152,13 +152,13 @@ describe('KanbanBoardComponent card create and delete', () => {
   }));
 
   it('handleConfirmDeleteCard keeps the card and shows the error when the request fails', fakeAsync(() => {
-    cardService.deleteCard.and.returnValue(Promise.resolve({success: false, statusMessage: 'Failed'}));
+    cardService.deleteCard.and.returnValue(Promise.resolve({success: false, code: 'CARD_UPDATE_FAILED'}));
     component.requestDeleteCard(first, column);
 
     component.handleConfirmDeleteCard();
     flushMicrotasks();
 
-    expect(component.alertMessage).toBe('Failed');
+    expect(component.alertMessage).toBe('ERRORS.CARDS.CARD_UPDATE_FAILED');
     expect(column.cards).toEqual([first, second]);
   }));
 
@@ -191,13 +191,13 @@ describe('KanbanBoardComponent card create and delete', () => {
   }));
 
   it('handleCreateCardConfirmed shows the error when the request fails', fakeAsync(() => {
-    cardService.createCard.and.returnValue(Promise.resolve({success: false, statusMessage: 'Failed'}));
+    cardService.createCard.and.returnValue(Promise.resolve({success: false, code: 'CARD_UPDATE_FAILED'}));
     component.handleAddCard(column);
 
     component.handleCreateCardConfirmed({title: 'Third'});
     flushMicrotasks();
 
-    expect(component.alertMessage).toBe('Failed');
+    expect(component.alertMessage).toBe('ERRORS.CARDS.CARD_UPDATE_FAILED');
     expect(column.cards).toEqual([first, second]);
   }));
 });

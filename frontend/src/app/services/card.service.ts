@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
 import {axiosInstance} from "@config/axiosConfig";
-import {toErrorResult} from "@utils/httpError";
+import {apiRequest} from "@utils/apiRequest";
 import {CardDetail, CardResponse, DeleteCardResponse} from "@models/card.model";
 import {mapBoardUser, mapCardSummary} from "@services/board.service";
 import {RawAvatar} from "@services/avatar.service";
+import {teamPath} from "@utils/teamPath";
 
 interface RawCardDetail {
   id: number;
@@ -32,46 +33,41 @@ export function mapCardDetail(raw: RawCardDetail): CardDetail {
 })
 export class CardService {
   private cardsUrl(teamCode: string, boardId: number) {
-    return `/teams/${teamCode}/boards/${boardId}/cards`;
+    return teamPath(teamCode, 'boards', boardId, 'cards');
   }
 
   async createCard(teamCode: string, boardId: number, columnId: number, title?: string): Promise<CardResponse> {
-    return axiosInstance.post(this.cardsUrl(teamCode, boardId), {card: {title, column_id: columnId}})
-      .then((response) => {
-        return {success: true, card: mapCardDetail(response.data.card)} satisfies CardResponse;
-      })
-      .catch((error) => toErrorResult<CardResponse>(error, 'Failed to create card'));
+    return apiRequest<CardResponse>(
+      axiosInstance.post(this.cardsUrl(teamCode, boardId), {card: {title, column_id: columnId}}),
+      (data) => ({success: true, card: mapCardDetail(data.card)}),
+    );
   }
 
   async getCard(teamCode: string, boardId: number, id: number): Promise<CardResponse> {
-    return axiosInstance.get(`${this.cardsUrl(teamCode, boardId)}/${id}`)
-      .then((response) => {
-        return {success: true, card: mapCardDetail(response.data.card)} satisfies CardResponse;
-      })
-      .catch((error) => toErrorResult<CardResponse>(error, 'Failed to load card'));
+    return apiRequest<CardResponse>(
+      axiosInstance.get(`${this.cardsUrl(teamCode, boardId)}/${id}`),
+      (data) => ({success: true, card: mapCardDetail(data.card)}),
+    );
   }
 
   async updateCard(teamCode: string, boardId: number, id: number, changes: { title?: string; description?: string }): Promise<CardResponse> {
-    return axiosInstance.patch(`${this.cardsUrl(teamCode, boardId)}/${id}`, {card: changes})
-      .then((response) => {
-        return {success: true, card: mapCardDetail(response.data.card)} satisfies CardResponse;
-      })
-      .catch((error) => toErrorResult<CardResponse>(error, 'Failed to update card'));
+    return apiRequest<CardResponse>(
+      axiosInstance.patch(`${this.cardsUrl(teamCode, boardId)}/${id}`, {card: changes}),
+      (data) => ({success: true, card: mapCardDetail(data.card)}),
+    );
   }
 
   async moveCard(teamCode: string, boardId: number, id: number, move: { columnId: number; position: number }): Promise<CardResponse> {
-    return axiosInstance.patch(`${this.cardsUrl(teamCode, boardId)}/${id}`, {card: {column_id: move.columnId, position: move.position}})
-      .then((response) => {
-        return {success: true, card: mapCardDetail(response.data.card)} satisfies CardResponse;
-      })
-      .catch((error) => toErrorResult<CardResponse>(error, 'Failed to move card'));
+    return apiRequest<CardResponse>(
+      axiosInstance.patch(`${this.cardsUrl(teamCode, boardId)}/${id}`, {card: {column_id: move.columnId, position: move.position}}),
+      (data) => ({success: true, card: mapCardDetail(data.card)}),
+    );
   }
 
   async deleteCard(teamCode: string, boardId: number, id: number): Promise<DeleteCardResponse> {
-    return axiosInstance.delete(`${this.cardsUrl(teamCode, boardId)}/${id}`)
-      .then(() => {
-        return {success: true} satisfies DeleteCardResponse;
-      })
-      .catch((error) => toErrorResult<DeleteCardResponse>(error, 'Failed to delete card'));
+    return apiRequest<DeleteCardResponse>(
+      axiosInstance.delete(`${this.cardsUrl(teamCode, boardId)}/${id}`),
+      () => ({success: true}),
+    );
   }
 }

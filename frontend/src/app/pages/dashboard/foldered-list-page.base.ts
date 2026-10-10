@@ -2,22 +2,21 @@ import {Directive, OnDestroy, OnInit} from '@angular/core';
 import {FolderService} from "@services/folder.service";
 import {TeamService} from "@services/team.service";
 import {FavoriteService} from "@services/favorite.service";
-import {FolderItemType} from "@models/folder.model";
+import {FolderDeleteMode, FolderItemType} from "@models/folder.model";
 import {TreeFolder, TreeItem} from "@components/item-tree/item-tree.component";
-
-export interface FolderedItemSummary {
-  id: number;
-  title: string;
-  folderId: number | null;
-  creator: { nickname: string };
-  updatedAt: string;
-}
-
-type ServiceResult = { success: true } | { success: false; statusMessage: string };
+import {errorPhrase} from "@utils/errorPhrase";
+import {Router} from "@angular/router";
+import {TranslateService} from "@ngx-translate/core";
+import {ErrorCode} from "@config/errorCodes";
+import {FolderedItemSummary} from "@models/foldered-item.model";
+import {FolderedItemService} from "@services/foldered-item.service";
+import {AppRoutes} from "../../app/app-routes.enum";
 
 @Directive()
 export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   protected abstract readonly itemType: FolderItemType;
+  protected abstract readonly itemRoute: AppRoutes;
+  protected abstract readonly untitledItemPhrase: string;
 
   folders: TreeFolder[] = [];
   items: TreeItem[] = [];
@@ -32,21 +31,40 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   private requestSequence = 0;
 
   protected constructor(
+    private itemService: FolderedItemService<ErrorCode>,
     private folderService: FolderService,
     private teamService: TeamService,
-    private favoriteService: FavoriteService
+    private favoriteService: FavoriteService,
+    private router: Router,
+    private translateService: TranslateService
   ) {
-    this.teamCode = this.teamService.getCurrentTeam()!.code;
+    this.teamCode = this.teamService.getCurrentTeamCode();
   }
 
-  protected abstract listItems(search?: string): Promise<
-    | { success: true; items: FolderedItemSummary[] }
-    | { success: false; statusMessage: string }
-  >;
+  handleOpenItem(item: TreeItem) {
+    this.router.navigate([AppRoutes.DASHBOARD, this.itemRoute, item.id]);
+  }
 
-  protected abstract moveItemToFolder(itemId: number, folderId: number | null): Promise<ServiceResult>;
+  handleCreateItem(parentId: number | null) {
+    const untitledTitle = this.translateService.instant(this.untitledItemPhrase);
 
-  protected abstract deleteItemById(itemId: number): Promise<ServiceResult>;
+    this.itemService.create(this.teamCode, untitledTitle)
+      .then((response) => {
+        if (!response.success) {
+          this.alertMessage = errorPhrase(response.code);
+          return;
+        }
+
+        const itemId = response.item.id;
+        const afterMove = parentId !== null
+          ? this.itemService.moveToFolder(this.teamCode, itemId, parentId)
+          : Promise.resolve(response);
+
+        afterMove.then(() => {
+          this.router.navigate([AppRoutes.DASHBOARD, this.itemRoute, itemId], {queryParams: {edit: true}});
+        });
+      });
+  }
 
   get isSearching(): boolean {
     return this.searchQuery.trim().length > 0;
@@ -93,7 +111,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
     this.folderService.createFolder(this.teamCode, this.itemType, event.title, parentId)
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
@@ -110,7 +128,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
     this.folderService.renameFolder(this.teamCode, event.folderId, event.title)
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
@@ -123,7 +141,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
     this.folderService.moveFolder(this.teamCode, event.folderId, event.parentId)
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
@@ -132,13 +150,13 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
       });
   }
 
-  handleDeleteFolder(event: { folderId: number; mode: 'cascade' | 'promote' }) {
+  handleDeleteFolder(event: { folderId: number; mode: FolderDeleteMode }) {
     const deletedItemIds = event.mode === 'cascade' ? this.itemIdsWithin(event.folderId) : [];
 
     this.folderService.deleteFolder(this.teamCode, event.folderId, event.mode)
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
@@ -153,10 +171,10 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.moveItemToFolder(event.itemId, event.folderId)
+    this.itemService.moveToFolder(this.teamCode, event.itemId, event.folderId)
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
@@ -166,10 +184,10 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   }
 
   handleDeleteItem(event: { itemId: number }) {
-    this.deleteItemById(event.itemId)
+    this.itemService.delete(this.teamCode, event.itemId)
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
@@ -184,7 +202,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
 
     Promise.all([
       this.folderService.listFolders(this.teamCode, this.itemType),
-      this.listItems(this.searchQuery || undefined)
+      this.itemService.list(this.teamCode, this.searchQuery || undefined)
     ]).then(([foldersResponse, itemsResponse]) => {
       if (sequence !== this.requestSequence) {
         return;
@@ -192,11 +210,11 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
       this.isLoading = false;
 
       if (!foldersResponse.success) {
-        this.alertMessage = foldersResponse.statusMessage;
+        this.alertMessage = errorPhrase(foldersResponse.code);
         return;
       }
       if (!itemsResponse.success) {
-        this.alertMessage = itemsResponse.statusMessage;
+        this.alertMessage = errorPhrase(itemsResponse.code);
         return;
       }
 

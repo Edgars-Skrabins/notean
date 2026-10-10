@@ -1,0 +1,9 @@
+export const FAVORITES_ERROR_CODES = [
+  'FAVORITE_NOT_FOUND',
+  'FAVORITE_TYPE_INVALID',
+  'FAVORITE_ITEM_NOT_FOUND',
+  'FAVORITE_CREATE_FAILED',
+  'FAVORITE_SURFACE_INVALID',
+] as const;
+
+export type FavoritesErrorCode = typeof FAVORITES_ERROR_CODES[number];

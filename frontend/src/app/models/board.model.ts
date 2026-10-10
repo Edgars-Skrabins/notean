@@ -1,3 +1,5 @@
+import {Result} from "@models/result.model";
+import {BoardsErrorCode, TeamAccessErrorCode} from "@config/errorCodes";
 import {CardSummary} from './card.model';
 import {Avatar} from "@models/avatar.model";
 
@@ -26,22 +28,12 @@ export interface BoardDetail extends BoardSummary {
   columns: BoardColumn[];
 }
 
-export type ListBoardsResponse =
-  | { success: true; boards: BoardSummary[] }
-  | { success: false; statusMessage: string };
+export type ListBoardsResponse = Result<{ boards: BoardSummary[] }, TeamAccessErrorCode>;
 
-export type BoardResponse =
-  | { success: true; board: BoardDetail }
-  | { success: false; statusMessage: string };
+export type BoardResponse = Result<{ board: BoardDetail }, TeamAccessErrorCode | BoardsErrorCode>;
 
-export type DeleteBoardResponse =
-  | { success: true }
-  | { success: false; statusMessage: string };
+export type DeleteBoardResponse = Result<object, TeamAccessErrorCode | BoardsErrorCode>;
 
-export type ColumnResponse =
-  | { success: true; column: BoardColumn }
-  | { success: false; statusMessage: string };
+export type ColumnResponse = Result<{ column: BoardColumn }, TeamAccessErrorCode | BoardsErrorCode>;
 
-export type DeleteColumnResponse =
-  | { success: true }
-  | { success: false; statusMessage: string };
+export type DeleteColumnResponse = Result<object, TeamAccessErrorCode | BoardsErrorCode>;

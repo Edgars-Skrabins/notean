@@ -7,7 +7,7 @@
   <h2 class="switchTeam__title">{{ PHRASES.SWITCH_TEAMS | translate }}</h2>
   <p class="switchTeam__subtitle">{{ PHRASES.SWITCH_TEAM_SUBTITLE | translate }}</p>
 
-  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
   <div class="switchTeam__list" *ngIf="!isLoading && teams.length">
     <button

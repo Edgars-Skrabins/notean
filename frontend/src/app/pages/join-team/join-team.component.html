@@ -38,5 +38,5 @@
   </div>
 
   <button class="authButton" [disabled]="isSubmitting" (click)="handleJoinTeam()">{{ PHRASES.JOIN_TEAM | translate }}</button>
-  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 </app-auth-card>

@@ -15,8 +15,8 @@ describe('CardDetailComponent editing', () => {
   beforeEach(() => {
     cardService = jasmine.createSpyObj('CardService', ['updateCard']);
     favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem', 'renameItem']);
-    const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeam']);
-    teamService.getCurrentTeam.and.returnValue({id: 1, name: 'Team A', code: 'aaa'});
+    const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeamCode']);
+    teamService.getCurrentTeamCode.and.returnValue('aaa');
     component = new CardDetailComponent({} as ActivatedRoute, {} as Router, cardService, teamService, favoriteService);
 
     card = {
@@ -65,13 +65,13 @@ describe('CardDetailComponent editing', () => {
   }));
 
   it('commitTitle shows the error and keeps the draft when the request fails', fakeAsync(() => {
-    cardService.updateCard.and.returnValue(Promise.resolve({success: false, statusMessage: 'Failed'}));
+    cardService.updateCard.and.returnValue(Promise.resolve({success: false, code: 'CARD_UPDATE_FAILED'}));
     component.titleDraft = 'Renamed';
 
     component.commitTitle();
     flushMicrotasks();
 
-    expect(component.alertMessage).toBe('Failed');
+    expect(component.alertMessage).toBe('ERRORS.CARDS.CARD_UPDATE_FAILED');
     expect(component.card?.title).toBe('My Card');
     expect(component.titleDraft).toBe('Renamed');
   }));
@@ -103,13 +103,13 @@ describe('CardDetailComponent editing', () => {
   }));
 
   it('commitDescription shows the error when the request fails', fakeAsync(() => {
-    cardService.updateCard.and.returnValue(Promise.resolve({success: false, statusMessage: 'Failed'}));
+    cardService.updateCard.and.returnValue(Promise.resolve({success: false, code: 'CARD_UPDATE_FAILED'}));
     component.descriptionDraft = 'New details';
 
     component.commitDescription();
     flushMicrotasks();
 
-    expect(component.alertMessage).toBe('Failed');
+    expect(component.alertMessage).toBe('ERRORS.CARDS.CARD_UPDATE_FAILED');
     expect(component.card?.description).toBe('Details');
   }));
 

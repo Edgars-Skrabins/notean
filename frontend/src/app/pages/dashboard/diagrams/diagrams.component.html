@@ -8,10 +8,10 @@
       [placeholder]="PHRASES.SEARCH_DIAGRAMS | translate"
     />
     <app-button variant="ghost" icon="folder-plus" (pressed)="handleCreateFolder(null)">{{ PHRASES.NEW_FOLDER | translate }}</app-button>
-    <app-button variant="primary" icon="plus" (pressed)="handleCreateDiagram(null)">{{ PHRASES.NEW_DIAGRAM | translate }}</app-button>
+    <app-button variant="primary" icon="plus" (pressed)="handleCreateItem(null)">{{ PHRASES.NEW_DIAGRAM | translate }}</app-button>
   </div>
 
-  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
   <app-item-tree
     *ngIf="!isLoading"
@@ -20,9 +20,9 @@
     [itemLabel]="PHRASES.NEW_DIAGRAM | translate"
     favoritableType="Diagram"
     [deleteItemConfirmMessage]="PHRASES.CONFIRM_DELETE_DIAGRAM | translate"
-    (openItem)="handleOpenDiagram($event)"
+    (openItem)="handleOpenItem($event)"
     (createFolder)="handleCreateFolder($event.parentId)"
-    (createItem)="handleCreateDiagram($event.parentId)"
+    (createItem)="handleCreateItem($event.parentId)"
     (renameFolder)="handleRenameFolder($event)"
     (deleteFolder)="handleDeleteFolder($event)"
     (deleteItem)="handleDeleteItem($event)"

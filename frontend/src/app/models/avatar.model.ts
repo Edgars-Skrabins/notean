@@ -1,3 +1,5 @@
+import {Result} from "@models/result.model";
+import {UsersErrorCode} from "@config/errorCodes";
 import {AvatarColor} from "@config/avatarColors";
 
 export interface Avatar {
@@ -11,6 +13,4 @@ export interface AvatarUpdate {
   removeImage?: boolean;
 }
 
-export type AvatarResponse =
-  | { success: true; avatar: Avatar }
-  | { success: false; statusMessage: string };
+export type AvatarResponse = Result<{ avatar: Avatar }, UsersErrorCode>;

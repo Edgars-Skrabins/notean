@@ -113,9 +113,6 @@
   "NICKNAME_TOO_SHORT": "Nickname must be at least 3 characters",
   "NICKNAME_TOO_LONG": "Nickname can be at most 30 characters",
   "NICKNAME_INVALID_CHARACTERS": "Nickname can only contain letters a–z",
-  "NICKNAME_TAKEN": "This nickname is already taken in this team",
-  "NETWORK_ERROR": "Network error. Check your connection and try again",
-  "NICKNAME_UPDATE_FAILED": "Could not update nickname",
   "FAVORITES": "Favorites",
   "ADD_TO_FAVORITES": "Add to favorites",
   "REMOVE_FROM_FAVORITES": "Remove from favorites",
@@ -148,5 +145,79 @@
   "COLOR_BROWN": "Brown",
   "COLOR_BEIGE": "Beige",
   "COLOR_LIGHT_GREY": "Light grey",
-  "COLOR_DARK_GREY": "Dark grey"
+  "COLOR_DARK_GREY": "Dark grey",
+  "INVALID_FORM_DATA": "Please fill in all fields correctly",
+  "DIAGRAM_TITLE_PLACEHOLDER": "Diagram title",
+  "DIAGRAM_BEING_EDITED_BY": "is currently editing this diagram",
+  "FORMAT_BOLD": "Bold",
+  "FORMAT_ITALIC": "Italic",
+  "FORMAT_HEADING": "Heading",
+  "FORMAT_BULLET_LIST": "Bulleted list",
+  "FORMAT_ORDERED_LIST": "Numbered list",
+  "ERRORS": {
+    "COMMON": {
+      "UNAUTHORIZED": "Your session has expired. Please log in again",
+      "FORBIDDEN": "You don't have permission to do this",
+      "RATE_LIMITED": "Too many attempts. Please wait and try again",
+      "NETWORK_ERROR": "Network error. Check your connection and try again",
+      "UNKNOWN_ERROR": "Something went wrong. Please try again"
+    },
+    "AUTH": {
+      "INVALID_CREDENTIALS": "Invalid email or password",
+      "EMAIL_TAKEN": "An account with this email already exists",
+      "REGISTRATION_FAILED": "Could not create the account. Check your email and password"
+    },
+    "USERS": {
+      "SETTINGS_UPDATE_FAILED": "Could not save settings",
+      "AVATAR_COLOR_INVALID": "This colour can't be used",
+      "AVATAR_IMAGE_INVALID": "Image must be PNG, JPEG or WebP and 2 MB or smaller"
+    },
+    "TEAMS": {
+      "TEAM_NOT_FOUND": "Team not found",
+      "NOT_TEAM_MEMBER": "You are not a member of this team",
+      "WRONG_TEAM_PASSWORD": "Wrong team password",
+      "TEAM_CREATE_FAILED": "Could not create the team",
+      "TEAM_RENAME_FAILED": "Could not rename the team",
+      "NICKNAME_TAKEN": "This nickname is already taken in this team",
+      "NICKNAME_INVALID": "This nickname isn't valid"
+    },
+    "PAGES": {
+      "PAGE_NOT_FOUND": "Page not found",
+      "PAGE_CREATE_FAILED": "Could not create the page",
+      "PAGE_UPDATE_FAILED": "Could not save the page"
+    },
+    "DIAGRAMS": {
+      "DIAGRAM_NOT_FOUND": "Diagram not found",
+      "DIAGRAM_CREATE_FAILED": "Could not create the diagram",
+      "DIAGRAM_UPDATE_FAILED": "Could not save the diagram"
+    },
+    "FOLDERS": {
+      "FOLDER_NOT_FOUND": "Folder not found",
+      "FOLDER_CREATE_FAILED": "Could not create the folder",
+      "FOLDER_UPDATE_FAILED": "Could not update the folder",
+      "FOLDER_PARENT_TYPE_MISMATCH": "A folder can only be moved into a folder of the same kind",
+      "FOLDER_PARENT_CIRCULAR": "A folder can't be moved into itself or one of its subfolders",
+      "FOLDER_DELETE_MODE_INVALID": "Could not delete the folder"
+    },
+    "BOARDS": {
+      "BOARD_NOT_FOUND": "Board not found",
+      "BOARD_CREATE_FAILED": "Could not create the board",
+      "BOARD_UPDATE_FAILED": "Could not update the board",
+      "COLUMN_NOT_FOUND": "Column not found",
+      "COLUMN_CREATE_FAILED": "Could not create the column",
+      "COLUMN_UPDATE_FAILED": "Could not update the column"
+    },
+    "CARDS": {
+      "CARD_NOT_FOUND": "Card not found",
+      "CARD_CREATE_FAILED": "Could not create the card",
+      "CARD_UPDATE_FAILED": "Could not update the card"
+    },
+    "FAVORITES": {
+      "FAVORITE_NOT_FOUND": "Favorite not found",
+      "FAVORITE_TYPE_INVALID": "This item can't be added to favorites",
+      "FAVORITE_ITEM_NOT_FOUND": "This item no longer exists",
+      "FAVORITE_CREATE_FAILED": "Could not add to favorites",
+      "FAVORITE_SURFACE_INVALID": "Could not move the favorite"
+    }
+  }
 }

@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {axiosInstance} from "@config/axiosConfig";
-import {toErrorResult} from "@utils/httpError";
+import {apiRequest} from "@utils/apiRequest";
 import {
   BoardColumn,
   BoardDetail,
@@ -12,6 +12,7 @@ import {
 } from "@models/board.model";
 import {CardSummary} from "@models/card.model";
 import {mapAvatar, RawAvatar} from "@services/avatar.service";
+import {teamPath} from "@utils/teamPath";
 
 interface RawBoardUser {
   id: number;
@@ -91,47 +92,44 @@ export function mapBoardDetail(raw: RawBoardDetail): BoardDetail {
 })
 export class BoardService {
   private boardsUrl(teamCode: string) {
-    return `/teams/${teamCode}/boards`;
+    return teamPath(teamCode, 'boards');
   }
 
   async listBoards(teamCode: string, search?: string): Promise<ListBoardsResponse> {
-    return axiosInstance.get(this.boardsUrl(teamCode), {params: search ? {search} : undefined})
-      .then((response) => {
-        const boards = (response.data.boards ?? response.data) as RawBoardSummary[];
-        return {success: true, boards: boards.map(mapBoardSummary)} satisfies ListBoardsResponse;
-      })
-      .catch((error) => toErrorResult<ListBoardsResponse>(error, 'Failed to load boards'));
+    return apiRequest<ListBoardsResponse>(
+      axiosInstance.get(this.boardsUrl(teamCode), {params: search ? {search} : undefined}),
+      (data) => {
+        const boards = data.boards as RawBoardSummary[];
+        return {success: true, boards: boards.map(mapBoardSummary)};
+      },
+    );
   }
 
   async createBoard(teamCode: string, title?: string): Promise<BoardResponse> {
-    return axiosInstance.post(this.boardsUrl(teamCode), {board: {title}})
-      .then((response) => {
-        return {success: true, board: mapBoardDetail(response.data.board)} satisfies BoardResponse;
-      })
-      .catch((error) => toErrorResult<BoardResponse>(error, 'Failed to create board'));
+    return apiRequest<BoardResponse>(
+      axiosInstance.post(this.boardsUrl(teamCode), {board: {title}}),
+      (data) => ({success: true, board: mapBoardDetail(data.board)}),
+    );
   }
 
   async getBoard(teamCode: string, id: number): Promise<BoardResponse> {
-    return axiosInstance.get(`${this.boardsUrl(teamCode)}/${id}`)
-      .then((response) => {
-        return {success: true, board: mapBoardDetail(response.data.board)} satisfies BoardResponse;
-      })
-      .catch((error) => toErrorResult<BoardResponse>(error, 'Failed to load board'));
+    return apiRequest<BoardResponse>(
+      axiosInstance.get(`${this.boardsUrl(teamCode)}/${id}`),
+      (data) => ({success: true, board: mapBoardDetail(data.board)}),
+    );
   }
 
   async renameBoard(teamCode: string, id: number, title: string): Promise<BoardResponse> {
-    return axiosInstance.patch(`${this.boardsUrl(teamCode)}/${id}`, {board: {title}})
-      .then((response) => {
-        return {success: true, board: mapBoardDetail(response.data.board)} satisfies BoardResponse;
-      })
-      .catch((error) => toErrorResult<BoardResponse>(error, 'Failed to rename board'));
+    return apiRequest<BoardResponse>(
+      axiosInstance.patch(`${this.boardsUrl(teamCode)}/${id}`, {board: {title}}),
+      (data) => ({success: true, board: mapBoardDetail(data.board)}),
+    );
   }
 
   async deleteBoard(teamCode: string, id: number): Promise<DeleteBoardResponse> {
-    return axiosInstance.delete(`${this.boardsUrl(teamCode)}/${id}`)
-      .then(() => {
-        return {success: true} satisfies DeleteBoardResponse;
-      })
-      .catch((error) => toErrorResult<DeleteBoardResponse>(error, 'Failed to delete board'));
+    return apiRequest<DeleteBoardResponse>(
+      axiosInstance.delete(`${this.boardsUrl(teamCode)}/${id}`),
+      () => ({success: true}),
+    );
   }
 }

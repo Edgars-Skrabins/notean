@@ -6,7 +6,6 @@ import {TeamService} from "@services/team.service";
 import {ToastService} from "@services/toast.service";
 import {AvatarService} from "@services/avatar.service";
 import {ToastType} from "@models/toast.model";
-import {NicknameError} from "@models/team.model";
 import {Avatar} from "@models/avatar.model";
 import {PHRASES} from "@config/phrases";
 
@@ -84,7 +83,7 @@ describe('ProfileComponent', () => {
   }));
 
   it('keeps the value dirty and shows an error toast when saving fails', fakeAsync(() => {
-    teamService.updateNickname.and.returnValue(Promise.resolve({success: false, error: NicknameError.TAKEN}));
+    teamService.updateNickname.and.returnValue(Promise.resolve({success: false, code: 'NICKNAME_TAKEN'}));
     component.nickname = 'Bob';
 
     component.handleSave();
@@ -92,7 +91,7 @@ describe('ProfileComponent', () => {
 
     expect(component.savedNickname).toBe('Alice');
     expect(component.hasUnsavedChanges).toBeTrue();
-    expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: PHRASES.NICKNAME_TAKEN});
+    expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: 'ERRORS.TEAMS.NICKNAME_TAKEN'});
   }));
 
   it('allows leaving straight away without unsaved changes', () => {
@@ -229,7 +228,7 @@ describe('ProfileComponent', () => {
   }));
 
   it('keeps the pending avatar changes and shows an error toast when the avatar fails', fakeAsync(() => {
-    avatarService.update.and.returnValue(Promise.resolve({success: false, statusMessage: 'Invalid image'}));
+    avatarService.update.and.returnValue(Promise.resolve({success: false, code: 'AVATAR_IMAGE_INVALID'}));
     component.handleSelectColor('green');
 
     component.handleSave();

@@ -1,48 +1,15 @@
 import {Injectable} from '@angular/core';
-import {createConsumer, Consumer, Subscription} from '@rails/actioncable';
-import {baseUrl} from "@config/axiosConfig";
 import {AuthService} from "@services/auth.service";
-import {DiagramEditingUser} from "@models/diagram.model";
+import {EditingService} from "@services/editing.service";
 
 @Injectable({
   providedIn: 'root',
 })
-export class DiagramEditingService {
-  private consumer: Consumer | null = null;
-  private subscription: Subscription | null = null;
+export class DiagramEditingService extends EditingService {
+  protected readonly channel = 'DiagramEditingChannel';
+  protected readonly idParam = 'diagram_id';
 
-  constructor(private authService: AuthService) {
-  }
-
-  connect(diagramId: number, onEditingChange: (editor: DiagramEditingUser | null) => void) {
-    this.disconnect();
-
-    const token = this.authService.getToken();
-    const cableUrl = baseUrl.replace(/^http/, 'ws') + `/cable?token=${token}`;
-
-    this.consumer = createConsumer(cableUrl);
-    this.subscription = this.consumer.subscriptions.create(
-      {channel: 'DiagramEditingChannel', diagram_id: diagramId},
-      {
-        received: (data: { editing: DiagramEditingUser | null }) => {
-          onEditingChange(data.editing ?? null);
-        },
-      }
-    );
-  }
-
-  startEditing() {
-    this.subscription?.perform('start_editing');
-  }
-
-  stopEditing() {
-    this.subscription?.perform('stop_editing');
-  }
-
-  disconnect() {
-    this.subscription?.unsubscribe();
-    this.consumer?.disconnect();
-    this.subscription = null;
-    this.consumer = null;
+  constructor(authService: AuthService) {
+    super(authService);
   }
 }

@@ -1,14 +1,16 @@
 import { Injectable } from '@angular/core';
 import { axiosInstance } from '@config/axiosConfig';
-import { toErrorResult } from '@utils/httpError';
+import { apiRequest } from '@utils/apiRequest';
 import {
   DeleteFolderResponse,
+  FolderDeleteMode,
   FolderItemType,
   FolderResponse,
   FolderSummary,
   FolderUser,
   ListFoldersResponse,
 } from '@models/folder.model';
+import { teamPath } from '@utils/teamPath';
 
 interface RawFolderUser {
   id: number;
@@ -47,85 +49,42 @@ export function mapFolderSummary(raw: RawFolderSummary): FolderSummary {
 })
 export class FolderService {
   private foldersUrl(teamCode: string): string {
-    return `/teams/${teamCode}/folders`;
+    return teamPath(teamCode, 'folders');
   }
 
-  async listFolders(
-    teamCode: string,
-    itemType: FolderItemType,
-  ): Promise<ListFoldersResponse> {
-    return axiosInstance
-      .get(this.foldersUrl(teamCode), { params: { item_type: itemType } })
-      .then((response) => {
-        const folders = (response.data.folders ?? response.data) as RawFolderSummary[];
-
-        return {
-          success: true,
-          folders: folders.map(mapFolderSummary),
-        } satisfies ListFoldersResponse;
-      })
-      .catch((error) => toErrorResult<ListFoldersResponse>(error, 'Failed to load folders'));
+  async listFolders(teamCode: string, itemType: FolderItemType): Promise<ListFoldersResponse> {
+    return apiRequest<ListFoldersResponse>(
+      axiosInstance.get(this.foldersUrl(teamCode), {params: {item_type: itemType}}),
+      (data) => ({success: true, folders: (data.folders as RawFolderSummary[]).map(mapFolderSummary)}),
+    );
   }
 
-  async createFolder(
-    teamCode: string,
-    itemType: FolderItemType,
-    title: string,
-    parentId: number | null = null,
-  ): Promise<FolderResponse> {
-    return axiosInstance
-      .post(this.foldersUrl(teamCode), {
-        folder: { title, item_type: itemType, parent_id: parentId },
-      })
-      .then((response) => ({
-        success: true,
-        folder: mapFolderSummary(response.data.folder),
-      } satisfies FolderResponse))
-      .catch((error) => toErrorResult<FolderResponse>(error, 'Failed to create folder'));
+  async createFolder(teamCode: string, itemType: FolderItemType, title: string, parentId: number | null = null): Promise<FolderResponse> {
+    return apiRequest<FolderResponse>(
+      axiosInstance.post(this.foldersUrl(teamCode), {folder: {title, item_type: itemType, parent_id: parentId}}),
+      (data) => ({success: true, folder: mapFolderSummary(data.folder)}),
+    );
   }
 
-  async renameFolder(
-    teamCode: string,
-    id: number,
-    title: string,
-  ): Promise<FolderResponse> {
-    return axiosInstance
-      .patch(`${this.foldersUrl(teamCode)}/${id}`, {
-        folder: { title },
-      })
-      .then((response) => ({
-        success: true,
-        folder: mapFolderSummary(response.data.folder),
-      } satisfies FolderResponse))
-      .catch((error) => toErrorResult<FolderResponse>(error, 'Failed to rename folder'));
+  async renameFolder(teamCode: string, id: number, title: string): Promise<FolderResponse> {
+    return this.updateFolder(teamCode, id, {title});
   }
 
-  async moveFolder(
-    teamCode: string,
-    id: number,
-    parentId: number | null,
-  ): Promise<FolderResponse> {
-    return axiosInstance
-      .patch(`${this.foldersUrl(teamCode)}/${id}`, {
-        folder: { parent_id: parentId },
-      })
-      .then((response) => ({
-        success: true,
-        folder: mapFolderSummary(response.data.folder),
-      } satisfies FolderResponse))
-      .catch((error) => toErrorResult<FolderResponse>(error, 'Failed to move folder'));
+  async moveFolder(teamCode: string, id: number, parentId: number | null): Promise<FolderResponse> {
+    return this.updateFolder(teamCode, id, {parent_id: parentId});
   }
 
-  async deleteFolder(
-    teamCode: string,
-    id: number,
-    mode: 'cascade' | 'promote',
-  ): Promise<DeleteFolderResponse> {
-    return axiosInstance
-      .delete(`${this.foldersUrl(teamCode)}/${id}`, { params: { mode } })
-      .then(() => ({
-        success: true,
-      } satisfies DeleteFolderResponse))
-      .catch((error) => toErrorResult<DeleteFolderResponse>(error, 'Failed to delete folder'));
+  async deleteFolder(teamCode: string, id: number, mode: FolderDeleteMode): Promise<DeleteFolderResponse> {
+    return apiRequest<DeleteFolderResponse>(
+      axiosInstance.delete(`${this.foldersUrl(teamCode)}/${id}`, {params: {mode}}),
+      () => ({success: true}),
+    );
+  }
+
+  private updateFolder(teamCode: string, id: number, changes: { title?: string; parent_id?: number | null }): Promise<FolderResponse> {
+    return apiRequest<FolderResponse>(
+      axiosInstance.patch(`${this.foldersUrl(teamCode)}/${id}`, {folder: changes}),
+      (data) => ({success: true, folder: mapFolderSummary(data.folder)}),
+    );
   }
 }

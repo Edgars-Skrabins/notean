@@ -11,9 +11,9 @@ import {FavoriteService} from "@services/favorite.service";
 import {FolderItemType} from "@models/folder.model";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {ButtonComponent} from "@components/button/button.component";
-import {ItemTreeComponent, TreeItem} from "@components/item-tree/item-tree.component";
+import {ItemTreeComponent} from "@components/item-tree/item-tree.component";
 import {CreateNamedItemDialogComponent} from "@components/create-named-item-dialog/create-named-item-dialog.component";
-import {FolderedItemSummary, FolderedListPageComponent} from "../foldered-list-page.base";
+import {FolderedListPageComponent} from "../foldered-list-page.base";
 
 @Component({
   selector: 'app-diagrams',
@@ -32,60 +32,17 @@ import {FolderedItemSummary, FolderedListPageComponent} from "../foldered-list-p
 export class DiagramsComponent extends FolderedListPageComponent {
   protected readonly PHRASES = PHRASES;
   protected readonly itemType: FolderItemType = 'Diagram';
+  protected readonly itemRoute = AppRoutes.DIAGRAMS;
+  protected readonly untitledItemPhrase = PHRASES.UNTITLED_DIAGRAM;
 
   constructor(
-    private router: Router,
-    private diagramService: DiagramService,
+    diagramService: DiagramService,
     folderService: FolderService,
     teamService: TeamService,
     favoriteService: FavoriteService,
-    private translateService: TranslateService
+    router: Router,
+    translateService: TranslateService
   ) {
-    super(folderService, teamService, favoriteService);
-  }
-
-  handleOpenDiagram(item: TreeItem) {
-    this.router.navigate([AppRoutes.DASHBOARD, AppRoutes.DIAGRAMS, item.id]);
-  }
-
-  handleCreateDiagram(parentId: number | null) {
-    const untitledTitle = this.translateService.instant(PHRASES.UNTITLED_DIAGRAM);
-
-    this.diagramService.createDiagram(this.teamCode, untitledTitle)
-      .then((response) => {
-        if (!response.success) {
-          this.alertMessage = response.statusMessage;
-          return;
-        }
-
-        const diagramId = response.diagram.id;
-        const afterMove = parentId !== null
-          ? this.diagramService.moveToFolder(this.teamCode, diagramId, parentId)
-          : Promise.resolve(response);
-
-        afterMove.then(() => {
-          this.router.navigate([AppRoutes.DASHBOARD, AppRoutes.DIAGRAMS, diagramId], {queryParams: {edit: true}});
-        });
-      });
-  }
-
-  protected listItems(search?: string): Promise<
-    | { success: true; items: FolderedItemSummary[] }
-    | { success: false; statusMessage: string }
-  > {
-    return this.diagramService.listDiagrams(this.teamCode, search).then((response) => {
-      if (!response.success) {
-        return response;
-      }
-      return {success: true, items: response.diagrams};
-    });
-  }
-
-  protected moveItemToFolder(itemId: number, folderId: number | null) {
-    return this.diagramService.moveToFolder(this.teamCode, itemId, folderId);
-  }
-
-  protected deleteItemById(itemId: number) {
-    return this.diagramService.deleteDiagram(this.teamCode, itemId);
+    super(diagramService, folderService, teamService, favoriteService, router, translateService);
   }
 }

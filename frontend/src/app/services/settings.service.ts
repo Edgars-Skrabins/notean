@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {axiosInstance} from "@config/axiosConfig";
-import {toErrorResult} from "@utils/httpError";
+import {apiRequest} from "@utils/apiRequest";
 import {AuthService} from "@services/auth.service";
 import {SettingsResponse, UserSettings} from "@models/settings.model";
 
@@ -42,13 +42,14 @@ export class SettingsService {
   }
 
   async load(): Promise<SettingsResponse> {
-    return axiosInstance.get(this.settingsUrl)
-      .then((response) => {
-        const settings = mapSettings(response.data.settings);
+    return apiRequest<SettingsResponse>(
+      axiosInstance.get(this.settingsUrl),
+      (data) => {
+        const settings = mapSettings(data.settings);
         this.settingsSubject.next(settings);
-        return {success: true, settings} satisfies SettingsResponse;
-      })
-      .catch((error) => toErrorResult<SettingsResponse>(error, 'Failed to load settings'));
+        return {success: true, settings};
+      },
+    );
   }
 
   async update(settings: UserSettings): Promise<SettingsResponse> {
@@ -57,13 +58,14 @@ export class SettingsService {
       show_favorites_in_sidebar: settings.showFavoritesInSidebar,
     };
 
-    return axiosInstance.patch(this.settingsUrl, {settings: payload})
-      .then((response) => {
-        const updated = mapSettings(response.data.settings);
+    return apiRequest<SettingsResponse>(
+      axiosInstance.patch(this.settingsUrl, {settings: payload}),
+      (data) => {
+        const updated = mapSettings(data.settings);
         this.settingsSubject.next(updated);
-        return {success: true, settings: updated} satisfies SettingsResponse;
-      })
-      .catch((error) => toErrorResult<SettingsResponse>(error, 'Failed to update settings'));
+        return {success: true, settings: updated};
+      },
+    );
   }
 
   clear() {

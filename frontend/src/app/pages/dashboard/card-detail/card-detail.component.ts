@@ -12,6 +12,7 @@ import {CardDetail} from "@models/card.model";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
+import {errorPhrase} from "@utils/errorPhrase";
 
 @Component({
   selector: 'app-card-detail',
@@ -48,7 +49,7 @@ export class CardDetailComponent implements OnInit {
     private teamService: TeamService,
     private favoriteService: FavoriteService
   ) {
-    this.teamCode = this.teamService.getCurrentTeam()!.code;
+    this.teamCode = this.teamService.getCurrentTeamCode();
   }
 
   ngOnInit() {
@@ -75,7 +76,7 @@ export class CardDetailComponent implements OnInit {
     this.cardService.deleteCard(this.teamCode, this.boardId, this.cardId)
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
@@ -103,7 +104,7 @@ export class CardDetailComponent implements OnInit {
     this.cardService.updateCard(this.teamCode, this.boardId, this.cardId, {title})
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
@@ -132,7 +133,7 @@ export class CardDetailComponent implements OnInit {
     this.cardService.updateCard(this.teamCode, this.boardId, this.cardId, {description: this.descriptionDraft})
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
@@ -156,7 +157,7 @@ export class CardDetailComponent implements OnInit {
         this.isLoading = false;
 
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 

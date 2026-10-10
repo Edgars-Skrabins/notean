@@ -1,3 +1,6 @@
+import {Result} from "@models/result.model";
+import {FoldersErrorCode, TeamAccessErrorCode} from "@config/errorCodes";
+
 export type FolderItemType = 'Page' | 'Diagram';
 
 export interface FolderUser {
@@ -14,14 +17,10 @@ export interface FolderSummary {
   updatedAt: string;
 }
 
-export type ListFoldersResponse =
-  | { success: true; folders: FolderSummary[] }
-  | { success: false; statusMessage: string };
+export type FolderDeleteMode = 'cascade' | 'promote';
 
-export type FolderResponse =
-  | { success: true; folder: FolderSummary }
-  | { success: false; statusMessage: string };
+export type ListFoldersResponse = Result<{ folders: FolderSummary[] }, TeamAccessErrorCode>;
 
-export type DeleteFolderResponse =
-  | { success: true }
-  | { success: false; statusMessage: string };
+export type FolderResponse = Result<{ folder: FolderSummary }, TeamAccessErrorCode | FoldersErrorCode>;
+
+export type DeleteFolderResponse = Result<object, TeamAccessErrorCode | FoldersErrorCode>;

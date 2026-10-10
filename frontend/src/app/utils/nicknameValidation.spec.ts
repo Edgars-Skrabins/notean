@@ -1,4 +1,4 @@
-import {nicknameErrorPhrase, validateNickname} from "./nicknameValidation";
+import {isNicknameErrorCode, nicknameErrorPhrase, validateNickname} from "./nicknameValidation";
 import {NicknameError} from "@models/team.model";
 import {PHRASES} from "@config/phrases";
 
@@ -39,8 +39,13 @@ describe('nicknameErrorPhrase', () => {
     expect(nicknameErrorPhrase(NicknameError.TOO_SHORT)).toBe(PHRASES.NICKNAME_TOO_SHORT);
     expect(nicknameErrorPhrase(NicknameError.TOO_LONG)).toBe(PHRASES.NICKNAME_TOO_LONG);
     expect(nicknameErrorPhrase(NicknameError.INVALID_CHARACTERS)).toBe(PHRASES.NICKNAME_INVALID_CHARACTERS);
-    expect(nicknameErrorPhrase(NicknameError.TAKEN)).toBe(PHRASES.NICKNAME_TAKEN);
-    expect(nicknameErrorPhrase(NicknameError.NETWORK)).toBe(PHRASES.NETWORK_ERROR);
-    expect(nicknameErrorPhrase(NicknameError.UNKNOWN)).toBe(PHRASES.NICKNAME_UPDATE_FAILED);
+  });
+});
+
+describe('isNicknameErrorCode', () => {
+  it('is true for the nickname codes only', () => {
+    expect(isNicknameErrorCode('NICKNAME_TAKEN')).toBeTrue();
+    expect(isNicknameErrorCode('NICKNAME_INVALID')).toBeTrue();
+    expect(isNicknameErrorCode('WRONG_TEAM_PASSWORD')).toBeFalse();
   });
 });

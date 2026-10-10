@@ -10,10 +10,10 @@ import {TeamService} from "@services/team.service";
 import {ToastService} from "@services/toast.service";
 import {AvatarService} from "@services/avatar.service";
 import {ToastType} from "@models/toast.model";
-import {NicknameError} from "@models/team.model";
 import {Avatar, AvatarUpdate} from "@models/avatar.model";
 import {HasUnsavedChanges} from "@models/unsaved-changes.model";
 import {nicknameErrorPhrase, validateNickname} from "@utils/nicknameValidation";
+import {errorPhrase} from "@utils/errorPhrase";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {AvatarComponent} from "@components/avatar/avatar.component";
 import {ButtonComponent} from "@components/button/button.component";
@@ -141,7 +141,7 @@ export class ProfileComponent implements HasUnsavedChanges, OnDestroy {
     if (nicknameChanged) {
       const nicknameError = validateNickname(this.nickname);
       if (nicknameError) {
-        this.showNicknameError(nicknameError);
+        this.showError(nicknameErrorPhrase(nicknameError));
         return;
       }
     }
@@ -152,7 +152,7 @@ export class ProfileComponent implements HasUnsavedChanges, OnDestroy {
       if (nicknameChanged) {
         const response = await this.teamService.updateNickname(this.nickname.trim());
         if (!response.success) {
-          this.showNicknameError(response.error);
+          this.showError(errorPhrase(response.code));
           return;
         }
         this.savedNickname = response.nickname;
@@ -162,7 +162,7 @@ export class ProfileComponent implements HasUnsavedChanges, OnDestroy {
       if (this.hasAvatarChanges) {
         const response = await this.avatarService.update(this.buildAvatarUpdate());
         if (!response.success) {
-          this.toastService.show({type: ToastType.ERROR, message: PHRASES.AVATAR_UPDATE_FAILED});
+          this.showError(PHRASES.AVATAR_UPDATE_FAILED);
           return;
         }
         this.revokePreviewUrl();
@@ -223,8 +223,8 @@ export class ProfileComponent implements HasUnsavedChanges, OnDestroy {
     }
   }
 
-  private showNicknameError(error: NicknameError) {
-    this.toastService.show({type: ToastType.ERROR, message: nicknameErrorPhrase(error)});
+  private showError(message: string) {
+    this.toastService.show({type: ToastType.ERROR, message});
   }
 
   private closeLeaveConfirm(canLeave: boolean) {

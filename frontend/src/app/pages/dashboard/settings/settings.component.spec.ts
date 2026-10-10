@@ -65,7 +65,7 @@ describe('SettingsComponent', () => {
   }));
 
   it('keeps the unsaved values and shows an error toast when saving fails', fakeAsync(() => {
-    settingsService.update.and.returnValue(Promise.resolve({success: false, statusMessage: 'Failed'}));
+    settingsService.update.and.returnValue(Promise.resolve({success: false, code: 'SETTINGS_UPDATE_FAILED'}));
     component.handleShowFavoritesOnHomeChange(false);
 
     component.handleSave();

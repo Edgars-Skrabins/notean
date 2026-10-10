@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
-import axios from "axios";
 import {axiosInstance} from "@config/axiosConfig";
-import {toErrorResult} from "@utils/httpError";
+import {apiRequest} from "@utils/apiRequest";
 import {
   ActivateTeamResponse,
   CreateTeamParams,
@@ -9,7 +8,6 @@ import {
   DeleteTeamResponse,
   JoinTeamParams,
   JoinTeamResponse,
-  NicknameError,
   RenameTeamResponse,
   Team,
   TeamMember,
@@ -18,6 +16,7 @@ import {
   UpdateNicknameResponse
 } from "@models/team.model";
 import {mapAvatar, RawAvatar} from "@services/avatar.service";
+import {teamPath} from "@utils/teamPath";
 
 interface RawTeamMember {
   id: number;
@@ -61,6 +60,10 @@ export class TeamService {
     return this.currentTeam;
   }
 
+  getCurrentTeamCode(): string {
+    return this.currentTeam!.code;
+  }
+
   getCurrentRole(): TeamRole | null {
     return this.currentRole;
   }
@@ -99,45 +102,24 @@ export class TeamService {
   }
 
   async createTeam(params: CreateTeamParams): Promise<CreateTeamResponse> {
-    return axiosInstance.post(this.createTeamUrl, {team: params})
-      .then((response) => {
-        const team = response.data.team as Team;
-        const role = response.data.role as TeamRole;
-        const nickname = response.data.nickname as string;
-        this.setCurrentTeam(team, role, nickname);
-        return {success: true, team, role, nickname} satisfies CreateTeamResponse;
-      })
-      .catch((error) => ({
-        ...toErrorResult<CreateTeamResponse>(error, 'Failed to create team'),
-        nicknameError: this.toRequestNicknameError(error),
-      }));
+    return apiRequest<CreateTeamResponse>(
+      axiosInstance.post(this.createTeamUrl, {team: params}),
+      (data) => this.applyTeamResponse(data),
+    );
   }
 
   async joinTeam(params: JoinTeamParams): Promise<JoinTeamResponse> {
-    return axiosInstance.post(this.joinTeamUrl, {team: params})
-      .then((response) => {
-        const team = response.data.team as Team;
-        const role = response.data.role as TeamRole;
-        const nickname = response.data.nickname as string;
-        this.setCurrentTeam(team, role, nickname);
-        return {success: true, team, role, nickname} satisfies JoinTeamResponse;
-      })
-      .catch((error) => ({
-        ...toErrorResult<JoinTeamResponse>(error, 'Failed to join team'),
-        nicknameError: this.toRequestNicknameError(error),
-      }));
+    return apiRequest<JoinTeamResponse>(
+      axiosInstance.post(this.joinTeamUrl, {team: params}),
+      (data) => this.applyTeamResponse(data),
+    );
   }
 
   async activateTeam(code: string): Promise<ActivateTeamResponse> {
-    return axiosInstance.post(`${this.teamUrl(code)}/activate`)
-      .then((response) => {
-        const team = response.data.team as Team;
-        const role = response.data.role as TeamRole;
-        const nickname = response.data.nickname as string;
-        this.setCurrentTeam(team, role, nickname);
-        return {success: true, team, role, nickname} satisfies ActivateTeamResponse;
-      })
-      .catch((error) => toErrorResult<ActivateTeamResponse>(error, 'Failed to switch team'));
+    return apiRequest<ActivateTeamResponse>(
+      axiosInstance.post(`${this.teamUrl(code)}/activate`),
+      (data) => this.applyTeamResponse(data),
+    );
   }
 
   async fetchTeamMembers(code: string): Promise<TeamMember[]> {
@@ -147,66 +129,57 @@ export class TeamService {
   }
 
   async renameTeam(code: string, name: string): Promise<RenameTeamResponse> {
-    return axiosInstance.patch(this.teamUrl(code), {team: {name}})
-      .then((response) => {
-        const team = response.data.team as Team;
+    return apiRequest<RenameTeamResponse>(
+      axiosInstance.patch(this.teamUrl(code), {team: {name}}),
+      (data) => {
+        const team = data.team as Team;
         if (this.currentTeam?.code === code && this.currentRole && this.currentNickname) {
           this.setCurrentTeam(team, this.currentRole, this.currentNickname);
         }
-        return {success: true, team} satisfies RenameTeamResponse;
-      })
-      .catch((error) => toErrorResult<RenameTeamResponse>(error, 'Failed to rename team'));
+        return {success: true, team};
+      },
+    );
   }
 
   async deleteTeam(code: string): Promise<DeleteTeamResponse> {
-    return axiosInstance.delete(this.teamUrl(code))
-      .then(() => {
+    return apiRequest<DeleteTeamResponse>(
+      axiosInstance.delete(this.teamUrl(code)),
+      () => {
         if (this.currentTeam?.code === code) {
           this.clearCurrentTeam();
         }
-        return {success: true} satisfies DeleteTeamResponse;
-      })
-      .catch((error) => toErrorResult<DeleteTeamResponse>(error, 'Failed to delete team'));
+        return {success: true};
+      },
+    );
   }
 
   async updateNickname(nickname: string): Promise<UpdateNicknameResponse> {
     const team = this.currentTeam;
     if (!team) {
-      return {success: false, error: NicknameError.UNKNOWN};
+      return {success: false, code: 'TEAM_NOT_FOUND'};
     }
 
-    return axiosInstance.patch(`${this.teamUrl(team.code)}/nickname`, {membership: {nickname}})
-      .then((response) => {
-        const updatedNickname = response.data.nickname as string;
+    return apiRequest<UpdateNicknameResponse>(
+      axiosInstance.patch(`${this.teamUrl(team.code)}/nickname`, {membership: {nickname}}),
+      (data) => {
+        const updatedNickname = data.nickname as string;
         if (this.currentTeam?.code === team.code) {
           this.currentNickname = updatedNickname;
           localStorage.setItem(this.nicknameStorageKey, updatedNickname);
         }
-        return {success: true, nickname: updatedNickname} satisfies UpdateNicknameResponse;
-      })
-      .catch((error) => ({success: false, error: this.toNicknameError(error)} satisfies UpdateNicknameResponse));
+        return {success: true, nickname: updatedNickname};
+      },
+    );
   }
 
-  private toNicknameError(error: unknown): NicknameError {
-    if (!axios.isAxiosError(error)) {
-      return NicknameError.UNKNOWN;
-    }
-    if (!error.response) {
-      return NicknameError.NETWORK;
-    }
-    if (error.response.status === 409) {
-      return NicknameError.TAKEN;
-    }
-    return NicknameError.UNKNOWN;
-  }
 
-  private toRequestNicknameError(error: unknown): NicknameError | null {
-    const nicknameError = this.toNicknameError(error);
-    return nicknameError === NicknameError.UNKNOWN ? null : nicknameError;
+  private applyTeamResponse(data: { team: Team; role: TeamRole; nickname: string }) {
+    this.setCurrentTeam(data.team, data.role, data.nickname);
+    return {success: true as const, team: data.team, role: data.role, nickname: data.nickname};
   }
 
   private teamUrl(code: string) {
-    return `/teams/${code}`;
+    return teamPath(code);
   }
 
   private setCurrentTeam(team: Team, role: TeamRole, nickname: string) {

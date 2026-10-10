@@ -1,7 +1,6 @@
 import {AxiosError, AxiosHeaders} from "axios";
 import {mapTeamMember, TeamService} from "./team.service";
 import {axiosInstance} from "@config/axiosConfig";
-import {NicknameError} from "@models/team.model";
 
 describe('mapTeamMember', () => {
   it('maps id, nickname, role and avatar', () => {
@@ -92,10 +91,10 @@ describe('TeamService role persistence', () => {
 describe('TeamService nickname', () => {
   let service: TeamService;
 
-  function axiosError(status?: number) {
+  function axiosError(status?: number, code?: string) {
     const response = status === undefined
       ? undefined
-      : {status, statusText: '', data: {}, headers: {}, config: {headers: new AxiosHeaders()}};
+      : {status, statusText: '', data: {code}, headers: {}, config: {headers: new AxiosHeaders()}};
     return new AxiosError('failed', undefined, undefined, undefined, response);
   }
 
@@ -133,42 +132,34 @@ describe('TeamService nickname', () => {
     expect(localStorage.getItem('currentNickname')).toBe('Ally');
   });
 
-  it('updateNickname maps a 409 to TAKEN and keeps the stored nickname', async () => {
-    spyOn(axiosInstance, 'patch').and.returnValue(Promise.reject(axiosError(409)));
+  it('updateNickname returns the server code and keeps the stored nickname', async () => {
+    spyOn(axiosInstance, 'patch').and.returnValue(Promise.reject(axiosError(409, 'NICKNAME_TAKEN')));
 
     const response = await service.updateNickname('Bob');
 
-    expect(response).toEqual({success: false, error: NicknameError.TAKEN});
+    expect(response).toEqual({success: false, code: 'NICKNAME_TAKEN'});
     expect(service.getCurrentNickname()).toBe('Alice');
   });
 
-  it('updateNickname maps a missing response to NETWORK', async () => {
+  it('updateNickname returns NETWORK_ERROR when there is no response', async () => {
     spyOn(axiosInstance, 'patch').and.returnValue(Promise.reject(axiosError()));
 
-    expect(await service.updateNickname('Bob')).toEqual({success: false, error: NicknameError.NETWORK});
+    expect(await service.updateNickname('Bob')).toEqual({success: false, code: 'NETWORK_ERROR'});
   });
 
-  it('updateNickname maps any other failure to UNKNOWN', async () => {
-    spyOn(axiosInstance, 'patch').and.returnValue(Promise.reject(axiosError(422)));
+  it('createTeam returns the server code', async () => {
+    spyOn(axiosInstance, 'post').and.returnValue(Promise.reject(axiosError(409, 'NICKNAME_TAKEN')));
 
-    expect(await service.updateNickname('Bob')).toEqual({success: false, error: NicknameError.UNKNOWN});
+    const response = await service.createTeam({name: 'Team B', password: 'secret', nickname: 'Bob'});
+
+    expect(response).toEqual({success: false, code: 'NICKNAME_TAKEN'});
   });
 
-  it('createTeam reports a TAKEN nickname error on 409 and no nickname error on other failures', async () => {
-    spyOn(axiosInstance, 'post').and.returnValues(Promise.reject(axiosError(409)), Promise.reject(axiosError(422)));
-
-    const taken = await service.createTeam({name: 'Team B', password: 'secret', nickname: 'Bob'});
-    const other = await service.createTeam({name: 'Team B', password: 'secret', nickname: 'Bob'});
-
-    expect(taken).toEqual(jasmine.objectContaining({success: false, nicknameError: NicknameError.TAKEN}));
-    expect(other).toEqual(jasmine.objectContaining({success: false, nicknameError: null}));
-  });
-
-  it('joinTeam reports a NETWORK nickname error when there is no response', async () => {
-    spyOn(axiosInstance, 'post').and.returnValue(Promise.reject(axiosError()));
+  it('joinTeam returns WRONG_TEAM_PASSWORD from the server', async () => {
+    spyOn(axiosInstance, 'post').and.returnValue(Promise.reject(axiosError(401, 'WRONG_TEAM_PASSWORD')));
 
     const response = await service.joinTeam({code: 'bbb', password: 'secret', nickname: 'Bob'});
 
-    expect(response).toEqual(jasmine.objectContaining({success: false, nicknameError: NicknameError.NETWORK}));
+    expect(response).toEqual({success: false, code: 'WRONG_TEAM_PASSWORD'});
   });
 });

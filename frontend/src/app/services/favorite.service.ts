@@ -3,7 +3,7 @@ import {BehaviorSubject, map, Observable} from 'rxjs';
 import {moveItemInArray} from '@angular/cdk/drag-drop';
 import {axiosInstance} from "@config/axiosConfig";
 import {PHRASES} from "@config/phrases";
-import {toErrorResult} from "@utils/httpError";
+import {apiRequest} from "@utils/apiRequest";
 import {TeamService} from "@services/team.service";
 import {ToastService} from "@services/toast.service";
 import {ToastType} from "@models/toast.model";
@@ -15,6 +15,7 @@ import {
   FavoriteSurface,
   ListFavoritesResponse,
 } from "@models/favorite.model";
+import {teamPath} from "@utils/teamPath";
 
 interface RawFavorite {
   id: number;
@@ -72,18 +73,19 @@ export class FavoriteService {
     }
 
     if (!teamCode) {
-      return {success: false, statusMessage: 'No active team'};
+      return {success: false, code: 'TEAM_NOT_FOUND'};
     }
 
-    return axiosInstance.get(this.favoritesUrl(teamCode))
-      .then((response) => {
-        const favorites = (response.data.favorites as RawFavorite[]).map(mapFavorite);
+    return apiRequest<ListFavoritesResponse>(
+      axiosInstance.get(this.favoritesUrl(teamCode)),
+      (data) => {
+        const favorites = (data.favorites as RawFavorite[]).map(mapFavorite);
         if (this.loadedTeamCode === teamCode) {
           this.favoritesSubject.next(favorites);
         }
-        return {success: true, favorites} satisfies ListFavoritesResponse;
-      })
-      .catch((error) => toErrorResult<ListFavoritesResponse>(error, 'Failed to load favorites'));
+        return {success: true, favorites};
+      },
+    );
   }
 
   isFavorited(type: FavoritableType, id: number): boolean {
@@ -189,30 +191,27 @@ export class FavoriteService {
   }
 
   private favoritesUrl(teamCode: string) {
-    return `/teams/${teamCode}/favorites`;
+    return teamPath(teamCode, 'favorites');
   }
 
   private async createFavorite(teamCode: string, type: FavoritableType, id: number): Promise<FavoriteResponse> {
-    return axiosInstance.post(this.favoritesUrl(teamCode), {favorite: {favoritable_type: type, favoritable_id: id}})
-      .then((response) => {
-        return {success: true, favorite: mapFavorite(response.data.favorite)} satisfies FavoriteResponse;
-      })
-      .catch((error) => toErrorResult<FavoriteResponse>(error, 'Failed to add favorite'));
+    return apiRequest<FavoriteResponse>(
+      axiosInstance.post(this.favoritesUrl(teamCode), {favorite: {favoritable_type: type, favoritable_id: id}}),
+      (data) => ({success: true, favorite: mapFavorite(data.favorite)}),
+    );
   }
 
   private async moveFavorite(teamCode: string, id: number, surface: FavoriteSurface, position: number): Promise<FavoriteResponse> {
-    return axiosInstance.patch(`${this.favoritesUrl(teamCode)}/${id}`, {favorite: {surface, position}})
-      .then((response) => {
-        return {success: true, favorite: mapFavorite(response.data.favorite)} satisfies FavoriteResponse;
-      })
-      .catch((error) => toErrorResult<FavoriteResponse>(error, 'Failed to move favorite'));
+    return apiRequest<FavoriteResponse>(
+      axiosInstance.patch(`${this.favoritesUrl(teamCode)}/${id}`, {favorite: {surface, position}}),
+      (data) => ({success: true, favorite: mapFavorite(data.favorite)}),
+    );
   }
 
   private async deleteFavorite(teamCode: string, id: number): Promise<DeleteFavoriteResponse> {
-    return axiosInstance.delete(`${this.favoritesUrl(teamCode)}/${id}`)
-      .then(() => {
-        return {success: true} satisfies DeleteFavoriteResponse;
-      })
-      .catch((error) => toErrorResult<DeleteFavoriteResponse>(error, 'Failed to remove favorite'));
+    return apiRequest<DeleteFavoriteResponse>(
+      axiosInstance.delete(`${this.favoritesUrl(teamCode)}/${id}`),
+      () => ({success: true}),
+    );
   }
 }

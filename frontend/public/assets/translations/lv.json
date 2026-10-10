@@ -113,9 +113,6 @@
   "NICKNAME_TOO_SHORT": "Segvārdam jābūt vismaz 3 rakstzīmes garam",
   "NICKNAME_TOO_LONG": "Segvārds var būt ne garāks par 30 rakstzīmēm",
   "NICKNAME_INVALID_CHARACTERS": "Segvārds var saturēt tikai burtus a–z",
-  "NICKNAME_TAKEN": "Šis segvārds šajā komandā jau ir aizņemts",
-  "NETWORK_ERROR": "Tīkla kļūda. Pārbaudiet savienojumu un mēģiniet vēlreiz",
-  "NICKNAME_UPDATE_FAILED": "Neizdevās atjaunināt segvārdu",
   "FAVORITES": "Izlase",
   "ADD_TO_FAVORITES": "Pievienot izlasei",
   "REMOVE_FROM_FAVORITES": "Noņemt no izlases",
@@ -148,5 +145,79 @@
   "COLOR_BROWN": "Brūna",
   "COLOR_BEIGE": "Bēša",
   "COLOR_LIGHT_GREY": "Gaiši pelēka",
-  "COLOR_DARK_GREY": "Tumši pelēka"
+  "COLOR_DARK_GREY": "Tumši pelēka",
+  "INVALID_FORM_DATA": "Lūdzu, pareizi aizpildiet visus laukus",
+  "DIAGRAM_TITLE_PLACEHOLDER": "Diagrammas nosaukums",
+  "DIAGRAM_BEING_EDITED_BY": "šobrīd rediģē šo diagrammu",
+  "FORMAT_BOLD": "Treknraksts",
+  "FORMAT_ITALIC": "Slīpraksts",
+  "FORMAT_HEADING": "Virsraksts",
+  "FORMAT_BULLET_LIST": "Aizzīmju saraksts",
+  "FORMAT_ORDERED_LIST": "Numurēts saraksts",
+  "ERRORS": {
+    "COMMON": {
+      "UNAUTHORIZED": "Jūsu sesija ir beigusies. Lūdzu, piesakieties vēlreiz",
+      "FORBIDDEN": "Jums nav atļaujas to darīt",
+      "RATE_LIMITED": "Pārāk daudz mēģinājumu. Lūdzu, uzgaidiet un mēģiniet vēlreiz",
+      "NETWORK_ERROR": "Tīkla kļūda. Pārbaudiet savienojumu un mēģiniet vēlreiz",
+      "UNKNOWN_ERROR": "Kaut kas nogāja greizi. Lūdzu, mēģiniet vēlreiz"
+    },
+    "AUTH": {
+      "INVALID_CREDENTIALS": "Nepareizs e-pasts vai parole",
+      "EMAIL_TAKEN": "Konts ar šo e-pastu jau eksistē",
+      "REGISTRATION_FAILED": "Neizdevās izveidot kontu. Pārbaudiet e-pastu un paroli"
+    },
+    "USERS": {
+      "SETTINGS_UPDATE_FAILED": "Neizdevās saglabāt iestatījumus",
+      "AVATAR_COLOR_INVALID": "Šo krāsu nevar izmantot",
+      "AVATAR_IMAGE_INVALID": "Attēlam jābūt PNG, JPEG vai WebP formātā un ne lielākam par 2 MB"
+    },
+    "TEAMS": {
+      "TEAM_NOT_FOUND": "Komanda nav atrasta",
+      "NOT_TEAM_MEMBER": "Jūs neesat šīs komandas dalībnieks",
+      "WRONG_TEAM_PASSWORD": "Nepareiza komandas parole",
+      "TEAM_CREATE_FAILED": "Neizdevās izveidot komandu",
+      "TEAM_RENAME_FAILED": "Neizdevās pārdēvēt komandu",
+      "NICKNAME_TAKEN": "Šis segvārds šajā komandā jau ir aizņemts",
+      "NICKNAME_INVALID": "Šis segvārds nav derīgs"
+    },
+    "PAGES": {
+      "PAGE_NOT_FOUND": "Lapa nav atrasta",
+      "PAGE_CREATE_FAILED": "Neizdevās izveidot lapu",
+      "PAGE_UPDATE_FAILED": "Neizdevās saglabāt lapu"
+    },
+    "DIAGRAMS": {
+      "DIAGRAM_NOT_FOUND": "Diagramma nav atrasta",
+      "DIAGRAM_CREATE_FAILED": "Neizdevās izveidot diagrammu",
+      "DIAGRAM_UPDATE_FAILED": "Neizdevās saglabāt diagrammu"
+    },
+    "FOLDERS": {
+      "FOLDER_NOT_FOUND": "Mape nav atrasta",
+      "FOLDER_CREATE_FAILED": "Neizdevās izveidot mapi",
+      "FOLDER_UPDATE_FAILED": "Neizdevās atjaunināt mapi",
+      "FOLDER_PARENT_TYPE_MISMATCH": "Mapi var pārvietot tikai tāda paša veida mapē",
+      "FOLDER_PARENT_CIRCULAR": "Mapi nevar pārvietot pašā sevī vai kādā no tās apakšmapēm",
+      "FOLDER_DELETE_MODE_INVALID": "Neizdevās dzēst mapi"
+    },
+    "BOARDS": {
+      "BOARD_NOT_FOUND": "Dēlis nav atrasts",
+      "BOARD_CREATE_FAILED": "Neizdevās izveidot dēli",
+      "BOARD_UPDATE_FAILED": "Neizdevās atjaunināt dēli",
+      "COLUMN_NOT_FOUND": "Kolonna nav atrasta",
+      "COLUMN_CREATE_FAILED": "Neizdevās izveidot kolonnu",
+      "COLUMN_UPDATE_FAILED": "Neizdevās atjaunināt kolonnu"
+    },
+    "CARDS": {
+      "CARD_NOT_FOUND": "Kartīte nav atrasta",
+      "CARD_CREATE_FAILED": "Neizdevās izveidot kartīti",
+      "CARD_UPDATE_FAILED": "Neizdevās atjaunināt kartīti"
+    },
+    "FAVORITES": {
+      "FAVORITE_NOT_FOUND": "Izlases ieraksts nav atrasts",
+      "FAVORITE_TYPE_INVALID": "Šo vienumu nevar pievienot izlasei",
+      "FAVORITE_ITEM_NOT_FOUND": "Šis vienums vairs neeksistē",
+      "FAVORITE_CREATE_FAILED": "Neizdevās pievienot izlasei",
+      "FAVORITE_SURFACE_INVALID": "Neizdevās pārvietot izlases ierakstu"
+    }
+  }
 }

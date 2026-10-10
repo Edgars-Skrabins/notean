@@ -3,6 +3,7 @@ import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ButtonComponent} from '@components/button/button.component';
 import {CheckboxComponent} from '@components/checkbox/checkbox.component';
+import {FolderDeleteMode} from "@models/folder.model";
 
 @Component({
   selector: 'app-delete-folder-dialog',
@@ -19,7 +20,7 @@ export class DeleteFolderDialogComponent {
   protected readonly PHRASES = PHRASES;
 
   @Input({required: true}) folderTitle!: string;
-  @Output() confirmed = new EventEmitter<{ mode: 'cascade' | 'promote' }>();
+  @Output() confirmed = new EventEmitter<{ mode: FolderDeleteMode }>();
   @Output() cancelled = new EventEmitter<void>();
 
   deleteNestedContents = false;

@@ -10,7 +10,7 @@
     <app-button variant="primary" icon="plus" (pressed)="handleCreateBoard()">{{ PHRASES.NEW_BOARD | translate }}</app-button>
   </div>
 
-  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
   <div class="boardsView__list" *ngIf="!isLoading && boards.length">
     <div class="boardsView__row" *ngFor="let board of boards">

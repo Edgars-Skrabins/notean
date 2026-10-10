@@ -1,3 +1,6 @@
+import {Result} from "@models/result.model";
+import {AuthErrorCode} from "@config/errorCodes";
+
 export interface AuthCredentials {
   email: string;
   password: string;
@@ -15,6 +18,4 @@ export interface AuthResponseSuccess {
   token: string;
 }
 
-export interface AuthResponseError {
-  statusMessage: string;
-}
+export type AuthResponse = Result<object, AuthErrorCode>;

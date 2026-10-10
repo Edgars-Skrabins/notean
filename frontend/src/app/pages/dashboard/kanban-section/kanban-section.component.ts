@@ -14,6 +14,7 @@ import {IconButtonComponent} from "@components/icon-button/icon-button.component
 import {CreateNamedItemDialogComponent} from "@components/create-named-item-dialog/create-named-item-dialog.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
+import {errorPhrase} from "@utils/errorPhrase";
 
 @Component({
   selector: 'app-kanban-section',
@@ -53,7 +54,7 @@ export class KanbanSectionComponent implements OnInit, OnDestroy {
     private teamService: TeamService,
     private favoriteService: FavoriteService
   ) {
-    this.teamCode = this.teamService.getCurrentTeam()!.code;
+    this.teamCode = this.teamService.getCurrentTeamCode();
   }
 
   ngOnInit() {
@@ -87,7 +88,7 @@ export class KanbanSectionComponent implements OnInit, OnDestroy {
     this.boardService.createBoard(this.teamCode, event.title)
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
@@ -118,7 +119,7 @@ export class KanbanSectionComponent implements OnInit, OnDestroy {
     this.boardService.deleteBoard(this.teamCode, boardId)
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
@@ -139,7 +140,7 @@ export class KanbanSectionComponent implements OnInit, OnDestroy {
         this.isLoading = false;
 
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 

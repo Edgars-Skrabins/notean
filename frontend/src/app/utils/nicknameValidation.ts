@@ -1,5 +1,6 @@
 import {PHRASES} from "@config/phrases";
 import {NicknameError} from "@models/team.model";
+import {ErrorCode} from "@config/errorCodes";
 
 export const NICKNAME_MIN_LENGTH = 3;
 export const NICKNAME_MAX_LENGTH = 30;
@@ -31,11 +32,9 @@ export function nicknameErrorPhrase(error: NicknameError): string {
       return PHRASES.NICKNAME_TOO_LONG;
     case NicknameError.INVALID_CHARACTERS:
       return PHRASES.NICKNAME_INVALID_CHARACTERS;
-    case NicknameError.TAKEN:
-      return PHRASES.NICKNAME_TAKEN;
-    case NicknameError.NETWORK:
-      return PHRASES.NETWORK_ERROR;
-    case NicknameError.UNKNOWN:
-      return PHRASES.NICKNAME_UPDATE_FAILED;
   }
+}
+
+export function isNicknameErrorCode(code: ErrorCode): boolean {
+  return code === 'NICKNAME_TAKEN' || code === 'NICKNAME_INVALID';
 }

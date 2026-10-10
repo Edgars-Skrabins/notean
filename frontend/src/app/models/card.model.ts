@@ -1,3 +1,5 @@
+import {Result} from "@models/result.model";
+import {BoardsErrorCode, CardsErrorCode, TeamAccessErrorCode} from "@config/errorCodes";
 import {BoardUser} from './board.model';
 
 export interface CardSummary {
@@ -14,10 +16,6 @@ export interface CardDetail extends CardSummary {
   updatedAt: string;
 }
 
-export type CardResponse =
-  | { success: true; card: CardDetail }
-  | { success: false; statusMessage: string };
+export type CardResponse = Result<{ card: CardDetail }, TeamAccessErrorCode | BoardsErrorCode | CardsErrorCode>;
 
-export type DeleteCardResponse =
-  | { success: true }
-  | { success: false; statusMessage: string };
+export type DeleteCardResponse = Result<object, TeamAccessErrorCode | BoardsErrorCode | CardsErrorCode>;

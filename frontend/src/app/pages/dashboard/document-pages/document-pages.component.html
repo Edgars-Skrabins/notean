@@ -8,10 +8,10 @@
       [placeholder]="PHRASES.SEARCH_PAGES | translate"
     />
     <app-button variant="ghost" icon="folder-plus" (pressed)="handleCreateFolder(null)">{{ PHRASES.NEW_FOLDER | translate }}</app-button>
-    <app-button variant="primary" icon="plus" (pressed)="handleCreatePage(null)">{{ PHRASES.NEW_PAGE | translate }}</app-button>
+    <app-button variant="primary" icon="plus" (pressed)="handleCreateItem(null)">{{ PHRASES.NEW_PAGE | translate }}</app-button>
   </div>
 
-  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
   <app-item-tree
     *ngIf="!isLoading"
@@ -20,9 +20,9 @@
     [itemLabel]="PHRASES.NEW_PAGE | translate"
     favoritableType="Page"
     [deleteItemConfirmMessage]="PHRASES.CONFIRM_DELETE_PAGE | translate"
-    (openItem)="handleOpenPage($event)"
+    (openItem)="handleOpenItem($event)"
     (createFolder)="handleCreateFolder($event.parentId)"
-    (createItem)="handleCreatePage($event.parentId)"
+    (createItem)="handleCreateItem($event.parentId)"
     (renameFolder)="handleRenameFolder($event)"
     (deleteFolder)="handleDeleteFolder($event)"
     (deleteItem)="handleDeleteItem($event)"

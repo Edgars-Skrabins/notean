@@ -38,7 +38,7 @@
     </div>
 
     <button class="authButton" (click)="handleCreateTeam()">{{ PHRASES.CREATE_TEAM | translate }}</button>
-    <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+    <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
   </ng-container>
 
   <ng-template #createdView>

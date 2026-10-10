@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {axiosInstance, setAuthToken} from "@config/axiosConfig";
-import {AuthCredentials, AuthResponseError, AuthResponseSuccess, AuthUser, RegisterCredentials} from "@models/auth.model";
+import {AuthCredentials, AuthResponse, AuthResponseSuccess, AuthUser, RegisterCredentials} from "@models/auth.model";
+import {apiRequest} from "@utils/apiRequest";
 
 @Injectable({
   providedIn: 'root',
@@ -32,26 +33,24 @@ export class AuthService {
     return this.token;
   }
 
-  async login(credentials: AuthCredentials): Promise<string | null> {
-    return axiosInstance.post(this.loginUrl, {user: credentials})
-      .then((response) => {
-        this.setSession(response.data as AuthResponseSuccess);
-        return null;
-      })
-      .catch((error) => {
-        return (error.response?.data as AuthResponseError | undefined)?.statusMessage ?? 'Login failed';
-      });
+  async login(credentials: AuthCredentials): Promise<AuthResponse> {
+    return apiRequest<AuthResponse>(
+      axiosInstance.post(this.loginUrl, {user: credentials}),
+      (data) => {
+        this.setSession(data as AuthResponseSuccess);
+        return {success: true};
+      },
+    );
   }
 
-  async register(credentials: RegisterCredentials): Promise<string | null> {
-    return axiosInstance.post(this.registerUrl, {user: credentials})
-      .then((response) => {
-        this.setSession(response.data as AuthResponseSuccess);
-        return null;
-      })
-      .catch((error) => {
-        return (error.response?.data as AuthResponseError | undefined)?.statusMessage ?? 'Registration failed';
-      });
+  async register(credentials: RegisterCredentials): Promise<AuthResponse> {
+    return apiRequest<AuthResponse>(
+      axiosInstance.post(this.registerUrl, {user: credentials}),
+      (data) => {
+        this.setSession(data as AuthResponseSuccess);
+        return {success: true};
+      },
+    );
   }
 
   logout() {

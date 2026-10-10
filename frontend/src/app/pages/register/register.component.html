@@ -30,5 +30,5 @@
   </div>
 
   <button class="authButton" [disabled]="isSubmitting" (click)="handleRegister()">{{ PHRASES.REGISTER | translate }}</button>
-  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage }}</p>
+  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 </app-auth-card>

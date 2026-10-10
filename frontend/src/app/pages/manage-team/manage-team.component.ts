@@ -11,6 +11,7 @@ import {AppRoutes} from "../../app/app-routes.enum";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {TeamCodeDisplayComponent} from "@components/team-code-display/team-code-display.component";
 import {AvatarComponent} from "@components/avatar/avatar.component";
+import {errorPhrase} from "@utils/errorPhrase";
 
 @Component({
   selector: 'app-manage-team',
@@ -71,7 +72,7 @@ export class ManageTeamComponent implements OnInit {
       .then((response) => {
         if (!response.success) {
           this.renameStatusMessage = '';
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
@@ -94,7 +95,7 @@ export class ManageTeamComponent implements OnInit {
     this.teamService.deleteTeam(this.teamCode)
       .then((response) => {
         if (!response.success) {
-          this.alertMessage = response.statusMessage;
+          this.alertMessage = errorPhrase(response.code);
           return;
         }
 
