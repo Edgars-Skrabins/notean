@@ -75,7 +75,7 @@ class MembershipTest < ActiveSupport::TestCase
   end
 
   test "rejects digits, spaces and symbols in a nickname" do
-    ["Alice1", "Al ice", "Alice!", "Ali_ce", "Alīce"].each do |nickname|
+    [ "Alice1", "Al ice", "Alice!", "Ali_ce", "Alīce" ].each do |nickname|
       assert_not Membership.new(team: @team, user: @alice, nickname: nickname).valid?, "expected #{nickname.inspect} to be invalid"
     end
   end

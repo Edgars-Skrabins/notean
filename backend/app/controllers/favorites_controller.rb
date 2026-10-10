@@ -1,38 +1,38 @@
 class FavoritesController < ApplicationController
-  SURFACE_COLUMNS = { 'home' => :home_position, 'sidebar' => :sidebar_position }.freeze
+  SURFACE_COLUMNS = { "home" => :home_position, "sidebar" => :sidebar_position }.freeze
 
   before_action :authenticate_user!
   before_action :set_team
   before_action :authorize_team_member!
-  before_action :set_favorite, only: [:update, :destroy]
+  before_action :set_favorite, only: [ :update, :destroy ]
 
   def index
     favorites = user_favorites.includes(:favoritable).order(:home_position).to_a
     cards = favorites.map(&:favoritable).grep(Card)
     ActiveRecord::Associations::Preloader.new(records: cards, associations: { column: :board }).call
 
-    render json: { favorites: favorites.map { |favorite| favorite_json(favorite) }, statusMessage: 'Favorites found' }
+    render json: { favorites: favorites.map { |favorite| favorite_json(favorite) }, statusMessage: "Favorites found" }
   end
 
   def create
     favoritable_type = create_favorite_params[:favoritable_type]
 
     unless Favorite::FAVORITABLE_TYPES.include?(favoritable_type)
-      render json: { statusMessage: 'Invalid favorite type' }, status: :unprocessable_entity
+      render json: { statusMessage: "Invalid favorite type" }, status: :unprocessable_entity
       return
     end
 
     favoritable = find_favoritable(favoritable_type, create_favorite_params[:favoritable_id])
 
     if favoritable.nil?
-      render json: { statusMessage: 'Item not found' }, status: :not_found
+      render json: { statusMessage: "Item not found" }, status: :not_found
       return
     end
 
     existing = user_favorites.find_by(favoritable: favoritable)
 
     if existing
-      render json: { favorite: favorite_json(existing), statusMessage: 'Favorite added' }
+      render json: { favorite: favorite_json(existing), statusMessage: "Favorite added" }
       return
     end
 
@@ -43,9 +43,9 @@ class FavoritesController < ApplicationController
     )
 
     if @favorite.save
-      render json: { favorite: favorite_json(@favorite), statusMessage: 'Favorite added' }, status: :created
+      render json: { favorite: favorite_json(@favorite), statusMessage: "Favorite added" }, status: :created
     else
-      render json: { statusMessage: 'Failed to add favorite' }, status: :unprocessable_entity
+      render json: { statusMessage: "Failed to add favorite" }, status: :unprocessable_entity
     end
   end
 
@@ -53,7 +53,7 @@ class FavoritesController < ApplicationController
     column = SURFACE_COLUMNS[update_favorite_params[:surface]]
 
     if column.nil?
-      render json: { statusMessage: 'Invalid surface' }, status: :unprocessable_entity
+      render json: { statusMessage: "Invalid surface" }, status: :unprocessable_entity
       return
     end
 
@@ -67,7 +67,7 @@ class FavoritesController < ApplicationController
       favorite.update_column(column, index)
     end
 
-    render json: { favorite: favorite_json(@favorite), statusMessage: 'Favorite moved' }
+    render json: { favorite: favorite_json(@favorite), statusMessage: "Favorite moved" }
   end
 
   def destroy
@@ -80,17 +80,17 @@ class FavoritesController < ApplicationController
   def set_team
     @team = Team.find_by(code: params[:team_code])
 
-    render json: { statusMessage: 'Team not found' }, status: :not_found if @team.nil?
+    render json: { statusMessage: "Team not found" }, status: :not_found if @team.nil?
   end
 
   def authorize_team_member!
-    render json: { statusMessage: 'Forbidden' }, status: :forbidden unless current_user.memberships.exists?(team: @team)
+    render json: { statusMessage: "Forbidden" }, status: :forbidden unless current_user.memberships.exists?(team: @team)
   end
 
   def set_favorite
     @favorite = user_favorites.find_by(id: params[:id])
 
-    render json: { statusMessage: 'Favorite not found' }, status: :not_found if @favorite.nil?
+    render json: { statusMessage: "Favorite not found" }, status: :not_found if @favorite.nil?
   end
 
   def user_favorites
@@ -99,10 +99,10 @@ class FavoritesController < ApplicationController
 
   def find_favoritable(favoritable_type, favoritable_id)
     case favoritable_type
-    when 'Page' then @team.pages.find_by(id: favoritable_id)
-    when 'Diagram' then @team.diagrams.find_by(id: favoritable_id)
-    when 'Board' then @team.boards.find_by(id: favoritable_id)
-    when 'Card' then Card.where(team: @team).find_by(id: favoritable_id)
+    when "Page" then @team.pages.find_by(id: favoritable_id)
+    when "Diagram" then @team.diagrams.find_by(id: favoritable_id)
+    when "Board" then @team.boards.find_by(id: favoritable_id)
+    when "Card" then Card.where(team: @team).find_by(id: favoritable_id)
     end
   end
 

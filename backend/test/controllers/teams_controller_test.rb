@@ -42,7 +42,7 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Alice", JSON.parse(response.body)["nickname"]
 
     get "/teams/mine/all", headers: @headers
-    assert_equal ["Alice"], JSON.parse(response.body)["teams"].map { |team| team["nickname"] }
+    assert_equal [ "Alice" ], JSON.parse(response.body)["teams"].map { |team| team["nickname"] }
 
     post "/teams/#{@team.code}/activate", headers: @headers
     assert_equal "Alice", JSON.parse(response.body)["nickname"]
@@ -56,7 +56,7 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     members = JSON.parse(response.body)["members"]
-    assert_equal [["Alice", "owner"], ["Bob", "user"]], members.map { |member| [member["nickname"], member["role"]] }.sort
+    assert_equal [ [ "Alice", "owner" ], [ "Bob", "user" ] ], members.map { |member| [ member["nickname"], member["role"] ] }.sort
     assert_not members.first.key?("username")
   end
 

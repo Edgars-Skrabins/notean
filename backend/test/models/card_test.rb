@@ -30,7 +30,7 @@ class CardTest < ActiveSupport::TestCase
     second = Card.create!(column: @column, team: @team, created_by_user_id: @user.id, title: "Second", position: 1)
     first = Card.create!(column: @column, team: @team, created_by_user_id: @user.id, title: "First", position: 0)
 
-    assert_equal [first, second], @column.cards
+    assert_equal [ first, second ], @column.cards
   end
 
   test "destroying a column destroys its cards" do

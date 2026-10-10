@@ -2,28 +2,28 @@ class DiagramsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_team
   before_action :authorize_team_member!
-  before_action :set_diagram, only: [:show, :update, :destroy]
+  before_action :set_diagram, only: [ :show, :update, :destroy ]
 
   def index
     diagrams = @team.diagrams
-    diagrams = diagrams.where('LOWER(title) LIKE ?', "%#{params[:search].downcase}%") if params[:search].present?
+    diagrams = diagrams.where("LOWER(title) LIKE ?", "%#{params[:search].downcase}%") if params[:search].present?
 
-    render json: { diagrams: diagrams.map { |diagram| diagram_summary_json(diagram) }, statusMessage: 'Diagrams found' }
+    render json: { diagrams: diagrams.map { |diagram| diagram_summary_json(diagram) }, statusMessage: "Diagrams found" }
   end
 
   def create
-    @diagram = @team.diagrams.new(created_by_user_id: current_user.id, content: '')
-    @diagram.title = create_diagram_params[:title].presence || 'Untitled'
+    @diagram = @team.diagrams.new(created_by_user_id: current_user.id, content: "")
+    @diagram.title = create_diagram_params[:title].presence || "Untitled"
 
     if @diagram.save
-      render json: { diagram: diagram_json(@diagram), statusMessage: 'Diagram created successfully' }, status: :created
+      render json: { diagram: diagram_json(@diagram), statusMessage: "Diagram created successfully" }, status: :created
     else
-      render json: { statusMessage: 'Failed to create diagram' }, status: :unprocessable_entity
+      render json: { statusMessage: "Failed to create diagram" }, status: :unprocessable_entity
     end
   end
 
   def show
-    render json: { diagram: diagram_json(@diagram), statusMessage: 'Diagram found' }
+    render json: { diagram: diagram_json(@diagram), statusMessage: "Diagram found" }
   end
 
   def update
@@ -34,9 +34,9 @@ class DiagramsController < ApplicationController
     if @diagram.save
       @diagram.diagram_contributors.find_or_create_by!(user: current_user)
       DiagramEditingStatus.stop(@diagram.id, current_user)
-      render json: { diagram: diagram_json(@diagram), statusMessage: 'Diagram updated successfully' }
+      render json: { diagram: diagram_json(@diagram), statusMessage: "Diagram updated successfully" }
     else
-      render json: { statusMessage: 'Failed to update diagram' }, status: :unprocessable_entity
+      render json: { statusMessage: "Failed to update diagram" }, status: :unprocessable_entity
     end
   end
 
@@ -50,17 +50,17 @@ class DiagramsController < ApplicationController
   def set_team
     @team = Team.find_by(code: params[:team_code])
 
-    render json: { statusMessage: 'Team not found' }, status: :not_found if @team.nil?
+    render json: { statusMessage: "Team not found" }, status: :not_found if @team.nil?
   end
 
   def authorize_team_member!
-    render json: { statusMessage: 'Forbidden' }, status: :forbidden unless current_user.memberships.exists?(team: @team)
+    render json: { statusMessage: "Forbidden" }, status: :forbidden unless current_user.memberships.exists?(team: @team)
   end
 
   def set_diagram
     @diagram = @team.diagrams.find_by(id: params[:id])
 
-    render json: { statusMessage: 'Diagram not found' }, status: :not_found if @diagram.nil?
+    render json: { statusMessage: "Diagram not found" }, status: :not_found if @diagram.nil?
   end
 
   def diagram_summary_json(diagram)

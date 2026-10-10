@@ -2,41 +2,41 @@ class BoardsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_team
   before_action :authorize_team_member!
-  before_action :set_board, only: [:show, :update, :destroy]
+  before_action :set_board, only: [ :show, :update, :destroy ]
 
   def index
     boards = @team.boards
-    boards = boards.where('LOWER(title) LIKE ?', "%#{params[:search].downcase}%") if params[:search].present?
+    boards = boards.where("LOWER(title) LIKE ?", "%#{params[:search].downcase}%") if params[:search].present?
 
-    render json: { boards: boards.map { |board| board_summary_json(board) }, statusMessage: 'Boards found' }
+    render json: { boards: boards.map { |board| board_summary_json(board) }, statusMessage: "Boards found" }
   end
 
   def create
     @board = @team.boards.new(created_by_user_id: current_user.id)
-    @board.title = create_board_params[:title].presence || 'Untitled'
+    @board.title = create_board_params[:title].presence || "Untitled"
 
     if @board.save
       Board::DEFAULT_COLUMN_TITLES.each_with_index do |title, index|
         @board.columns.create!(title: title, position: index)
       end
 
-      render json: { board: board_json(@board), statusMessage: 'Board created successfully' }, status: :created
+      render json: { board: board_json(@board), statusMessage: "Board created successfully" }, status: :created
     else
-      render json: { statusMessage: 'Failed to create board' }, status: :unprocessable_entity
+      render json: { statusMessage: "Failed to create board" }, status: :unprocessable_entity
     end
   end
 
   def show
-    render json: { board: board_json(@board), statusMessage: 'Board found' }
+    render json: { board: board_json(@board), statusMessage: "Board found" }
   end
 
   def update
     @board.title = update_board_params[:title] if update_board_params[:title].present?
 
     if @board.save
-      render json: { board: board_json(@board), statusMessage: 'Board updated successfully' }
+      render json: { board: board_json(@board), statusMessage: "Board updated successfully" }
     else
-      render json: { statusMessage: 'Failed to update board' }, status: :unprocessable_entity
+      render json: { statusMessage: "Failed to update board" }, status: :unprocessable_entity
     end
   end
 
@@ -50,17 +50,17 @@ class BoardsController < ApplicationController
   def set_team
     @team = Team.find_by(code: params[:team_code])
 
-    render json: { statusMessage: 'Team not found' }, status: :not_found if @team.nil?
+    render json: { statusMessage: "Team not found" }, status: :not_found if @team.nil?
   end
 
   def authorize_team_member!
-    render json: { statusMessage: 'Forbidden' }, status: :forbidden unless current_user.memberships.exists?(team: @team)
+    render json: { statusMessage: "Forbidden" }, status: :forbidden unless current_user.memberships.exists?(team: @team)
   end
 
   def set_board
     @board = @team.boards.find_by(id: params[:id])
 
-    render json: { statusMessage: 'Board not found' }, status: :not_found if @board.nil?
+    render json: { statusMessage: "Board not found" }, status: :not_found if @board.nil?
   end
 
   def board_summary_json(board)

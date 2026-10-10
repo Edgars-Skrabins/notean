@@ -4,9 +4,9 @@ class SessionsController < ApplicationController
 
     if @user&.authenticate(user_params[:password])
       token = JsonWebToken.encode(user_id: @user.id)
-      render json: { user: @user.as_json(only: [:id, :email]), token: token, statusMessage: 'Logged in successfully' }, status: :ok
+      render json: { user: @user.as_json(only: [ :id, :email ]), token: token, statusMessage: "Logged in successfully" }, status: :ok
     else
-      render json: { statusMessage: 'Invalid email or password' }, status: :unauthorized
+      render json: { statusMessage: "Invalid email or password" }, status: :unauthorized
     end
   end
 end

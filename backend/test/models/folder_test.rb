@@ -56,7 +56,7 @@ class FolderTest < ActiveSupport::TestCase
     root = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Root")
     child = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Child", parent: root)
 
-    assert_equal [child], root.children
+    assert_equal [ child ], root.children
     assert_equal root, child.parent
   end
 
@@ -64,7 +64,7 @@ class FolderTest < ActiveSupport::TestCase
     page_folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Pages root")
     page = Page.create!(team: @team, creator: @user, title: "Notes", content: "", folder: page_folder)
 
-    assert_equal [page], page_folder.pages
+    assert_equal [ page ], page_folder.pages
     assert_empty page_folder.diagrams
   end
 end

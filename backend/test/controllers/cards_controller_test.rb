@@ -107,8 +107,8 @@ class CardsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     ordered = @todo.cards.reload.order(:position)
-    assert_equal [third.id, first.id, second.id], ordered.pluck(:id)
-    assert_equal [0, 1, 2], ordered.pluck(:position)
+    assert_equal [ third.id, first.id, second.id ], ordered.pluck(:id)
+    assert_equal [ 0, 1, 2 ], ordered.pluck(:position)
   end
 
   test "move across columns reindexes the destination and leaves a harmless gap in the source" do
@@ -125,12 +125,12 @@ class CardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal @doing.id, first.reload.column_id
 
     destination = @doing.cards.reload.order(:position)
-    assert_equal [first.id, existing.id], destination.pluck(:id)
-    assert_equal [0, 1], destination.pluck(:position)
+    assert_equal [ first.id, existing.id ], destination.pluck(:id)
+    assert_equal [ 0, 1 ], destination.pluck(:position)
 
     source = @todo.cards.reload
-    assert_equal [second.id], source.pluck(:id)
-    assert_equal [1], source.pluck(:position)
+    assert_equal [ second.id ], source.pluck(:id)
+    assert_equal [ 1 ], source.pluck(:position)
   end
 
   test "move rejects a target column that does not belong to this board" do

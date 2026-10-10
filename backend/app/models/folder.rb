@@ -1,8 +1,8 @@
 class Folder < ApplicationRecord
   belongs_to :team
-  belongs_to :creator, class_name: 'User', foreign_key: :created_by_user_id
-  belongs_to :parent, class_name: 'Folder', optional: true
-  has_many :children, class_name: 'Folder', foreign_key: :parent_id, dependent: :destroy
+  belongs_to :creator, class_name: "User", foreign_key: :created_by_user_id
+  belongs_to :parent, class_name: "Folder", optional: true
+  has_many :children, class_name: "Folder", foreign_key: :parent_id, dependent: :destroy
   has_many :pages, foreign_key: :folder_id, dependent: :destroy
   has_many :diagrams, foreign_key: :folder_id, dependent: :destroy
 
@@ -14,7 +14,7 @@ class Folder < ApplicationRecord
   private
 
   def parent_has_same_item_type
-    errors.add(:parent_id, 'must be a folder of the same type') if parent && parent.item_type != item_type
+    errors.add(:parent_id, "must be a folder of the same type") if parent && parent.item_type != item_type
   end
 
   def parent_is_not_self_or_descendant

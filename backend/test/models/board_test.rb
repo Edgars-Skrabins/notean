@@ -23,7 +23,7 @@ class BoardTest < ActiveSupport::TestCase
     todo = Column.create!(board: board, title: "To Do", position: 0)
     doing = Column.create!(board: board, title: "Doing", position: 1)
 
-    assert_equal [todo, doing, done], board.columns
+    assert_equal [ todo, doing, done ], board.columns
   end
 
   test "destroying a board destroys its columns" do

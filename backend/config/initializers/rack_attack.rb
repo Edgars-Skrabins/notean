@@ -38,6 +38,6 @@ class Rack::Attack
   end
 
   self.throttled_responder = lambda do |_request|
-    [429, { "Content-Type" => "application/json" }, [{ statusMessage: "Too many attempts. Please wait and try again." }.to_json]]
+    [ 429, { "Content-Type" => "application/json" }, [ { statusMessage: "Too many attempts. Please wait and try again." }.to_json ] ]
   end
 end

@@ -33,7 +33,7 @@ class FavoritesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     favorites = JSON.parse(response.body)["favorites"]
-    assert_equal [card_favorite.id, page_favorite.id], favorites.map { |f| f["id"] }
+    assert_equal [ card_favorite.id, page_favorite.id ], favorites.map { |f| f["id"] }
     assert_equal "Fix bug", favorites[0]["title"]
     assert_equal @board.id, favorites[0]["board_id"]
     assert_equal "Sprint 12", favorites[0]["board_title"]
@@ -42,7 +42,7 @@ class FavoritesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "create favorites a page, a diagram, a board and a card" do
-    [["Page", @page], ["Diagram", @diagram], ["Board", @board], ["Card", @card]].each do |type, item|
+    [ [ "Page", @page ], [ "Diagram", @diagram ], [ "Board", @board ], [ "Card", @card ] ].each do |type, item|
       post "/teams/#{@team.code}/favorites",
         params: { favorite: { favoritable_type: type, favoritable_id: item.id } },
         headers: @headers,
@@ -122,9 +122,9 @@ class FavoritesControllerTest < ActionDispatch::IntegrationTest
       as: :json
 
     assert_response :success
-    assert_equal [third.id, first.id, second.id], Favorite.order(:home_position).pluck(:id)
-    assert_equal [0, 1, 2], Favorite.order(:home_position).pluck(:home_position)
-    assert_equal [2, 1, 0], [first, second, third].map { |f| f.reload.sidebar_position }
+    assert_equal [ third.id, first.id, second.id ], Favorite.order(:home_position).pluck(:id)
+    assert_equal [ 0, 1, 2 ], Favorite.order(:home_position).pluck(:home_position)
+    assert_equal [ 2, 1, 0 ], [ first, second, third ].map { |f| f.reload.sidebar_position }
   end
 
   test "move within sidebar reindexes sidebar order and leaves home order unchanged" do
@@ -138,9 +138,9 @@ class FavoritesControllerTest < ActionDispatch::IntegrationTest
       as: :json
 
     assert_response :success
-    assert_equal [second.id, third.id, first.id], Favorite.order(:sidebar_position).pluck(:id)
-    assert_equal [0, 1, 2], Favorite.order(:sidebar_position).pluck(:sidebar_position)
-    assert_equal [0, 1, 2], [first, second, third].map { |f| f.reload.home_position }
+    assert_equal [ second.id, third.id, first.id ], Favorite.order(:sidebar_position).pluck(:id)
+    assert_equal [ 0, 1, 2 ], Favorite.order(:sidebar_position).pluck(:sidebar_position)
+    assert_equal [ 0, 1, 2 ], [ first, second, third ].map { |f| f.reload.home_position }
   end
 
   test "move rejects an invalid surface with 422" do

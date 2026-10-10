@@ -13,8 +13,8 @@ class User < ApplicationRecord
   before_save { self.email = email.downcase }
 
   validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :show_favorites_on_home, inclusion: { in: [true, false] }
-  validates :show_favorites_in_sidebar, inclusion: { in: [true, false] }
+  validates :show_favorites_on_home, inclusion: { in: [ true, false ] }
+  validates :show_favorites_in_sidebar, inclusion: { in: [ true, false ] }
   validates :avatar_color, inclusion: { in: AVATAR_COLORS }, allow_nil: true
   validate :avatar_image_is_allowed
 
@@ -27,7 +27,7 @@ class User < ApplicationRecord
   def avatar_image_is_allowed
     return unless avatar_image.attached?
 
-    errors.add(:avatar_image, 'must be a PNG, JPEG or WebP image') unless AVATAR_IMAGE_TYPES.include?(avatar_image.blob.content_type)
-    errors.add(:avatar_image, 'must be 2 MB or smaller') if avatar_image.blob.byte_size > AVATAR_IMAGE_MAX_BYTES
+    errors.add(:avatar_image, "must be a PNG, JPEG or WebP image") unless AVATAR_IMAGE_TYPES.include?(avatar_image.blob.content_type)
+    errors.add(:avatar_image, "must be 2 MB or smaller") if avatar_image.blob.byte_size > AVATAR_IMAGE_MAX_BYTES
   end
 end

@@ -8,12 +8,12 @@ class Favorite < ApplicationRecord
   validates :favoritable_type, inclusion: { in: FAVORITABLE_TYPES }
   validates :home_position, presence: true
   validates :sidebar_position, presence: true
-  validates :favoritable_id, uniqueness: { scope: [:user_id, :favoritable_type] }
+  validates :favoritable_id, uniqueness: { scope: [ :user_id, :favoritable_type ] }
   validate :favoritable_belongs_to_team
 
   private
 
   def favoritable_belongs_to_team
-    errors.add(:favoritable, 'must belong to the same team') if favoritable && favoritable.team_id != team_id
+    errors.add(:favoritable, "must belong to the same team") if favoritable && favoritable.team_id != team_id
   end
 end

@@ -40,7 +40,7 @@ class TeamTest < ActiveSupport::TestCase
     existing = build_team
     existing.save!
 
-    attempts = [existing.code, "brand-new-unique-code"]
+    attempts = [ existing.code, "brand-new-unique-code" ]
     SecureRandom.stub :alphanumeric, ->(*) { attempts.shift } do
       team = build_team
       team.save!

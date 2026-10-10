@@ -17,7 +17,7 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     titles = JSON.parse(response.body)["boards"].map { |board| board["title"] }
-    assert_equal ["Sprint 12"], titles
+    assert_equal [ "Sprint 12" ], titles
   end
 
   test "create defaults a blank title to Untitled" do
@@ -32,8 +32,8 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :created
     columns = JSON.parse(response.body)["board"]["columns"]
-    assert_equal ["To Do", "Doing", "Done"], columns.map { |column| column["title"] }
-    assert_equal [0, 1, 2], columns.map { |column| column["position"] }
+    assert_equal [ "To Do", "Doing", "Done" ], columns.map { |column| column["title"] }
+    assert_equal [ 0, 1, 2 ], columns.map { |column| column["position"] }
   end
 
   test "show includes card summaries nested under each column" do
@@ -45,7 +45,7 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     cards = JSON.parse(response.body)["board"]["columns"].first["cards"]
-    assert_equal ["Fix bug"], cards.map { |card| card["title"] }
+    assert_equal [ "Fix bug" ], cards.map { |card| card["title"] }
   end
 
   test "show returns the creator's nickname in this team" do

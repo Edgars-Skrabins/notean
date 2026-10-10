@@ -85,7 +85,7 @@ class ApplicationController < ActionController::API
   end
 
   def authenticate_user!
-    render json: { statusMessage: 'Unauthorized' }, status: :unauthorized unless current_user
+    render json: { statusMessage: "Unauthorized" }, status: :unauthorized unless current_user
   end
 
   def membership_for(team)
@@ -95,7 +95,7 @@ class ApplicationController < ActionController::API
   def require_team_role!(team, *roles)
     membership = membership_for(team)
     unless membership && roles.map(&:to_s).include?(membership.role)
-      render json: { statusMessage: 'Forbidden' }, status: :forbidden
+      render json: { statusMessage: "Forbidden" }, status: :forbidden
       return nil
     end
     membership
@@ -114,21 +114,20 @@ class ApplicationController < ActionController::API
 
   def render_nickname_error(membership)
     if membership.errors.of_kind?(:nickname, :taken)
-      render json: { statusMessage: 'Nickname already taken in this team' }, status: :conflict
+      render json: { statusMessage: "Nickname already taken in this team" }, status: :conflict
     else
-      render json: { statusMessage: 'Invalid nickname' }, status: :unprocessable_entity
+      render json: { statusMessage: "Invalid nickname" }, status: :unprocessable_entity
     end
   end
 
   def current_user
     return @current_user if defined?(@current_user)
 
-    header = request.headers['Authorization']
-    token = header.split(' ').last if header
+    header = request.headers["Authorization"]
+    token = header.split(" ").last if header
 
     @current_user = token && User.find_by(id: JsonWebToken.decode(token)[:user_id])
   rescue JWT::DecodeError
     @current_user = nil
   end
 end
-

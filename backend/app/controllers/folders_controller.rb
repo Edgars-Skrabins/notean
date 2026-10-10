@@ -2,12 +2,12 @@ class FoldersController < ApplicationController
   before_action :authenticate_user!
   before_action :set_team
   before_action :authorize_team_member!
-  before_action :set_folder, only: [:update, :destroy]
+  before_action :set_folder, only: [ :update, :destroy ]
 
   def index
     folders = @team.folders.where(item_type: index_item_type_param)
 
-    render json: { folders: folders.map { |folder| folder_json(folder) }, statusMessage: 'Folders found' }
+    render json: { folders: folders.map { |folder| folder_json(folder) }, statusMessage: "Folders found" }
   end
 
   def create
@@ -15,9 +15,9 @@ class FoldersController < ApplicationController
     @folder.created_by_user_id = current_user.id
 
     if @folder.save
-      render json: { folder: folder_json(@folder), statusMessage: 'Folder created successfully' }, status: :created
+      render json: { folder: folder_json(@folder), statusMessage: "Folder created successfully" }, status: :created
     else
-      render json: { statusMessage: @folder.errors.full_messages.to_sentence.presence || 'Failed to create folder' }, status: :unprocessable_entity
+      render json: { statusMessage: @folder.errors.full_messages.to_sentence.presence || "Failed to create folder" }, status: :unprocessable_entity
     end
   end
 
@@ -26,19 +26,19 @@ class FoldersController < ApplicationController
     @folder.parent_id = update_folder_params[:parent_id] if update_folder_params.key?(:parent_id)
 
     if @folder.save
-      render json: { folder: folder_json(@folder), statusMessage: 'Folder updated successfully' }
+      render json: { folder: folder_json(@folder), statusMessage: "Folder updated successfully" }
     else
-      render json: { statusMessage: @folder.errors.full_messages.to_sentence.presence || 'Failed to update folder' }, status: :unprocessable_entity
+      render json: { statusMessage: @folder.errors.full_messages.to_sentence.presence || "Failed to update folder" }, status: :unprocessable_entity
     end
   end
 
   def destroy
     unless %w[cascade promote].include?(params[:mode])
-      render json: { statusMessage: 'mode must be cascade or promote' }, status: :unprocessable_entity
+      render json: { statusMessage: "mode must be cascade or promote" }, status: :unprocessable_entity
       return
     end
 
-    if params[:mode] == 'promote'
+    if params[:mode] == "promote"
       @folder.children.update_all(parent_id: @folder.parent_id)
       @folder.pages.update_all(folder_id: @folder.parent_id)
       @folder.diagrams.update_all(folder_id: @folder.parent_id)
@@ -53,17 +53,17 @@ class FoldersController < ApplicationController
   def set_team
     @team = Team.find_by(code: params[:team_code])
 
-    render json: { statusMessage: 'Team not found' }, status: :not_found if @team.nil?
+    render json: { statusMessage: "Team not found" }, status: :not_found if @team.nil?
   end
 
   def authorize_team_member!
-    render json: { statusMessage: 'Forbidden' }, status: :forbidden unless current_user.memberships.exists?(team: @team)
+    render json: { statusMessage: "Forbidden" }, status: :forbidden unless current_user.memberships.exists?(team: @team)
   end
 
   def set_folder
     @folder = @team.folders.find_by(id: params[:id])
 
-    render json: { statusMessage: 'Folder not found' }, status: :not_found if @folder.nil?
+    render json: { statusMessage: "Folder not found" }, status: :not_found if @folder.nil?
   end
 
   def index_item_type_param
