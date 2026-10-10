@@ -1,0 +1,42 @@
+:host {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  object-fit: cover;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+.avatar__letter {
+  font-weight: 600;
+  line-height: 1;
+}
+
+.avatar__letter--neutral {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--color-text-heading);
+}
+
+.avatar--size24 {
+  width: 24px;
+  height: 24px;
+  font-size: 0.7rem;
+}
+
+.avatar--size32 {
+  width: 32px;
+  height: 32px;
+  font-size: 0.85rem;
+}
+
+.avatar--size96 {
+  width: 96px;
+  height: 96px;
+  font-size: 2.4rem;
+}

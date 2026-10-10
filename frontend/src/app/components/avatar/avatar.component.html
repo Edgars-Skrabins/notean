@@ -1,0 +1,17 @@
+<img
+  *ngIf="imageSrc as src; else letterCircle"
+  class="avatar avatar--size{{ size }}"
+  [src]="src"
+  [alt]="nickname"
+  (error)="handleImageError()"
+/>
+
+<ng-template #letterCircle>
+  <span
+    class="avatar avatar--size{{ size }} avatar__letter"
+    [class.avatar__letter--neutral]="!colorOption"
+    [style.background]="colorOption?.hex"
+    [style.color]="colorOption?.textColor"
+    [attr.aria-label]="nickname"
+  >{{ letter }}</span>
+</ng-template>
