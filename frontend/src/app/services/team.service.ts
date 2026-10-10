@@ -16,6 +16,7 @@ import {
   UpdateNicknameResponse
 } from "@models/team.model";
 import {mapAvatar, RawAvatar} from "@services/avatar.service";
+import {ActiveTeam} from "@models/session.model";
 import {teamPath} from "@utils/teamPath";
 
 interface RawTeamMember {
@@ -50,12 +51,6 @@ export class TeamService {
   private currentRole: TeamRole | null = this.readStoredRole();
   private currentNickname: string | null = this.readStoredNickname();
 
-  constructor() {
-    if (this.currentTeam && (!this.currentRole || !this.currentNickname)) {
-      this.fetchMyTeam();
-    }
-  }
-
   getCurrentTeam(): Team | null {
     return this.currentTeam;
   }
@@ -70,6 +65,14 @@ export class TeamService {
 
   getCurrentNickname(): string | null {
     return this.currentNickname;
+  }
+
+  applyActiveTeam(active: ActiveTeam | null) {
+    if (active) {
+      this.setCurrentTeam(active.team, active.role, active.nickname);
+    } else {
+      this.clearCurrentTeam();
+    }
   }
 
   clearCurrentTeam() {

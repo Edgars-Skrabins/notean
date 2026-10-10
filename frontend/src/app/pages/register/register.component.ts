@@ -4,8 +4,7 @@ import {NgIf} from "@angular/common";
 import {AppRoutes} from "../../app/app-routes.enum";
 import {NavigationService} from "@services/navigation.service";
 import {AuthService} from "@services/auth.service";
-import {SettingsService} from "@services/settings.service";
-import {AvatarService} from "@services/avatar.service";
+import {SessionService} from "@services/session.service";
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {AuthCardComponent} from "@components/auth-card/auth-card.component";
@@ -34,8 +33,7 @@ export class RegisterComponent {
   constructor(
     private navigationService: NavigationService,
     private authService: AuthService,
-    private settingsService: SettingsService,
-    private avatarService: AvatarService
+    private sessionService: SessionService
   ) {
   }
 
@@ -51,8 +49,7 @@ export class RegisterComponent {
           this.alertMessage = errorPhrase(response.code);
           return;
         }
-        this.settingsService.load();
-        this.avatarService.load();
+        this.sessionService.load();
         this.navigationService.navigate(AppRoutes.TEAM_SELECTION);
       })
       .finally(() => {

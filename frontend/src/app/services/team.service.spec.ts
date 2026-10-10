@@ -49,42 +49,37 @@ describe('TeamService role persistence', () => {
     expect(localStorage.getItem('currentNickname')).toBeNull();
   });
 
-  it('backfills the role via fetchMyTeam when a team is stored without a role', () => {
+  it('does not request anything on construction', () => {
     localStorage.setItem('currentTeam', JSON.stringify({id: 1, name: 'Team A', code: 'aaa'}));
-    spyOn(TeamService.prototype, 'fetchMyTeam').and.returnValue(Promise.resolve(null));
+    const get = spyOn(axiosInstance, 'get');
 
     new TeamService();
 
-    expect(TeamService.prototype.fetchMyTeam).toHaveBeenCalled();
+    expect(get).not.toHaveBeenCalled();
   });
 
-  it('does not call fetchMyTeam when there is no stored team', () => {
-    spyOn(TeamService.prototype, 'fetchMyTeam').and.returnValue(Promise.resolve(null));
+  it('applyActiveTeam stores the team, role and nickname from the server', () => {
+    localStorage.setItem('currentTeam', JSON.stringify({id: 1, name: 'Team A', code: 'aaa'}));
+    localStorage.setItem('currentTeamRole', 'user');
+    localStorage.setItem('currentNickname', 'Old');
+    const service = new TeamService();
 
-    new TeamService();
+    service.applyActiveTeam({team: {id: 2, name: 'Team B', code: 'bbb'}, role: 'admin', nickname: 'Ally'});
 
-    expect(TeamService.prototype.fetchMyTeam).not.toHaveBeenCalled();
+    expect(service.getCurrentTeam()).toEqual({id: 2, name: 'Team B', code: 'bbb'});
+    expect(service.getCurrentRole()).toBe('admin');
+    expect(service.getCurrentNickname()).toBe('Ally');
+    expect(localStorage.getItem('currentTeamRole')).toBe('admin');
   });
 
-  it('backfills the nickname via fetchMyTeam when a team is stored without a nickname', () => {
+  it('applyActiveTeam clears the stored team when the server has none', () => {
     localStorage.setItem('currentTeam', JSON.stringify({id: 1, name: 'Team A', code: 'aaa'}));
-    localStorage.setItem('currentTeamRole', 'owner');
-    spyOn(TeamService.prototype, 'fetchMyTeam').and.returnValue(Promise.resolve(null));
+    const service = new TeamService();
 
-    new TeamService();
+    service.applyActiveTeam(null);
 
-    expect(TeamService.prototype.fetchMyTeam).toHaveBeenCalled();
-  });
-
-  it('does not call fetchMyTeam when team, role and nickname are already stored', () => {
-    localStorage.setItem('currentTeam', JSON.stringify({id: 1, name: 'Team A', code: 'aaa'}));
-    localStorage.setItem('currentTeamRole', 'owner');
-    localStorage.setItem('currentNickname', 'Alice');
-    spyOn(TeamService.prototype, 'fetchMyTeam').and.returnValue(Promise.resolve(null));
-
-    new TeamService();
-
-    expect(TeamService.prototype.fetchMyTeam).not.toHaveBeenCalled();
+    expect(service.getCurrentTeam()).toBeNull();
+    expect(localStorage.getItem('currentTeam')).toBeNull();
   });
 });
 

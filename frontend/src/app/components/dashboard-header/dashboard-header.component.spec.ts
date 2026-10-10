@@ -1,7 +1,7 @@
 import {DashboardHeaderComponent} from "./dashboard-header.component";
 import {NavigationService} from "@services/navigation.service";
 import {AuthService} from "@services/auth.service";
-import {SettingsService} from "@services/settings.service";
+import {SessionService} from "@services/session.service";
 import {TeamService} from "@services/team.service";
 import {AvatarService} from "@services/avatar.service";
 
@@ -11,7 +11,7 @@ describe('DashboardHeaderComponent.showManageTeam', () => {
 
   beforeEach(() => {
     teamService = jasmine.createSpyObj('TeamService', ['getCurrentRole']);
-    component = new DashboardHeaderComponent({} as NavigationService, {} as AuthService, teamService, {} as SettingsService, {} as AvatarService);
+    component = new DashboardHeaderComponent({} as NavigationService, {} as AuthService, teamService, {} as SessionService, {} as AvatarService);
   });
 
   it('returns false when the current role is user', () => {
@@ -45,7 +45,7 @@ describe('DashboardHeaderComponent.nickname', () => {
 
   beforeEach(() => {
     teamService = jasmine.createSpyObj('TeamService', ['getCurrentNickname']);
-    component = new DashboardHeaderComponent({} as NavigationService, {} as AuthService, teamService, {} as SettingsService, {} as AvatarService);
+    component = new DashboardHeaderComponent({} as NavigationService, {} as AuthService, teamService, {} as SessionService, {} as AvatarService);
   });
 
   it('shows the nickname for the active team', () => {

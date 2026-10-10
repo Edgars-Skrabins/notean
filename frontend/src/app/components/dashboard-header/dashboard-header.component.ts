@@ -5,7 +5,7 @@ import {PHRASES} from "@config/phrases";
 import {NavigationService} from "@services/navigation.service";
 import {AuthService} from "@services/auth.service";
 import {TeamService} from "@services/team.service";
-import {SettingsService} from "@services/settings.service";
+import {SessionService} from "@services/session.service";
 import {AvatarService} from "@services/avatar.service";
 import {LanguageSwitcherComponent} from "@components/language-switcher/language-switcher.component";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
@@ -35,7 +35,7 @@ export class DashboardHeaderComponent {
     private navigationService: NavigationService,
     private authService: AuthService,
     private teamService: TeamService,
-    private settingsService: SettingsService,
+    private sessionService: SessionService,
     protected avatarService: AvatarService
   ) {
   }
@@ -87,9 +87,7 @@ export class DashboardHeaderComponent {
   handleLogout() {
     this.closeMenu();
     this.authService.logout();
-    this.teamService.clearCurrentTeam();
-    this.settingsService.clear();
-    this.avatarService.clear();
+    this.sessionService.clear();
     this.navigationService.navigate(AppRoutes.LOGIN);
   }
 }

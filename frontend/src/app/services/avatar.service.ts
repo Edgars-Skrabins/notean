@@ -3,7 +3,6 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {axiosInstance} from "@config/axiosConfig";
 import {AvatarColor} from "@config/avatarColors";
 import {apiRequest} from "@utils/apiRequest";
-import {AuthService} from "@services/auth.service";
 import {Avatar, AvatarResponse, AvatarUpdate} from "@models/avatar.model";
 
 export interface RawAvatar {
@@ -27,25 +26,12 @@ export class AvatarService {
 
   readonly avatar$: Observable<Avatar | null> = this.avatarSubject.asObservable();
 
-  constructor(private authService: AuthService) {
-    if (this.authService.isAuthenticated()) {
-      this.load();
-    }
-  }
-
   getAvatar(): Avatar | null {
     return this.avatarSubject.value;
   }
 
-  async load(): Promise<AvatarResponse> {
-    return apiRequest<AvatarResponse>(
-      axiosInstance.get(this.avatarUrl),
-      (data) => {
-        const avatar = mapAvatar(data.avatar);
-        this.avatarSubject.next(avatar);
-        return {success: true, avatar};
-      },
-    );
+  set(avatar: Avatar) {
+    this.avatarSubject.next(avatar);
   }
 
   async update(update: AvatarUpdate): Promise<AvatarResponse> {

@@ -104,7 +104,9 @@ src/environments/             environment.ts (apiUrl)
 - Service methods return `Result<T, E>` from `@models/result.model`: `{ success: true, ...payload }` or `{ success: false, code }`, where `code` is one of the error codes the request can return. Wrap requests in `apiRequest` from `@utils/apiRequest`, which maps the success data and turns failures into a code via `toErrorResult`.
 - Build team-scoped URLs with `teamPath(teamCode, ...segments)` from `@utils/teamPath`.
 - Pages and diagrams share `FolderedItemService`, `EditingService`, `FolderedListPageComponent`, `FolderedItemDetailComponent` and `ItemDetailLayoutComponent`; the page and diagram classes only configure them.
-- Session state lives in services backed by `localStorage`: `AuthService` stores `authToken` and `authUser`, and `TeamService` stores `currentTeam` and `currentTeamRole`.
+- Session state lives in services backed by `localStorage`: `AuthService` stores `authToken` and `authUser`, and `TeamService` stores `currentTeam`, `currentTeamRole` and `currentNickname`.
+- `SessionService` loads `GET /users/me` (user, settings, avatar, last-active team) on startup and after login and register, and hands the parts to `SettingsService.set`, `AvatarService.set` and `TeamService.applyActiveTeam`. Its `clear()` resets all three on logout and 401. The other services don't load on their own.
+- List screens load once and apply each mutation's response locally instead of reloading; Pages and Diagrams search filters loaded items in the browser.
 - Realtime features open an ActionCable consumer at `ws://…/cable?token=<jwt>` from a dedicated service and subscribe to the matching backend channel.
 
 #### Path aliases
@@ -166,7 +168,8 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 - Creators are stored as `created_by_user_id` with a `creator` association to `User`.
 - `Membership` joins users and teams. Its `role` enum is `user`, `admin` and `owner`, with exactly one owner per team.
 - Short-lived state, such as who is currently editing, lives in `Rails.cache` through plain Ruby classes (`*EditingStatus`), not tables. Changes are broadcast over ActionCable.
-- Title search uses the `TitleSearchable` concern's `search_title` scope.
+- Title search uses the `TitleSearchable` concern's `search_title` scope (kept for future pagination; the UI searches client-side).
+- List and detail endpoints preload what their JSON uses (e.g. `includes(creator: User::AVATAR_PRELOAD)`) so query counts don't grow with the number of items.
 
 #### Channels
 - `ApplicationCable::Connection` authenticates with the JWT passed as the `?token=` query param.
@@ -178,3 +181,4 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 
 #### Tests
 - Minitest with `fixtures :all` and parallel workers.
+- Endpoints that render lists have a query-count test: `query_count { get ... }` (from `test_helper.rb`) with 1 and with 10 items must be equal.
