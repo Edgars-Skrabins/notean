@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_11_130000) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_11_140200) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -45,7 +45,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_11_130000) do
     t.string "title", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "project_id"
     t.index ["created_by_user_id"], name: "index_boards_on_created_by_user_id"
+    t.index ["project_id"], name: "index_boards_on_project_id"
     t.index ["team_id"], name: "index_boards_on_team_id"
   end
 
@@ -76,8 +78,10 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_11_130000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "folder_id"
+    t.integer "project_id"
     t.index ["created_by_user_id"], name: "index_diagrams_on_created_by_user_id"
     t.index ["folder_id"], name: "index_diagrams_on_folder_id"
+    t.index ["project_id"], name: "index_diagrams_on_project_id"
     t.index ["team_id"], name: "index_diagrams_on_team_id"
   end
 
@@ -142,9 +146,33 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_11_130000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "folder_id"
+    t.integer "project_id"
     t.index ["created_by_user_id"], name: "index_pages_on_created_by_user_id"
     t.index ["folder_id"], name: "index_pages_on_folder_id"
+    t.index ["project_id"], name: "index_pages_on_project_id"
     t.index ["team_id"], name: "index_pages_on_team_id"
+  end
+
+  create_table "project_members", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id", "user_id"], name: "index_project_members_on_project_id_and_user_id", unique: true
+    t.index ["project_id"], name: "index_project_members_on_project_id"
+    t.index ["user_id"], name: "index_project_members_on_user_id"
+  end
+
+  create_table "projects", force: :cascade do |t|
+    t.integer "team_id", null: false
+    t.string "name", null: false
+    t.text "description", default: "", null: false
+    t.integer "owner_user_id", null: false
+    t.integer "created_by_user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id", "name"], name: "index_projects_on_team_id_and_name", unique: true
+    t.index ["team_id"], name: "index_projects_on_team_id"
   end
 
   create_table "teams", force: :cascade do |t|
@@ -198,12 +226,14 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_11_130000) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "boards", "projects"
   add_foreign_key "boards", "teams"
   add_foreign_key "boards", "users", column: "created_by_user_id"
   add_foreign_key "columns", "boards"
   add_foreign_key "diagram_contributors", "diagrams"
   add_foreign_key "diagram_contributors", "users"
   add_foreign_key "diagrams", "folders"
+  add_foreign_key "diagrams", "projects"
   add_foreign_key "diagrams", "teams"
   add_foreign_key "diagrams", "users", column: "created_by_user_id"
   add_foreign_key "favorites", "teams"
@@ -216,8 +246,14 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_11_130000) do
   add_foreign_key "page_contributors", "pages"
   add_foreign_key "page_contributors", "users"
   add_foreign_key "pages", "folders"
+  add_foreign_key "pages", "projects"
   add_foreign_key "pages", "teams"
   add_foreign_key "pages", "users", column: "created_by_user_id"
+  add_foreign_key "project_members", "projects"
+  add_foreign_key "project_members", "users"
+  add_foreign_key "projects", "teams"
+  add_foreign_key "projects", "users", column: "created_by_user_id"
+  add_foreign_key "projects", "users", column: "owner_user_id"
   add_foreign_key "ticket_assignees", "tickets"
   add_foreign_key "ticket_assignees", "users"
   add_foreign_key "tickets", "boards"

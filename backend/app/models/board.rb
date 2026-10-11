@@ -1,5 +1,6 @@
 class Board < ApplicationRecord
   include TitleSearchable
+  include BelongsToProject
 
   DEFAULT_COLUMN_TITLES = [ "To Do", "Doing", "Done" ].freeze
 
