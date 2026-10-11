@@ -13,7 +13,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     body = JSON.parse(response.body)
     assert_equal({ "id" => @user.id, "email" => "alice@example.com" }, body["user"])
-    assert_equal({ "show_favorites_on_home" => true, "show_favorites_in_sidebar" => true }, body["settings"])
+    assert_equal({ "show_favorites_on_home" => true, "show_favorites_in_sidebar" => true, "show_my_work_on_home" => true }, body["settings"])
     assert_equal({ "color" => @user.effective_avatar_color, "image_url" => nil }, body["avatar"])
     assert_nil body["team"]
   end
@@ -121,5 +121,13 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     patch "/users/me/avatar", params: { avatar: { color: "red" } }
 
     assert_response :unauthorized
+  end
+
+  test "update_settings turns My Work on Home off" do
+    patch "/users/me/settings", params: { settings: { show_my_work_on_home: false } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal false, JSON.parse(response.body)["settings"]["show_my_work_on_home"]
+    assert_equal false, @user.reload.show_my_work_on_home
   end
 end

@@ -83,7 +83,7 @@ class ApplicationController < ActionController::API
   end
 
   def update_settings_params
-    params.require(:settings).permit(:show_favorites_on_home, :show_favorites_in_sidebar)
+    params.require(:settings).permit(:show_favorites_on_home, :show_favorites_in_sidebar, :show_my_work_on_home)
   end
 
   def update_avatar_params

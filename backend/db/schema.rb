@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_11_120000) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_11_130000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -192,6 +192,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_11_120000) do
     t.boolean "show_favorites_on_home", default: true, null: false
     t.boolean "show_favorites_in_sidebar", default: true, null: false
     t.string "avatar_color"
+    t.boolean "show_my_work_on_home", default: true, null: false
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 

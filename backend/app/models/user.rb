@@ -17,6 +17,7 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :show_favorites_on_home, inclusion: { in: [ true, false ] }
   validates :show_favorites_in_sidebar, inclusion: { in: [ true, false ] }
+  validates :show_my_work_on_home, inclusion: { in: [ true, false ] }
   validates :avatar_color, inclusion: { in: AVATAR_COLORS }, allow_nil: true
   validate :avatar_image_is_allowed
 

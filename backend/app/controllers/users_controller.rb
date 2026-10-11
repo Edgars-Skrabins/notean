@@ -64,7 +64,8 @@ class UsersController < ApplicationController
   def settings_json(user)
     {
       show_favorites_on_home: user.show_favorites_on_home,
-      show_favorites_in_sidebar: user.show_favorites_in_sidebar
+      show_favorites_in_sidebar: user.show_favorites_in_sidebar,
+      show_my_work_on_home: user.show_my_work_on_home
     }
   end
 end
