@@ -1,0 +1,51 @@
+<p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+
+<div class="kanbanTab" cdkDropListGroup *ngIf="state.board as board">
+  <app-kanban-column
+    *ngFor="let column of board.columns"
+    [column]="column"
+    (renameColumn)="handleRenameColumn(column, $event.title)"
+    (deleteColumn)="requestDeleteColumn(column)"
+    (openTicket)="handleOpenTicket($event)"
+    (moveTicketToBacklog)="handleMoveToBacklog($event)"
+    (deleteTicket)="requestDeleteTicket($event, column)"
+    (addTicket)="handleAddTicket(column)"
+    (ticketDropped)="handleTicketDropped($event, column)"
+  ></app-kanban-column>
+
+  <app-button variant="ghost" icon="plus" class="kanbanTab__addColumn" (pressed)="handleAddColumn()">
+    {{ PHRASES.ADD_COLUMN | translate }}
+  </app-button>
+</div>
+
+<router-outlet></router-outlet>
+
+<app-confirm-dialog
+  *ngIf="columnPendingDeletion"
+  [message]="PHRASES.CONFIRM_DELETE_COLUMN | translate"
+  (confirmed)="handleConfirmDeleteColumn()"
+  (cancelled)="handleCancelDeleteColumn()"
+></app-confirm-dialog>
+
+<app-confirm-dialog
+  *ngIf="ticketPendingDeletion"
+  [message]="PHRASES.CONFIRM_DELETE_TICKET | translate"
+  (confirmed)="handleConfirmDeleteTicket()"
+  (cancelled)="handleCancelDeleteTicket()"
+></app-confirm-dialog>
+
+<app-create-named-item-dialog
+  *ngIf="isCreateColumnDialogOpen"
+  [dialogTitle]="PHRASES.ADD_COLUMN | translate"
+  [defaultValue]="PHRASES.UNTITLED_COLUMN | translate"
+  (confirmed)="handleCreateColumnConfirmed($event)"
+  (cancelled)="handleCreateColumnCancelled()"
+></app-create-named-item-dialog>
+
+<app-create-named-item-dialog
+  *ngIf="addTicketToColumn"
+  [dialogTitle]="PHRASES.ADD_TICKET | translate"
+  [defaultValue]="PHRASES.UNTITLED_TICKET | translate"
+  (confirmed)="handleCreateTicketConfirmed($event)"
+  (cancelled)="handleCreateTicketCancelled()"
+></app-create-named-item-dialog>

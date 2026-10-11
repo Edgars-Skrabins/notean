@@ -1,0 +1,20 @@
+<div class="pieChart" *ngIf="visibleSlices.length; else empty">
+  <svg class="pieChart__svg" viewBox="0 0 100 100" role="img">
+    <ng-container *ngFor="let arc of arcs">
+      <circle *ngIf="!arc.path" [attr.cx]="CENTER" [attr.cy]="CENTER" [attr.r]="RADIUS" [attr.fill]="arc.slice.color"></circle>
+      <path *ngIf="arc.path" [attr.d]="arc.path" [attr.fill]="arc.slice.color"></path>
+    </ng-container>
+  </svg>
+
+  <ul class="pieChart__legend">
+    <li class="pieChart__legendItem" *ngFor="let slice of visibleSlices">
+      <span class="pieChart__swatch" [style.background]="slice.color"></span>
+      <span class="pieChart__label">{{ slice.label }}</span>
+      <span class="pieChart__value">{{ slice.value }}</span>
+    </li>
+  </ul>
+</div>
+
+<ng-template #empty>
+  <p class="pieChart__empty">{{ emptyText }}</p>
+</ng-template>

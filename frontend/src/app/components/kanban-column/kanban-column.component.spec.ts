@@ -6,7 +6,7 @@ describe('KanbanColumnComponent rename', () => {
 
   beforeEach(() => {
     component = new KanbanColumnComponent();
-    component.column = {id: 1, title: 'To do', position: 0, cards: []};
+    component.column = {id: 1, title: 'To do', position: 0, tickets: []};
     emitted = [];
     component.renameColumn.subscribe((event) => emitted.push(event));
   });

@@ -6,7 +6,7 @@ import {PAGES_ERROR_CODES, PagesErrorCode} from "./pages";
 import {DIAGRAMS_ERROR_CODES, DiagramsErrorCode} from "./diagrams";
 import {FOLDERS_ERROR_CODES, FoldersErrorCode} from "./folders";
 import {BOARDS_ERROR_CODES, BoardsErrorCode} from "./boards";
-import {CARDS_ERROR_CODES, CardsErrorCode} from "./cards";
+import {TICKETS_ERROR_CODES, TicketsErrorCode} from "./tickets";
 import {FAVORITES_ERROR_CODES, FavoritesErrorCode} from "./favorites";
 
 export const ERROR_CODES_BY_DOMAIN = {
@@ -18,7 +18,7 @@ export const ERROR_CODES_BY_DOMAIN = {
   DIAGRAMS: DIAGRAMS_ERROR_CODES,
   FOLDERS: FOLDERS_ERROR_CODES,
   BOARDS: BOARDS_ERROR_CODES,
-  CARDS: CARDS_ERROR_CODES,
+  TICKETS: TICKETS_ERROR_CODES,
   FAVORITES: FAVORITES_ERROR_CODES,
 } as const;
 
@@ -33,7 +33,7 @@ export type ErrorCode =
   | DiagramsErrorCode
   | FoldersErrorCode
   | BoardsErrorCode
-  | CardsErrorCode
+  | TicketsErrorCode
   | FavoritesErrorCode;
 
 export type {
@@ -46,6 +46,6 @@ export type {
   DiagramsErrorCode,
   FoldersErrorCode,
   BoardsErrorCode,
-  CardsErrorCode,
+  TicketsErrorCode,
   FavoritesErrorCode,
 };

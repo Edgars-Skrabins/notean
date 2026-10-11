@@ -5,10 +5,10 @@ import {CdkDrag, CdkDragDrop, CdkDropList} from '@angular/cdk/drag-drop';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {BoardColumn} from '@models/board.model';
-import {CardSummary} from '@models/card.model';
+import {TicketSummary} from '@models/ticket.model';
 import {IconButtonComponent} from '@components/icon-button/icon-button.component';
 import {ButtonComponent} from '@components/button/button.component';
-import {KanbanCardComponent} from '@components/kanban-card/kanban-card.component';
+import {KanbanTicketComponent} from '@components/kanban-ticket/kanban-ticket.component';
 
 @Component({
   selector: 'app-kanban-column',
@@ -20,7 +20,7 @@ import {KanbanCardComponent} from '@components/kanban-card/kanban-card.component
     TranslateModule,
     IconButtonComponent,
     ButtonComponent,
-    KanbanCardComponent,
+    KanbanTicketComponent,
     CdkDropList,
     CdkDrag
   ],
@@ -33,10 +33,11 @@ export class KanbanColumnComponent {
   @Input({required: true}) column!: BoardColumn;
   @Output() renameColumn = new EventEmitter<{ title: string }>();
   @Output() deleteColumn = new EventEmitter<void>();
-  @Output() openCard = new EventEmitter<CardSummary>();
-  @Output() deleteCard = new EventEmitter<CardSummary>();
-  @Output() addCard = new EventEmitter<void>();
-  @Output() cardDropped = new EventEmitter<CdkDragDrop<CardSummary[]>>();
+  @Output() openTicket = new EventEmitter<TicketSummary>();
+  @Output() moveTicketToBacklog = new EventEmitter<TicketSummary>();
+  @Output() deleteTicket = new EventEmitter<TicketSummary>();
+  @Output() addTicket = new EventEmitter<void>();
+  @Output() ticketDropped = new EventEmitter<CdkDragDrop<TicketSummary[]>>();
 
   isRenaming = false;
   renameDraft = '';

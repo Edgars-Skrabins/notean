@@ -8,7 +8,7 @@ export function favoriteTypeIcon(type: FavoritableType): IconName {
       return 'edit';
     case 'Board':
       return 'menu';
-    case 'Card':
+    case 'Ticket':
       return 'flow-process';
   }
 }

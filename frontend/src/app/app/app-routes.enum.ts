@@ -11,8 +11,11 @@ export enum AppRoutes {
   PROJECTS = 'projects',
   DOCUMENT_PAGES = 'pages',
   DIAGRAMS = 'diagrams',
-  KANBAN_BOARDS = 'kanban',
-  CARDS = 'cards',
+  BOARDS = 'boards',
+  OVERVIEW = 'overview',
+  KANBAN = 'kanban',
+  BACKLOG = 'backlog',
+  TICKETS = 'tickets',
   PROFILE = 'profile',
   SETTINGS = 'settings',
 }

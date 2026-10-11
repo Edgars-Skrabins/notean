@@ -1,0 +1,59 @@
+<div class="ticketDetailOverlay" *ngIf="ticket">
+  <div class="ticketDetailOverlay__backdrop" (click)="handleGoBack()"></div>
+
+  <div class="ticketDetail">
+    <div class="ticketDetail__header">
+      <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE | translate" (pressed)="handleGoBack()"></app-icon-button>
+
+      <div class="ticketDetail__headerActions">
+        <app-button *ngIf="ticket.columnId !== null" variant="ghost" icon="inbox" (pressed)="handleMoveToBacklog()">{{ PHRASES.MOVE_TO_BACKLOG | translate }}</app-button>
+        <app-button *ngIf="ticket.columnId === null" variant="ghost" icon="columns" (pressed)="handleOpenMoveDialog()">{{ PHRASES.MOVE_TO_BOARD | translate }}</app-button>
+        <app-favorite-star type="Ticket" [itemId]="ticket.id" [title]="ticket.title" [size]="36"></app-favorite-star>
+        <app-icon-button
+          icon="trash"
+          variant="danger"
+          [tooltip]="PHRASES.DELETE_TICKET | translate"
+          (pressed)="handleDelete()"
+        ></app-icon-button>
+      </div>
+    </div>
+
+    <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+
+    <div class="ticketDetail__body">
+      <div class="ticketDetail__main">
+        <input
+          type="text"
+          class="ticketDetail__titleInput"
+          [(ngModel)]="titleDraft"
+          [placeholder]="PHRASES.TICKET_TITLE_PLACEHOLDER | translate"
+          (keydown.enter)="commitTitle()"
+          (keydown.escape)="cancelTitleEdit()"
+          (blur)="commitTitle()"
+        />
+
+        <textarea
+          class="ticketDetail__descriptionInput"
+          [(ngModel)]="descriptionDraft"
+          [placeholder]="PHRASES.TICKET_DESCRIPTION_PLACEHOLDER | translate"
+          (keydown.escape)="cancelDescriptionEdit()"
+          (blur)="commitDescription()"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+
+  <app-move-to-board-dialog
+    *ngIf="isMoveDialogOpen && state.board"
+    [columns]="state.board.columns"
+    (moved)="handleMoveToColumn($event)"
+    (cancelled)="handleMoveCancelled()"
+  ></app-move-to-board-dialog>
+
+  <app-confirm-dialog
+    *ngIf="showDeleteConfirm"
+    [message]="PHRASES.CONFIRM_DELETE_TICKET | translate"
+    (confirmed)="handleConfirmDelete()"
+    (cancelled)="handleCancelDelete()"
+  ></app-confirm-dialog>
+</div>

@@ -9,7 +9,7 @@ export function favoriteTypeLabel(type: FavoritableType): string {
       return PHRASES.ITEM_TYPE_DIAGRAM;
     case 'Board':
       return PHRASES.ITEM_TYPE_BOARD;
-    case 'Card':
-      return PHRASES.ITEM_TYPE_CARD;
+    case 'Ticket':
+      return PHRASES.ITEM_TYPE_TICKET;
   }
 }

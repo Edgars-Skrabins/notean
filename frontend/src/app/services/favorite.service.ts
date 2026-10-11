@@ -24,6 +24,7 @@ interface RawFavorite {
   title: string;
   board_id?: number;
   board_title?: string;
+  in_backlog?: boolean;
   home_position: number;
   sidebar_position: number;
 }
@@ -36,6 +37,7 @@ export function mapFavorite(raw: RawFavorite): Favorite {
     title: raw.title,
     boardId: raw.board_id ?? null,
     boardTitle: raw.board_title ?? null,
+    inBacklog: raw.in_backlog ?? false,
     homePosition: raw.home_position,
     sidebarPosition: raw.sidebar_position,
   };
@@ -126,6 +128,7 @@ export class FavoriteService {
       title,
       boardId: null,
       boardTitle: null,
+      inBacklog: false,
       homePosition: Math.min(0, ...previous.map((favorite) => favorite.homePosition)) - 1,
       sidebarPosition: Math.min(0, ...previous.map((favorite) => favorite.sidebarPosition)) - 1,
     };
@@ -168,8 +171,8 @@ export class FavoriteService {
   forgetItem(type: FavoritableType, id: number) {
     this.favoritesSubject.next(this.favoritesSubject.value.filter((favorite) => {
       const isItem = favorite.favoritableType === type && favorite.favoritableId === id;
-      const isCardOnBoard = type === 'Board' && favorite.favoritableType === 'Card' && favorite.boardId === id;
-      return !isItem && !isCardOnBoard;
+      const isTicketOnBoard = type === 'Board' && favorite.favoritableType === 'Ticket' && favorite.boardId === id;
+      return !isItem && !isTicketOnBoard;
     }));
   }
 
@@ -178,7 +181,7 @@ export class FavoriteService {
       if (favorite.favoritableType === type && favorite.favoritableId === id) {
         return {...favorite, title};
       }
-      if (type === 'Board' && favorite.favoritableType === 'Card' && favorite.boardId === id) {
+      if (type === 'Board' && favorite.favoritableType === 'Ticket' && favorite.boardId === id) {
         return {...favorite, boardTitle: title};
       }
       return favorite;

@@ -33,14 +33,7 @@
     <span class="dashboardSidebar__label">{{ PHRASES.DIAGRAMS | translate }}</span>
   </a>
 
-  <a class="dashboardSidebar__item" [routerLink]="AppRoutes.KANBAN_BOARDS" routerLinkActive="dashboardSidebar__item--active" [title]="PHRASES.KANBAN_BOARDS | translate">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-      <rect x="7" y="7" width="3" height="9"></rect>
-      <rect x="14" y="7" width="3" height="5"></rect>
-    </svg>
-    <span class="dashboardSidebar__label">{{ PHRASES.KANBAN_BOARDS | translate }}</span>
-  </a>
+  <app-sidebar-boards [collapsed]="collapsed"></app-sidebar-boards>
 
   <app-favorites-list *ngIf="!collapsed && (settingsService.settings$ | async)?.showFavoritesInSidebar"></app-favorites-list>
 

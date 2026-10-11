@@ -32,20 +32,21 @@
   <div
     class="kanbanColumn__body"
     cdkDropList
-    [cdkDropListData]="column.cards"
-    (cdkDropListDropped)="cardDropped.emit($event)"
+    [cdkDropListData]="column.tickets"
+    (cdkDropListDropped)="ticketDropped.emit($event)"
   >
-    <app-kanban-card
-      *ngFor="let card of column.cards"
+    <app-kanban-ticket
+      *ngFor="let ticket of column.tickets"
       cdkDrag
-      [cdkDragData]="card"
-      [card]="card"
-      (opened)="openCard.emit(card)"
-      (deleteCard)="deleteCard.emit(card)"
-    ></app-kanban-card>
+      [cdkDragData]="ticket"
+      [ticket]="ticket"
+      (opened)="openTicket.emit(ticket)"
+      (moveToBacklog)="moveTicketToBacklog.emit(ticket)"
+      (deleteTicket)="deleteTicket.emit(ticket)"
+    ></app-kanban-ticket>
   </div>
 
-  <app-button variant="ghost" icon="plus" class="kanbanColumn__addCard" (pressed)="addCard.emit()">
-    {{ PHRASES.ADD_CARD | translate }}
+  <app-button variant="ghost" icon="plus" class="kanbanColumn__addTicket" (pressed)="addTicket.emit()">
+    {{ PHRASES.ADD_TICKET | translate }}
   </app-button>
 </div>

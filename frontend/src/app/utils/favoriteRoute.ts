@@ -1,5 +1,6 @@
 import {Favorite} from "@models/favorite.model";
 import {AppRoutes} from "../app/app-routes.enum";
+import {boardRoute, ticketRoute} from "@utils/ticketRoute";
 
 export function favoriteRoute(favorite: Favorite): (string | number)[] {
   switch (favorite.favoritableType) {
@@ -8,8 +9,8 @@ export function favoriteRoute(favorite: Favorite): (string | number)[] {
     case 'Diagram':
       return [AppRoutes.DASHBOARD, AppRoutes.DIAGRAMS, favorite.favoritableId];
     case 'Board':
-      return [AppRoutes.DASHBOARD, AppRoutes.KANBAN_BOARDS, favorite.favoritableId];
-    case 'Card':
-      return [AppRoutes.DASHBOARD, AppRoutes.KANBAN_BOARDS, favorite.boardId!, AppRoutes.CARDS, favorite.favoritableId];
+      return boardRoute(favorite.favoritableId);
+    case 'Ticket':
+      return ticketRoute(favorite.boardId!, favorite.favoritableId, favorite.inBacklog);
   }
 }

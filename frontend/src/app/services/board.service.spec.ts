@@ -1,4 +1,22 @@
-import {mapBoardColumn, mapBoardDetail, mapBoardSummary, mapBoardUser, mapCardSummary} from "./board.service";
+import {mapBoardColumn, mapBoardDetail, mapBoardOverview, mapBoardSummary, mapBoardUser, mapTicketSummary} from "./board.service";
+
+const rawTicket = (id: number, title: string, position: number, columnId: number | null = 3) => ({
+  id,
+  title,
+  position,
+  column_id: columnId,
+  updated_at: '2024-01-02T00:00:00Z',
+});
+
+const ticket = (id: number, title: string, position: number, columnId: number | null = 3) => ({
+  id,
+  title,
+  position,
+  columnId,
+  updatedAt: '2024-01-02T00:00:00Z',
+});
+
+const rawCreator = {id: 2, nickname: 'bob', avatar: {color: 'red' as const, image_url: null}};
 
 describe('mapBoardUser', () => {
   it('maps id, nickname and avatar', () => {
@@ -8,33 +26,23 @@ describe('mapBoardUser', () => {
   });
 });
 
-describe('mapCardSummary', () => {
-  it('maps id, title and position', () => {
-    const result = mapCardSummary({id: 1, title: 'My Card', position: 2});
-
-    expect(result).toEqual({id: 1, title: 'My Card', position: 2});
+describe('mapTicketSummary', () => {
+  it('maps id, title, position, column and update time', () => {
+    expect(mapTicketSummary(rawTicket(1, 'My Ticket', 2, null))).toEqual(ticket(1, 'My Ticket', 2, null));
   });
 });
 
 describe('mapBoardColumn', () => {
-  it('defaults cards to an empty array when missing', () => {
+  it('defaults tickets to an empty array when missing', () => {
     const result = mapBoardColumn({id: 1, title: 'To do', position: 0});
 
-    expect(result).toEqual({id: 1, title: 'To do', position: 0, cards: []});
+    expect(result).toEqual({id: 1, title: 'To do', position: 0, tickets: []});
   });
 
-  it('maps cards through mapCardSummary', () => {
-    const result = mapBoardColumn({
-      id: 1,
-      title: 'To do',
-      position: 0,
-      cards: [{id: 2, title: 'First', position: 0}, {id: 3, title: 'Second', position: 1}],
-    });
+  it('maps tickets through mapTicketSummary', () => {
+    const result = mapBoardColumn({id: 3, title: 'To do', position: 0, tickets: [rawTicket(2, 'First', 0), rawTicket(3, 'Second', 1)]});
 
-    expect(result.cards).toEqual([
-      {id: 2, title: 'First', position: 0},
-      {id: 3, title: 'Second', position: 1},
-    ]);
+    expect(result.tickets).toEqual([ticket(2, 'First', 0), ticket(3, 'Second', 1)]);
   });
 });
 
@@ -43,7 +51,7 @@ describe('mapBoardSummary', () => {
     const result = mapBoardSummary({
       id: 1,
       title: 'My Board',
-      creator: {id: 2, nickname: 'bob', avatar: {color: 'red', image_url: null}},
+      creator: rawCreator,
       created_at: '2024-01-01T00:00:00Z',
       updated_at: '2024-01-02T00:00:00Z',
     });
@@ -59,22 +67,51 @@ describe('mapBoardSummary', () => {
 });
 
 describe('mapBoardDetail', () => {
+  const raw = {
+    id: 1,
+    title: 'My Board',
+    creator: rawCreator,
+    created_at: '2024-01-01T00:00:00Z',
+    updated_at: '2024-01-02T00:00:00Z',
+    columns: [
+      {id: 3, title: 'To do', position: 0, tickets: [rawTicket(4, 'First', 0)]},
+      {id: 5, title: 'Done', position: 1},
+    ],
+  };
+
   it('maps columns through mapBoardColumn', () => {
-    const result = mapBoardDetail({
-      id: 1,
-      title: 'My Board',
-      creator: {id: 2, nickname: 'bob', avatar: {color: 'red', image_url: null}},
-      created_at: '2024-01-01T00:00:00Z',
-      updated_at: '2024-01-02T00:00:00Z',
-      columns: [
-        {id: 3, title: 'To do', position: 0, cards: [{id: 4, title: 'First', position: 0}]},
-        {id: 5, title: 'Done', position: 1},
-      ],
+    expect(mapBoardDetail(raw).columns).toEqual([
+      {id: 3, title: 'To do', position: 0, tickets: [ticket(4, 'First', 0)]},
+      {id: 5, title: 'Done', position: 1, tickets: []},
+    ]);
+  });
+
+  it('maps the backlog and defaults it to an empty list', () => {
+    expect(mapBoardDetail(raw).backlog).toEqual([]);
+    expect(mapBoardDetail({...raw, backlog: [rawTicket(6, 'Idea', 0, null)]}).backlog).toEqual([ticket(6, 'Idea', 0, null)]);
+  });
+});
+
+describe('mapBoardOverview', () => {
+  it('maps counts, columns and recent tickets', () => {
+    const result = mapBoardOverview({
+      total_tickets: 3,
+      board_tickets: 2,
+      backlog_tickets: 1,
+      columns: [{id: 3, title: 'To do', ticket_count: 2}],
+      created_last_7_days: 1,
+      updated_last_7_days: 2,
+      recent_tickets: [{id: 4, title: 'Bug', column_id: null, column_title: null, updated_at: '2024-01-02T00:00:00Z'}],
     });
 
-    expect(result.columns).toEqual([
-      {id: 3, title: 'To do', position: 0, cards: [{id: 4, title: 'First', position: 0}]},
-      {id: 5, title: 'Done', position: 1, cards: []},
-    ]);
+    expect(result).toEqual({
+      totalTickets: 3,
+      boardTickets: 2,
+      backlogTickets: 1,
+      columns: [{id: 3, title: 'To do', ticketCount: 2}],
+      createdLast7Days: 1,
+      updatedLast7Days: 2,
+      recentTickets: [{id: 4, title: 'Bug', columnId: null, columnTitle: null, updatedAt: '2024-01-02T00:00:00Z'}],
+    });
   });
 });

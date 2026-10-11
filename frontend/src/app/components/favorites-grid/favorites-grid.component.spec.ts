@@ -17,6 +17,7 @@ function buildFavorite(overrides: Partial<Favorite>): Favorite {
     title: 'Notes',
     boardId: null,
     boardTitle: null,
+    inBacklog: false,
     homePosition: 0,
     sidebarPosition: 0,
     ...overrides,
@@ -62,8 +63,8 @@ describe('FavoritesGridComponent', () => {
     expect(tileTitles()).toEqual(['Second', 'First']);
   });
 
-  it('shows a card tile with its board title', () => {
-    homeFavorites.next([buildFavorite({favoritableType: 'Card', boardId: 5, boardTitle: 'Sprint 12'})]);
+  it('shows a ticket tile with its board title', () => {
+    homeFavorites.next([buildFavorite({favoritableType: 'Ticket', boardId: 5, boardTitle: 'Sprint 12'})]);
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('.favoritesGrid__tileMeta').textContent).toContain('Sprint 12');
@@ -87,12 +88,12 @@ describe('FavoritesGridComponent', () => {
   });
 
   it('navigates to the item when a tile is clicked', () => {
-    homeFavorites.next([buildFavorite({favoritableType: 'Card', favoritableId: 100, boardId: 5})]);
+    homeFavorites.next([buildFavorite({favoritableType: 'Ticket', favoritableId: 100, boardId: 5})]);
     fixture.detectChanges();
 
     (fixture.nativeElement.querySelector('.favoritesGrid__tile') as HTMLElement).click();
 
-    expect(router.navigate).toHaveBeenCalledWith([AppRoutes.DASHBOARD, AppRoutes.KANBAN_BOARDS, 5, AppRoutes.CARDS, 100]);
+    expect(router.navigate).toHaveBeenCalledWith([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 5, AppRoutes.KANBAN, AppRoutes.TICKETS, 100]);
   });
 
   it('moves the dropped favorite on the home surface', () => {

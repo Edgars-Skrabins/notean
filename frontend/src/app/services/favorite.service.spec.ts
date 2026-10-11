@@ -29,13 +29,14 @@ describe('mapFavorite', () => {
       title: 'Notes',
       boardId: null,
       boardTitle: null,
+      inBacklog: false,
       homePosition: 0,
       sidebarPosition: 0,
     });
   });
 
-  it('maps board fields for a card', () => {
-    const result = mapFavorite(rawFavorite({favoritable_type: 'Card', board_id: 5, board_title: 'Sprint 12'}) as never);
+  it('maps board fields for a ticket', () => {
+    const result = mapFavorite(rawFavorite({favoritable_type: 'Ticket', board_id: 5, board_title: 'Sprint 12'}) as never);
 
     expect(result.boardId).toBe(5);
     expect(result.boardTitle).toBe('Sprint 12');
@@ -145,10 +146,10 @@ describe('FavoriteService', () => {
     expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: PHRASES.FAVORITE_UPDATE_FAILED});
   });
 
-  it('forgetItem removes the item and, for a board, the cards on it', async () => {
+  it('forgetItem removes the item and, for a board, the tickets on it', async () => {
     await loadWith([
       rawFavorite({id: 1, favoritable_type: 'Board', favoritable_id: 5}),
-      rawFavorite({id: 2, favoritable_type: 'Card', favoritable_id: 100, board_id: 5, board_title: 'Sprint 12'}),
+      rawFavorite({id: 2, favoritable_type: 'Ticket', favoritable_id: 100, board_id: 5, board_title: 'Sprint 12'}),
       rawFavorite({id: 3, favoritable_type: 'Page', favoritable_id: 10}),
     ]);
 
@@ -157,16 +158,16 @@ describe('FavoriteService', () => {
     expect(current().map((f) => f.id)).toEqual([3]);
   });
 
-  it('renameItem updates the title and, for a board, its cards board title', async () => {
+  it('renameItem updates the title and, for a board, its tickets board title', async () => {
     await loadWith([
       rawFavorite({id: 1, favoritable_type: 'Board', favoritable_id: 5, title: 'Sprint 12'}),
-      rawFavorite({id: 2, favoritable_type: 'Card', favoritable_id: 100, board_id: 5, board_title: 'Sprint 12'}),
+      rawFavorite({id: 2, favoritable_type: 'Ticket', favoritable_id: 100, board_id: 5, board_title: 'Sprint 12'}),
     ]);
 
     service.renameItem('Board', 5, 'Sprint 13');
 
     expect(service.favoriteFor('Board', 5)?.title).toBe('Sprint 13');
-    expect(service.favoriteFor('Card', 100)?.boardTitle).toBe('Sprint 13');
+    expect(service.favoriteFor('Ticket', 100)?.boardTitle).toBe('Sprint 13');
   });
 
   it('derives each surface order from its own position', async () => {

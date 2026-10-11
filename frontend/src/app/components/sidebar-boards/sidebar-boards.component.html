@@ -1,0 +1,51 @@
+<div class="sidebarBoards__header" [class.sidebarBoards__header--collapsed]="collapsed">
+  <button
+    type="button"
+    class="sidebarBoards__toggle"
+    [title]="PHRASES.BOARDS | translate"
+    [attr.aria-expanded]="boardListService.isOpen"
+    (click)="collapsed || handleToggle()"
+  >
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+      <rect x="7" y="7" width="3" height="9"></rect>
+      <rect x="14" y="7" width="3" height="5"></rect>
+    </svg>
+    <span class="sidebarBoards__label" *ngIf="!collapsed">{{ PHRASES.BOARDS | translate }}</span>
+    <app-icon
+      *ngIf="!collapsed"
+      name="chevron-right"
+      class="sidebarBoards__chevron"
+      [class.sidebarBoards__chevron--open]="boardListService.isOpen"
+    ></app-icon>
+  </button>
+  <app-icon-button *ngIf="!collapsed" icon="plus" [size]="28" [tooltip]="PHRASES.NEW_BOARD | translate" (pressed)="handleCreate()"></app-icon-button>
+</div>
+
+<ng-container *ngIf="!collapsed && boardListService.isOpen">
+  <ng-container *ngIf="boardListService.boards$ | async as boards">
+    <div class="sidebarBoards__rows" cdkDropList [cdkDropListData]="boards" (cdkDropListDropped)="handleDrop($event)">
+      <a
+        *ngFor="let board of boards; trackBy: trackById"
+        class="sidebarBoards__row"
+        cdkDrag
+        cdkDragLockAxis="y"
+        [routerLink]="boardLink(board)"
+        routerLinkActive="sidebarBoards__row--active"
+        (click)="$event.preventDefault(); handleOpen(board)"
+      >
+        <app-icon name="menu" class="sidebarBoards__icon"></app-icon>
+        <span class="sidebarBoards__rowTitle">{{ board.title }}</span>
+      </a>
+    </div>
+    <p class="sidebarBoards__empty" *ngIf="!boards.length">{{ PHRASES.NO_BOARDS_YET | translate }}</p>
+  </ng-container>
+</ng-container>
+
+<app-create-named-item-dialog
+  *ngIf="isCreateDialogOpen"
+  [dialogTitle]="PHRASES.NEW_BOARD | translate"
+  [defaultValue]="PHRASES.UNTITLED_BOARD | translate"
+  (confirmed)="handleCreateConfirmed($event)"
+  (cancelled)="handleCreateCancelled()"
+></app-create-named-item-dialog>

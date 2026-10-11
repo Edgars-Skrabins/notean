@@ -1,7 +1,7 @@
 import {Result} from "@models/result.model";
 import {FavoritesErrorCode, TeamAccessErrorCode} from "@config/errorCodes";
 
-export type FavoritableType = 'Page' | 'Diagram' | 'Board' | 'Card';
+export type FavoritableType = 'Page' | 'Diagram' | 'Board' | 'Ticket';
 
 export type FavoriteSurface = 'home' | 'sidebar';
 
@@ -12,6 +12,7 @@ export interface Favorite {
   title: string;
   boardId: number | null;
   boardTitle: string | null;
+  inBacklog: boolean;
   homePosition: number;
   sidebarPosition: number;
 }

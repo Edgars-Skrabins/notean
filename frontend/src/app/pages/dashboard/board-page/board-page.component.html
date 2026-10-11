@@ -1,0 +1,46 @@
+<p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+
+<div class="boardPage" *ngIf="state.board as board">
+  <div class="boardPage__header">
+    <div class="boardPage__titleRow">
+      <h1 *ngIf="!isRenaming" class="boardPage__title">{{ board.title }}</h1>
+      <input
+        *ngIf="isRenaming"
+        type="text"
+        class="boardPage__titleInput"
+        [(ngModel)]="renameDraft"
+        (keydown.enter)="commitRename()"
+        (keydown.escape)="cancelRename()"
+        (blur)="commitRename()"
+        autofocus
+      />
+      <app-icon-button
+        *ngIf="!isRenaming"
+        icon="edit"
+        [tooltip]="PHRASES.RENAME_BOARD | translate"
+        [size]="28"
+        (pressed)="startRename()"
+      ></app-icon-button>
+    </div>
+
+    <div class="boardPage__actions">
+      <app-favorite-star type="Board" [itemId]="board.id" [title]="board.title" [size]="36"></app-favorite-star>
+      <app-icon-button icon="trash" variant="danger" [tooltip]="PHRASES.DELETE | translate" (pressed)="handleDelete()"></app-icon-button>
+    </div>
+  </div>
+
+  <nav class="boardPage__tabs">
+    <a class="boardPage__tab" [routerLink]="AppRoutes.OVERVIEW" routerLinkActive="boardPage__tab--active">{{ PHRASES.TAB_OVERVIEW | translate }}</a>
+    <a class="boardPage__tab" [routerLink]="AppRoutes.KANBAN" routerLinkActive="boardPage__tab--active">{{ PHRASES.TAB_KANBAN | translate }}</a>
+    <a class="boardPage__tab" [routerLink]="AppRoutes.BACKLOG" routerLinkActive="boardPage__tab--active">{{ PHRASES.TAB_BACKLOG | translate }}</a>
+  </nav>
+
+  <router-outlet></router-outlet>
+</div>
+
+<app-confirm-dialog
+  *ngIf="showDeleteConfirm"
+  [message]="PHRASES.CONFIRM_DELETE_BOARD | translate"
+  (confirmed)="handleConfirmDelete()"
+  (cancelled)="handleCancelDelete()"
+></app-confirm-dialog>

@@ -5,7 +5,8 @@ export type IconName =
   | 'plus' | 'folder' | 'folder-plus' | 'chevron-right'
   | 'trash' | 'edit' | 'save' | 'x'
   | 'menu' | 'zoom-fit' | 'star' | 'star-filled'
-  | 'flow-terminator' | 'flow-process' | 'flow-decision' | 'flow-io';
+  | 'flow-terminator' | 'flow-process' | 'flow-decision' | 'flow-io'
+  | 'inbox' | 'columns';
 
 @Component({
   selector: 'app-icon',

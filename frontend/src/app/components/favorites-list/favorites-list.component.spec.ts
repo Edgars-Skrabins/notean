@@ -17,6 +17,7 @@ function buildFavorite(overrides: Partial<Favorite>): Favorite {
     title: 'Notes',
     boardId: null,
     boardTitle: null,
+    inBacklog: false,
     homePosition: 0,
     sidebarPosition: 0,
     ...overrides,
@@ -80,12 +81,12 @@ describe('FavoritesListComponent', () => {
   });
 
   it('navigates to the item when a row is clicked', () => {
-    sidebarFavorites.next([buildFavorite({favoritableType: 'Card', favoritableId: 100, boardId: 5})]);
+    sidebarFavorites.next([buildFavorite({favoritableType: 'Ticket', favoritableId: 100, boardId: 5})]);
     fixture.detectChanges();
 
     (fixture.nativeElement.querySelector('.favoritesList__row') as HTMLElement).click();
 
-    expect(router.navigate).toHaveBeenCalledWith([AppRoutes.DASHBOARD, AppRoutes.KANBAN_BOARDS, 5, AppRoutes.CARDS, 100]);
+    expect(router.navigate).toHaveBeenCalledWith([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 5, AppRoutes.KANBAN, AppRoutes.TICKETS, 100]);
   });
 
   it('moves the dropped favorite on the sidebar surface', () => {

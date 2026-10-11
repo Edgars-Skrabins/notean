@@ -10,6 +10,7 @@ function buildFavorite(overrides: Partial<Favorite>): Favorite {
     title: 'Notes',
     boardId: null,
     boardTitle: null,
+    inBacklog: false,
     homePosition: 0,
     sidebarPosition: 0,
     ...overrides,
@@ -27,13 +28,18 @@ describe('favoriteRoute', () => {
       .toEqual([AppRoutes.DASHBOARD, AppRoutes.DIAGRAMS, 11]);
   });
 
-  it('routes a board to its board view', () => {
+  it('routes a board to its kanban tab', () => {
     expect(favoriteRoute(buildFavorite({favoritableType: 'Board', favoritableId: 12})))
-      .toEqual([AppRoutes.DASHBOARD, AppRoutes.KANBAN_BOARDS, 12]);
+      .toEqual([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 12, AppRoutes.KANBAN]);
   });
 
-  it('routes a card to its card view on its board', () => {
-    expect(favoriteRoute(buildFavorite({favoritableType: 'Card', favoritableId: 13, boardId: 5})))
-      .toEqual([AppRoutes.DASHBOARD, AppRoutes.KANBAN_BOARDS, 5, AppRoutes.CARDS, 13]);
+  it('routes a ticket on the board to its popup over the kanban tab', () => {
+    expect(favoriteRoute(buildFavorite({favoritableType: 'Ticket', favoritableId: 13, boardId: 5})))
+      .toEqual([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 5, AppRoutes.KANBAN, AppRoutes.TICKETS, 13]);
+  });
+
+  it('routes a backlog ticket to its popup over the backlog tab', () => {
+    expect(favoriteRoute(buildFavorite({favoritableType: 'Ticket', favoritableId: 13, boardId: 5, inBacklog: true})))
+      .toEqual([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 5, AppRoutes.BACKLOG, AppRoutes.TICKETS, 13]);
   });
 });

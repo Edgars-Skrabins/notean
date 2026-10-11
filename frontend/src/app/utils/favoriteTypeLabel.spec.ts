@@ -14,7 +14,7 @@ describe('favoriteTypeLabel', () => {
     expect(favoriteTypeLabel('Board')).toBe(PHRASES.ITEM_TYPE_BOARD);
   });
 
-  it('returns the card phrase for Card', () => {
-    expect(favoriteTypeLabel('Card')).toBe(PHRASES.ITEM_TYPE_CARD);
+  it('returns the ticket phrase for Ticket', () => {
+    expect(favoriteTypeLabel('Ticket')).toBe(PHRASES.ITEM_TYPE_TICKET);
   });
 });

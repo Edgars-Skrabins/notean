@@ -13,9 +13,11 @@ import {DocumentPagesComponent} from "../pages/dashboard/document-pages/document
 import {PageDetailComponent} from "../pages/dashboard/page-detail/page-detail.component";
 import {DiagramsComponent} from "../pages/dashboard/diagrams/diagrams.component";
 import {DiagramDetailComponent} from "../pages/dashboard/diagram-detail/diagram-detail.component";
-import {KanbanSectionComponent} from "../pages/dashboard/kanban-section/kanban-section.component";
-import {KanbanBoardComponent} from "../pages/dashboard/kanban-board/kanban-board.component";
-import {CardDetailComponent} from "../pages/dashboard/card-detail/card-detail.component";
+import {BoardPageComponent} from "../pages/dashboard/board-page/board-page.component";
+import {BoardOverviewTabComponent} from "../pages/dashboard/board-overview-tab/board-overview-tab.component";
+import {KanbanTabComponent} from "../pages/dashboard/kanban-tab/kanban-tab.component";
+import {BacklogTabComponent} from "../pages/dashboard/backlog-tab/backlog-tab.component";
+import {TicketDetailComponent} from "../pages/dashboard/ticket-detail/ticket-detail.component";
 import {ProfileComponent} from "../pages/dashboard/profile/profile.component";
 import {SettingsComponent} from "../pages/dashboard/settings/settings.component";
 import {authGuard} from "../guards/auth.guard";
@@ -47,9 +49,24 @@ export const routes: Routes = [
       {path: `${AppRoutes.DOCUMENT_PAGES}/:id`, component: PageDetailComponent},
       {path: AppRoutes.DIAGRAMS, component: DiagramsComponent},
       {path: `${AppRoutes.DIAGRAMS}/:id`, component: DiagramDetailComponent},
-      {path: AppRoutes.KANBAN_BOARDS, component: KanbanSectionComponent},
-      {path: `${AppRoutes.KANBAN_BOARDS}/:id`, component: KanbanBoardComponent},
-      {path: `${AppRoutes.KANBAN_BOARDS}/:boardId/${AppRoutes.CARDS}/:cardId`, component: CardDetailComponent},
+      {
+        path: `${AppRoutes.BOARDS}/:id`,
+        component: BoardPageComponent,
+        children: [
+          {path: '', redirectTo: AppRoutes.KANBAN, pathMatch: 'full'},
+          {path: AppRoutes.OVERVIEW, component: BoardOverviewTabComponent},
+          {
+            path: AppRoutes.KANBAN,
+            component: KanbanTabComponent,
+            children: [{path: `${AppRoutes.TICKETS}/:ticketId`, component: TicketDetailComponent}],
+          },
+          {
+            path: AppRoutes.BACKLOG,
+            component: BacklogTabComponent,
+            children: [{path: `${AppRoutes.TICKETS}/:ticketId`, component: TicketDetailComponent}],
+          },
+        ],
+      },
     ],
   },
 ];

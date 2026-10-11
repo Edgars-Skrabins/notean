@@ -10,7 +10,7 @@ describe('favoriteTypeIcon', () => {
     expect(favoriteTypeIcon('Board')).toBe('menu');
   });
 
-  it('uses the process icon for cards', () => {
-    expect(favoriteTypeIcon('Card')).toBe('flow-process');
+  it('uses the process icon for tickets', () => {
+    expect(favoriteTypeIcon('Ticket')).toBe('flow-process');
   });
 });

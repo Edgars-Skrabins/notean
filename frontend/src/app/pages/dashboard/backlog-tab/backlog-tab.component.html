@@ -1,0 +1,50 @@
+<p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+
+<div class="backlogTab" *ngIf="state.board">
+  <p class="backlogTab__empty" *ngIf="!backlog.length">{{ PHRASES.BACKLOG_EMPTY | translate }}</p>
+
+  <div class="backlogTab__list" cdkDropList [cdkDropListData]="backlog" (cdkDropListDropped)="handleDropped($event)">
+    <app-backlog-row
+      *ngFor="let ticket of backlog"
+      cdkDrag
+      cdkDragLockAxis="y"
+      [cdkDragData]="ticket"
+      [ticket]="ticket"
+      (opened)="handleOpenTicket(ticket)"
+      (moveToBoard)="handleMoveRequested(ticket)"
+      (deleteTicket)="requestDelete(ticket)"
+    ></app-backlog-row>
+  </div>
+
+  <button type="button" class="backlogTab__createButton" *ngIf="!isCreating" (click)="handleStartCreate()">
+    <app-icon name="plus" class="backlogTab__createIcon"></app-icon>
+    {{ PHRASES.CREATE_TICKET | translate }}
+  </button>
+  <input
+    *ngIf="isCreating"
+    type="text"
+    class="backlogTab__createInput"
+    [(ngModel)]="newTicketTitle"
+    [placeholder]="PHRASES.TICKET_TITLE_PLACEHOLDER | translate"
+    (keydown.enter)="handleCreate()"
+    (keydown.escape)="handleCloseCreate()"
+    (blur)="handleCloseCreate()"
+    autofocus
+  />
+</div>
+
+<router-outlet></router-outlet>
+
+<app-move-to-board-dialog
+  *ngIf="ticketToMove && state.board"
+  [columns]="state.board.columns"
+  (moved)="handleMoveConfirmed($event)"
+  (cancelled)="handleMoveCancelled()"
+></app-move-to-board-dialog>
+
+<app-confirm-dialog
+  *ngIf="ticketPendingDeletion"
+  [message]="PHRASES.CONFIRM_DELETE_TICKET | translate"
+  (confirmed)="handleConfirmDelete()"
+  (cancelled)="handleCancelDelete()"
+></app-confirm-dialog>

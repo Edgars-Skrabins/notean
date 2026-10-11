@@ -4,33 +4,37 @@ import {apiRequest} from "@utils/apiRequest";
 import {
   BoardColumn,
   BoardDetail,
+  BoardOverview,
+  BoardOverviewResponse,
   BoardResponse,
   BoardSummary,
   BoardUser,
   DeleteBoardResponse,
   ListBoardsResponse,
 } from "@models/board.model";
-import {CardSummary} from "@models/card.model";
+import {TicketSummary} from "@models/ticket.model";
 import {mapAvatar, RawAvatar} from "@services/avatar.service";
 import {teamPath} from "@utils/teamPath";
 
-interface RawBoardUser {
+export interface RawBoardUser {
   id: number;
   nickname: string;
   avatar: RawAvatar;
 }
 
-interface RawCardSummary {
+export interface RawTicketSummary {
   id: number;
   title: string;
   position: number;
+  column_id: number | null;
+  updated_at: string;
 }
 
 interface RawBoardColumn {
   id: number;
   title: string;
   position: number;
-  cards?: RawCardSummary[];
+  tickets?: RawTicketSummary[];
 }
 
 interface RawBoardSummary {
@@ -43,6 +47,17 @@ interface RawBoardSummary {
 
 interface RawBoardDetail extends RawBoardSummary {
   columns: RawBoardColumn[];
+  backlog?: RawTicketSummary[];
+}
+
+interface RawBoardOverview {
+  total_tickets: number;
+  board_tickets: number;
+  backlog_tickets: number;
+  columns: { id: number; title: string; ticket_count: number }[];
+  created_last_7_days: number;
+  updated_last_7_days: number;
+  recent_tickets: { id: number; title: string; column_id: number | null; column_title: string | null; updated_at: string }[];
 }
 
 export function mapBoardUser(raw: RawBoardUser): BoardUser {
@@ -53,11 +68,13 @@ export function mapBoardUser(raw: RawBoardUser): BoardUser {
   };
 }
 
-export function mapCardSummary(raw: RawCardSummary): CardSummary {
+export function mapTicketSummary(raw: RawTicketSummary): TicketSummary {
   return {
     id: raw.id,
     title: raw.title,
     position: raw.position,
+    columnId: raw.column_id,
+    updatedAt: raw.updated_at,
   };
 }
 
@@ -66,7 +83,7 @@ export function mapBoardColumn(raw: RawBoardColumn): BoardColumn {
     id: raw.id,
     title: raw.title,
     position: raw.position,
-    cards: (raw.cards ?? []).map(mapCardSummary),
+    tickets: (raw.tickets ?? []).map(mapTicketSummary),
   };
 }
 
@@ -84,6 +101,25 @@ export function mapBoardDetail(raw: RawBoardDetail): BoardDetail {
   return {
     ...mapBoardSummary(raw),
     columns: raw.columns.map(mapBoardColumn),
+    backlog: (raw.backlog ?? []).map(mapTicketSummary),
+  };
+}
+
+export function mapBoardOverview(raw: RawBoardOverview): BoardOverview {
+  return {
+    totalTickets: raw.total_tickets,
+    boardTickets: raw.board_tickets,
+    backlogTickets: raw.backlog_tickets,
+    columns: raw.columns.map((column) => ({id: column.id, title: column.title, ticketCount: column.ticket_count})),
+    createdLast7Days: raw.created_last_7_days,
+    updatedLast7Days: raw.updated_last_7_days,
+    recentTickets: raw.recent_tickets.map((ticket) => ({
+      id: ticket.id,
+      title: ticket.title,
+      columnId: ticket.column_id,
+      columnTitle: ticket.column_title,
+      updatedAt: ticket.updated_at,
+    })),
   };
 }
 
@@ -95,9 +131,9 @@ export class BoardService {
     return teamPath(teamCode, 'boards');
   }
 
-  async listBoards(teamCode: string, search?: string): Promise<ListBoardsResponse> {
+  async listBoards(teamCode: string): Promise<ListBoardsResponse> {
     return apiRequest<ListBoardsResponse>(
-      axiosInstance.get(this.boardsUrl(teamCode), {params: search ? {search} : undefined}),
+      axiosInstance.get(this.boardsUrl(teamCode)),
       (data) => {
         const boards = data.boards as RawBoardSummary[];
         return {success: true, boards: boards.map(mapBoardSummary)};
@@ -105,7 +141,7 @@ export class BoardService {
     );
   }
 
-  async createBoard(teamCode: string, title?: string): Promise<BoardResponse> {
+  async createBoard(teamCode: string, title: string): Promise<BoardResponse> {
     return apiRequest<BoardResponse>(
       axiosInstance.post(this.boardsUrl(teamCode), {board: {title}}),
       (data) => ({success: true, board: mapBoardDetail(data.board)}),
@@ -123,6 +159,13 @@ export class BoardService {
     return apiRequest<BoardResponse>(
       axiosInstance.patch(`${this.boardsUrl(teamCode)}/${id}`, {board: {title}}),
       (data) => ({success: true, board: mapBoardDetail(data.board)}),
+    );
+  }
+
+  async getOverview(teamCode: string, id: number): Promise<BoardOverviewResponse> {
+    return apiRequest<BoardOverviewResponse>(
+      axiosInstance.get(`${this.boardsUrl(teamCode)}/${id}/overview`),
+      (data) => ({success: true, overview: mapBoardOverview(data.overview)}),
     );
   }
 

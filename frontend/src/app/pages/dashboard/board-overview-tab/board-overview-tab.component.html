@@ -1,0 +1,44 @@
+<p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+
+<div class="boardOverview" *ngIf="overview">
+  <div class="boardOverview__tiles">
+    <div class="boardOverview__tile">
+      <span class="boardOverview__tileValue">{{ overview.totalTickets }}</span>
+      <span class="boardOverview__tileLabel">{{ PHRASES.TOTAL_TICKETS | translate }}</span>
+    </div>
+    <div class="boardOverview__tile">
+      <span class="boardOverview__tileValue">{{ overview.boardTickets }}</span>
+      <span class="boardOverview__tileLabel">{{ PHRASES.TICKETS_ON_BOARD | translate }}</span>
+    </div>
+    <div class="boardOverview__tile">
+      <span class="boardOverview__tileValue">{{ overview.backlogTickets }}</span>
+      <span class="boardOverview__tileLabel">{{ PHRASES.TICKETS_IN_BACKLOG | translate }}</span>
+    </div>
+  </div>
+
+  <section class="boardOverview__section">
+    <h2 class="boardOverview__heading">{{ PHRASES.TICKETS_PER_COLUMN | translate }}</h2>
+    <div class="boardOverview__perColumn">
+      <app-pie-chart [slices]="columnSlices" [emptyText]="PHRASES.NO_TICKETS_YET | translate"></app-pie-chart>
+      <div class="boardOverview__bars" *ngIf="overview.totalTickets">
+        <div class="boardOverview__bar" *ngFor="let column of overview.columns">
+          <span class="boardOverview__barLabel">{{ column.title }}</span>
+          <span class="boardOverview__barTrack">
+            <span class="boardOverview__barFill" [style.width.%]="column.ticketCount / maxColumnCount * 100"></span>
+          </span>
+          <span class="boardOverview__barValue">{{ column.ticketCount }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="boardOverview__section">
+    <h2 class="boardOverview__heading">{{ PHRASES.RECENT_ACTIVITY | translate }}</h2>
+    <p class="boardOverview__stat">{{ PHRASES.CREATED_LAST_7_DAYS | translate }}: {{ overview.createdLast7Days }}</p>
+    <p class="boardOverview__stat">{{ PHRASES.UPDATED_LAST_7_DAYS | translate }}: {{ overview.updatedLast7Days }}</p>
+    <button type="button" class="boardOverview__recent" *ngFor="let ticket of overview.recentTickets" (click)="handleOpenTicket(ticket)">
+      <span class="boardOverview__recentTitle">{{ ticket.title }}</span>
+      <span class="boardOverview__recentMeta">{{ ticket.columnTitle ?? (PHRASES.BACKLOG | translate) }} · {{ updatedAgo(ticket) }}</span>
+    </button>
+  </section>
+</div>

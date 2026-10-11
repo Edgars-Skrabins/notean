@@ -1,0 +1,18 @@
+<div class="moveToBoardDialogOverlay">
+  <div class="moveToBoardDialogOverlay__backdrop" (click)="handleCancel()"></div>
+
+  <div class="moveToBoardDialog">
+    <h3 class="moveToBoardDialog__title">{{ PHRASES.MOVE_TO_BOARD | translate }}</h3>
+    <p class="moveToBoardDialog__hint">{{ PHRASES.CHOOSE_COLUMN | translate }}</p>
+
+    <label class="moveToBoardDialog__option" *ngFor="let column of columns">
+      <input type="radio" name="targetColumn" [value]="column.id" [(ngModel)]="selectedColumnId" />
+      {{ column.title }}
+    </label>
+
+    <div class="moveToBoardDialog__actions">
+      <app-button variant="ghost" (pressed)="handleCancel()">{{ PHRASES.CANCEL | translate }}</app-button>
+      <app-button variant="primary" [disabled]="selectedColumnId === null" (pressed)="handleMove()">{{ PHRASES.MOVE | translate }}</app-button>
+    </div>
+  </div>
+</div>
