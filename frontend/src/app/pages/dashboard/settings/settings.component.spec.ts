@@ -15,7 +15,7 @@ describe('SettingsComponent', () => {
   let toastService: jasmine.SpyObj<ToastService>;
 
   beforeEach(() => {
-    settings$ = new BehaviorSubject<UserSettings>({showFavoritesOnHome: true, showFavoritesInSidebar: false});
+    settings$ = new BehaviorSubject<UserSettings>({showFavoritesOnHome: true, showFavoritesInSidebar: false, showMyWorkOnHome: true});
     settingsService = jasmine.createSpyObj<SettingsService>('SettingsService', ['getSettings', 'update'], {settings$});
     settingsService.getSettings.and.callFake(() => settings$.value);
     toastService = jasmine.createSpyObj('ToastService', ['show']);
@@ -27,19 +27,19 @@ describe('SettingsComponent', () => {
   });
 
   it('starts from the saved settings with no unsaved changes', () => {
-    expect(component.settings).toEqual({showFavoritesOnHome: true, showFavoritesInSidebar: false});
+    expect(component.settings).toEqual({showFavoritesOnHome: true, showFavoritesInSidebar: false, showMyWorkOnHome: true});
     expect(component.hasUnsavedChanges).toBeFalse();
   });
 
   it('picks up settings that finish loading while nothing has changed', () => {
-    settings$.next({showFavoritesOnHome: false, showFavoritesInSidebar: false});
+    settings$.next({showFavoritesOnHome: false, showFavoritesInSidebar: false, showMyWorkOnHome: true});
 
     expect(component.settings.showFavoritesOnHome).toBeFalse();
     expect(component.hasUnsavedChanges).toBeFalse();
   });
 
   it('has unsaved changes as soon as a checkbox differs', () => {
-    component.handleShowFavoritesInSidebarChange(true);
+    component.handleSettingChange('showFavoritesInSidebar', true);
 
     expect(component.hasUnsavedChanges).toBeTrue();
   });
@@ -51,14 +51,14 @@ describe('SettingsComponent', () => {
   });
 
   it('saves the settings and shows a success toast', fakeAsync(() => {
-    settingsService.update.and.returnValue(Promise.resolve({success: true, settings: {showFavoritesOnHome: false, showFavoritesInSidebar: false}}));
-    component.handleShowFavoritesOnHomeChange(false);
+    settingsService.update.and.returnValue(Promise.resolve({success: true, settings: {showFavoritesOnHome: false, showFavoritesInSidebar: false, showMyWorkOnHome: true}}));
+    component.handleSettingChange('showFavoritesOnHome', false);
 
     component.handleSave();
     expect(component.isSaving).toBeTrue();
     tick();
 
-    expect(settingsService.update).toHaveBeenCalledWith({showFavoritesOnHome: false, showFavoritesInSidebar: false});
+    expect(settingsService.update).toHaveBeenCalledWith({showFavoritesOnHome: false, showFavoritesInSidebar: false, showMyWorkOnHome: true});
     expect(component.hasUnsavedChanges).toBeFalse();
     expect(component.isSaving).toBeFalse();
     expect(toastService.show).toHaveBeenCalledWith({type: ToastType.SUCCESS, message: PHRASES.SETTINGS_SAVED});
@@ -66,7 +66,7 @@ describe('SettingsComponent', () => {
 
   it('keeps the unsaved values and shows an error toast when saving fails', fakeAsync(() => {
     settingsService.update.and.returnValue(Promise.resolve({success: false, code: 'SETTINGS_UPDATE_FAILED'}));
-    component.handleShowFavoritesOnHomeChange(false);
+    component.handleSettingChange('showFavoritesOnHome', false);
 
     component.handleSave();
     tick();
@@ -82,7 +82,7 @@ describe('SettingsComponent', () => {
   });
 
   it('asks before leaving with unsaved changes and resolves true on Leave', async () => {
-    component.handleShowFavoritesOnHomeChange(false);
+    component.handleSettingChange('showFavoritesOnHome', false);
 
     const result = component.confirmLeave();
     expect(component.isLeaveConfirmOpen).toBeTrue();
@@ -93,11 +93,18 @@ describe('SettingsComponent', () => {
   });
 
   it('resolves false on Cancel', async () => {
-    component.handleShowFavoritesOnHomeChange(false);
+    component.handleSettingChange('showFavoritesOnHome', false);
 
     const result = component.confirmLeave();
     component.handleCancelLeave();
 
     expect(await result).toBeFalse();
+  });
+
+  it('has unsaved changes after turning My Work on Home off', () => {
+    component.handleSettingChange('showMyWorkOnHome', false);
+
+    expect(component.hasUnsavedChanges).toBeTrue();
+    expect(component.settings.showMyWorkOnHome).toBeFalse();
   });
 });

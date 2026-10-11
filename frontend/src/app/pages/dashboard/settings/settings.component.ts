@@ -52,20 +52,16 @@ export class SettingsComponent implements HasUnsavedChanges, OnDestroy {
   }
 
   get hasUnsavedChanges(): boolean {
-    return this.settings.showFavoritesOnHome !== this.savedSettings.showFavoritesOnHome
-      || this.settings.showFavoritesInSidebar !== this.savedSettings.showFavoritesInSidebar;
+    return (Object.keys(this.settings) as (keyof UserSettings)[])
+      .some((key) => this.settings[key] !== this.savedSettings[key]);
   }
 
   ngOnDestroy() {
     this.settingsSubscription.unsubscribe();
   }
 
-  handleShowFavoritesOnHomeChange(checked: boolean) {
-    this.settings = {...this.settings, showFavoritesOnHome: checked};
-  }
-
-  handleShowFavoritesInSidebarChange(checked: boolean) {
-    this.settings = {...this.settings, showFavoritesInSidebar: checked};
+  handleSettingChange(key: keyof UserSettings, checked: boolean) {
+    this.settings = {...this.settings, [key]: checked};
   }
 
   handleSave() {

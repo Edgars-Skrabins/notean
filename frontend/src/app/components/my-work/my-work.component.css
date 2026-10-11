@@ -1,0 +1,74 @@
+:host {
+  display: block;
+  margin-top: var(--space-6);
+}
+
+.myWork__title {
+  margin: 0 0 var(--space-4);
+  color: var(--color-text-heading);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.myWork__message {
+  margin: 0;
+  color: var(--color-text-faint);
+  font-size: 0.9rem;
+}
+
+.myWork__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  margin-bottom: var(--space-4);
+}
+
+.myWork__board {
+  align-self: flex-start;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.myWork__board:hover {
+  color: var(--color-text-heading);
+}
+
+.myWork__ticket {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 10px 12px;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.myWork__ticket:hover {
+  border-color: var(--color-input-border-focus);
+}
+
+.myWork__ticketTitle {
+  flex: 1;
+  min-width: 0;
+  color: var(--color-text-heading);
+  font-size: 0.9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.myWork__ticketPlace {
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}

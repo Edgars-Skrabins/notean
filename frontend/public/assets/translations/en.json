@@ -181,6 +181,10 @@
   "NO_MATCHING_MEMBERS": "No matching members",
   "ASSIGNEES_UPDATE_FAILED": "Could not update assignees",
   "TICKETS_PER_ASSIGNEE": "Tickets per assignee",
+  "MY_WORK": "My Work",
+  "NOTHING_ASSIGNED": "Nothing is assigned to you.",
+  "MY_WORK_LOAD_FAILED": "Could not load your work",
+  "SHOW_MY_WORK_ON_HOME": "Show My Work on Home",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Your session has expired. Please log in again",

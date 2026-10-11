@@ -9,12 +9,16 @@
   <div class="settings__options">
     <app-checkbox
       [checked]="settings.showFavoritesOnHome"
-      (checkedChange)="handleShowFavoritesOnHomeChange($event)"
+      (checkedChange)="handleSettingChange('showFavoritesOnHome', $event)"
     >{{ PHRASES.SHOW_FAVORITES_ON_HOME | translate }}</app-checkbox>
     <app-checkbox
       [checked]="settings.showFavoritesInSidebar"
-      (checkedChange)="handleShowFavoritesInSidebarChange($event)"
+      (checkedChange)="handleSettingChange('showFavoritesInSidebar', $event)"
     >{{ PHRASES.SHOW_FAVORITES_IN_SIDEBAR | translate }}</app-checkbox>
+    <app-checkbox
+      [checked]="settings.showMyWorkOnHome"
+      (checkedChange)="handleSettingChange('showMyWorkOnHome', $event)"
+    >{{ PHRASES.SHOW_MY_WORK_ON_HOME | translate }}</app-checkbox>
   </div>
 
   <button class="authButton" [disabled]="!hasUnsavedChanges || isSaving" (click)="handleSave()">

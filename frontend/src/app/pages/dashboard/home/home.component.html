@@ -1,7 +1,6 @@
-<div class="dashboardStub">
+<div class="dashboardStub" *ngIf="settingsService.settings$ | async as settings">
   <h2 class="dashboardStub__title">{{ PHRASES.HOME | translate }}</h2>
-  <app-favorites-grid *ngIf="(settingsService.settings$ | async)?.showFavoritesOnHome; else placeholder"></app-favorites-grid>
-  <ng-template #placeholder>
-    <p class="dashboardStub__body">{{ PHRASES.HOME_STUB | translate }}</p>
-  </ng-template>
+  <app-favorites-grid *ngIf="settings.showFavoritesOnHome"></app-favorites-grid>
+  <app-my-work *ngIf="settings.showMyWorkOnHome"></app-my-work>
+  <p class="dashboardStub__body" *ngIf="!settings.showFavoritesOnHome && !settings.showMyWorkOnHome">{{ PHRASES.HOME_STUB | translate }}</p>
 </div>

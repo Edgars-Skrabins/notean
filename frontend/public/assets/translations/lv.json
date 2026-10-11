@@ -181,6 +181,10 @@
   "NO_MATCHING_MEMBERS": "Nav atbilstošu dalībnieku",
   "ASSIGNEES_UPDATE_FAILED": "Neizdevās atjaunināt izpildītājus",
   "TICKETS_PER_ASSIGNEE": "Uzdevumi pa izpildītājiem",
+  "MY_WORK": "Mans darbs",
+  "NOTHING_ASSIGNED": "Jums nekas nav piešķirts.",
+  "MY_WORK_LOAD_FAILED": "Neizdevās ielādēt jūsu darbu",
+  "SHOW_MY_WORK_ON_HOME": "Rādīt „Mans darbs” sākumā",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Jūsu sesija ir beigusies. Lūdzu, piesakieties vēlreiz",

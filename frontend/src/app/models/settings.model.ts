@@ -4,6 +4,7 @@ import {UsersErrorCode} from "@config/errorCodes";
 export interface UserSettings {
   showFavoritesOnHome: boolean;
   showFavoritesInSidebar: boolean;
+  showMyWorkOnHome: boolean;
 }
 
 export type SettingsResponse = Result<{ settings: UserSettings }, UsersErrorCode>;

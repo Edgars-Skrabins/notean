@@ -8,7 +8,7 @@ import {TeamService} from "@services/team.service";
 
 const rawSession = {
   user: {id: 1, email: 'alice@example.com'},
-  settings: {show_favorites_on_home: false, show_favorites_in_sidebar: true},
+  settings: {show_favorites_on_home: false, show_favorites_in_sidebar: true, show_my_work_on_home: true},
   avatar: {color: 'blue' as const, image_url: null},
   team: {team: {id: 2, name: 'Engineering', code: 'abc'}, role: 'owner' as const, nickname: 'Alice'},
 };
@@ -17,7 +17,7 @@ describe('mapSession', () => {
   it('maps settings and avatar and keeps user and team', () => {
     expect(mapSession(rawSession)).toEqual({
       user: {id: 1, email: 'alice@example.com'},
-      settings: {showFavoritesOnHome: false, showFavoritesInSidebar: true},
+      settings: {showFavoritesOnHome: false, showFavoritesInSidebar: true, showMyWorkOnHome: true},
       avatar: {color: 'blue', imageUrl: null},
       team: {team: {id: 2, name: 'Engineering', code: 'abc'}, role: 'owner', nickname: 'Alice'},
     });
@@ -59,7 +59,7 @@ describe('SessionService', () => {
     const response = await create().load();
 
     expect(response.success).toBeTrue();
-    expect(settingsService.set).toHaveBeenCalledWith({showFavoritesOnHome: false, showFavoritesInSidebar: true});
+    expect(settingsService.set).toHaveBeenCalledWith({showFavoritesOnHome: false, showFavoritesInSidebar: true, showMyWorkOnHome: true});
     expect(avatarService.set).toHaveBeenCalledWith({color: 'blue', imageUrl: null});
     expect(teamService.applyActiveTeam).toHaveBeenCalledWith(rawSession.team);
   });

@@ -4,6 +4,7 @@ import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {SettingsService} from "@services/settings.service";
 import {FavoritesGridComponent} from "@components/favorites-grid/favorites-grid.component";
+import {MyWorkComponent} from "@components/my-work/my-work.component";
 
 @Component({
   selector: 'app-home',
@@ -12,7 +13,8 @@ import {FavoritesGridComponent} from "@components/favorites-grid/favorites-grid.
     AsyncPipe,
     NgIf,
     TranslateModule,
-    FavoritesGridComponent
+    FavoritesGridComponent,
+    MyWorkComponent
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.css'

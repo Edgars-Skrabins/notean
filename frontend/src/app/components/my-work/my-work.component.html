@@ -1,0 +1,18 @@
+<section class="myWork">
+  <h3 class="myWork__title">{{ PHRASES.MY_WORK | translate }}</h3>
+
+  <ng-container *ngIf="!isLoading">
+    <p class="myWork__message" *ngIf="hasError">{{ PHRASES.MY_WORK_LOAD_FAILED | translate }}</p>
+    <p class="myWork__message" *ngIf="!hasError && !groups.length">{{ PHRASES.NOTHING_ASSIGNED | translate }}</p>
+
+    <div class="myWork__group" *ngFor="let group of groups">
+      <button type="button" class="myWork__board" (click)="handleOpenBoard(group)">{{ group.boardTitle }}</button>
+
+      <button type="button" class="myWork__ticket" *ngFor="let ticket of group.tickets" (click)="handleOpenTicket(ticket)">
+        <span class="myWork__ticketTitle">{{ ticket.title }}</span>
+        <span class="myWork__ticketPlace">{{ ticket.columnTitle ?? (PHRASES.BACKLOG | translate) }}</span>
+        <app-avatar-stack [users]="ticket.assignees"></app-avatar-stack>
+      </button>
+    </div>
+  </ng-container>
+</section>

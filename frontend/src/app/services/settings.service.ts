@@ -7,17 +7,20 @@ import {SettingsResponse, UserSettings} from "@models/settings.model";
 export interface RawSettings {
   show_favorites_on_home: boolean;
   show_favorites_in_sidebar: boolean;
+  show_my_work_on_home: boolean;
 }
 
 export const DEFAULT_SETTINGS: UserSettings = {
   showFavoritesOnHome: true,
   showFavoritesInSidebar: true,
+  showMyWorkOnHome: true,
 };
 
 export function mapSettings(raw: RawSettings): UserSettings {
   return {
     showFavoritesOnHome: raw.show_favorites_on_home,
     showFavoritesInSidebar: raw.show_favorites_in_sidebar,
+    showMyWorkOnHome: raw.show_my_work_on_home,
   };
 }
 
@@ -42,6 +45,7 @@ export class SettingsService {
     const payload: RawSettings = {
       show_favorites_on_home: settings.showFavoritesOnHome,
       show_favorites_in_sidebar: settings.showFavoritesInSidebar,
+      show_my_work_on_home: settings.showMyWorkOnHome,
     };
 
     return apiRequest<SettingsResponse>(
