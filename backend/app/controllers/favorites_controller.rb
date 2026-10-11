@@ -8,8 +8,8 @@ class FavoritesController < ApplicationController
 
   def index
     favorites = user_favorites.includes(:favoritable).order(:home_position).to_a
-    cards = favorites.map(&:favoritable).grep(Card)
-    ActiveRecord::Associations::Preloader.new(records: cards, associations: { column: :board }).call
+    tickets = favorites.map(&:favoritable).grep(Ticket)
+    ActiveRecord::Associations::Preloader.new(records: tickets, associations: :board).call
 
     render json: { favorites: favorites.map { |favorite| favorite_json(favorite) } }
   end
@@ -57,15 +57,9 @@ class FavoritesController < ApplicationController
       return
     end
 
-    requested_position = update_favorite_params[:position]
-
     siblings = user_favorites.where.not(id: @favorite.id).order(column).to_a
-    insert_at = requested_position.nil? ? siblings.length : requested_position.to_i.clamp(0, siblings.length)
-    siblings.insert(insert_at, @favorite)
-
-    siblings.each_with_index do |favorite, index|
-      favorite.update_column(column, index)
-    end
+    insert_at = insert_and_reindex(siblings, @favorite, update_favorite_params[:position], column)
+    @favorite.update_column(column, insert_at)
 
     render json: { favorite: favorite_json(@favorite) }
   end
@@ -92,7 +86,7 @@ class FavoritesController < ApplicationController
     when "Page" then @team.pages.find_by(id: favoritable_id)
     when "Diagram" then @team.diagrams.find_by(id: favoritable_id)
     when "Board" then @team.boards.find_by(id: favoritable_id)
-    when "Card" then Card.where(team: @team).find_by(id: favoritable_id)
+    when "Ticket" then Ticket.where(team: @team).find_by(id: favoritable_id)
     end
   end
 
@@ -106,9 +100,9 @@ class FavoritesController < ApplicationController
       sidebar_position: favorite.sidebar_position
     }
 
-    if favorite.favoritable.is_a?(Card)
-      board = favorite.favoritable.column.board
-      json.merge!(board_id: board.id, board_title: board.title)
+    if favorite.favoritable.is_a?(Ticket)
+      ticket = favorite.favoritable
+      json.merge!(board_id: ticket.board_id, board_title: ticket.board.title, in_backlog: ticket.column_id.nil?)
     end
 
     json

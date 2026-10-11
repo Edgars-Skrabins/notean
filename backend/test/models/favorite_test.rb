@@ -11,7 +11,7 @@ class FavoriteTest < ActiveSupport::TestCase
     assert Favorite.new(user: @user, team: @team, favoritable: @page, home_position: 0, sidebar_position: 0).valid?
   end
 
-  test "is invalid with a favoritable type other than Page, Diagram, Board or Card" do
+  test "is invalid with a favoritable type other than Page, Diagram, Board or Ticket" do
     folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Runbooks")
     favorite = Favorite.new(user: @user, team: @team, favoritable: folder, home_position: 0, sidebar_position: 0)
 
@@ -67,17 +67,17 @@ class FavoriteTest < ActiveSupport::TestCase
     assert_nil Favorite.find_by(id: favorite.id)
   end
 
-  test "destroying a board removes its favorites and those of its cards" do
+  test "destroying a board removes its favorites and those of its tickets" do
     board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
     column = Column.create!(board: board, title: "To Do", position: 0)
-    card = Card.create!(column: column, team: @team, created_by_user_id: @user.id, title: "Fix bug", position: 0)
+    ticket = Ticket.create!(column: column, team: @team, created_by_user_id: @user.id, title: "Fix bug", position: 0)
     board_favorite = Favorite.create!(user: @user, team: @team, favoritable: board, home_position: 0, sidebar_position: 0)
-    card_favorite = Favorite.create!(user: @user, team: @team, favoritable: card, home_position: 1, sidebar_position: 1)
+    ticket_favorite = Favorite.create!(user: @user, team: @team, favoritable: ticket, home_position: 1, sidebar_position: 1)
 
     board.destroy
 
     assert_nil Favorite.find_by(id: board_favorite.id)
-    assert_nil Favorite.find_by(id: card_favorite.id)
+    assert_nil Favorite.find_by(id: ticket_favorite.id)
   end
 
   test "destroying a folder removes the favorites of items nested inside it" do

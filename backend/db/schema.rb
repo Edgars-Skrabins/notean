@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_10_221945) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_11_100100) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -47,20 +47,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_10_221945) do
     t.datetime "updated_at", null: false
     t.index ["created_by_user_id"], name: "index_boards_on_created_by_user_id"
     t.index ["team_id"], name: "index_boards_on_team_id"
-  end
-
-  create_table "cards", force: :cascade do |t|
-    t.integer "column_id", null: false
-    t.integer "team_id", null: false
-    t.integer "created_by_user_id", null: false
-    t.string "title", null: false
-    t.text "description"
-    t.integer "position", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["column_id"], name: "index_cards_on_column_id"
-    t.index ["created_by_user_id"], name: "index_cards_on_created_by_user_id"
-    t.index ["team_id"], name: "index_cards_on_team_id"
   end
 
   create_table "columns", force: :cascade do |t|
@@ -171,6 +157,23 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_10_221945) do
     t.index ["code"], name: "index_teams_on_code", unique: true
   end
 
+  create_table "tickets", force: :cascade do |t|
+    t.integer "column_id"
+    t.integer "team_id", null: false
+    t.integer "created_by_user_id", null: false
+    t.string "title", null: false
+    t.text "description"
+    t.integer "position", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "board_id", null: false
+    t.index ["board_id", "column_id", "position"], name: "index_tickets_on_board_id_and_column_id_and_position"
+    t.index ["board_id"], name: "index_tickets_on_board_id"
+    t.index ["column_id"], name: "index_tickets_on_column_id"
+    t.index ["created_by_user_id"], name: "index_tickets_on_created_by_user_id"
+    t.index ["team_id"], name: "index_tickets_on_team_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", null: false
     t.string "password_digest", null: false
@@ -186,9 +189,6 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_10_221945) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "boards", "teams"
   add_foreign_key "boards", "users", column: "created_by_user_id"
-  add_foreign_key "cards", "columns"
-  add_foreign_key "cards", "teams"
-  add_foreign_key "cards", "users", column: "created_by_user_id"
   add_foreign_key "columns", "boards"
   add_foreign_key "diagram_contributors", "diagrams"
   add_foreign_key "diagram_contributors", "users"
@@ -207,4 +207,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_10_221945) do
   add_foreign_key "pages", "folders"
   add_foreign_key "pages", "teams"
   add_foreign_key "pages", "users", column: "created_by_user_id"
+  add_foreign_key "tickets", "boards"
+  add_foreign_key "tickets", "columns"
+  add_foreign_key "tickets", "teams"
+  add_foreign_key "tickets", "users", column: "created_by_user_id"
 end

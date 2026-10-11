@@ -11,20 +11,20 @@ class FavoritesControllerTest < ActionDispatch::IntegrationTest
     @diagram = Diagram.create!(team: @team, creator: @user, title: "Flow", content: "")
     @board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
     @column = Column.create!(board: @board, title: "To Do", position: 0)
-    @card = Card.create!(column: @column, team: @team, created_by_user_id: @user.id, title: "Fix bug", position: 0)
+    @ticket = Ticket.create!(column: @column, team: @team, created_by_user_id: @user.id, title: "Fix bug", position: 0)
   end
 
   def favorite(item, home_position, sidebar_position, user: @user, team: @team)
     Favorite.create!(user: user, team: team, favoritable: item, home_position: home_position, sidebar_position: sidebar_position)
   end
 
-  test "index returns only the current user's favorites in this team, in home order, with card board fields" do
+  test "index returns only the current user's favorites in this team, in home order, with ticket board fields" do
     bob = User.create!(email: "bob@example.com", password: "supersecret")
     Membership.create!(user: bob, team: @team, role: "user", nickname: "bob")
     other_team = Team.create!(name: "Other", password: "supersecret")
     Membership.create!(user: @user, team: other_team, role: "owner", nickname: "alice")
     other_page = Page.create!(team: other_team, creator: @user, title: "Elsewhere", content: "")
-    card_favorite = favorite(@card, 0, 1)
+    ticket_favorite = favorite(@ticket, 0, 1)
     page_favorite = favorite(@page, 1, 0)
     favorite(@diagram, 0, 0, user: bob)
     favorite(other_page, 0, 0, team: other_team)
@@ -33,7 +33,7 @@ class FavoritesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     favorites = JSON.parse(response.body)["favorites"]
-    assert_equal [ card_favorite.id, page_favorite.id ], favorites.map { |f| f["id"] }
+    assert_equal [ ticket_favorite.id, page_favorite.id ], favorites.map { |f| f["id"] }
     assert_equal "Fix bug", favorites[0]["title"]
     assert_equal @board.id, favorites[0]["board_id"]
     assert_equal "Sprint 12", favorites[0]["board_title"]
@@ -41,8 +41,8 @@ class FavoritesControllerTest < ActionDispatch::IntegrationTest
     assert_not favorites[1].key?("board_id")
   end
 
-  test "create favorites a page, a diagram, a board and a card" do
-    [ [ "Page", @page ], [ "Diagram", @diagram ], [ "Board", @board ], [ "Card", @card ] ].each do |type, item|
+  test "create favorites a page, a diagram, a board and a ticket" do
+    [ [ "Page", @page ], [ "Diagram", @diagram ], [ "Board", @board ], [ "Ticket", @ticket ] ].each do |type, item|
       post "/teams/#{@team.code}/favorites",
         params: { favorite: { favoritable_type: type, favoritable_id: item.id } },
         headers: @headers,
@@ -193,7 +193,7 @@ class FavoritesControllerTest < ActionDispatch::IntegrationTest
     favorite(@page, 0, 0)
     favorite(@diagram, 1, 1)
     favorite(@board, 2, 2)
-    favorite(@card, 3, 3)
+    favorite(@ticket, 3, 3)
     four = query_count { get "/teams/#{@team.code}/favorites", headers: @headers }
 
     6.times do |index|
@@ -204,5 +204,17 @@ class FavoritesControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal 10, JSON.parse(response.body)["favorites"].length
     assert_equal four, ten
+  end
+
+  test "index reports whether a ticket is in the backlog" do
+    backlog_ticket = Ticket.create!(board: @board, team: @team, created_by_user_id: @user.id, title: "Idea", position: 0)
+    favorite(@ticket, 0, 0)
+    favorite(backlog_ticket, 1, 1)
+
+    get "/teams/#{@team.code}/favorites", headers: @headers
+
+    favorites = JSON.parse(response.body)["favorites"]
+    assert_equal [ false, true ], favorites.map { |favorite| favorite["in_backlog"] }
+    assert_equal [ @board.id, @board.id ], favorites.map { |favorite| favorite["board_id"] }
   end
 end

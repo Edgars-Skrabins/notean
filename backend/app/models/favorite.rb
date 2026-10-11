@@ -1,5 +1,5 @@
 class Favorite < ApplicationRecord
-  FAVORITABLE_TYPES = %w[Page Diagram Board Card].freeze
+  FAVORITABLE_TYPES = %w[Page Diagram Board Ticket].freeze
 
   belongs_to :user
   belongs_to :team

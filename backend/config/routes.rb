@@ -14,8 +14,9 @@ Rails.application.routes.draw do
     resources :pages, only: [ :index, :create, :show, :update, :destroy ]
     resources :diagrams, only: [ :index, :create, :show, :update, :destroy ]
     resources :boards, only: [ :index, :create, :show, :update, :destroy ] do
+      get :overview, on: :member
       resources :columns, only: [ :create, :update, :destroy ]
-      resources :cards, only: [ :create, :show, :update, :destroy ]
+      resources :tickets, only: [ :create, :show, :update, :destroy ]
     end
     resources :favorites, only: [ :index, :create, :update, :destroy ]
   end

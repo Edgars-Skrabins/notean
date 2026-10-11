@@ -62,12 +62,12 @@ class ApplicationController < ActionController::API
     params.require(:column).permit(:title)
   end
 
-  def create_card_params
-    params.fetch(:card, {}).permit(:title, :column_id)
+  def create_ticket_params
+    params.fetch(:ticket, {}).permit(:title, :column_id)
   end
 
-  def update_card_params
-    params.require(:card).permit(:title, :description, :column_id, :position)
+  def update_ticket_params
+    params.require(:ticket).permit(:title, :description, :column_id, :position, :to_backlog)
   end
 
   def create_favorite_params
@@ -84,6 +84,14 @@ class ApplicationController < ActionController::API
 
   def update_avatar_params
     params.require(:avatar).permit(:color, :image, :remove_image)
+  end
+
+  def insert_and_reindex(siblings, record, requested_position, attribute)
+    insert_at = requested_position.nil? ? siblings.length : requested_position.to_i.clamp(0, siblings.length)
+    siblings.insert(insert_at, record).each_with_index do |sibling, index|
+      sibling.update_column(attribute, index) unless sibling == record
+    end
+    insert_at
   end
 
   def render_error(code, status)

@@ -36,16 +36,16 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ 0, 1, 2 ], columns.map { |column| column["position"] }
   end
 
-  test "show includes card summaries nested under each column" do
+  test "show includes ticket summaries nested under each column" do
     board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
     column = Column.create!(board: board, title: "To Do", position: 0)
-    Card.create!(column: column, team: @team, created_by_user_id: @user.id, title: "Fix bug", position: 0)
+    Ticket.create!(column: column, team: @team, created_by_user_id: @user.id, title: "Fix bug", position: 0)
 
     get "/teams/#{@team.code}/boards/#{board.id}", headers: @headers
 
     assert_response :success
-    cards = JSON.parse(response.body)["board"]["columns"].first["cards"]
-    assert_equal [ "Fix bug" ], cards.map { |card| card["title"] }
+    tickets = JSON.parse(response.body)["board"]["columns"].first["tickets"]
+    assert_equal [ "Fix bug" ], tickets.map { |ticket| ticket["title"] }
   end
 
   test "show returns the creator's nickname in this team" do
@@ -84,5 +84,87 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     get "/teams/#{@team.code}/boards", headers: { "Authorization" => "Bearer #{token}" }
 
     assert_response :forbidden
+  end
+
+  def board_with_columns
+    board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
+    [ board, Column.create!(board: board, title: "To Do", position: 0), Column.create!(board: board, title: "Done", position: 1) ]
+  end
+
+  def ticket_on(board, column, title, position, creator: @user)
+    Ticket.create!(board: board, column: column, team: @team, created_by_user_id: creator.id, title: title, position: position)
+  end
+
+  test "show includes the backlog in order with column_id and updated_at on tickets" do
+    board, todo, = board_with_columns
+    ticket_on(board, todo, "On board", 0)
+    ticket_on(board, nil, "Second", 1)
+    ticket_on(board, nil, "First", 0)
+
+    get "/teams/#{@team.code}/boards/#{board.id}", headers: @headers
+
+    body = JSON.parse(response.body)["board"]
+    assert_equal [ "First", "Second" ], body["backlog"].map { |ticket| ticket["title"] }
+    assert_nil body["backlog"].first["column_id"]
+    assert_equal todo.id, body["columns"].first["tickets"].first["column_id"]
+    assert body["backlog"].first.key?("updated_at")
+  end
+
+  test "overview counts tickets per column including empty columns" do
+    board, todo, done = board_with_columns
+    ticket_on(board, todo, "A", 0)
+    ticket_on(board, todo, "B", 1)
+    ticket_on(board, nil, "Idea", 0)
+
+    get "/teams/#{@team.code}/boards/#{board.id}/overview", headers: @headers
+
+    assert_response :success
+    overview = JSON.parse(response.body)["overview"]
+    assert_equal [ 3, 2, 1 ], overview.values_at("total_tickets", "board_tickets", "backlog_tickets")
+    assert_equal [ [ todo.id, 2 ], [ done.id, 0 ] ], overview["columns"].map { |column| [ column["id"], column["ticket_count"] ] }
+  end
+
+  test "overview counts recent activity and lists the five latest tickets" do
+    board, todo, = board_with_columns
+    travel_to 10.days.ago do
+      ticket_on(board, todo, "Old", 0)
+    end
+    6.times { |index| travel_to(index.hours.ago) { ticket_on(board, index.even? ? todo : nil, "Recent #{index}", index) } }
+
+    get "/teams/#{@team.code}/boards/#{board.id}/overview", headers: @headers
+
+    overview = JSON.parse(response.body)["overview"]
+    assert_equal 6, overview["created_last_7_days"]
+    assert_equal 6, overview["updated_last_7_days"]
+    assert_equal (0..4).map { |index| "Recent #{index}" }, overview["recent_tickets"].map { |ticket| ticket["title"] }
+    assert_equal "To Do", overview["recent_tickets"].first["column_title"]
+    assert_nil overview["recent_tickets"].second["column_title"]
+  end
+
+  test "index runs the same number of queries for 1 and 10 boards" do
+    attach_avatar(@user)
+    members = 3.times.map { |index| create_member(@team, nickname_for(index), with_avatar: index.zero?) }
+    Board.create!(team: @team, creator: @user, title: "First")
+    one = query_count { get "/teams/#{@team.code}/boards", headers: @headers }
+
+    9.times { |index| Board.create!(team: @team, creator: members[index % 3], title: "Board #{index}") }
+    ten = query_count { get "/teams/#{@team.code}/boards", headers: @headers }
+
+    assert_equal one, ten
+  end
+
+  test "show and overview run the same number of queries for 1 and 10 tickets" do
+    attach_avatar(@user)
+    board, todo, done = board_with_columns
+    ticket_on(board, todo, "First", 0)
+    show_one = query_count { get "/teams/#{@team.code}/boards/#{board.id}", headers: @headers }
+    overview_one = query_count { get "/teams/#{@team.code}/boards/#{board.id}/overview", headers: @headers }
+
+    9.times { |index| ticket_on(board, [ todo, done, nil ][index % 3], "Ticket #{index}", index + 1) }
+    show_ten = query_count { get "/teams/#{@team.code}/boards/#{board.id}", headers: @headers }
+    overview_ten = query_count { get "/teams/#{@team.code}/boards/#{board.id}/overview", headers: @headers }
+
+    assert_equal show_one, show_ten
+    assert_equal overview_one, overview_ten
   end
 end

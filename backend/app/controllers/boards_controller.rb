@@ -1,11 +1,16 @@
 class BoardsController < ApplicationController
+  include TicketJson
+
+  RECENT_TICKETS_LIMIT = 5
+  RECENT_ACTIVITY_PERIOD = 7.days
+
   before_action :authenticate_user!
   before_action :set_team
   before_action :authorize_team_member!
-  before_action :set_board, only: [ :show, :update, :destroy ]
+  before_action :set_board, only: [ :show, :update, :destroy, :overview ]
 
   def index
-    boards = @team.boards.search_title(params[:search])
+    boards = @team.boards.includes(creator: User::AVATAR_PRELOAD).search_title(params[:search])
 
     render json: { boards: boards.map { |board| board_summary_json(board) } }
   end
@@ -39,6 +44,25 @@ class BoardsController < ApplicationController
     end
   end
 
+  def overview
+    tickets = @board.tickets
+    column_counts = tickets.where.not(column_id: nil).group(:column_id).count
+    recent_tickets = tickets.includes(:column).order(updated_at: :desc).limit(RECENT_TICKETS_LIMIT)
+    recent_since = RECENT_ACTIVITY_PERIOD.ago
+
+    render json: {
+      overview: {
+        total_tickets: tickets.count,
+        board_tickets: column_counts.values.sum,
+        backlog_tickets: tickets.where(column_id: nil).count,
+        columns: @board.columns.map { |column| { id: column.id, title: column.title, ticket_count: column_counts.fetch(column.id, 0) } },
+        created_last_7_days: tickets.where(created_at: recent_since..).count,
+        updated_last_7_days: tickets.where(updated_at: recent_since..).count,
+        recent_tickets: recent_tickets.map { |ticket| recent_ticket_json(ticket) }
+      }
+    }
+  end
+
   def destroy
     @board.destroy
     head :no_content
@@ -47,7 +71,7 @@ class BoardsController < ApplicationController
   private
 
   def set_board
-    @board = @team.boards.find_by(id: params[:id])
+    @board = @team.boards.includes(:backlog_tickets, creator: User::AVATAR_PRELOAD, columns: :tickets).find_by(id: params[:id])
 
     render_error(ErrorCodes::Boards::BOARD_NOT_FOUND, :not_found) if @board.nil?
   end
@@ -64,7 +88,8 @@ class BoardsController < ApplicationController
 
   def board_json(board)
     board_summary_json(board).merge(
-      columns: board.columns.map { |column| column_json(column) }
+      columns: board.columns.map { |column| column_json(column) },
+      backlog: board.backlog_tickets.map { |ticket| ticket_summary_json(ticket) }
     )
   end
 
@@ -73,15 +98,17 @@ class BoardsController < ApplicationController
       id: column.id,
       title: column.title,
       position: column.position,
-      cards: column.cards.map { |card| card_summary_json(card) }
+      tickets: column.tickets.map { |ticket| ticket_summary_json(ticket) }
     }
   end
 
-  def card_summary_json(card)
+  def recent_ticket_json(ticket)
     {
-      id: card.id,
-      title: card.title,
-      position: card.position
+      id: ticket.id,
+      title: ticket.title,
+      column_id: ticket.column_id,
+      column_title: ticket.column&.title,
+      updated_at: ticket.updated_at
     }
   end
 end
