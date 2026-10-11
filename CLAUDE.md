@@ -80,6 +80,7 @@ src/app/
 ├── models/       TypeScript interfaces and response union types
 ├── guards/       functional route guards
 ├── config/       axios instance, i18n config, language options, PHRASES, errorCodes/
+├── testing/      shared spec fixtures (e.g. boardFixtures.ts)
 └── utils/        small pure helpers
 public/assets/translations/   en.json, lv.json
 src/environments/             environment.ts (apiUrl)
@@ -105,8 +106,11 @@ src/environments/             environment.ts (apiUrl)
 - Build team-scoped URLs with `teamPath(teamCode, ...segments)` from `@utils/teamPath`.
 - Pages and diagrams share `FolderedItemService`, `EditingService`, `FolderedListPageComponent`, `FolderedItemDetailComponent` and `ItemDetailLayoutComponent`; the page and diagram classes only configure them.
 - Session state lives in services backed by `localStorage`: `AuthService` stores `authToken` and `authUser`, and `TeamService` stores `currentTeam`, `currentTeamRole` and `currentNickname`.
+- Board and ticket URLs are built with `boardRoute` / `ticketRoute` from `@utils/ticketRoute`.
 - `SessionService` loads `GET /users/me` (user, settings, avatar, last-active team) on startup and after login and register, and hands the parts to `SettingsService.set`, `AvatarService.set` and `TeamService.applyActiveTeam`. Its `clear()` resets all three on logout and 401. The other services don't load on their own.
 - List screens load once and apply each mutation's response locally instead of reloading; Pages and Diagrams search filters loaded items in the browser.
+- Boards open at `/dashboard/boards/:id/{overview|kanban|backlog}`. `BoardPageComponent` provides a component-scoped `BoardPageStateService` that loads the board once; the tabs and the ticket popup (a child route of the Kanban or Backlog tab) read and update that shared board. The sidebar's board list and its personal order come from `BoardListService` (`localStorage`).
+- The header's project selector is backed by `ProjectFilterService`, which stores the choice per team (`selectedProject:<team>`, falling back to All). Lists, the sidebar boards, Favorites and My Work follow it; pass its value to the API with `projectQuery` from `@utils/projectQuery`, and new items default to the selected project.
 - Realtime features open an ActionCable consumer at `ws://…/cable?token=<jwt>` from a dedicated service and subscribe to the matching backend channel.
 
 #### Path aliases
@@ -160,20 +164,24 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 - Auth: `before_action :authenticate_user!` reads `Authorization: Bearer <jwt>` through `current_user`.
 - Team scoping follows a `before_action` chain: `set_team` (found by `params[:team_code]`), then `authorize_team_member!`, then `set_<resource>` scoped through `@team`. `set_team`, `authorize_team_member!`, `member_json`, `team_json` and `title_or_default` are shared in `ApplicationController`.
 - Role checks use `require_team_role!(team, :admin, :owner)`, which returns nil after rendering 403.
-- JSON is built by hand with private `*_json` and `*_summary_json` helper methods. There is no jbuilder or serializer gem.
+- Project visibility goes through `project_access` (a `ProjectAccess` for the current user and team): scope `set_<resource>` with `project_access.scope(...)` so hidden items 404, filter lists with `project_filtered`, and set an item's project with `assign_project`. When an item's project changes, run `ProjectAccessCleanup` to drop assignments of people who lost access.
+- JSON is built by hand with private `*_json` and `*_summary_json` helper methods. Board-scoped controllers share `set_board` (`BoardScoped` concern) and the ticket JSON helpers (`TicketJson` concern). There is no jbuilder or serializer gem.
 - Response convention: success responses carry only the payload under a resource key (`{ page: ... }`). Errors are rendered with `render_error(ErrorCodes::Pages::PAGE_NOT_FOUND, :not_found)`, producing `{ code: "PAGE_NOT_FOUND" }` with the right status. Add new codes to the matching module in `app/errors/error_codes/` and to the frontend's `config/errorCodes/` plus both translation files. Keys are snake_case.
 - User-supplied rich-text HTML is sanitised with `Rails::Html::SafeListSanitizer` before saving.
 
 #### Models
 - Creators are stored as `created_by_user_id` with a `creator` association to `User`.
 - `Membership` joins users and teams. Its `role` enum is `user`, `admin` and `owner`, with exactly one owner per team.
+- Tickets have any number of assignees through `ticket_assignees` (team members only, ordered by assignment time; assigning touches the ticket).
+- Pages, diagrams and boards can belong to a project (`BelongsToProject` concern); tickets follow their board's project. Project items are private to the project's members plus the team owner and admins.
+- A ticket belongs to a board and optionally a column; `column_id` null means it is in the board's backlog. `position` orders it within its column or the backlog.
 - Short-lived state, such as who is currently editing, lives in `Rails.cache` through plain Ruby classes (`*EditingStatus`), not tables. Changes are broadcast over ActionCable.
 - Title search uses the `TitleSearchable` concern's `search_title` scope (kept for future pagination; the UI searches client-side).
 - List and detail endpoints preload what their JSON uses (e.g. `includes(creator: User::AVATAR_PRELOAD)`) so query counts don't grow with the number of items.
 
 #### Channels
 - `ApplicationCable::Connection` authenticates with the JWT passed as the `?token=` query param.
-- Editing channels only subscribe members of the item's team.
+- Editing channels only subscribe members of the item's team who can see the item's project.
 
 #### Security
 - rack-attack throttles the auth and join-team endpoints. A throttled request gets a 429 with `{ code: "RATE_LIMITED" }`.
