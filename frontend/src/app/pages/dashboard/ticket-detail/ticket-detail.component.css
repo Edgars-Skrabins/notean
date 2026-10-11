@@ -56,6 +56,11 @@
   gap: var(--space-4);
 }
 
+.ticketDetail__side {
+  width: 220px;
+  flex-shrink: 0;
+}
+
 .ticketDetail__titleInput {
   background: var(--color-input-bg);
   border: 1px solid var(--color-input-border-focus);

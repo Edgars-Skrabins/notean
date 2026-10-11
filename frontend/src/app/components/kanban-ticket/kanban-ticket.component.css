@@ -36,6 +36,10 @@
   white-space: nowrap;
 }
 
+.kanbanTicket__assignees {
+  flex-shrink: 0;
+}
+
 .kanbanTicket__actions {
   display: flex;
   gap: 2px;

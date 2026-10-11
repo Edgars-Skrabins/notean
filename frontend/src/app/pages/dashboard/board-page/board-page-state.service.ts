@@ -59,6 +59,7 @@ export class BoardPageStateService {
       title: ticket.title,
       position: ticket.position,
       columnId: ticket.columnId,
+      assignees: ticket.assignees,
       updatedAt: ticket.updatedAt,
     };
     const column = this.board.columns.find((item) => item.id === ticket.columnId);
@@ -70,6 +71,7 @@ export class BoardPageStateService {
     const ticket = this.findTicket(updated.id);
     if (ticket) {
       ticket.title = updated.title;
+      ticket.assignees = updated.assignees;
       ticket.updatedAt = updated.updatedAt;
     }
   }

@@ -6,14 +6,18 @@ import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {TicketService} from "@services/ticket.service";
 import {FavoriteService} from "@services/favorite.service";
+import {TeamService} from "@services/team.service";
+import {AuthService} from "@services/auth.service";
 import {ToastService} from "@services/toast.service";
 import {ToastType} from "@models/toast.model";
 import {TicketDetail, TicketResponse} from "@models/ticket.model";
+import {TeamMember} from "@models/team.model";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {ButtonComponent} from "@components/button/button.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
 import {MoveToBoardDialogComponent} from "@components/move-to-board-dialog/move-to-board-dialog.component";
+import {TicketAssigneesComponent} from "@components/ticket-assignees/ticket-assignees.component";
 import {errorPhrase} from "@utils/errorPhrase";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 
@@ -28,7 +32,8 @@ import {BoardPageStateService} from "../board-page/board-page-state.service";
     ButtonComponent,
     ConfirmDialogComponent,
     FavoriteStarComponent,
-    MoveToBoardDialogComponent
+    MoveToBoardDialogComponent,
+    TicketAssigneesComponent
   ],
   templateUrl: './ticket-detail.component.html',
   styleUrl: './ticket-detail.component.css'
@@ -43,6 +48,9 @@ export class TicketDetailComponent implements OnInit {
   alertMessage = '';
   showDeleteConfirm = false;
   isMoveDialogOpen = false;
+  members: TeamMember[] = [];
+  isUpdatingAssignees = false;
+  readonly currentUserId: number;
 
   private ticketId = 0;
 
@@ -52,8 +60,11 @@ export class TicketDetailComponent implements OnInit {
     protected state: BoardPageStateService,
     private ticketService: TicketService,
     private favoriteService: FavoriteService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private teamService: TeamService,
+    authService: AuthService
   ) {
+    this.currentUserId = authService.getCurrentUser()?.id ?? 0;
   }
 
   private get teamCode(): string {
@@ -67,6 +78,15 @@ export class TicketDetailComponent implements OnInit {
   ngOnInit() {
     this.ticketId = Number(this.route.snapshot.paramMap.get('ticketId'));
     this.loadTicket();
+    this.loadAssignableMembers();
+  }
+
+  handleAddAssignee(userId: number) {
+    this.updateAssignees(this.ticketService.addAssignee(this.teamCode, this.boardId, this.ticketId, userId));
+  }
+
+  handleRemoveAssignee(userId: number) {
+    this.updateAssignees(this.ticketService.removeAssignee(this.teamCode, this.boardId, this.ticketId, userId));
   }
 
   handleGoBack() {
@@ -179,6 +199,30 @@ export class TicketDetailComponent implements OnInit {
     if (this.ticket) {
       this.descriptionDraft = this.ticket.description;
     }
+  }
+
+  private loadAssignableMembers() {
+    this.teamService.fetchTeamMembers(this.teamCode).then((members) => {
+      this.members = members;
+    });
+  }
+
+  private updateAssignees(request: Promise<TicketResponse>) {
+    this.isUpdatingAssignees = true;
+
+    request
+      .then((response) => {
+        if (!response.success) {
+          this.toastService.show({type: ToastType.ERROR, message: PHRASES.ASSIGNEES_UPDATE_FAILED});
+          return;
+        }
+
+        this.ticket = response.ticket;
+        this.state.updateTicket(response.ticket);
+      })
+      .finally(() => {
+        this.isUpdatingAssignees = false;
+      });
   }
 
   private applyMove(response: TicketResponse) {

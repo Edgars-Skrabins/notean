@@ -4,6 +4,7 @@ import {PHRASES} from '@config/phrases';
 import {TicketSummary} from '@models/ticket.model';
 import {IconButtonComponent} from '@components/icon-button/icon-button.component';
 import {FavoriteStarComponent} from '@components/favorite-star/favorite-star.component';
+import {AvatarStackComponent} from '@components/avatar-stack/avatar-stack.component';
 
 @Component({
   selector: 'app-kanban-ticket',
@@ -11,7 +12,8 @@ import {FavoriteStarComponent} from '@components/favorite-star/favorite-star.com
   imports: [
     TranslateModule,
     IconButtonComponent,
-    FavoriteStarComponent
+    FavoriteStarComponent,
+    AvatarStackComponent
   ],
   templateUrl: './kanban-ticket.component.html',
   styleUrl: './kanban-ticket.component.css'

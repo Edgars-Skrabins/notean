@@ -1,0 +1,4 @@
+<div class="avatarStack" *ngIf="users.length" [title]="tooltip">
+  <app-avatar *ngFor="let user of visibleUsers" class="avatarStack__item" [avatar]="user.avatar" [nickname]="user.nickname"></app-avatar>
+  <span class="avatarStack__item avatarStack__more" *ngIf="hiddenCount">+{{ hiddenCount }}</span>
+</div>

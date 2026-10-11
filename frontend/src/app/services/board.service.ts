@@ -27,6 +27,7 @@ export interface RawTicketSummary {
   title: string;
   position: number;
   column_id: number | null;
+  assignees: RawBoardUser[];
   updated_at: string;
 }
 
@@ -58,6 +59,7 @@ interface RawBoardOverview {
   created_last_7_days: number;
   updated_last_7_days: number;
   recent_tickets: { id: number; title: string; column_id: number | null; column_title: string | null; updated_at: string }[];
+  assignees: { user: RawBoardUser | null; ticket_count: number }[];
 }
 
 export function mapBoardUser(raw: RawBoardUser): BoardUser {
@@ -74,6 +76,7 @@ export function mapTicketSummary(raw: RawTicketSummary): TicketSummary {
     title: raw.title,
     position: raw.position,
     columnId: raw.column_id,
+    assignees: raw.assignees.map(mapBoardUser),
     updatedAt: raw.updated_at,
   };
 }
@@ -120,6 +123,7 @@ export function mapBoardOverview(raw: RawBoardOverview): BoardOverview {
       columnTitle: ticket.column_title,
       updatedAt: ticket.updated_at,
     })),
+    assignees: raw.assignees.map((row) => ({user: row.user ? mapBoardUser(row.user) : null, ticketCount: row.ticket_count})),
   };
 }
 

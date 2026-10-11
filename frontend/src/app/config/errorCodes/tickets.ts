@@ -2,6 +2,8 @@ export const TICKETS_ERROR_CODES = [
   'TICKET_NOT_FOUND',
   'TICKET_CREATE_FAILED',
   'TICKET_UPDATE_FAILED',
+  'ASSIGNEE_NOT_TEAM_MEMBER',
+  'ASSIGNEE_NOT_FOUND',
 ] as const;
 
 export type TicketsErrorCode = typeof TICKETS_ERROR_CODES[number];

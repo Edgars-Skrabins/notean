@@ -19,6 +19,10 @@ const overview: BoardOverview = {
     {id: 1, title: 'Bug', columnId: 10, columnTitle: 'To Do', updatedAt: '2026-10-10T00:00:00Z'},
     {id: 3, title: 'Idea', columnId: null, columnTitle: null, updatedAt: '2026-10-09T00:00:00Z'},
   ],
+  assignees: [
+    {user: {id: 1, nickname: 'alice', avatar: {color: 'red', imageUrl: null}}, ticketCount: 3},
+    {user: null, ticketCount: 2},
+  ],
 };
 
 describe('BoardOverviewTabComponent', () => {
@@ -59,6 +63,15 @@ describe('BoardOverviewTabComponent', () => {
       {label: 'Done', value: 0, color: CHART_COLORS[1]},
     ]);
     expect(component.maxColumnCount).toBe(4);
+  });
+
+  it('builds one assignee slice per person plus Unassigned', () => {
+    component.overview = overview;
+
+    expect(component.assigneeSlices).toEqual([
+      {label: 'alice', value: 3, color: CHART_COLORS[0]},
+      {label: 'UNASSIGNED', value: 2, color: CHART_COLORS[1]},
+    ]);
   });
 
   it('opens a recent ticket over the tab it lives on', () => {

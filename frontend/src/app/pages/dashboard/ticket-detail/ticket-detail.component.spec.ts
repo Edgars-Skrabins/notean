@@ -4,6 +4,8 @@ import {TicketDetailComponent} from "./ticket-detail.component";
 import {TicketService} from "@services/ticket.service";
 import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
+import {TeamService} from "@services/team.service";
+import {AuthService} from "@services/auth.service";
 import {ToastType} from "@models/toast.model";
 import {TicketDetail} from "@models/ticket.model";
 import {PHRASES} from "@config/phrases";
@@ -16,18 +18,23 @@ describe('TicketDetailComponent editing', () => {
   let favoriteService: jasmine.SpyObj<FavoriteService>;
   let toastService: jasmine.SpyObj<ToastService>;
   let router: jasmine.SpyObj<Router>;
+  let teamService: jasmine.SpyObj<TeamService>;
   let state: BoardPageStateService;
   let ticket: TicketDetail;
   const route = {snapshot: {paramMap: new Map([['ticketId', '1']])}} as unknown as ActivatedRoute;
 
   beforeEach(() => {
-    ticketService = jasmine.createSpyObj('TicketService', ['updateTicket', 'getTicket', 'moveToBacklog', 'moveTicket', 'deleteTicket']);
+    ticketService = jasmine.createSpyObj('TicketService', ['updateTicket', 'getTicket', 'moveToBacklog', 'moveTicket', 'deleteTicket', 'addAssignee', 'removeAssignee']);
     favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem', 'renameItem']);
     ticketService.getTicket.and.returnValue(new Promise(() => undefined));
     toastService = jasmine.createSpyObj<ToastService>('ToastService', ['show']);
     router = jasmine.createSpyObj<Router>('Router', ['navigate']);
+    teamService = jasmine.createSpyObj<TeamService>('TeamService', ['fetchTeamMembers']);
+    teamService.fetchTeamMembers.and.returnValue(Promise.resolve([{id: 5, nickname: 'Bob', role: 'user', avatar: {color: 'red', imageUrl: null}}]));
+    const authService = jasmine.createSpyObj<AuthService>('AuthService', ['getCurrentUser']);
+    authService.getCurrentUser.and.returnValue({id: 1, email: 'alice@example.com'});
     state = createBoardState();
-    component = new TicketDetailComponent(route, router, state, ticketService, favoriteService, toastService);
+    component = new TicketDetailComponent(route, router, state, ticketService, favoriteService, toastService, teamService, authService);
 
     ticket = {...ticketDetail(1, 10), title: 'My Ticket'};
     component.ticket = ticket;
@@ -176,5 +183,41 @@ describe('TicketDetailComponent editing', () => {
     expect(state.findTicket(1)).toBeNull();
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Ticket', 1);
     expect(router.navigate).toHaveBeenCalledWith(['../..'], {relativeTo: route});
+  }));
+
+  it('loads the team members for the picker and knows the current user', fakeAsync(() => {
+    component.ngOnInit();
+    flushMicrotasks();
+
+    expect(teamService.fetchTeamMembers).toHaveBeenCalledWith('abc');
+    expect(component.members.map((member) => member.nickname)).toEqual(['Bob']);
+    expect(component.currentUserId).toBe(1);
+  }));
+
+  it('adds an assignee and updates the row on the board', fakeAsync(() => {
+    const bob = {id: 5, nickname: 'Bob', avatar: {color: 'red' as const, imageUrl: null}};
+    ticketService.addAssignee.and.returnValue(Promise.resolve({success: true, ticket: {...ticket, assignees: [bob]}}));
+    component.ngOnInit();
+
+    component.handleAddAssignee(5);
+    expect(component.isUpdatingAssignees).toBeTrue();
+    flushMicrotasks();
+
+    expect(ticketService.addAssignee).toHaveBeenCalledWith('abc', 9, 1, 5);
+    expect(component.ticket?.assignees).toEqual([bob]);
+    expect(state.findTicket(1)?.assignees).toEqual([bob]);
+    expect(component.isUpdatingAssignees).toBeFalse();
+  }));
+
+  it('keeps the assignees and shows a toast when removing fails', fakeAsync(() => {
+    ticketService.removeAssignee.and.returnValue(Promise.resolve({success: false, code: 'ASSIGNEE_NOT_FOUND'}));
+    component.ngOnInit();
+
+    component.handleRemoveAssignee(5);
+    flushMicrotasks();
+
+    expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: PHRASES.ASSIGNEES_UPDATE_FAILED});
+    expect(component.ticket?.assignees).toEqual([]);
+    expect(component.isUpdatingAssignees).toBeFalse();
   }));
 });

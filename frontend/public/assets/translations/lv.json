@@ -172,6 +172,15 @@
   "BACKLOG": "Uzdevumu krātuve",
   "NO_TICKETS_YET": "Uzdevumu vēl nav.",
   "TICKET_MOVE_FAILED": "Neizdevās pārvietot uzdevumu",
+  "ASSIGNEES": "Izpildītāji",
+  "UNASSIGNED": "Nav piešķirts",
+  "ASSIGN_TO_ME": "Piešķirt man",
+  "ADD_ASSIGNEE": "Pievienot izpildītāju",
+  "REMOVE_ASSIGNEE": "Noņemt izpildītāju",
+  "SEARCH_MEMBERS": "Meklēt dalībniekus",
+  "NO_MATCHING_MEMBERS": "Nav atbilstošu dalībnieku",
+  "ASSIGNEES_UPDATE_FAILED": "Neizdevās atjaunināt izpildītājus",
+  "TICKETS_PER_ASSIGNEE": "Uzdevumi pa izpildītājiem",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Jūsu sesija ir beigusies. Lūdzu, piesakieties vēlreiz",
@@ -228,7 +237,9 @@
     "TICKETS": {
       "TICKET_NOT_FOUND": "Uzdevums nav atrasts",
       "TICKET_CREATE_FAILED": "Neizdevās izveidot uzdevumu",
-      "TICKET_UPDATE_FAILED": "Neizdevās atjaunināt uzdevumu"
+      "TICKET_UPDATE_FAILED": "Neizdevās atjaunināt uzdevumu",
+      "ASSIGNEE_NOT_TEAM_MEMBER": "Šī persona nav komandas dalībnieks",
+      "ASSIGNEE_NOT_FOUND": "Šī persona nav piešķirta"
     },
     "FAVORITES": {
       "FAVORITE_NOT_FOUND": "Izlases ieraksts nav atrasts",

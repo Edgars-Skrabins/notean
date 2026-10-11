@@ -3,6 +3,8 @@
     <span class="backlogRow__title">{{ ticket.title }}</span>
   </button>
 
+  <app-avatar-stack class="backlogRow__assignees" [users]="ticket.assignees"></app-avatar-stack>
+
   <div class="backlogRow__actions">
     <app-favorite-star type="Ticket" [itemId]="ticket.id" [title]="ticket.title"></app-favorite-star>
     <app-icon-button icon="columns" [size]="28" [tooltip]="PHRASES.MOVE_TO_BOARD | translate" (pressed)="moveToBoard.emit()"></app-icon-button>

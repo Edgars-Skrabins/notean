@@ -9,6 +9,7 @@ const baseRaw = {
   board_id: 9,
   column_id: 3,
   creator: {id: 4, nickname: 'bob', avatar: {color: 'red' as const, image_url: null}},
+  assignees: [],
   created_at: '2024-01-01T00:00:00Z',
   updated_at: '2024-01-02T00:00:00Z',
 };
@@ -22,6 +23,7 @@ describe('mapTicketDetail', () => {
       description: 'Details',
       boardId: 9,
       columnId: 3,
+      assignees: [],
       creator: {id: 4, nickname: 'bob', avatar: {color: 'red', imageUrl: null}},
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-02T00:00:00Z',
@@ -65,5 +67,16 @@ describe('TicketService', () => {
     const response = await service.getTicket('abc', 9, 1);
 
     expect(response.success && response.ticket.boardId).toBe(9);
+  });
+
+  it('adds and removes assignees', async () => {
+    const post = spyOn(axiosInstance, 'post').and.returnValue(Promise.resolve({data: {ticket: baseRaw}}));
+    const remove = spyOn(axiosInstance, 'delete').and.returnValue(Promise.resolve({data: {ticket: baseRaw}}));
+
+    await service.addAssignee('abc', 9, 1, 5);
+    await service.removeAssignee('abc', 9, 1, 5);
+
+    expect(post).toHaveBeenCalledWith(`${url}/1/assignees`, {assignee: {user_id: 5}});
+    expect(remove).toHaveBeenCalledWith(`${url}/1/assignees/5`);
   });
 });

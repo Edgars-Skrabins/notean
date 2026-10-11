@@ -40,6 +40,16 @@
           (blur)="commitDescription()"
         ></textarea>
       </div>
+
+      <app-ticket-assignees
+        class="ticketDetail__side"
+        [assignees]="ticket.assignees"
+        [members]="members"
+        [currentUserId]="currentUserId"
+        [busy]="isUpdatingAssignees"
+        (add)="handleAddAssignee($event)"
+        (remove)="handleRemoveAssignee($event)"
+      ></app-ticket-assignees>
     </div>
   </div>
 

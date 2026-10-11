@@ -5,6 +5,7 @@ const rawTicket = (id: number, title: string, position: number, columnId: number
   title,
   position,
   column_id: columnId,
+  assignees: [],
   updated_at: '2024-01-02T00:00:00Z',
 });
 
@@ -13,6 +14,7 @@ const ticket = (id: number, title: string, position: number, columnId: number | 
   title,
   position,
   columnId,
+  assignees: [],
   updatedAt: '2024-01-02T00:00:00Z',
 });
 
@@ -29,6 +31,12 @@ describe('mapBoardUser', () => {
 describe('mapTicketSummary', () => {
   it('maps id, title, position, column and update time', () => {
     expect(mapTicketSummary(rawTicket(1, 'My Ticket', 2, null))).toEqual(ticket(1, 'My Ticket', 2, null));
+  });
+
+  it('maps assignees with their avatars', () => {
+    const result = mapTicketSummary({...rawTicket(1, 'My Ticket', 2), assignees: [rawCreator]});
+
+    expect(result.assignees).toEqual([{id: 2, nickname: 'bob', avatar: {color: 'red', imageUrl: null}}]);
   });
 });
 
@@ -102,6 +110,7 @@ describe('mapBoardOverview', () => {
       created_last_7_days: 1,
       updated_last_7_days: 2,
       recent_tickets: [{id: 4, title: 'Bug', column_id: null, column_title: null, updated_at: '2024-01-02T00:00:00Z'}],
+      assignees: [{user: rawCreator, ticket_count: 2}, {user: null, ticket_count: 1}],
     });
 
     expect(result).toEqual({
@@ -112,6 +121,7 @@ describe('mapBoardOverview', () => {
       createdLast7Days: 1,
       updatedLast7Days: 2,
       recentTickets: [{id: 4, title: 'Bug', columnId: null, columnTitle: null, updatedAt: '2024-01-02T00:00:00Z'}],
+      assignees: [{user: {id: 2, nickname: 'bob', avatar: {color: 'red', imageUrl: null}}, ticketCount: 2}, {user: null, ticketCount: 1}],
     });
   });
 });

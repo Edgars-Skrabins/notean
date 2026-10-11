@@ -33,6 +33,11 @@
   </section>
 
   <section class="boardOverview__section">
+    <h2 class="boardOverview__heading">{{ PHRASES.TICKETS_PER_ASSIGNEE | translate }}</h2>
+    <app-pie-chart [slices]="assigneeSlices" [emptyText]="PHRASES.NO_TICKETS_YET | translate"></app-pie-chart>
+  </section>
+
+  <section class="boardOverview__section">
     <h2 class="boardOverview__heading">{{ PHRASES.RECENT_ACTIVITY | translate }}</h2>
     <p class="boardOverview__stat">{{ PHRASES.CREATED_LAST_7_DAYS | translate }}: {{ overview.createdLast7Days }}</p>
     <p class="boardOverview__stat">{{ PHRASES.UPDATED_LAST_7_DAYS | translate }}: {{ overview.updatedLast7Days }}</p>

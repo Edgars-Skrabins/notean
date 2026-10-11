@@ -172,6 +172,15 @@
   "BACKLOG": "Backlog",
   "NO_TICKETS_YET": "No tickets yet.",
   "TICKET_MOVE_FAILED": "Could not move the ticket",
+  "ASSIGNEES": "Assignees",
+  "UNASSIGNED": "Unassigned",
+  "ASSIGN_TO_ME": "Assign to me",
+  "ADD_ASSIGNEE": "Add assignee",
+  "REMOVE_ASSIGNEE": "Remove assignee",
+  "SEARCH_MEMBERS": "Search members",
+  "NO_MATCHING_MEMBERS": "No matching members",
+  "ASSIGNEES_UPDATE_FAILED": "Could not update assignees",
+  "TICKETS_PER_ASSIGNEE": "Tickets per assignee",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Your session has expired. Please log in again",
@@ -228,7 +237,9 @@
     "TICKETS": {
       "TICKET_NOT_FOUND": "Ticket not found",
       "TICKET_CREATE_FAILED": "Could not create the ticket",
-      "TICKET_UPDATE_FAILED": "Could not update the ticket"
+      "TICKET_UPDATE_FAILED": "Could not update the ticket",
+      "ASSIGNEE_NOT_TEAM_MEMBER": "This person is not a member of the team",
+      "ASSIGNEE_NOT_FOUND": "This person is not assigned"
     },
     "FAVORITES": {
       "FAVORITE_NOT_FOUND": "Favorite not found",

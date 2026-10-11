@@ -3,6 +3,8 @@
     <span class="kanbanTicket__title">{{ ticket.title }}</span>
   </button>
 
+  <app-avatar-stack class="kanbanTicket__assignees" [users]="ticket.assignees"></app-avatar-stack>
+
   <div class="kanbanTicket__actions">
     <app-favorite-star type="Ticket" [itemId]="ticket.id" [title]="ticket.title"></app-favorite-star>
     <app-icon-button

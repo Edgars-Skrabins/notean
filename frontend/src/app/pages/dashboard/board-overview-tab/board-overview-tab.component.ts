@@ -46,6 +46,14 @@ export class BoardOverviewTabComponent implements OnInit {
     }));
   }
 
+  get assigneeSlices(): PieSlice[] {
+    return (this.overview?.assignees ?? []).map((row, index) => ({
+      label: row.user?.nickname ?? this.translateService.instant(PHRASES.UNASSIGNED),
+      value: row.ticketCount,
+      color: chartColor(index),
+    }));
+  }
+
   get maxColumnCount(): number {
     return Math.max(1, ...(this.overview?.columns ?? []).map((column) => column.ticketCount));
   }

@@ -51,6 +51,14 @@ export class TicketService {
     return this.patchTicket(teamCode, boardId, id, {position});
   }
 
+  async addAssignee(teamCode: string, boardId: number, ticketId: number, userId: number): Promise<TicketResponse> {
+    return this.requestTicket(axiosInstance.post(this.assigneesUrl(teamCode, boardId, ticketId), {assignee: {user_id: userId}}));
+  }
+
+  async removeAssignee(teamCode: string, boardId: number, ticketId: number, userId: number): Promise<TicketResponse> {
+    return this.requestTicket(axiosInstance.delete(`${this.assigneesUrl(teamCode, boardId, ticketId)}/${userId}`));
+  }
+
   async deleteTicket(teamCode: string, boardId: number, id: number): Promise<DeleteTicketResponse> {
     return apiRequest<DeleteTicketResponse>(
       axiosInstance.delete(this.ticketsUrl(teamCode, boardId, id)),
@@ -67,6 +75,10 @@ export class TicketService {
       request,
       (data) => ({success: true, ticket: mapTicketDetail(data.ticket)}),
     );
+  }
+
+  private assigneesUrl(teamCode: string, boardId: number, ticketId: number) {
+    return teamPath(teamCode, 'boards', boardId, 'tickets', ticketId, 'assignees');
   }
 
   private ticketsUrl(teamCode: string, boardId: number, id?: number) {

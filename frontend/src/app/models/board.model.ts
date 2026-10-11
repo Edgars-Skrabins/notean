@@ -43,6 +43,11 @@ export interface RecentTicket {
   updatedAt: string;
 }
 
+export interface AssigneeCount {
+  user: BoardUser | null;
+  ticketCount: number;
+}
+
 export interface BoardOverview {
   totalTickets: number;
   boardTickets: number;
@@ -51,6 +56,7 @@ export interface BoardOverview {
   createdLast7Days: number;
   updatedLast7Days: number;
   recentTickets: RecentTicket[];
+  assignees: AssigneeCount[];
 }
 
 export type ListBoardsResponse = Result<{ boards: BoardSummary[] }, TeamAccessErrorCode>;

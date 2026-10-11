@@ -36,6 +36,10 @@
   white-space: nowrap;
 }
 
+.backlogRow__assignees {
+  flex-shrink: 0;
+}
+
 .backlogRow__actions {
   display: flex;
   gap: 2px;
