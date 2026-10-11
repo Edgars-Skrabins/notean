@@ -60,7 +60,7 @@ class TicketsController < ApplicationController
   private
 
   def set_ticket
-    @ticket = @board.tickets.includes(:creator).find_by(id: params[:id])
+    @ticket = @board.tickets.includes(:creator, TicketJson::ASSIGNEES_PRELOAD).find_by(id: params[:id])
 
     render_error(ErrorCodes::Tickets::TICKET_NOT_FOUND, :not_found) if @ticket.nil?
   end

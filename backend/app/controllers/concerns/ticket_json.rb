@@ -1,6 +1,8 @@
 module TicketJson
   extend ActiveSupport::Concern
 
+  ASSIGNEES_PRELOAD = { ticket_assignees: { user: User::AVATAR_PRELOAD } }.freeze
+
   private
 
   def ticket_json(ticket)
@@ -12,6 +14,7 @@ module TicketJson
       column_id: ticket.column_id,
       position: ticket.position,
       creator: member_json(ticket.creator),
+      assignees: assignees_json(ticket),
       created_at: ticket.created_at,
       updated_at: ticket.updated_at
     }
@@ -23,7 +26,12 @@ module TicketJson
       title: ticket.title,
       position: ticket.position,
       column_id: ticket.column_id,
+      assignees: assignees_json(ticket),
       updated_at: ticket.updated_at
     }
+  end
+
+  def assignees_json(ticket)
+    ticket.ticket_assignees.map { |assignee| member_json(assignee.user) }
   end
 end

@@ -70,6 +70,10 @@ class ApplicationController < ActionController::API
     params.require(:ticket).permit(:title, :description, :column_id, :position, :to_backlog)
   end
 
+  def create_assignee_params
+    params.require(:assignee).permit(:user_id)
+  end
+
   def create_favorite_params
     params.require(:favorite).permit(:favoritable_type, :favoritable_id)
   end

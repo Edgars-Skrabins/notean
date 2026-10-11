@@ -58,7 +58,8 @@ class BoardsController < ApplicationController
         columns: @board.columns.map { |column| { id: column.id, title: column.title, ticket_count: column_counts.fetch(column.id, 0) } },
         created_last_7_days: tickets.where(created_at: recent_since..).count,
         updated_last_7_days: tickets.where(updated_at: recent_since..).count,
-        recent_tickets: recent_tickets.map { |ticket| recent_ticket_json(ticket) }
+        recent_tickets: recent_tickets.map { |ticket| recent_ticket_json(ticket) },
+        assignees: assignee_counts_json(tickets)
       }
     }
   end
@@ -71,7 +72,7 @@ class BoardsController < ApplicationController
   private
 
   def set_board
-    @board = @team.boards.includes(:backlog_tickets, creator: User::AVATAR_PRELOAD, columns: :tickets).find_by(id: params[:id])
+    @board = @team.boards.includes(creator: User::AVATAR_PRELOAD, columns: { tickets: TicketJson::ASSIGNEES_PRELOAD }, backlog_tickets: TicketJson::ASSIGNEES_PRELOAD).find_by(id: params[:id])
 
     render_error(ErrorCodes::Boards::BOARD_NOT_FOUND, :not_found) if @board.nil?
   end
@@ -100,6 +101,14 @@ class BoardsController < ApplicationController
       position: column.position,
       tickets: column.tickets.map { |ticket| ticket_summary_json(ticket) }
     }
+  end
+
+  def assignee_counts_json(tickets)
+    counts = TicketAssignee.where(ticket: tickets).group(:user_id).count
+    users = User.includes(User::AVATAR_PRELOAD).where(id: counts.keys)
+    rows = users.map { |user| { user: member_json(user), ticket_count: counts[user.id] } }
+    rows << { user: nil, ticket_count: tickets.where.missing(:ticket_assignees).count }
+    rows.sort_by { |row| -row[:ticket_count] }
   end
 
   def recent_ticket_json(ticket)

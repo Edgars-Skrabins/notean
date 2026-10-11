@@ -16,7 +16,9 @@ Rails.application.routes.draw do
     resources :boards, only: [ :index, :create, :show, :update, :destroy ] do
       get :overview, on: :member
       resources :columns, only: [ :create, :update, :destroy ]
-      resources :tickets, only: [ :create, :show, :update, :destroy ]
+      resources :tickets, only: [ :create, :show, :update, :destroy ] do
+        resources :assignees, only: [ :create, :destroy ], controller: "ticket_assignees", param: :user_id
+      end
     end
     resources :favorites, only: [ :index, :create, :update, :destroy ]
   end

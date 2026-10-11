@@ -167,4 +167,45 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal show_one, show_ten
     assert_equal overview_one, overview_ten
   end
+
+  test "show includes the assignees of each ticket" do
+    board, todo, = board_with_columns
+    bob = create_member(@team, "Bob")
+    ticket = ticket_on(board, todo, "Bug", 0)
+    TicketAssignee.create!(ticket: ticket, user: bob)
+
+    get "/teams/#{@team.code}/boards/#{board.id}", headers: @headers
+
+    assignees = JSON.parse(response.body)["board"]["columns"].first["tickets"].first["assignees"]
+    assert_equal [ "Bob" ], assignees.map { |assignee| assignee["nickname"] }
+  end
+
+  test "overview counts tickets per assignee, once per assignee, plus unassigned" do
+    board, todo, = board_with_columns
+    bob = create_member(@team, "Bob")
+    shared = ticket_on(board, todo, "Shared", 0)
+    only_bob = ticket_on(board, nil, "Bob only", 0)
+    ticket_on(board, todo, "Nobody", 1)
+    TicketAssignee.create!(ticket: shared, user: @user)
+    TicketAssignee.create!(ticket: shared, user: bob)
+    TicketAssignee.create!(ticket: only_bob, user: bob)
+
+    get "/teams/#{@team.code}/boards/#{board.id}/overview", headers: @headers
+
+    rows = JSON.parse(response.body)["overview"]["assignees"]
+    assert_equal [ [ "Bob", 2 ], [ "alice", 1 ], [ nil, 1 ] ], rows.map { |row| [ row["user"]&.dig("nickname"), row["ticket_count"] ] }
+  end
+
+  test "show runs the same number of queries for 1 and 10 assigned tickets" do
+    attach_avatar(@user)
+    board, todo, = board_with_columns
+    TicketAssignee.create!(ticket: ticket_on(board, todo, "First", 0), user: @user)
+    one = query_count { get "/teams/#{@team.code}/boards/#{board.id}", headers: @headers }
+
+    members = 3.times.map { |index| create_member(@team, nickname_for(index), with_avatar: index.zero?) }
+    9.times { |index| TicketAssignee.create!(ticket: ticket_on(board, index.even? ? todo : nil, "T#{index}", index + 1), user: members[index % 3]) }
+    ten = query_count { get "/teams/#{@team.code}/boards/#{board.id}", headers: @headers }
+
+    assert_equal one, ten
+  end
 end

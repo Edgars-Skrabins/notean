@@ -27,7 +27,7 @@ class TeamsController < ApplicationController
   end
 
   def members
-    return unless require_team_role!(@team, :admin, :owner)
+    return render_error(ErrorCodes::Teams::NOT_TEAM_MEMBER, :forbidden) unless membership_for(@team)
 
     render json: {
       members: @team.memberships.includes(user: User::AVATAR_PRELOAD).map { |m| member_json(m.user).merge(role: m.role) }

@@ -60,11 +60,28 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     assert_not members.first.key?("username")
   end
 
-  test "members returns FORBIDDEN for a regular member" do
-    bob = User.create!(email: "bob@example.com", password: "supersecret")
-    Membership.create!(user: bob, team: @team, nickname: "Bob")
+  test "members is available to regular members" do
+    bob = create_member(@team, "Bob")
 
     get "/teams/#{@team.code}/members", headers: { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: bob.id)}" }
+
+    assert_response :success
+    assert_equal [ "Alice", "Bob" ], JSON.parse(response.body)["members"].map { |member| member["nickname"] }.sort
+  end
+
+  test "members returns NOT_TEAM_MEMBER for someone outside the team" do
+    outsider = User.create!(email: "mallory@example.com", password: "supersecret")
+
+    get "/teams/#{@team.code}/members", headers: { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: outsider.id)}" }
+
+    assert_response :forbidden
+    assert_equal "NOT_TEAM_MEMBER", JSON.parse(response.body)["code"]
+  end
+
+  test "renaming the team returns FORBIDDEN for a regular member" do
+    bob = create_member(@team, "Bob")
+
+    patch "/teams/#{@team.code}", params: { team: { name: "Renamed" } }, headers: { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: bob.id)}" }, as: :json
 
     assert_response :forbidden
     assert_equal "FORBIDDEN", JSON.parse(response.body)["code"]

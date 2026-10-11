@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_11_100100) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_11_120000) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -157,6 +157,16 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_11_100100) do
     t.index ["code"], name: "index_teams_on_code", unique: true
   end
 
+  create_table "ticket_assignees", force: :cascade do |t|
+    t.integer "ticket_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ticket_id", "user_id"], name: "index_ticket_assignees_on_ticket_id_and_user_id", unique: true
+    t.index ["ticket_id"], name: "index_ticket_assignees_on_ticket_id"
+    t.index ["user_id"], name: "index_ticket_assignees_on_user_id"
+  end
+
   create_table "tickets", force: :cascade do |t|
     t.integer "column_id"
     t.integer "team_id", null: false
@@ -207,6 +217,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_11_100100) do
   add_foreign_key "pages", "folders"
   add_foreign_key "pages", "teams"
   add_foreign_key "pages", "users", column: "created_by_user_id"
+  add_foreign_key "ticket_assignees", "tickets"
+  add_foreign_key "ticket_assignees", "users"
   add_foreign_key "tickets", "boards"
   add_foreign_key "tickets", "columns"
   add_foreign_key "tickets", "teams"
