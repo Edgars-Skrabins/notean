@@ -1,5 +1,5 @@
 import {Result} from "@models/result.model";
-import {TeamAccessErrorCode} from "@config/errorCodes";
+import {ProjectsErrorCode, TeamAccessErrorCode} from "@config/errorCodes";
 import {BoardUser} from "@models/board.model";
 
 export interface MyWorkTicket {
@@ -19,4 +19,4 @@ export interface MyWorkGroup {
   tickets: MyWorkTicket[];
 }
 
-export type MyWorkResponse = Result<{ tickets: MyWorkTicket[] }, TeamAccessErrorCode>;
+export type MyWorkResponse = Result<{ tickets: MyWorkTicket[] }, TeamAccessErrorCode | ProjectsErrorCode>;

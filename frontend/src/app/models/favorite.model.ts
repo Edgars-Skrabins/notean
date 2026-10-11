@@ -1,5 +1,5 @@
 import {Result} from "@models/result.model";
-import {FavoritesErrorCode, TeamAccessErrorCode} from "@config/errorCodes";
+import {FavoritesErrorCode, ProjectsErrorCode, TeamAccessErrorCode} from "@config/errorCodes";
 
 export type FavoritableType = 'Page' | 'Diagram' | 'Board' | 'Ticket';
 
@@ -10,6 +10,7 @@ export interface Favorite {
   favoritableType: FavoritableType;
   favoritableId: number;
   title: string;
+  projectId: number | null;
   boardId: number | null;
   boardTitle: string | null;
   inBacklog: boolean;
@@ -17,7 +18,7 @@ export interface Favorite {
   sidebarPosition: number;
 }
 
-export type ListFavoritesResponse = Result<{ favorites: Favorite[] }, TeamAccessErrorCode>;
+export type ListFavoritesResponse = Result<{ favorites: Favorite[] }, TeamAccessErrorCode | ProjectsErrorCode>;
 
 export type FavoriteResponse = Result<{ favorite: Favorite }, TeamAccessErrorCode | FavoritesErrorCode>;
 

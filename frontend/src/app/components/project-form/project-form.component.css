@@ -1,0 +1,44 @@
+.projectForm__textarea,
+.projectForm__select {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px 16px;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text-heading);
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.projectForm__textarea {
+  resize: vertical;
+}
+
+.projectForm__textarea:focus,
+.projectForm__select:focus {
+  border-color: var(--color-input-border-focus);
+}
+
+.projectForm__select option {
+  background: var(--color-card-bg);
+}
+
+.projectForm__value {
+  margin: 0;
+  color: var(--color-text-heading);
+  font-size: 0.95rem;
+}
+
+.projectForm__error {
+  margin: 0;
+  color: var(--color-error);
+  font-size: 0.8rem;
+}
+
+.projectForm__member {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}

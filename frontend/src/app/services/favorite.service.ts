@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, map, Observable} from 'rxjs';
+import {BehaviorSubject, combineLatest, map, Observable} from 'rxjs';
 import {moveItemInArray} from '@angular/cdk/drag-drop';
 import {axiosInstance} from "@config/axiosConfig";
 import {PHRASES} from "@config/phrases";
 import {apiRequest} from "@utils/apiRequest";
 import {TeamService} from "@services/team.service";
 import {ToastService} from "@services/toast.service";
+import {ProjectFilterService} from "@services/project-filter.service";
 import {ToastType} from "@models/toast.model";
 import {
   DeleteFavoriteResponse,
@@ -22,6 +23,7 @@ interface RawFavorite {
   favoritable_type: FavoritableType;
   favoritable_id: number;
   title: string;
+  project_id: number | null;
   board_id?: number;
   board_title?: string;
   in_backlog?: boolean;
@@ -35,12 +37,17 @@ export function mapFavorite(raw: RawFavorite): Favorite {
     favoritableType: raw.favoritable_type,
     favoritableId: raw.favoritable_id,
     title: raw.title,
+    projectId: raw.project_id,
     boardId: raw.board_id ?? null,
     boardTitle: raw.board_title ?? null,
     inBacklog: raw.in_backlog ?? false,
     homePosition: raw.home_position,
     sidebarPosition: raw.sidebar_position,
   };
+}
+
+function inProject(favorites: Favorite[], projectId: number | null): Favorite[] {
+  return projectId === null ? favorites : favorites.filter((favorite) => favorite.projectId === projectId);
 }
 
 function sortBySurface(favorites: Favorite[], surface: FavoriteSurface): Favorite[] {
@@ -57,13 +64,17 @@ export class FavoriteService {
   private nextPendingId = -1;
 
   readonly favorites$: Observable<Favorite[]> = this.favoritesSubject.asObservable();
-  readonly homeFavorites$: Observable<Favorite[]> = this.favorites$.pipe(map((favorites) => sortBySurface(favorites, 'home')));
-  readonly sidebarFavorites$: Observable<Favorite[]> = this.favorites$.pipe(map((favorites) => sortBySurface(favorites, 'sidebar')));
+  readonly homeFavorites$: Observable<Favorite[]>;
+  readonly sidebarFavorites$: Observable<Favorite[]>;
 
   constructor(
     private teamService: TeamService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private projectFilterService: ProjectFilterService
   ) {
+    const selected$ = combineLatest([this.favorites$, this.projectFilterService.selectedProjectId$]);
+    this.homeFavorites$ = selected$.pipe(map(([favorites, projectId]) => sortBySurface(inProject(favorites, projectId), 'home')));
+    this.sidebarFavorites$ = selected$.pipe(map(([favorites, projectId]) => sortBySurface(inProject(favorites, projectId), 'sidebar')));
   }
 
   async load(): Promise<ListFavoritesResponse> {
@@ -126,6 +137,7 @@ export class FavoriteService {
       favoritableType: type,
       favoritableId: id,
       title,
+      projectId: null,
       boardId: null,
       boardTitle: null,
       inBacklog: false,
@@ -151,18 +163,21 @@ export class FavoriteService {
 
     const previous = this.favoritesSubject.value;
     const ordered = sortBySurface(previous, surface);
+    const visible = inProject(ordered, this.projectFilterService.getSelectedProjectId());
     const fromIndex = ordered.findIndex((favorite) => favorite.id === favoriteId);
+    const target = visible[index];
+    const toIndex = target ? ordered.indexOf(target) : -1;
 
-    if (fromIndex === -1 || fromIndex === index || favoriteId < 0) {
+    if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex || favoriteId < 0) {
       return;
     }
 
-    moveItemInArray(ordered, fromIndex, index);
+    moveItemInArray(ordered, fromIndex, toIndex);
     const positions = new Map(ordered.map((favorite, position) => [favorite.id, position]));
     const key = surface === 'home' ? 'homePosition' : 'sidebarPosition';
     this.favoritesSubject.next(previous.map((favorite) => ({...favorite, [key]: positions.get(favorite.id)!})));
 
-    const response = await this.moveFavorite(teamCode, favoriteId, surface, index);
+    const response = await this.moveFavorite(teamCode, favoriteId, surface, toIndex);
     if (!response.success) {
       this.revert(previous);
     }

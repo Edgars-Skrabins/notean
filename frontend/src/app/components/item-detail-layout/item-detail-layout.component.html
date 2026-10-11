@@ -55,6 +55,11 @@
         </div>
 
         <div>
+          <h3 class="itemDetail__sidebarLabel">{{ PHRASES.PROJECT | translate }}</h3>
+          <app-project-select [projectId]="item.projectId" (projectChange)="projectChange.emit($event)"></app-project-select>
+        </div>
+
+        <div>
           <h3 class="itemDetail__sidebarLabel">{{ PHRASES.CREATED | translate }}</h3>
           <p class="itemDetail__sidebarValue">{{ item.createdAt | date }}</p>
         </div>

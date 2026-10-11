@@ -9,6 +9,7 @@ import {ManageTeamComponent} from "../pages/manage-team/manage-team.component";
 import {DashboardComponent} from "../pages/dashboard/dashboard.component";
 import {HomeComponent} from "../pages/dashboard/home/home.component";
 import {ProjectsComponent} from "../pages/dashboard/projects/projects.component";
+import {ProjectDetailComponent} from "../pages/dashboard/project-detail/project-detail.component";
 import {DocumentPagesComponent} from "../pages/dashboard/document-pages/document-pages.component";
 import {PageDetailComponent} from "../pages/dashboard/page-detail/page-detail.component";
 import {DiagramsComponent} from "../pages/dashboard/diagrams/diagrams.component";
@@ -45,6 +46,7 @@ export const routes: Routes = [
       {path: '', redirectTo: AppRoutes.DASHBOARD_HOME, pathMatch: 'full'},
       {path: AppRoutes.DASHBOARD_HOME, component: HomeComponent},
       {path: AppRoutes.PROJECTS, component: ProjectsComponent},
+      {path: `${AppRoutes.PROJECTS}/:id`, component: ProjectDetailComponent, canDeactivate: [unsavedChangesGuard]},
       {path: AppRoutes.DOCUMENT_PAGES, component: DocumentPagesComponent},
       {path: `${AppRoutes.DOCUMENT_PAGES}/:id`, component: PageDetailComponent},
       {path: AppRoutes.DIAGRAMS, component: DiagramsComponent},

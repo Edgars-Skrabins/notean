@@ -1,0 +1,14 @@
+<div class="newProjectDialogOverlay">
+  <div class="newProjectDialogOverlay__backdrop" (click)="cancelled.emit()"></div>
+
+  <div class="newProjectDialog">
+    <h3 class="newProjectDialog__title">{{ PHRASES.NEW_PROJECT | translate }}</h3>
+
+    <app-project-form [params]="params" [members]="members" [nameError]="nameError" (paramsChange)="params = $event"></app-project-form>
+
+    <div class="newProjectDialog__actions">
+      <app-button variant="ghost" (pressed)="cancelled.emit()">{{ PHRASES.CANCEL | translate }}</app-button>
+      <app-button variant="primary" [disabled]="!canCreate" (pressed)="handleCreate()">{{ PHRASES.CREATE | translate }}</app-button>
+    </div>
+  </div>
+</div>

@@ -18,6 +18,7 @@
   (deleteRequested)="handleDelete()"
   (deleteConfirmed)="handleConfirmDelete()"
   (deleteCancelled)="handleCancelDelete()"
+  (projectChange)="handleProjectChange($event)"
 >
   <app-flowchart-editor
     class="diagramDetail__editor"

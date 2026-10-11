@@ -12,6 +12,9 @@ import {NavigationService} from "@services/navigation.service";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
+import {ProjectSelectComponent} from "@components/project-select/project-select.component";
+import {ToastService} from "@services/toast.service";
+import {ToastType} from "@models/toast.model";
 import {errorPhrase} from "@utils/errorPhrase";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "./board-page-state.service";
@@ -28,7 +31,8 @@ import {BoardPageStateService} from "./board-page-state.service";
     TranslateModule,
     IconButtonComponent,
     ConfirmDialogComponent,
-    FavoriteStarComponent
+    FavoriteStarComponent,
+    ProjectSelectComponent
   ],
   providers: [BoardPageStateService],
   templateUrl: './board-page.component.html',
@@ -51,7 +55,8 @@ export class BoardPageComponent implements OnInit, OnDestroy {
     private boardService: BoardService,
     private boardListService: BoardListService,
     private favoriteService: FavoriteService,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private toastService: ToastService
   ) {
   }
 
@@ -106,6 +111,25 @@ export class BoardPageComponent implements OnInit, OnDestroy {
 
   cancelRename() {
     this.isRenaming = false;
+  }
+
+  handleProjectChange(projectId: number | null) {
+    const board = this.state.board;
+    if (!board) {
+      return;
+    }
+
+    this.boardService.setBoardProject(this.state.teamCode, board.id, projectId)
+      .then((response) => {
+        if (!response.success) {
+          this.toastService.show({type: ToastType.ERROR, message: PHRASES.PROJECT_UPDATE_FAILED});
+          return;
+        }
+
+        board.projectId = response.board.projectId;
+        this.boardListService.load();
+        this.toastService.show({type: ToastType.SUCCESS, message: PHRASES.PROJECT_UPDATED});
+      });
   }
 
   handleDelete() {

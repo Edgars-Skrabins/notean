@@ -1,5 +1,5 @@
 import {Result} from "@models/result.model";
-import {FoldersErrorCode, TeamAccessErrorCode} from "@config/errorCodes";
+import {FoldersErrorCode, ProjectsErrorCode, TeamAccessErrorCode} from "@config/errorCodes";
 
 export type FolderItemType = 'Page' | 'Diagram';
 
@@ -19,7 +19,7 @@ export interface FolderSummary {
 
 export type FolderDeleteMode = 'cascade' | 'promote';
 
-export type ListFoldersResponse = Result<{ folders: FolderSummary[] }, TeamAccessErrorCode>;
+export type ListFoldersResponse = Result<{ folders: FolderSummary[] }, TeamAccessErrorCode | ProjectsErrorCode>;
 
 export type FolderResponse = Result<{ folder: FolderSummary }, TeamAccessErrorCode | FoldersErrorCode>;
 

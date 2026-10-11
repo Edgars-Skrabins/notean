@@ -1,0 +1,64 @@
+.deleteProjectDialogOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deleteProjectDialogOverlay__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 4, 15, 0.6);
+}
+
+.deleteProjectDialog {
+  position: relative;
+  width: 420px;
+  max-width: calc(100vw - 48px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  background: linear-gradient(160deg, var(--color-card-bg) 0%, var(--color-card-bg-alt) 100%);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-5);
+}
+
+.deleteProjectDialog__title {
+  margin: 0;
+  color: var(--color-text-heading);
+  font-size: 1rem;
+}
+
+.deleteProjectDialog__option {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  color: var(--color-text-heading);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.deleteProjectDialog__label {
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+}
+
+.deleteProjectDialog__input {
+  padding: 10px 12px;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-heading);
+  font-family: inherit;
+  outline: none;
+}
+
+.deleteProjectDialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}

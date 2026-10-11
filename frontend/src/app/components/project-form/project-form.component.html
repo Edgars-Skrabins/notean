@@ -1,0 +1,57 @@
+<div class="authField">
+  <label class="authField__label" for="projectName">{{ PHRASES.PROJECT_NAME | translate }}</label>
+  <input
+    *ngIf="!readonly"
+    id="projectName"
+    type="text"
+    [ngModel]="params.name"
+    (ngModelChange)="handleNameChange($event)"
+  />
+  <p class="projectForm__value" *ngIf="readonly">{{ params.name }}</p>
+  <p class="projectForm__error" *ngIf="nameError">{{ nameError | translate }}</p>
+</div>
+
+<div class="authField">
+  <label class="authField__label" for="projectDescription">{{ PHRASES.PROJECT_DESCRIPTION | translate }}</label>
+  <textarea
+    *ngIf="!readonly"
+    id="projectDescription"
+    class="projectForm__textarea"
+    rows="3"
+    [ngModel]="params.description"
+    (ngModelChange)="handleDescriptionChange($event)"
+  ></textarea>
+  <p class="projectForm__value" *ngIf="readonly">{{ params.description || '—' }}</p>
+</div>
+
+<div class="authField">
+  <label class="authField__label" for="projectOwner">{{ PHRASES.PROJECT_OWNER | translate }}</label>
+  <select
+    *ngIf="!readonly"
+    id="projectOwner"
+    class="projectForm__select"
+    [ngModel]="params.ownerUserId"
+    (ngModelChange)="handleOwnerChange($event)"
+  >
+    <option *ngFor="let member of members" [ngValue]="member.id">{{ member.nickname }}</option>
+  </select>
+  <p class="projectForm__value" *ngIf="readonly">{{ ownerNickname }}</p>
+</div>
+
+<div class="authField">
+  <span class="authField__label">{{ PHRASES.PROJECT_MEMBERS | translate }}</span>
+  <ng-container *ngIf="!readonly">
+    <app-checkbox
+      *ngFor="let member of members"
+      [checked]="isMember(member.id)"
+      [disabled]="member.id === params.ownerUserId"
+      (checkedChange)="handleMemberToggle(member.id, $event)"
+    >
+      <span class="projectForm__member">
+        <app-avatar [avatar]="member.avatar" [nickname]="member.nickname"></app-avatar>
+        {{ member.nickname }}
+      </span>
+    </app-checkbox>
+  </ng-container>
+  <p class="projectForm__value" *ngIf="readonly">{{ memberNicknames }}</p>
+</div>

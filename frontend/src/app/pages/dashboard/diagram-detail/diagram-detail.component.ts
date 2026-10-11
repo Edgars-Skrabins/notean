@@ -7,6 +7,7 @@ import {TeamService} from "@services/team.service";
 import {AuthService} from "@services/auth.service";
 import {NavigationService} from "@services/navigation.service";
 import {FavoriteService} from "@services/favorite.service";
+import {ToastService} from "@services/toast.service";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {FlowchartEditorComponent} from "@components/flowchart-editor/flowchart-editor.component";
 import {ItemDetailLayoutComponent} from "@components/item-detail-layout/item-detail-layout.component";
@@ -34,8 +35,9 @@ export class DiagramDetailComponent extends FolderedItemDetailComponent {
     teamService: TeamService,
     authService: AuthService,
     navigationService: NavigationService,
-    favoriteService: FavoriteService
+    favoriteService: FavoriteService,
+    toastService: ToastService
   ) {
-    super(route, diagramService, diagramEditingService, teamService, authService, navigationService, favoriteService);
+    super(route, diagramService, diagramEditingService, teamService, authService, navigationService, favoriteService, toastService);
   }
 }

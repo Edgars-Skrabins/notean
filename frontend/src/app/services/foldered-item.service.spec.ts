@@ -26,6 +26,7 @@ describe('mapFolderedItemSummary', () => {
       id: 1,
       title: 'My Page',
       folder_id: null,
+      project_id: null,
       creator: {id: 2, nickname: 'bob', avatar: {color: 'red', image_url: null}},
       created_at: '2024-01-01T00:00:00Z',
       updated_at: '2024-01-02T00:00:00Z',
@@ -35,6 +36,7 @@ describe('mapFolderedItemSummary', () => {
       id: 1,
       title: 'My Page',
       folderId: null,
+      projectId: null,
       creator: {id: 2, nickname: 'bob', avatar: {color: 'red', imageUrl: null}},
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-02T00:00:00Z',
@@ -47,6 +49,7 @@ describe('mapFolderedItemDetail', () => {
     id: 1,
     title: 'My Page',
     folder_id: null,
+    project_id: null,
     creator: {id: 2, nickname: 'bob', avatar: {color: 'red' as const, image_url: null}},
     created_at: '2024-01-01T00:00:00Z',
     updated_at: '2024-01-02T00:00:00Z',
@@ -96,6 +99,7 @@ describe('FolderedItemService', () => {
     id: 7,
     title: 'Flow',
     folder_id: null,
+    project_id: null,
     creator: {id: 2, nickname: 'bob', avatar: {color: 'red' as const, image_url: null}},
     created_at: '2024-01-01T00:00:00Z',
     updated_at: '2024-01-02T00:00:00Z',
@@ -106,9 +110,9 @@ describe('FolderedItemService', () => {
   it('lists items from the resource key of the subclass', async () => {
     const get = spyOn(axiosInstance, 'get').and.returnValue(Promise.resolve({data: {diagrams: [rawItem]}}));
 
-    const response = await new DiagramService().list('abc');
+    const response = await new DiagramService().list('abc', 4);
 
-    expect(get).toHaveBeenCalledWith('/teams/abc/diagrams');
+    expect(get).toHaveBeenCalledWith('/teams/abc/diagrams', {params: {project_id: 4}});
     expect(response.success && response.items.map((item) => item.id)).toEqual([7]);
   });
 
@@ -117,11 +121,13 @@ describe('FolderedItemService', () => {
     const patch = spyOn(axiosInstance, 'patch').and.returnValue(Promise.resolve({data: {page: rawItem}}));
     const service = new PageService();
 
-    await service.create('abc', 'Notes');
+    await service.create('abc', 'Notes', 4);
+    await service.setProject('abc', 7, null);
     await service.save('abc', 7, {title: 'Notes', content: '<p></p>'});
     await service.moveToFolder('abc', 7, 3);
 
-    expect(post).toHaveBeenCalledWith('/teams/abc/pages', {page: {title: 'Notes'}});
+    expect(post).toHaveBeenCalledWith('/teams/abc/pages', {page: {title: 'Notes', project_id: 4}});
+    expect(patch).toHaveBeenCalledWith('/teams/abc/pages/7', {page: {project_id: null}});
     expect(patch).toHaveBeenCalledWith('/teams/abc/pages/7', {page: {title: 'Notes', content: '<p></p>'}});
     expect(patch).toHaveBeenCalledWith('/teams/abc/pages/7', {page: {folder_id: 3}});
   });

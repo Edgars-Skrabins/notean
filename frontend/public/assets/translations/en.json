@@ -35,7 +35,6 @@
   "TEAMS": "Teams",
   "MENU": "Menu",
   "LOGOUT": "Logout",
-  "COMING_SOON": "Coming soon",
   "SEARCH_PAGES": "Search pages by title",
   "NEW_PAGE": "New page",
   "NEW_FOLDER": "New folder",
@@ -185,6 +184,28 @@
   "NOTHING_ASSIGNED": "Nothing is assigned to you.",
   "MY_WORK_LOAD_FAILED": "Could not load your work",
   "SHOW_MY_WORK_ON_HOME": "Show My Work on Home",
+  "ALL_PROJECTS": "All",
+  "NEW_PROJECT": "New project",
+  "PROJECT": "Project",
+  "NO_PROJECT": "No project",
+  "PROJECT_NAME": "Name",
+  "PROJECT_DESCRIPTION": "Description",
+  "PROJECT_OWNER": "Owner",
+  "PROJECT_MEMBERS": "Members",
+  "MEMBER_COUNT": "{{count}} members",
+  "NO_PROJECTS_YET": "No projects yet.",
+  "CREATE_PROJECT_HINT": "Create one to group pages, diagrams and boards.",
+  "PROJECT_SAVED": "Project saved",
+  "PROJECT_UPDATED": "Project updated",
+  "PROJECT_UPDATE_FAILED": "Could not update project",
+  "DANGER_ZONE": "Danger zone",
+  "DELETE_PROJECT": "Delete project",
+  "CONFIRM_DELETE_PROJECT": "Delete project '{{name}}'?",
+  "KEEP_PROJECT_ITEMS": "Keep its pages, diagrams and boards (they'll have no project)",
+  "DELETE_PROJECT_ITEMS": "Delete its pages, diagrams and boards too",
+  "TYPE_NAME_TO_CONFIRM": "Type {{name}} to confirm",
+  "PROJECT_DELETED": "Project deleted",
+  "BACK_TO_PROJECTS": "Back to projects",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Your session has expired. Please log in again",
@@ -243,7 +264,8 @@
       "TICKET_CREATE_FAILED": "Could not create the ticket",
       "TICKET_UPDATE_FAILED": "Could not update the ticket",
       "ASSIGNEE_NOT_TEAM_MEMBER": "This person is not a member of the team",
-      "ASSIGNEE_NOT_FOUND": "This person is not assigned"
+      "ASSIGNEE_NOT_FOUND": "This person is not assigned",
+      "ASSIGNEE_NO_ACCESS": "This person can't see this board"
     },
     "FAVORITES": {
       "FAVORITE_NOT_FOUND": "Favorite not found",
@@ -251,6 +273,15 @@
       "FAVORITE_ITEM_NOT_FOUND": "This item no longer exists",
       "FAVORITE_CREATE_FAILED": "Could not add to favorites",
       "FAVORITE_SURFACE_INVALID": "Could not move the favorite"
+    },
+    "PROJECTS": {
+      "PROJECT_NOT_FOUND": "Project not found",
+      "PROJECT_NAME_TAKEN": "A project with this name already exists",
+      "PROJECT_INVALID_MEMBERS": "Owner and members must be members of the team",
+      "PROJECT_SAVE_FAILED": "Could not save project",
+      "PROJECT_NAME_MISMATCH": "The name you typed doesn't match the project name",
+      "PROJECT_DELETE_MODE_INVALID": "Could not delete project",
+      "PROJECT_INVALID": "You can't move items into this project"
     }
   }
 }

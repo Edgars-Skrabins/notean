@@ -2,9 +2,10 @@ import {BoardListService, orderBoards} from "./board-list.service";
 import {BoardService} from "@services/board.service";
 import {TeamService} from "@services/team.service";
 import {BoardSummary} from "@models/board.model";
+import {projectFilterStub, ProjectFilterStub} from "../testing/projectFilterStub";
 
 function board(id: number, createdAt: string): BoardSummary {
-  return {id, title: `Board ${id}`, creator: {id: 1, nickname: 'alice', avatar: {color: 'red', imageUrl: null}}, createdAt, updatedAt: createdAt};
+  return {id, title: `Board ${id}`, projectId: null, creator: {id: 1, nickname: 'alice', avatar: {color: 'red', imageUrl: null}}, createdAt, updatedAt: createdAt};
 }
 
 describe('orderBoards', () => {
@@ -26,6 +27,7 @@ describe('orderBoards', () => {
 describe('BoardListService', () => {
   let boardService: jasmine.SpyObj<BoardService>;
   let teamService: jasmine.SpyObj<TeamService>;
+  let projectFilter: ProjectFilterStub;
 
   function ids(service: BoardListService): number[] {
     let current: number[] = [];
@@ -39,22 +41,23 @@ describe('BoardListService', () => {
     boardService.listBoards.and.returnValue(Promise.resolve({success: true, boards: [board(1, '2026-01-01'), board(2, '2026-01-02')]}));
     teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeamCode']);
     teamService.getCurrentTeamCode.and.returnValue('abc');
+    projectFilter = projectFilterStub();
   });
 
   afterEach(() => localStorage.clear());
 
   it('loads the team boards in personal order', async () => {
     localStorage.setItem('boardOrder:abc', JSON.stringify([1, 2]));
-    const service = new BoardListService(boardService, teamService);
+    const service = new BoardListService(boardService, teamService, projectFilter.service);
 
     await service.load();
 
-    expect(boardService.listBoards).toHaveBeenCalledWith('abc');
+    expect(boardService.listBoards).toHaveBeenCalledWith('abc', null);
     expect(ids(service)).toEqual([1, 2]);
   });
 
   it('saves the order per team after a move', async () => {
-    const service = new BoardListService(boardService, teamService);
+    const service = new BoardListService(boardService, teamService, projectFilter.service);
     await service.load();
 
     service.move(0, 1);
@@ -64,7 +67,7 @@ describe('BoardListService', () => {
   });
 
   it('adds new boards first, removes and renames them', async () => {
-    const service = new BoardListService(boardService, teamService);
+    const service = new BoardListService(boardService, teamService, projectFilter.service);
     await service.load();
 
     service.add(board(3, '2026-01-03'));
@@ -76,12 +79,21 @@ describe('BoardListService', () => {
   });
 
   it('remembers whether the list is open', () => {
-    const service = new BoardListService(boardService, teamService);
+    const service = new BoardListService(boardService, teamService, projectFilter.service);
     expect(service.isOpen).toBeTrue();
 
     service.toggleOpen();
 
     expect(localStorage.getItem('sidebarBoardsOpen')).toBe('false');
-    expect(new BoardListService(boardService, teamService).isOpen).toBeFalse();
+    expect(new BoardListService(boardService, teamService, projectFilter.service).isOpen).toBeFalse();
+  });
+
+  it('reloads the boards of the newly selected project', async () => {
+    const service = new BoardListService(boardService, teamService, projectFilter.service);
+    await service.load();
+
+    projectFilter.selected.next(4);
+
+    expect(boardService.listBoards).toHaveBeenCalledWith('abc', 4);
   });
 });

@@ -10,6 +10,7 @@ import {IconButtonComponent} from "@components/icon-button/icon-button.component
 import {ButtonComponent} from "@components/button/button.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
+import {ProjectSelectComponent} from "@components/project-select/project-select.component";
 
 @Component({
   selector: 'app-item-detail-layout',
@@ -24,7 +25,8 @@ import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.com
     IconButtonComponent,
     ButtonComponent,
     ConfirmDialogComponent,
-    FavoriteStarComponent
+    FavoriteStarComponent,
+    ProjectSelectComponent
   ],
   templateUrl: './item-detail-layout.component.html',
   styleUrl: './item-detail-layout.component.css'
@@ -51,4 +53,5 @@ export class ItemDetailLayoutComponent {
   @Output() deleteRequested = new EventEmitter<void>();
   @Output() deleteConfirmed = new EventEmitter<void>();
   @Output() deleteCancelled = new EventEmitter<void>();
+  @Output() projectChange = new EventEmitter<number | null>();
 }

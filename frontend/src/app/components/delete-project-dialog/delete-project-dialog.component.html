@@ -1,0 +1,24 @@
+<div class="deleteProjectDialogOverlay">
+  <div class="deleteProjectDialogOverlay__backdrop" (click)="cancelled.emit()"></div>
+
+  <div class="deleteProjectDialog">
+    <h3 class="deleteProjectDialog__title">{{ PHRASES.CONFIRM_DELETE_PROJECT | translate: {name: projectName} }}</h3>
+
+    <label class="deleteProjectDialog__option">
+      <input type="radio" name="deleteMode" value="keep" [(ngModel)]="mode" />
+      {{ PHRASES.KEEP_PROJECT_ITEMS | translate }}
+    </label>
+    <label class="deleteProjectDialog__option">
+      <input type="radio" name="deleteMode" value="delete_items" [(ngModel)]="mode" />
+      {{ PHRASES.DELETE_PROJECT_ITEMS | translate }}
+    </label>
+
+    <label class="deleteProjectDialog__label" for="confirmProjectName">{{ PHRASES.TYPE_NAME_TO_CONFIRM | translate: {name: projectName} }}</label>
+    <input id="confirmProjectName" type="text" class="deleteProjectDialog__input" [(ngModel)]="typedName" autocomplete="off" />
+
+    <div class="deleteProjectDialog__actions">
+      <app-button variant="ghost" (pressed)="cancelled.emit()">{{ PHRASES.CANCEL | translate }}</app-button>
+      <app-button variant="danger" [disabled]="!canDelete" (pressed)="handleDelete()">{{ PHRASES.DELETE | translate }}</app-button>
+    </div>
+  </div>
+</div>

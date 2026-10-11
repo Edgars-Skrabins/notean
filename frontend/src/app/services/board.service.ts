@@ -15,6 +15,7 @@ import {
 import {TicketSummary} from "@models/ticket.model";
 import {mapAvatar, RawAvatar} from "@services/avatar.service";
 import {teamPath} from "@utils/teamPath";
+import {projectQuery} from "@utils/projectQuery";
 
 export interface RawBoardUser {
   id: number;
@@ -41,6 +42,7 @@ interface RawBoardColumn {
 interface RawBoardSummary {
   id: number;
   title: string;
+  project_id: number | null;
   creator: RawBoardUser;
   created_at: string;
   updated_at: string;
@@ -94,6 +96,7 @@ export function mapBoardSummary(raw: RawBoardSummary): BoardSummary {
   return {
     id: raw.id,
     title: raw.title,
+    projectId: raw.project_id,
     creator: mapBoardUser(raw.creator),
     createdAt: raw.created_at,
     updatedAt: raw.updated_at,
@@ -135,9 +138,9 @@ export class BoardService {
     return teamPath(teamCode, 'boards');
   }
 
-  async listBoards(teamCode: string): Promise<ListBoardsResponse> {
+  async listBoards(teamCode: string, projectId: number | null = null): Promise<ListBoardsResponse> {
     return apiRequest<ListBoardsResponse>(
-      axiosInstance.get(this.boardsUrl(teamCode)),
+      axiosInstance.get(this.boardsUrl(teamCode), projectQuery(projectId)),
       (data) => {
         const boards = data.boards as RawBoardSummary[];
         return {success: true, boards: boards.map(mapBoardSummary)};
@@ -145,9 +148,9 @@ export class BoardService {
     );
   }
 
-  async createBoard(teamCode: string, title: string): Promise<BoardResponse> {
+  async createBoard(teamCode: string, title: string, projectId: number | null = null): Promise<BoardResponse> {
     return apiRequest<BoardResponse>(
-      axiosInstance.post(this.boardsUrl(teamCode), {board: {title}}),
+      axiosInstance.post(this.boardsUrl(teamCode), {board: {title, project_id: projectId}}),
       (data) => ({success: true, board: mapBoardDetail(data.board)}),
     );
   }
@@ -155,6 +158,13 @@ export class BoardService {
   async getBoard(teamCode: string, id: number): Promise<BoardResponse> {
     return apiRequest<BoardResponse>(
       axiosInstance.get(`${this.boardsUrl(teamCode)}/${id}`),
+      (data) => ({success: true, board: mapBoardDetail(data.board)}),
+    );
+  }
+
+  async setBoardProject(teamCode: string, id: number, projectId: number | null): Promise<BoardResponse> {
+    return apiRequest<BoardResponse>(
+      axiosInstance.patch(`${this.boardsUrl(teamCode)}/${id}`, {board: {project_id: projectId}}),
       (data) => ({success: true, board: mapBoardDetail(data.board)}),
     );
   }

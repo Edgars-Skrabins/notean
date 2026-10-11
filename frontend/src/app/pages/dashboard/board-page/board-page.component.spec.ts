@@ -6,6 +6,8 @@ import {BoardService} from "@services/board.service";
 import {BoardListService} from "@services/board-list.service";
 import {FavoriteService} from "@services/favorite.service";
 import {NavigationService} from "@services/navigation.service";
+import {ToastService} from "@services/toast.service";
+import {ToastType} from "@models/toast.model";
 import {PHRASES} from "@config/phrases";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "./board-page-state.service";
@@ -18,15 +20,17 @@ describe('BoardPageComponent', () => {
   let boardListService: jasmine.SpyObj<BoardListService>;
   let favoriteService: jasmine.SpyObj<FavoriteService>;
   let navigationService: jasmine.SpyObj<NavigationService>;
+  let toastService: jasmine.SpyObj<ToastService>;
 
   beforeEach(() => {
     state = createBoardState();
-    boardService = jasmine.createSpyObj<BoardService>('BoardService', ['renameBoard', 'deleteBoard']);
+    boardService = jasmine.createSpyObj<BoardService>('BoardService', ['renameBoard', 'deleteBoard', 'setBoardProject']);
     boardListService = jasmine.createSpyObj<BoardListService>('BoardListService', ['rename', 'remove', 'load']);
     favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['renameItem', 'forgetItem']);
     navigationService = jasmine.createSpyObj<NavigationService>('NavigationService', ['navigate']);
+    toastService = jasmine.createSpyObj<ToastService>('ToastService', ['show']);
     const route = {paramMap: of(convertToParamMap({id: '9'}))} as unknown as ActivatedRoute;
-    component = new BoardPageComponent(route, state, boardService, boardListService, favoriteService, navigationService);
+    component = new BoardPageComponent(route, state, boardService, boardListService, favoriteService, navigationService, toastService);
   });
 
   it('loads the board from the route', fakeAsync(() => {
@@ -83,5 +87,27 @@ describe('BoardPageComponent', () => {
 
     expect(component.alertMessage).toBe('ERRORS.BOARDS.BOARD_NOT_FOUND');
     expect(navigationService.navigate).not.toHaveBeenCalled();
+  }));
+
+  it('moves the board to another project and refreshes the sidebar', fakeAsync(() => {
+    boardService.setBoardProject.and.returnValue(Promise.resolve({success: true, board: {...boardDetail(), projectId: 4}}));
+
+    component.handleProjectChange(4);
+    flushMicrotasks();
+
+    expect(boardService.setBoardProject).toHaveBeenCalledWith('abc', 9, 4);
+    expect(state.board?.projectId).toBe(4);
+    expect(boardListService.load).toHaveBeenCalled();
+    expect(toastService.show).toHaveBeenCalledWith({type: ToastType.SUCCESS, message: PHRASES.PROJECT_UPDATED});
+  }));
+
+  it('keeps the project and shows a toast when moving fails', fakeAsync(() => {
+    boardService.setBoardProject.and.returnValue(Promise.resolve({success: false, code: 'PROJECT_INVALID'}));
+
+    component.handleProjectChange(4);
+    flushMicrotasks();
+
+    expect(state.board?.projectId).toBeNull();
+    expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: PHRASES.PROJECT_UPDATE_FAILED});
   }));
 });

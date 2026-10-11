@@ -1,0 +1,4 @@
+<select #select class="projectSelect" [attr.aria-label]="PHRASES.PROJECT | translate" (change)="handleChange(select)">
+  <option [value]="NO_PROJECT" [selected]="value === NO_PROJECT">{{ PHRASES.NO_PROJECT | translate }}</option>
+  <option *ngFor="let project of projectFilterService.projects$ | async" [value]="project.id" [selected]="value === project.id.toString()">{{ project.name }}</option>
+</select>

@@ -1,4 +1,5 @@
-import {Directive, OnInit} from '@angular/core';
+import {Directive, OnDestroy, OnInit} from '@angular/core';
+import {skip, Subscription} from 'rxjs';
 import {FolderService} from "@services/folder.service";
 import {TeamService} from "@services/team.service";
 import {FavoriteService} from "@services/favorite.service";
@@ -11,10 +12,11 @@ import {TranslateService} from "@ngx-translate/core";
 import {ErrorCode} from "@config/errorCodes";
 import {FolderedItemSummary} from "@models/foldered-item.model";
 import {FolderedItemService} from "@services/foldered-item.service";
+import {ProjectFilterService} from "@services/project-filter.service";
 import {AppRoutes} from "../../app/app-routes.enum";
 
 @Directive()
-export abstract class FolderedListPageComponent implements OnInit {
+export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   protected abstract readonly itemType: FolderItemType;
   protected abstract readonly itemRoute: AppRoutes;
   protected abstract readonly untitledItemPhrase: string;
@@ -28,6 +30,7 @@ export abstract class FolderedListPageComponent implements OnInit {
 
   protected readonly teamCode: string;
   private pendingCreateFolderParentId: number | null = null;
+  private projectSubscription: Subscription | null = null;
 
   protected constructor(
     private itemService: FolderedItemService<ErrorCode>,
@@ -35,7 +38,8 @@ export abstract class FolderedListPageComponent implements OnInit {
     private teamService: TeamService,
     private favoriteService: FavoriteService,
     private router: Router,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private projectFilterService: ProjectFilterService
   ) {
     this.teamCode = this.teamService.getCurrentTeamCode();
   }
@@ -47,7 +51,7 @@ export abstract class FolderedListPageComponent implements OnInit {
   handleCreateItem(parentId: number | null) {
     const untitledTitle = this.translateService.instant(this.untitledItemPhrase);
 
-    this.itemService.create(this.teamCode, untitledTitle)
+    this.itemService.create(this.teamCode, untitledTitle, this.projectFilterService.getSelectedProjectId())
       .then((response) => {
         if (!response.success) {
           this.alertMessage = errorPhrase(response.code);
@@ -86,6 +90,11 @@ export abstract class FolderedListPageComponent implements OnInit {
 
   ngOnInit() {
     this.loadData();
+    this.projectSubscription = this.projectFilterService.selectedProjectId$.pipe(skip(1)).subscribe(() => this.loadData());
+  }
+
+  ngOnDestroy() {
+    this.projectSubscription?.unsubscribe();
   }
 
   handleCreateFolder(parentId: number | null) {
@@ -192,9 +201,10 @@ export abstract class FolderedListPageComponent implements OnInit {
   }
 
   private loadData() {
+    const projectId = this.projectFilterService.getSelectedProjectId();
     Promise.all([
-      this.folderService.listFolders(this.teamCode, this.itemType),
-      this.itemService.list(this.teamCode)
+      this.folderService.listFolders(this.teamCode, this.itemType, projectId),
+      this.itemService.list(this.teamCode, projectId)
     ]).then(([foldersResponse, itemsResponse]) => {
       this.isLoading = false;
 

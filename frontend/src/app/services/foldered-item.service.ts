@@ -3,6 +3,7 @@ import {axiosInstance} from "@config/axiosConfig";
 import {ErrorCode} from "@config/errorCodes";
 import {apiRequest} from "@utils/apiRequest";
 import {teamPath} from "@utils/teamPath";
+import {projectQuery} from "@utils/projectQuery";
 import {mapAvatar, RawAvatar} from "@services/avatar.service";
 import {
   DeleteFolderedItemResponse,
@@ -30,6 +31,7 @@ interface RawFolderedItemSummary {
   id: number;
   title: string;
   folder_id: number | null;
+  project_id: number | null;
   creator: RawFolderedItemUser;
   created_at: string;
   updated_at: string;
@@ -61,6 +63,7 @@ export function mapFolderedItemSummary(raw: RawFolderedItemSummary): FolderedIte
     id: raw.id,
     title: raw.title,
     folderId: raw.folder_id,
+    projectId: raw.project_id,
     creator: mapFolderedItemUser(raw.creator),
     createdAt: raw.created_at,
     updatedAt: raw.updated_at,
@@ -80,15 +83,19 @@ export abstract class FolderedItemService<E extends ErrorCode> {
   protected abstract readonly resource: string;
   protected abstract readonly key: string;
 
-  async list(teamCode: string): Promise<ListFolderedItemsResponse> {
+  async list(teamCode: string, projectId: number | null = null): Promise<ListFolderedItemsResponse> {
     return apiRequest<ListFolderedItemsResponse>(
-      axiosInstance.get(this.itemsUrl(teamCode)),
+      axiosInstance.get(this.itemsUrl(teamCode), projectQuery(projectId)),
       (data) => ({success: true, items: (data[this.resource] as RawFolderedItemSummary[]).map(mapFolderedItemSummary)}),
     );
   }
 
-  async create(teamCode: string, title?: string): Promise<FolderedItemResponse<E>> {
-    return this.requestItem(axiosInstance.post(this.itemsUrl(teamCode), {[this.key]: {title}}));
+  async create(teamCode: string, title: string, projectId: number | null = null): Promise<FolderedItemResponse<E>> {
+    return this.requestItem(axiosInstance.post(this.itemsUrl(teamCode), {[this.key]: {title, project_id: projectId}}));
+  }
+
+  async setProject(teamCode: string, id: number, projectId: number | null): Promise<FolderedItemResponse<E>> {
+    return this.requestItem(axiosInstance.patch(this.itemsUrl(teamCode, id), {[this.key]: {project_id: projectId}}));
   }
 
   async get(teamCode: string, id: number): Promise<FolderedItemResponse<E>> {

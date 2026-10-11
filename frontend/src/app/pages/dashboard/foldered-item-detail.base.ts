@@ -8,6 +8,8 @@ import {TeamService} from "@services/team.service";
 import {AuthService} from "@services/auth.service";
 import {NavigationService} from "@services/navigation.service";
 import {FavoriteService} from "@services/favorite.service";
+import {ToastService} from "@services/toast.service";
+import {ToastType} from "@models/toast.model";
 import {FavoritableType} from "@models/favorite.model";
 import {FolderedItemDetail, FolderedItemEditingUser} from "@models/foldered-item.model";
 import {errorPhrase} from "@utils/errorPhrase";
@@ -38,7 +40,8 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
     teamService: TeamService,
     private authService: AuthService,
     private navigationService: NavigationService,
-    private favoriteService: FavoriteService
+    private favoriteService: FavoriteService,
+    private toastService: ToastService
   ) {
     this.teamCode = teamService.getCurrentTeamCode();
   }
@@ -127,6 +130,24 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
         this.favoriteService.renameItem(this.favoriteType, response.item.id, response.item.title);
         this.mode = 'view';
         this.editingService.stopEditing();
+      });
+  }
+
+  handleProjectChange(projectId: number | null) {
+    if (!this.item) {
+      return;
+    }
+
+    const item = this.item;
+    this.itemService.setProject(this.teamCode, item.id, projectId)
+      .then((response) => {
+        if (!response.success) {
+          this.toastService.show({type: ToastType.ERROR, message: PHRASES.PROJECT_UPDATE_FAILED});
+          return;
+        }
+
+        item.projectId = response.item.projectId;
+        this.toastService.show({type: ToastType.SUCCESS, message: PHRASES.PROJECT_UPDATED});
       });
   }
 

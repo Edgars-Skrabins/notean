@@ -7,6 +7,7 @@ import {PHRASES} from "@config/phrases";
 import {BoardService} from "@services/board.service";
 import {BoardListService} from "@services/board-list.service";
 import {TeamService} from "@services/team.service";
+import {ProjectFilterService} from "@services/project-filter.service";
 import {BoardSummary} from "@models/board.model";
 import {IconComponent} from "@components/icon/icon.component";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
@@ -44,7 +45,8 @@ export class SidebarBoardsComponent implements OnInit {
     private router: Router,
     protected boardListService: BoardListService,
     private boardService: BoardService,
-    private teamService: TeamService
+    private teamService: TeamService,
+    private projectFilterService: ProjectFilterService
   ) {
   }
 
@@ -85,7 +87,7 @@ export class SidebarBoardsComponent implements OnInit {
   handleCreateConfirmed(event: { title: string }) {
     this.isCreateDialogOpen = false;
 
-    this.boardService.createBoard(this.teamService.getCurrentTeamCode(), event.title)
+    this.boardService.createBoard(this.teamService.getCurrentTeamCode(), event.title, this.projectFilterService.getSelectedProjectId())
       .then((response) => {
         if (!response.success) {
           return;

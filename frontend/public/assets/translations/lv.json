@@ -35,7 +35,6 @@
   "TEAMS": "Komandas",
   "MENU": "Izvēlne",
   "LOGOUT": "Iziet",
-  "COMING_SOON": "Drīzumā",
   "SEARCH_PAGES": "Meklēt lapas pēc nosaukuma",
   "NEW_PAGE": "Jauna lapa",
   "NEW_FOLDER": "Jauna mape",
@@ -185,6 +184,28 @@
   "NOTHING_ASSIGNED": "Jums nekas nav piešķirts.",
   "MY_WORK_LOAD_FAILED": "Neizdevās ielādēt jūsu darbu",
   "SHOW_MY_WORK_ON_HOME": "Rādīt „Mans darbs” sākumā",
+  "ALL_PROJECTS": "Visi",
+  "NEW_PROJECT": "Jauns projekts",
+  "PROJECT": "Projekts",
+  "NO_PROJECT": "Bez projekta",
+  "PROJECT_NAME": "Nosaukums",
+  "PROJECT_DESCRIPTION": "Apraksts",
+  "PROJECT_OWNER": "Īpašnieks",
+  "PROJECT_MEMBERS": "Dalībnieki",
+  "MEMBER_COUNT": "{{count}} dalībnieki",
+  "NO_PROJECTS_YET": "Projektu vēl nav.",
+  "CREATE_PROJECT_HINT": "Izveidojiet projektu, lai grupētu lapas, diagrammas un dēļus.",
+  "PROJECT_SAVED": "Projekts saglabāts",
+  "PROJECT_UPDATED": "Projekts atjaunināts",
+  "PROJECT_UPDATE_FAILED": "Neizdevās atjaunināt projektu",
+  "DANGER_ZONE": "Bīstamā zona",
+  "DELETE_PROJECT": "Dzēst projektu",
+  "CONFIRM_DELETE_PROJECT": "Dzēst projektu '{{name}}'?",
+  "KEEP_PROJECT_ITEMS": "Saglabāt tā lapas, diagrammas un dēļus (tiem nebūs projekta)",
+  "DELETE_PROJECT_ITEMS": "Dzēst arī tā lapas, diagrammas un dēļus",
+  "TYPE_NAME_TO_CONFIRM": "Ierakstiet {{name}}, lai apstiprinātu",
+  "PROJECT_DELETED": "Projekts dzēsts",
+  "BACK_TO_PROJECTS": "Atpakaļ uz projektiem",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Jūsu sesija ir beigusies. Lūdzu, piesakieties vēlreiz",
@@ -243,7 +264,8 @@
       "TICKET_CREATE_FAILED": "Neizdevās izveidot uzdevumu",
       "TICKET_UPDATE_FAILED": "Neizdevās atjaunināt uzdevumu",
       "ASSIGNEE_NOT_TEAM_MEMBER": "Šī persona nav komandas dalībnieks",
-      "ASSIGNEE_NOT_FOUND": "Šī persona nav piešķirta"
+      "ASSIGNEE_NOT_FOUND": "Šī persona nav piešķirta",
+      "ASSIGNEE_NO_ACCESS": "Šī persona neredz šo dēli"
     },
     "FAVORITES": {
       "FAVORITE_NOT_FOUND": "Izlases ieraksts nav atrasts",
@@ -251,6 +273,15 @@
       "FAVORITE_ITEM_NOT_FOUND": "Šis vienums vairs neeksistē",
       "FAVORITE_CREATE_FAILED": "Neizdevās pievienot izlasei",
       "FAVORITE_SURFACE_INVALID": "Neizdevās pārvietot izlases ierakstu"
+    },
+    "PROJECTS": {
+      "PROJECT_NOT_FOUND": "Projekts nav atrasts",
+      "PROJECT_NAME_TAKEN": "Projekts ar šādu nosaukumu jau pastāv",
+      "PROJECT_INVALID_MEMBERS": "Īpašniekam un dalībniekiem jābūt komandas dalībniekiem",
+      "PROJECT_SAVE_FAILED": "Neizdevās saglabāt projektu",
+      "PROJECT_NAME_MISMATCH": "Ierakstītais nosaukums neatbilst projekta nosaukumam",
+      "PROJECT_DELETE_MODE_INVALID": "Neizdevās dzēst projektu",
+      "PROJECT_INVALID": "Šajā projektā nevar pārvietot vienumus"
     }
   }
 }

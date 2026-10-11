@@ -15,6 +15,7 @@ function buildFavorite(overrides: Partial<Favorite>): Favorite {
     favoritableType: 'Page',
     favoritableId: 10,
     title: 'Notes',
+    projectId: null,
     boardId: null,
     boardTitle: null,
     inBacklog: false,

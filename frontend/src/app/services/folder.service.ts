@@ -11,6 +11,7 @@ import {
   ListFoldersResponse,
 } from '@models/folder.model';
 import { teamPath } from '@utils/teamPath';
+import { projectQuery } from '@utils/projectQuery';
 
 interface RawFolderUser {
   id: number;
@@ -52,9 +53,9 @@ export class FolderService {
     return teamPath(teamCode, 'folders');
   }
 
-  async listFolders(teamCode: string, itemType: FolderItemType): Promise<ListFoldersResponse> {
+  async listFolders(teamCode: string, itemType: FolderItemType, projectId: number | null = null): Promise<ListFoldersResponse> {
     return apiRequest<ListFoldersResponse>(
-      axiosInstance.get(this.foldersUrl(teamCode), {params: {item_type: itemType}}),
+      axiosInstance.get(this.foldersUrl(teamCode), {params: {item_type: itemType, ...projectQuery(projectId)?.params}}),
       (data) => ({success: true, folders: (data.folders as RawFolderSummary[]).map(mapFolderSummary)}),
     );
   }

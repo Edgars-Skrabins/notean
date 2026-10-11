@@ -25,6 +25,7 @@ export function boardDetail(): BoardDetail {
   return {
     id: TEST_BOARD_ID,
     title: 'Sprint 12',
+    projectId: null,
     creator: {id: 1, nickname: 'alice', avatar: {color: 'red', imageUrl: null}},
     createdAt: '2026-10-01T00:00:00Z',
     updatedAt: '2026-10-01T00:00:00Z',

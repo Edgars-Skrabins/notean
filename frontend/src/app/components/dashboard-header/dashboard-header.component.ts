@@ -10,6 +10,7 @@ import {AvatarService} from "@services/avatar.service";
 import {LanguageSwitcherComponent} from "@components/language-switcher/language-switcher.component";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {AvatarComponent} from "@components/avatar/avatar.component";
+import {ProjectSelectorComponent} from "@components/project-selector/project-selector.component";
 import {AppRoutes} from "../../app/app-routes.enum";
 
 @Component({
@@ -21,7 +22,8 @@ import {AppRoutes} from "../../app/app-routes.enum";
     AsyncPipe,
     LanguageSwitcherComponent,
     IconButtonComponent,
-    AvatarComponent
+    AvatarComponent,
+    ProjectSelectorComponent
   ],
   templateUrl: './dashboard-header.component.html',
   styleUrl: './dashboard-header.component.css'

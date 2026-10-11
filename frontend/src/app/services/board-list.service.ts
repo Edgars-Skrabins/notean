@@ -1,9 +1,10 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, Observable, skip} from 'rxjs';
 import {moveItemInArray} from '@angular/cdk/drag-drop';
 import {BoardSummary} from "@models/board.model";
 import {BoardService} from "@services/board.service";
 import {TeamService} from "@services/team.service";
+import {ProjectFilterService} from "@services/project-filter.service";
 
 const ORDER_KEY_PREFIX = 'boardOrder:';
 const OPEN_KEY = 'sidebarBoardsOpen';
@@ -30,13 +31,15 @@ export class BoardListService {
 
   constructor(
     private boardService: BoardService,
-    private teamService: TeamService
+    private teamService: TeamService,
+    private projectFilterService: ProjectFilterService
   ) {
+    this.projectFilterService.selectedProjectId$.pipe(skip(1)).subscribe(() => this.load());
   }
 
   async load() {
     const teamCode = this.teamService.getCurrentTeamCode();
-    const response = await this.boardService.listBoards(teamCode);
+    const response = await this.boardService.listBoards(teamCode, this.projectFilterService.getSelectedProjectId());
     if (response.success) {
       this.boardsSubject.next(orderBoards(response.boards, this.readOrder(teamCode)));
     }

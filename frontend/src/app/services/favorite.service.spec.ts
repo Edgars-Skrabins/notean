@@ -1,9 +1,10 @@
-import {firstValueFrom} from "rxjs";
+import {BehaviorSubject, firstValueFrom} from "rxjs";
 import {AxiosError} from "axios";
 import {FavoriteService, mapFavorite} from "./favorite.service";
 import {axiosInstance} from "@config/axiosConfig";
 import {TeamService} from "@services/team.service";
 import {ToastService} from "@services/toast.service";
+import {ProjectFilterService} from "@services/project-filter.service";
 import {ToastType} from "@models/toast.model";
 import {Favorite} from "@models/favorite.model";
 import {PHRASES} from "@config/phrases";
@@ -14,6 +15,7 @@ function rawFavorite(overrides: Record<string, unknown> = {}) {
     favoritable_type: 'Page',
     favoritable_id: 10,
     title: 'Notes',
+    project_id: null,
     home_position: 0,
     sidebar_position: 0,
     ...overrides,
@@ -27,6 +29,7 @@ describe('mapFavorite', () => {
       favoritableType: 'Page',
       favoritableId: 10,
       title: 'Notes',
+      projectId: null,
       boardId: null,
       boardTitle: null,
       inBacklog: false,
@@ -46,6 +49,7 @@ describe('mapFavorite', () => {
 describe('FavoriteService', () => {
   let service: FavoriteService;
   let toastService: jasmine.SpyObj<ToastService>;
+  let selectedProject: BehaviorSubject<number | null>;
 
   async function loadWith(favorites: ReturnType<typeof rawFavorite>[]) {
     const get = spyOn(axiosInstance, 'get').and.returnValue(Promise.resolve({data: {favorites}}));
@@ -63,7 +67,12 @@ describe('FavoriteService', () => {
     const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeam']);
     teamService.getCurrentTeam.and.returnValue({id: 1, name: 'Team A', code: 'aaa'});
     toastService = jasmine.createSpyObj('ToastService', ['show']);
-    service = new FavoriteService(teamService, toastService);
+    selectedProject = new BehaviorSubject<number | null>(null);
+    const projectFilterService = {
+      selectedProjectId$: selectedProject,
+      getSelectedProjectId: () => selectedProject.value,
+    } as unknown as ProjectFilterService;
+    service = new FavoriteService(teamService, toastService, projectFilterService);
   });
 
   it('loads the current team favorites', async () => {
@@ -178,5 +187,33 @@ describe('FavoriteService', () => {
 
     expect((await firstValueFrom(service.homeFavorites$)).map((f) => f.id)).toEqual([2, 1]);
     expect((await firstValueFrom(service.sidebarFavorites$)).map((f) => f.id)).toEqual([1, 2]);
+  });
+
+  it('shows only the selected project\'s favorites on Home and in the sidebar', async () => {
+    await loadWith([rawFavorite({id: 1, project_id: 4}), rawFavorite({id: 2, favoritable_id: 11, project_id: null, home_position: 1, sidebar_position: 1})]);
+
+    expect((await firstValueFrom(service.homeFavorites$)).map((favorite) => favorite.id)).toEqual([1, 2]);
+
+    selectedProject.next(4);
+
+    expect((await firstValueFrom(service.homeFavorites$)).map((favorite) => favorite.id)).toEqual([1]);
+    expect((await firstValueFrom(service.sidebarFavorites$)).map((favorite) => favorite.id)).toEqual([1]);
+    expect(service.isFavorited('Page', 11)).toBeTrue();
+  });
+
+  it('maps a move inside a filtered list onto the full order', async () => {
+    await loadWith([
+      rawFavorite({id: 1, favoritable_id: 10, project_id: 4, home_position: 0}),
+      rawFavorite({id: 2, favoritable_id: 11, project_id: null, home_position: 1}),
+      rawFavorite({id: 3, favoritable_id: 12, project_id: 4, home_position: 2}),
+    ]);
+    selectedProject.next(4);
+    const patch = spyOn(axiosInstance, 'patch').and.returnValue(Promise.resolve({data: {favorite: rawFavorite({id: 3})}}));
+
+    await service.move('home', 3, 0);
+
+    expect(patch).toHaveBeenCalledWith('/teams/aaa/favorites/3', {favorite: {surface: 'home', position: 0}});
+    selectedProject.next(null);
+    expect((await firstValueFrom(service.homeFavorites$)).map((favorite) => favorite.id)).toEqual([3, 1, 2]);
   });
 });

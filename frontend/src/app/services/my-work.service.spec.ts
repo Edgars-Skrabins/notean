@@ -48,8 +48,10 @@ describe('MyWorkService', () => {
     const get = spyOn(axiosInstance, 'get').and.returnValue(Promise.resolve({data: {tickets: []}}));
 
     const response = await new MyWorkService().listMyWork('abc');
+    await new MyWorkService().listMyWork('abc', 4);
 
-    expect(get).toHaveBeenCalledWith('/teams/abc/my_work');
+    expect(get).toHaveBeenCalledWith('/teams/abc/my_work', undefined);
+    expect(get).toHaveBeenCalledWith('/teams/abc/my_work', {params: {project_id: 4}});
     expect(response).toEqual({success: true, tickets: []});
   });
 });

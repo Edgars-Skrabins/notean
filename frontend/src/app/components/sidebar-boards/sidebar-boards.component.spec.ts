@@ -8,6 +8,7 @@ import {TeamService} from "@services/team.service";
 import {BoardSummary} from "@models/board.model";
 import {AppRoutes} from "../../app/app-routes.enum";
 import {boardDetail} from "../../testing/boardFixtures";
+import {projectFilterStub} from "../../testing/projectFilterStub";
 
 describe('SidebarBoardsComponent', () => {
   let component: SidebarBoardsComponent;
@@ -21,7 +22,7 @@ describe('SidebarBoardsComponent', () => {
     boardListService = jasmine.createSpyObj<BoardListService>('BoardListService', ['load', 'move', 'add', 'toggleOpen']);
     const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeamCode']);
     teamService.getCurrentTeamCode.and.returnValue('abc');
-    component = new SidebarBoardsComponent(router, boardListService, boardService, teamService);
+    component = new SidebarBoardsComponent(router, boardListService, boardService, teamService, projectFilterStub(4).service);
   });
 
   it('loads the boards on init', () => {
@@ -51,7 +52,7 @@ describe('SidebarBoardsComponent', () => {
     flushMicrotasks();
 
     expect(component.isCreateDialogOpen).toBeFalse();
-    expect(boardService.createBoard).toHaveBeenCalledWith('abc', 'Sprint 12');
+    expect(boardService.createBoard).toHaveBeenCalledWith('abc', 'Sprint 12', 4);
     expect(boardListService.add).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 9, AppRoutes.KANBAN]);
   }));

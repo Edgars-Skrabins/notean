@@ -17,6 +17,7 @@
   (deleteRequested)="handleDelete()"
   (deleteConfirmed)="handleConfirmDelete()"
   (deleteCancelled)="handleCancelDelete()"
+  (projectChange)="handleProjectChange($event)"
 >
   <div class="pageDetail__content" *ngIf="mode === 'view'" [innerHTML]="item.content"></div>
   <app-rich-text-editor

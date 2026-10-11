@@ -8,6 +8,7 @@ import {TeamService} from "@services/team.service";
 import {FavoriteService} from "@services/favorite.service";
 import {FolderSummary} from "@models/folder.model";
 import {FolderedItemDetail} from "@models/foldered-item.model";
+import {projectFilterStub, ProjectFilterStub} from "../../../testing/projectFilterStub";
 
 function folder(id: number, parentId: number | null, title = `Folder ${id}`): FolderSummary {
   return {id, title, parentId, creator: {id: 1, nickname: 'alice'}, createdAt: '', updatedAt: ''};
@@ -18,6 +19,7 @@ function page(id: number, folderId: number | null, title = `Page ${id}`): Folder
     id,
     title,
     folderId,
+    projectId: null,
     creator: {id: 1, nickname: 'alice', avatar: {color: 'red', imageUrl: null}},
     createdAt: '',
     updatedAt: '',
@@ -32,8 +34,10 @@ describe('DocumentPagesComponent', () => {
   let pageService: jasmine.SpyObj<PageService>;
   let folderService: jasmine.SpyObj<FolderService>;
   let favoriteService: jasmine.SpyObj<FavoriteService>;
+  let projectFilter: ProjectFilterStub;
 
   beforeEach(fakeAsync(() => {
+    projectFilter = projectFilterStub();
     pageService = jasmine.createSpyObj<PageService>('PageService', ['list', 'moveToFolder', 'delete', 'create']);
     folderService = jasmine.createSpyObj<FolderService>('FolderService', ['listFolders', 'createFolder', 'renameFolder', 'moveFolder', 'deleteFolder']);
     favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem']);
@@ -51,7 +55,8 @@ describe('DocumentPagesComponent', () => {
       teamService,
       favoriteService,
       {} as Router,
-      {} as TranslateService,
+      {translate: () => undefined, instant: (key: string) => key} as unknown as TranslateService,
+      projectFilter.service,
     );
     component.ngOnInit();
     tick();
@@ -137,4 +142,22 @@ describe('DocumentPagesComponent', () => {
     expect(component.displayFolders).toEqual([]);
     expectNoReload();
   });
+
+  it('reloads folders and pages for the newly selected project', fakeAsync(() => {
+    projectFilter.selected.next(4);
+    tick();
+
+    expect(folderService.listFolders).toHaveBeenCalledWith('abc', 'Page', 4);
+    expect(pageService.list).toHaveBeenCalledWith('abc', 4);
+  }));
+
+  it('creates pages in the selected project', fakeAsync(() => {
+    projectFilter.selected.next(4);
+    pageService.create.and.returnValue(new Promise(() => undefined));
+
+    component.handleCreateItem(null);
+
+    expect(pageService.create).toHaveBeenCalledWith('abc', 'UNTITLED_PAGE', 4);
+    component.ngOnDestroy();
+  }));
 });

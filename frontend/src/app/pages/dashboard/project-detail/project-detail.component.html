@@ -1,0 +1,39 @@
+<button type="button" class="projectDetail__back" (click)="handleGoBack()">&larr; {{ PHRASES.BACK_TO_PROJECTS | translate }}</button>
+
+<p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+
+<div class="projectDetail dashboardStub" *ngIf="project && params">
+  <h2 class="dashboardStub__title projectDetail__title">{{ project.name }}</h2>
+
+  <app-project-form
+    [params]="params"
+    [members]="members"
+    [readonly]="!project.canManage"
+    [nameError]="nameError"
+    (paramsChange)="handleParamsChange($event)"
+  ></app-project-form>
+
+  <app-button *ngIf="project.canManage" variant="primary" [disabled]="!hasUnsavedChanges || isSaving" (pressed)="handleSave()">
+    {{ PHRASES.SAVE | translate }}
+  </app-button>
+
+  <section class="projectDetail__danger" *ngIf="project.canManage">
+    <h3 class="projectDetail__dangerTitle">{{ PHRASES.DANGER_ZONE | translate }}</h3>
+    <app-button variant="danger" icon="trash" (pressed)="handleOpenDelete()">{{ PHRASES.DELETE_PROJECT | translate }}</app-button>
+  </section>
+</div>
+
+<app-delete-project-dialog
+  *ngIf="isDeleteDialogOpen && project"
+  [projectName]="project.name"
+  (confirmed)="handleConfirmDelete($event)"
+  (cancelled)="handleCancelDelete()"
+></app-delete-project-dialog>
+
+<app-confirm-dialog
+  *ngIf="isLeaveConfirmOpen"
+  [message]="PHRASES.CONFIRM_LEAVE_UNSAVED_CHANGES | translate"
+  [confirmLabel]="PHRASES.LEAVE"
+  (confirmed)="handleConfirmLeave()"
+  (cancelled)="handleCancelLeave()"
+></app-confirm-dialog>

@@ -7,6 +7,8 @@ import {PHRASES} from "@config/phrases";
 import {TicketService} from "@services/ticket.service";
 import {FavoriteService} from "@services/favorite.service";
 import {TeamService} from "@services/team.service";
+import {ProjectService} from "@services/project.service";
+import {assignableMembers} from "@utils/assignableMembers";
 import {AuthService} from "@services/auth.service";
 import {ToastService} from "@services/toast.service";
 import {ToastType} from "@models/toast.model";
@@ -62,6 +64,7 @@ export class TicketDetailComponent implements OnInit {
     private favoriteService: FavoriteService,
     private toastService: ToastService,
     private teamService: TeamService,
+    private projectService: ProjectService,
     authService: AuthService
   ) {
     this.currentUserId = authService.getCurrentUser()?.id ?? 0;
@@ -202,8 +205,13 @@ export class TicketDetailComponent implements OnInit {
   }
 
   private loadAssignableMembers() {
-    this.teamService.fetchTeamMembers(this.teamCode).then((members) => {
-      this.members = members;
+    const projectId = this.state.board?.projectId ?? null;
+    Promise.all([
+      this.teamService.fetchTeamMembers(this.teamCode),
+      projectId === null ? Promise.resolve(null) : this.projectService.getProject(this.teamCode, projectId),
+    ]).then(([members, projectResponse]) => {
+      const projectMemberIds = projectResponse?.success ? projectResponse.project.members.map((member) => member.id) : null;
+      this.members = assignableMembers(members, projectId === null ? null : projectMemberIds ?? []);
     });
   }
 

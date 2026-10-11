@@ -24,6 +24,7 @@
     </div>
 
     <div class="boardPage__actions">
+      <app-project-select class="boardPage__project" [projectId]="board.projectId" (projectChange)="handleProjectChange($event)"></app-project-select>
       <app-favorite-star type="Board" [itemId]="board.id" [title]="board.title" [size]="36"></app-favorite-star>
       <app-icon-button icon="trash" variant="danger" [tooltip]="PHRASES.DELETE | translate" (pressed)="handleDelete()"></app-icon-button>
     </div>

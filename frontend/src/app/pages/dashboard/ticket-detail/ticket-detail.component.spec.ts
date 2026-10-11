@@ -6,6 +6,8 @@ import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
 import {TeamService} from "@services/team.service";
 import {AuthService} from "@services/auth.service";
+import {ProjectService} from "@services/project.service";
+import {ProjectDetail} from "@models/project.model";
 import {ToastType} from "@models/toast.model";
 import {TicketDetail} from "@models/ticket.model";
 import {PHRASES} from "@config/phrases";
@@ -19,6 +21,7 @@ describe('TicketDetailComponent editing', () => {
   let toastService: jasmine.SpyObj<ToastService>;
   let router: jasmine.SpyObj<Router>;
   let teamService: jasmine.SpyObj<TeamService>;
+  let projectService: jasmine.SpyObj<ProjectService>;
   let state: BoardPageStateService;
   let ticket: TicketDetail;
   const route = {snapshot: {paramMap: new Map([['ticketId', '1']])}} as unknown as ActivatedRoute;
@@ -31,10 +34,11 @@ describe('TicketDetailComponent editing', () => {
     router = jasmine.createSpyObj<Router>('Router', ['navigate']);
     teamService = jasmine.createSpyObj<TeamService>('TeamService', ['fetchTeamMembers']);
     teamService.fetchTeamMembers.and.returnValue(Promise.resolve([{id: 5, nickname: 'Bob', role: 'user', avatar: {color: 'red', imageUrl: null}}]));
+    projectService = jasmine.createSpyObj<ProjectService>('ProjectService', ['getProject']);
     const authService = jasmine.createSpyObj<AuthService>('AuthService', ['getCurrentUser']);
     authService.getCurrentUser.and.returnValue({id: 1, email: 'alice@example.com'});
     state = createBoardState();
-    component = new TicketDetailComponent(route, router, state, ticketService, favoriteService, toastService, teamService, authService);
+    component = new TicketDetailComponent(route, router, state, ticketService, favoriteService, toastService, teamService, projectService, authService);
 
     ticket = {...ticketDetail(1, 10), title: 'My Ticket'};
     component.ticket = ticket;
@@ -219,5 +223,21 @@ describe('TicketDetailComponent editing', () => {
     expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: PHRASES.ASSIGNEES_UPDATE_FAILED});
     expect(component.ticket?.assignees).toEqual([]);
     expect(component.isUpdatingAssignees).toBeFalse();
+  }));
+
+  it('offers only people who can see a project board', fakeAsync(() => {
+    state.board!.projectId = 4;
+    teamService.fetchTeamMembers.and.returnValue(Promise.resolve([
+      {id: 1, nickname: 'Alice', role: 'owner', avatar: {color: 'red', imageUrl: null}},
+      {id: 5, nickname: 'Bob', role: 'user', avatar: {color: 'red', imageUrl: null}},
+      {id: 6, nickname: 'Carol', role: 'user', avatar: {color: 'red', imageUrl: null}},
+    ]));
+    projectService.getProject.and.returnValue(Promise.resolve({success: true, project: {members: [{id: 6}]} as ProjectDetail}));
+
+    component.ngOnInit();
+    flushMicrotasks();
+
+    expect(projectService.getProject).toHaveBeenCalledWith('abc', 4);
+    expect(component.members.map((member) => member.nickname)).toEqual(['Alice', 'Carol']);
   }));
 });

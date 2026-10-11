@@ -1,0 +1,8 @@
+<select
+  class="projectSelector"
+  [attr.aria-label]="PHRASES.PROJECT | translate"
+  (change)="handleChange($any($event.target).value)"
+>
+  <option [value]="ALL_OPTION" [selected]="selectedValue === ALL_OPTION">{{ PHRASES.ALL_PROJECTS | translate }}</option>
+  <option *ngFor="let project of projects$ | async" [value]="project.id" [selected]="selectedValue === project.id.toString()">{{ project.name }}</option>
+</select>

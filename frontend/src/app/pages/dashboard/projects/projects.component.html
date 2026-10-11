@@ -1,4 +1,34 @@
 <div class="dashboardStub">
-  <h2 class="dashboardStub__title">{{ PHRASES.PROJECTS | translate }}</h2>
-  <p class="dashboardStub__body">{{ PHRASES.COMING_SOON | translate }}</p>
+  <div class="projects__header">
+    <h2 class="dashboardStub__title">{{ PHRASES.PROJECTS | translate }}</h2>
+    <app-button *ngIf="canCreate" variant="primary" icon="plus" (pressed)="handleNewProject()">{{ PHRASES.NEW_PROJECT | translate }}</app-button>
+  </div>
+
+  <ng-container *ngIf="projectFilterService.projects$ | async as projects">
+    <div class="projects__grid" *ngIf="projects.length">
+      <button type="button" class="projects__card" *ngFor="let project of projects" (click)="handleOpenProject(project)">
+        <span class="projects__name">{{ project.name }}</span>
+        <span class="projects__description">{{ project.description }}</span>
+        <span class="projects__meta">
+          <app-avatar [avatar]="project.owner.avatar" [nickname]="project.owner.nickname"></app-avatar>
+          {{ project.owner.nickname }} · {{ PHRASES.MEMBER_COUNT | translate: {count: project.memberCount} }}
+        </span>
+      </button>
+    </div>
+
+    <ng-container *ngIf="!projects.length">
+      <p class="dashboardStub__body">{{ PHRASES.NO_PROJECTS_YET | translate }}</p>
+      <p class="dashboardStub__body" *ngIf="canCreate">{{ PHRASES.CREATE_PROJECT_HINT | translate }}</p>
+    </ng-container>
+  </ng-container>
 </div>
+
+<app-new-project-dialog
+  *ngIf="isCreateDialogOpen"
+  [members]="members"
+  [currentUserId]="currentUserId"
+  [nameError]="nameError"
+  [busy]="isCreating"
+  (confirmed)="handleCreate($event)"
+  (cancelled)="handleCancelCreate()"
+></app-new-project-dialog>

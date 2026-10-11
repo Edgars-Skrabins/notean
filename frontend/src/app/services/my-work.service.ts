@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {axiosInstance} from "@config/axiosConfig";
 import {apiRequest} from "@utils/apiRequest";
 import {teamPath} from "@utils/teamPath";
+import {projectQuery} from "@utils/projectQuery";
 import {mapBoardUser, RawBoardUser} from "@services/board.service";
 import {MyWorkGroup, MyWorkResponse, MyWorkTicket} from "@models/my-work.model";
 
@@ -43,9 +44,9 @@ export function groupMyWork(tickets: MyWorkTicket[]): MyWorkGroup[] {
   providedIn: 'root',
 })
 export class MyWorkService {
-  async listMyWork(teamCode: string): Promise<MyWorkResponse> {
+  async listMyWork(teamCode: string, projectId: number | null = null): Promise<MyWorkResponse> {
     return apiRequest<MyWorkResponse>(
-      axiosInstance.get(teamPath(teamCode, 'my_work')),
+      axiosInstance.get(teamPath(teamCode, 'my_work'), projectQuery(projectId)),
       (data) => ({success: true, tickets: (data.tickets as RawMyWorkTicket[]).map(mapMyWorkTicket)}),
     );
   }

@@ -3,6 +3,7 @@
     type="checkbox"
     class="checkbox__input"
     [checked]="checked"
+    [disabled]="disabled"
     (change)="handleChange($any($event.target).checked)"
   />
   <span class="checkbox__circle"></span>

@@ -4,9 +4,11 @@ import {TranslateModule} from '@ngx-translate/core';
 import {MyWorkComponent} from './my-work.component';
 import {MyWorkService} from '@services/my-work.service';
 import {TeamService} from '@services/team.service';
+import {ProjectFilterService} from '@services/project-filter.service';
 import {MyWorkResponse, MyWorkTicket} from '@models/my-work.model';
 import {PHRASES} from '@config/phrases';
 import {AppRoutes} from '../../app/app-routes.enum';
+import {projectFilterStub, ProjectFilterStub} from '../../testing/projectFilterStub';
 
 function ticket(id: number, boardId: number, columnTitle: string | null): MyWorkTicket {
   return {
@@ -25,6 +27,7 @@ describe('MyWorkComponent', () => {
   let fixture: ComponentFixture<MyWorkComponent>;
   let myWorkService: jasmine.SpyObj<MyWorkService>;
   let router: jasmine.SpyObj<Router>;
+  let projectFilter: ProjectFilterStub;
 
   async function render(response: MyWorkResponse) {
     myWorkService.listMyWork.and.returnValue(Promise.resolve(response));
@@ -39,6 +42,7 @@ describe('MyWorkComponent', () => {
   }
 
   beforeEach(async () => {
+    projectFilter = projectFilterStub();
     myWorkService = jasmine.createSpyObj<MyWorkService>('MyWorkService', ['listMyWork']);
     router = jasmine.createSpyObj<Router>('Router', ['navigate']);
     const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeamCode']);
@@ -50,6 +54,7 @@ describe('MyWorkComponent', () => {
         {provide: MyWorkService, useValue: myWorkService},
         {provide: TeamService, useValue: teamService},
         {provide: Router, useValue: router},
+        {provide: ProjectFilterService, useValue: projectFilter.service},
       ],
     }).compileComponents();
   });
@@ -57,7 +62,7 @@ describe('MyWorkComponent', () => {
   it('renders a group per board with its tickets and their place', async () => {
     await render({success: true, tickets: [ticket(1, 5, 'Doing'), ticket(2, 7, null), ticket(3, 5, 'To Do')]});
 
-    expect(myWorkService.listMyWork).toHaveBeenCalledWith('abc');
+    expect(myWorkService.listMyWork).toHaveBeenCalledWith('abc', null);
     expect(texts('.myWork__board')).toEqual(['Board 5', 'Board 7']);
     expect(texts('.myWork__ticketTitle')).toEqual(['Ticket 1', 'Ticket 3', 'Ticket 2']);
     expect(texts('.myWork__ticketPlace')).toEqual(['Doing', 'To Do', PHRASES.BACKLOG]);
@@ -84,5 +89,13 @@ describe('MyWorkComponent', () => {
 
     expect(router.navigate).toHaveBeenCalledWith([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 5, AppRoutes.BACKLOG, AppRoutes.TICKETS, 2]);
     expect(router.navigate).toHaveBeenCalledWith([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 5, AppRoutes.KANBAN]);
+  });
+
+  it('reloads for the newly selected project', async () => {
+    await render({success: true, tickets: []});
+
+    projectFilter.selected.next(4);
+
+    expect(myWorkService.listMyWork).toHaveBeenCalledWith('abc', 4);
   });
 });
