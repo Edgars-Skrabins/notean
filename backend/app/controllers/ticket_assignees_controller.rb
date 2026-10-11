@@ -12,6 +12,7 @@ class TicketAssigneesController < ApplicationController
   def create
     user = @team.users.find_by(id: create_assignee_params[:user_id])
     return render_error(ErrorCodes::Tickets::ASSIGNEE_NOT_TEAM_MEMBER, :unprocessable_entity) if user.nil?
+    return render_error(ErrorCodes::Tickets::ASSIGNEE_NO_ACCESS, :unprocessable_entity) unless ProjectAccess.users_who_can_see(@board).exists?(user.id)
 
     assignee = @ticket.ticket_assignees.find_or_initialize_by(user: user)
     status = assignee.new_record? ? :created : :ok

@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     end
     resources :favorites, only: [ :index, :create, :update, :destroy ]
     get :my_work, to: "my_work#index"
+    resources :projects, only: [ :index, :create, :show, :update, :destroy ]
   end
 
   post "actions/jointeam" => "actions#join_team"

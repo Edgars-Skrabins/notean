@@ -5,7 +5,8 @@ class DiagramsController < ApplicationController
   before_action :set_diagram, only: [ :show, :update, :destroy ]
 
   def index
-    diagrams = @team.diagrams.includes(creator: User::AVATAR_PRELOAD).search_title(params[:search])
+    diagrams = project_filtered(@team.diagrams.includes(creator: User::AVATAR_PRELOAD).search_title(params[:search]))
+    return if diagrams.nil?
 
     render json: { diagrams: diagrams.map { |diagram| diagram_summary_json(diagram) } }
   end
@@ -13,6 +14,7 @@ class DiagramsController < ApplicationController
   def create
     @diagram = @team.diagrams.new(created_by_user_id: current_user.id, content: "")
     @diagram.title = title_or_default(create_diagram_params[:title])
+    return unless assign_project(@diagram, create_diagram_params[:project_id])
 
     if @diagram.save
       render json: { diagram: diagram_json(@diagram) }, status: :created
@@ -29,6 +31,7 @@ class DiagramsController < ApplicationController
     @diagram.title = update_diagram_params[:title] if update_diagram_params[:title].present?
     @diagram.content = update_diagram_params[:content] if update_diagram_params.key?(:content)
     @diagram.folder_id = update_diagram_params[:folder_id] if update_diagram_params.key?(:folder_id)
+    return if update_diagram_params.key?(:project_id) && !assign_project(@diagram, update_diagram_params[:project_id])
 
     if @diagram.save
       @diagram.diagram_contributors.find_or_create_by!(user: current_user)
@@ -47,7 +50,7 @@ class DiagramsController < ApplicationController
   private
 
   def find_diagram(id)
-    @team.diagrams.includes(creator: User::AVATAR_PRELOAD, contributors: User::AVATAR_PRELOAD).find_by(id: id)
+    project_access.scope(@team.diagrams).includes(creator: User::AVATAR_PRELOAD, contributors: User::AVATAR_PRELOAD).find_by(id: id)
   end
 
   def set_diagram
@@ -61,6 +64,7 @@ class DiagramsController < ApplicationController
       id: diagram.id,
       title: diagram.title,
       folder_id: diagram.folder_id,
+      project_id: diagram.project_id,
       creator: member_json(diagram.creator),
       created_at: diagram.created_at,
       updated_at: diagram.updated_at
@@ -75,6 +79,7 @@ class DiagramsController < ApplicationController
       title: diagram.title,
       content: diagram.content,
       folder_id: diagram.folder_id,
+      project_id: diagram.project_id,
       creator: member_json(diagram.creator),
       contributors: diagram.contributors.map { |user| member_json(user) },
       created_at: diagram.created_at,

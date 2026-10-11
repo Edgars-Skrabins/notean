@@ -7,9 +7,13 @@ class FavoritesController < ApplicationController
   before_action :set_favorite, only: [ :update, :destroy ]
 
   def index
+    project_id = params[:project_id]
+    return render_error(ErrorCodes::Projects::PROJECT_NOT_FOUND, :not_found) if project_id.present? && !project_access.project_visible?(project_id)
+
     favorites = user_favorites.includes(:favoritable).order(:home_position).to_a
     tickets = favorites.map(&:favoritable).grep(Ticket)
     ActiveRecord::Associations::Preloader.new(records: tickets, associations: :board).call
+    favorites = favorites.select { |favorite| project_access.in_selection?(favorite.favoritable, project_id) }
 
     render json: { favorites: favorites.map { |favorite| favorite_json(favorite) } }
   end
@@ -83,10 +87,10 @@ class FavoritesController < ApplicationController
 
   def find_favoritable(favoritable_type, favoritable_id)
     case favoritable_type
-    when "Page" then @team.pages.find_by(id: favoritable_id)
-    when "Diagram" then @team.diagrams.find_by(id: favoritable_id)
-    when "Board" then @team.boards.find_by(id: favoritable_id)
-    when "Ticket" then Ticket.where(team: @team).find_by(id: favoritable_id)
+    when "Page" then project_access.scope(@team.pages).find_by(id: favoritable_id)
+    when "Diagram" then project_access.scope(@team.diagrams).find_by(id: favoritable_id)
+    when "Board" then project_access.scope(@team.boards).find_by(id: favoritable_id)
+    when "Ticket" then Ticket.where(team: @team, board: project_access.scope(@team.boards)).find_by(id: favoritable_id)
     end
   end
 
@@ -96,6 +100,7 @@ class FavoritesController < ApplicationController
       favoritable_type: favorite.favoritable_type,
       favoritable_id: favorite.favoritable_id,
       title: favorite.favoritable.title,
+      project_id: ProjectAccess.project_id_of(favorite.favoritable),
       home_position: favorite.home_position,
       sidebar_position: favorite.sidebar_position
     }

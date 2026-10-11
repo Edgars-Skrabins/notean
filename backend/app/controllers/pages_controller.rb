@@ -5,7 +5,8 @@ class PagesController < ApplicationController
   before_action :set_page, only: [ :show, :update, :destroy ]
 
   def index
-    pages = @team.pages.includes(creator: User::AVATAR_PRELOAD).search_title(params[:search])
+    pages = project_filtered(@team.pages.includes(creator: User::AVATAR_PRELOAD).search_title(params[:search]))
+    return if pages.nil?
 
     render json: { pages: pages.map { |page| page_summary_json(page) } }
   end
@@ -13,6 +14,7 @@ class PagesController < ApplicationController
   def create
     @page = @team.pages.new(created_by_user_id: current_user.id, content: "")
     @page.title = title_or_default(create_page_params[:title])
+    return unless assign_project(@page, create_page_params[:project_id])
 
     if @page.save
       render json: { page: page_json(@page) }, status: :created
@@ -29,6 +31,7 @@ class PagesController < ApplicationController
     @page.title = update_page_params[:title] if update_page_params[:title].present?
     @page.content = Rails::Html::SafeListSanitizer.new.sanitize(update_page_params[:content].to_s) if update_page_params.key?(:content)
     @page.folder_id = update_page_params[:folder_id] if update_page_params.key?(:folder_id)
+    return if update_page_params.key?(:project_id) && !assign_project(@page, update_page_params[:project_id])
 
     if @page.save
       @page.page_contributors.find_or_create_by!(user: current_user)
@@ -47,7 +50,7 @@ class PagesController < ApplicationController
   private
 
   def find_page(id)
-    @team.pages.includes(creator: User::AVATAR_PRELOAD, contributors: User::AVATAR_PRELOAD).find_by(id: id)
+    project_access.scope(@team.pages).includes(creator: User::AVATAR_PRELOAD, contributors: User::AVATAR_PRELOAD).find_by(id: id)
   end
 
   def set_page
@@ -61,6 +64,7 @@ class PagesController < ApplicationController
       id: page.id,
       title: page.title,
       folder_id: page.folder_id,
+      project_id: page.project_id,
       creator: member_json(page.creator),
       created_at: page.created_at,
       updated_at: page.updated_at
@@ -75,6 +79,7 @@ class PagesController < ApplicationController
       title: page.title,
       content: page.content,
       folder_id: page.folder_id,
+      project_id: page.project_id,
       creator: member_json(page.creator),
       contributors: page.contributors.map { |user| member_json(user) },
       created_at: page.created_at,

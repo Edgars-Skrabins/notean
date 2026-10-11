@@ -6,7 +6,7 @@ class EditingChannel < ApplicationCable::Channel
   def subscribed
     item = self.class.status_class.item_class.find_by(id: item_id)
 
-    if item && current_user.memberships.exists?(team_id: item.team_id)
+    if item && current_user.memberships.exists?(team_id: item.team_id) && ProjectAccess.new(current_user, item.team).visible?(item)
       stream_from self.class.status_class.stream_name(item.id)
     else
       reject

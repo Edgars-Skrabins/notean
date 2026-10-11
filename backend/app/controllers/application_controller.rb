@@ -23,19 +23,19 @@ class ApplicationController < ActionController::API
   end
 
   def create_page_params
-    params.fetch(:page, {}).permit(:title)
+    params.fetch(:page, {}).permit(:title, :project_id)
   end
 
   def update_page_params
-    params.require(:page).permit(:title, :content, :folder_id)
+    params.require(:page).permit(:title, :content, :folder_id, :project_id)
   end
 
   def create_diagram_params
-    params.fetch(:diagram, {}).permit(:title)
+    params.fetch(:diagram, {}).permit(:title, :project_id)
   end
 
   def update_diagram_params
-    params.require(:diagram).permit(:title, :content, :folder_id)
+    params.require(:diagram).permit(:title, :content, :folder_id, :project_id)
   end
 
   def create_folder_params
@@ -47,11 +47,11 @@ class ApplicationController < ActionController::API
   end
 
   def create_board_params
-    params.fetch(:board, {}).permit(:title)
+    params.fetch(:board, {}).permit(:title, :project_id)
   end
 
   def update_board_params
-    params.require(:board).permit(:title)
+    params.require(:board).permit(:title, :project_id)
   end
 
   def create_column_params
@@ -72,6 +72,14 @@ class ApplicationController < ActionController::API
 
   def create_assignee_params
     params.require(:assignee).permit(:user_id)
+  end
+
+  def project_params
+    params.require(:project).permit(:name, :description, :owner_user_id, member_ids: [])
+  end
+
+  def destroy_project_params
+    params.require(:project).permit(:mode, :confirm_name)
   end
 
   def create_favorite_params
@@ -96,6 +104,30 @@ class ApplicationController < ActionController::API
       sibling.update_column(attribute, index) unless sibling == record
     end
     insert_at
+  end
+
+  def project_access
+    @project_access ||= ProjectAccess.new(current_user, @team)
+  end
+
+  def project_filtered(relation)
+    project_id = params[:project_id]
+    if project_id.present? && !project_access.project_visible?(project_id)
+      render_error(ErrorCodes::Projects::PROJECT_NOT_FOUND, :not_found)
+      return nil
+    end
+
+    project_access.filter(relation, project_id)
+  end
+
+  def assign_project(record, project_id)
+    if project_id.present? && !project_access.project_visible?(project_id)
+      render_error(ErrorCodes::Projects::PROJECT_INVALID, :unprocessable_entity)
+      return false
+    end
+
+    record.project_id = project_id.presence
+    true
   end
 
   def render_error(code, status)

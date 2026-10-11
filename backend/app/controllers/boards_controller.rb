@@ -10,7 +10,8 @@ class BoardsController < ApplicationController
   before_action :set_board, only: [ :show, :update, :destroy, :overview ]
 
   def index
-    boards = @team.boards.includes(creator: User::AVATAR_PRELOAD).search_title(params[:search])
+    boards = project_filtered(@team.boards.includes(creator: User::AVATAR_PRELOAD).search_title(params[:search]))
+    return if boards.nil?
 
     render json: { boards: boards.map { |board| board_summary_json(board) } }
   end
@@ -18,6 +19,7 @@ class BoardsController < ApplicationController
   def create
     @board = @team.boards.new(created_by_user_id: current_user.id)
     @board.title = title_or_default(create_board_params[:title])
+    return unless assign_project(@board, create_board_params[:project_id])
 
     if @board.save
       Board::DEFAULT_COLUMN_TITLES.each_with_index do |title, index|
@@ -36,8 +38,11 @@ class BoardsController < ApplicationController
 
   def update
     @board.title = update_board_params[:title] if update_board_params[:title].present?
+    return if update_board_params.key?(:project_id) && !assign_project(@board, update_board_params[:project_id])
 
+    project_changed = @board.project_id_changed?
     if @board.save
+      ProjectAccessCleanup.for_board(@board) if project_changed
       render json: { board: board_json(@board) }
     else
       render_error(ErrorCodes::Boards::BOARD_UPDATE_FAILED, :unprocessable_entity)
@@ -72,7 +77,7 @@ class BoardsController < ApplicationController
   private
 
   def set_board
-    @board = @team.boards.includes(creator: User::AVATAR_PRELOAD, columns: { tickets: TicketJson::ASSIGNEES_PRELOAD }, backlog_tickets: TicketJson::ASSIGNEES_PRELOAD).find_by(id: params[:id])
+    @board = project_access.scope(@team.boards).includes(creator: User::AVATAR_PRELOAD, columns: { tickets: TicketJson::ASSIGNEES_PRELOAD }, backlog_tickets: TicketJson::ASSIGNEES_PRELOAD).find_by(id: params[:id])
 
     render_error(ErrorCodes::Boards::BOARD_NOT_FOUND, :not_found) if @board.nil?
   end
@@ -81,6 +86,7 @@ class BoardsController < ApplicationController
     {
       id: board.id,
       title: board.title,
+      project_id: board.project_id,
       creator: member_json(board.creator),
       created_at: board.created_at,
       updated_at: board.updated_at

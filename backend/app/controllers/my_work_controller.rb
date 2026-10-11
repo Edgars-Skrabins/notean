@@ -6,8 +6,11 @@ class MyWorkController < ApplicationController
   before_action :authorize_team_member!
 
   def index
+    boards = project_filtered(@team.boards)
+    return if boards.nil?
+
     tickets = Ticket
-      .where(team: @team)
+      .where(team: @team, board: boards)
       .where(id: current_user.ticket_assignees.select(:ticket_id))
       .includes(:board, :column, TicketJson::ASSIGNEES_PRELOAD)
       .order(updated_at: :desc)

@@ -32,4 +32,15 @@ class PageEditingChannelTest < ActionCable::Channel::TestCase
 
     assert subscription.rejected?
   end
+
+  test "a member who cannot see the page's project is rejected" do
+    project = Project.create!(team: @team, name: "Secret", owner: @user, creator: @user)
+    @page.update!(project: project)
+    bob = create_member(@team, "Bob")
+    stub_connection current_user: bob
+
+    subscribe page_id: @page.id
+
+    assert subscription.rejected?
+  end
 end

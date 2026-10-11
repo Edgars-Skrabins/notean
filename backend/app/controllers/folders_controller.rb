@@ -7,9 +7,19 @@ class FoldersController < ApplicationController
   before_action :set_folder, only: [ :update, :destroy ]
 
   def index
-    folders = @team.folders.includes(creator: User::AVATAR_PRELOAD).where(item_type: index_item_type_param)
+    folders = @team.folders.includes(creator: User::AVATAR_PRELOAD).where(item_type: index_item_type_param).to_a
+    items = index_item_type_param == "Page" ? @team.pages : @team.diagrams
+    matching_items = project_filtered(items)
+    return if matching_items.nil?
 
-    render json: { folders: folders.map { |folder| folder_json(folder) } }
+    visible_ids = FolderVisibility.new(
+      folders,
+      item_folder_ids: items.where.not(folder_id: nil).pluck(:folder_id),
+      matching_folder_ids: matching_items.where.not(folder_id: nil).pluck(:folder_id),
+      include_empty: params[:project_id].blank?
+    ).visible_ids
+
+    render json: { folders: folders.select { |folder| visible_ids.include?(folder.id) }.map { |folder| folder_json(folder) } }
   end
 
   def create
