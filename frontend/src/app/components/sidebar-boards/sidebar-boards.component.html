@@ -19,7 +19,6 @@
       [class.sidebarBoards__chevron--open]="boardListService.isOpen"
     ></app-icon>
   </button>
-  <app-icon-button *ngIf="!collapsed" icon="plus" [size]="28" [tooltip]="PHRASES.NEW_BOARD | translate" (pressed)="handleCreate()"></app-icon-button>
 </div>
 
 <ng-container *ngIf="!collapsed && boardListService.isOpen">
@@ -39,6 +38,10 @@
       </a>
     </div>
     <p class="sidebarBoards__empty" *ngIf="!boards.length">{{ PHRASES.NO_BOARDS_YET | translate }}</p>
+    <button type="button" class="sidebarBoards__row sidebarBoards__create" (click)="handleCreate()">
+      <span class="sidebarBoards__rowTitle">{{ PHRASES.CREATE_BOARD | translate }}</span>
+      <app-icon name="plus" class="sidebarBoards__icon"></app-icon>
+    </button>
   </ng-container>
 </ng-container>
 

@@ -88,6 +88,7 @@
   "FLOWCHART_EMPTY_HINT": "Add a shape from the toolbar to get started.",
   "CLOSE": "Close",
   "NEW_BOARD": "New board",
+  "CREATE_BOARD": "Create board",
   "UNTITLED_BOARD": "Untitled board",
   "NO_BOARDS_YET": "No boards yet.",
   "CONFIRM_DELETE_BOARD": "Delete this board? This can't be undone.",

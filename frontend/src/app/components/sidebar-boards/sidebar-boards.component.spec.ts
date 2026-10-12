@@ -1,5 +1,7 @@
-import {fakeAsync, flushMicrotasks} from '@angular/core/testing';
-import {Router} from "@angular/router";
+import {fakeAsync, flushMicrotasks, TestBed} from '@angular/core/testing';
+import {provideRouter, Router} from "@angular/router";
+import {BehaviorSubject} from "rxjs";
+import {TranslateModule} from "@ngx-translate/core";
 import {CdkDragDrop} from "@angular/cdk/drag-drop";
 import {SidebarBoardsComponent} from "./sidebar-boards.component";
 import {BoardService} from "@services/board.service";
@@ -9,6 +11,7 @@ import {BoardSummary} from "@models/board.model";
 import {AppRoutes} from "../../app/app-routes.enum";
 import {boardDetail} from "../../testing/boardFixtures";
 import {projectFilterStub} from "../../testing/projectFilterStub";
+import {ProjectFilterService} from "@services/project-filter.service";
 
 describe('SidebarBoardsComponent', () => {
   let component: SidebarBoardsComponent;
@@ -56,4 +59,41 @@ describe('SidebarBoardsComponent', () => {
     expect(boardListService.add).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 9, AppRoutes.KANBAN]);
   }));
+});
+
+describe('SidebarBoardsComponent create row', () => {
+  function render(boards: BoardSummary[]) {
+    const boardListService = {boards$: new BehaviorSubject(boards), isOpen: true, load: () => Promise.resolve()};
+    TestBed.configureTestingModule({
+      imports: [SidebarBoardsComponent, TranslateModule.forRoot()],
+      providers: [
+        provideRouter([]),
+        {provide: BoardListService, useValue: boardListService},
+        {provide: BoardService, useValue: {}},
+        {provide: TeamService, useValue: {}},
+        {provide: ProjectFilterService, useValue: projectFilterStub().service},
+      ],
+    });
+    const fixture = TestBed.createComponent(SidebarBoardsComponent);
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  it('lists the boards with the create row last', () => {
+    const fixture = render([boardDetail()]);
+    const rows = Array.from(fixture.nativeElement.querySelectorAll('.sidebarBoards__row')) as HTMLElement[];
+
+    expect(rows.length).toBe(2);
+    expect(rows[1].classList).toContain('sidebarBoards__create');
+    expect(fixture.nativeElement.querySelector('app-icon-button')).toBeNull();
+  });
+
+  it('opens the create dialog from the create row', () => {
+    const fixture = render([]);
+
+    (fixture.nativeElement.querySelector('.sidebarBoards__create') as HTMLElement).click();
+    fixture.detectChanges();
+
+    expect(fixture.nativeElement.querySelector('app-create-named-item-dialog')).not.toBeNull();
+  });
 });

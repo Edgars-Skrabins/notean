@@ -2,14 +2,8 @@
   display: block;
 }
 
-.sidebarBoards__header {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-}
-
 .sidebarBoards__toggle {
-  flex: 1;
+  width: 100%;
   display: flex;
   align-items: center;
   gap: var(--space-3);
@@ -89,6 +83,15 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.sidebarBoards__create {
+  width: calc(100% - var(--space-5));
+  margin: 2px 0 0 var(--space-5);
+  background: none;
+  border: none;
+  font-family: inherit;
+  cursor: pointer;
 }
 
 .sidebarBoards__empty {

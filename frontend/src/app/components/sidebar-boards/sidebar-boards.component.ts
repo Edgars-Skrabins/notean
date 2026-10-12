@@ -10,7 +10,6 @@ import {TeamService} from "@services/team.service";
 import {ProjectFilterService} from "@services/project-filter.service";
 import {BoardSummary} from "@models/board.model";
 import {IconComponent} from "@components/icon/icon.component";
-import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {CreateNamedItemDialogComponent} from "@components/create-named-item-dialog/create-named-item-dialog.component";
 import {AppRoutes} from "../../app/app-routes.enum";
 import {boardRoute} from "@utils/ticketRoute";
@@ -28,7 +27,6 @@ import {boardRoute} from "@utils/ticketRoute";
     CdkDrag,
     TranslateModule,
     IconComponent,
-    IconButtonComponent,
     CreateNamedItemDialogComponent
   ],
   templateUrl: './sidebar-boards.component.html',

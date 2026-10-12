@@ -88,6 +88,7 @@
   "FLOWCHART_EMPTY_HINT": "Pievienojiet figūru no rīkjoslas, lai sāktu.",
   "CLOSE": "Aizvērt",
   "NEW_BOARD": "Jauns dēlis",
+  "CREATE_BOARD": "Izveidot dēli",
   "UNTITLED_BOARD": "Dēlis bez nosaukuma",
   "NO_BOARDS_YET": "Dēļu vēl nav.",
   "CONFIRM_DELETE_BOARD": "Dzēst šo dēli? To nevar atsaukt.",
