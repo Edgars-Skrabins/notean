@@ -11,12 +11,15 @@ The frontend talks to the API at `http://127.0.0.1:3000` (`apiUrl` in `frontend/
 
 `backend/config/master.key` is committed on purpose for early dev convenience. It must be rotated and gitignored before any real deployment.
 
+The dev and test database URLs in `backend/config/database.yml` (user and password `notean`, matching `docker-compose.yml`) are committed for the same reason. Before deploying, an env file must provide `DATABASE_URL` with real credentials.
+
 ## Repository layout
 
 ```
 notean/
 ├── CLAUDE.md
 ├── README.md
+├── docker-compose.yml   PostgreSQL for development and tests
 ├── .claude/      Claude Code config (launch.json) and project skills
 ├── specs/        feature specs for the whole app
 ├── frontend/     Angular app
@@ -49,7 +52,8 @@ Run frontend commands from `frontend/` and backend commands from `backend/`.
 | Task | Command |
 |---|---|
 | Install dependencies | `bundle install` |
-| Set up / migrate the database | `bin/rails db:migrate` |
+| Start the database (from the repo root) | `docker compose up -d` |
+| Set up / migrate the database | `bin/rails db:prepare` |
 | Run the server (http://127.0.0.1:3000) | `bin/rails server` |
 | Run all tests | `bin/rails test` |
 | Run one test file | `bin/rails test test/models/folder_test.rb` |
@@ -130,7 +134,7 @@ Import with the tsconfig aliases instead of relative paths: `@components/*`, `@c
 ### Tech stack
 
 - **Framework**: Rails 7.2 (API-only) on Ruby 3.3.5, served by Puma
-- **Database**: SQLite
+- **Database**: PostgreSQL 17, run with Docker Compose in development and tests
 - **Auth**: `jwt` gem for tokens, `bcrypt` via `has_secure_password`
 - **Realtime**: ActionCable
 - **Security**: rack-attack for rate limiting, rack-cors
