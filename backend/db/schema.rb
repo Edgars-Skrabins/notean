@@ -11,6 +11,9 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.2].define(version: 2026_10_11_140200) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -123,7 +126,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_11_140200) do
     t.string "nickname", null: false
     t.index ["team_id", "nickname"], name: "index_memberships_on_team_id_and_nickname", unique: true
     t.index ["team_id"], name: "index_memberships_on_team_id"
-    t.index ["team_id"], name: "index_memberships_on_team_id_unique_owner", unique: true, where: "role = 'owner'"
+    t.index ["team_id"], name: "index_memberships_on_team_id_unique_owner", unique: true, where: "((role)::text = 'owner'::text)"
     t.index ["user_id", "team_id"], name: "index_memberships_on_user_id_and_team_id", unique: true
     t.index ["user_id"], name: "index_memberships_on_user_id"
   end
