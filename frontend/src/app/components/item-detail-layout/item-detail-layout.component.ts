@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {DatePipe, NgFor, NgIf} from '@angular/common';
+import {AsyncPipe, DatePipe, NgFor, NgIf} from '@angular/common';
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {FolderedItemDetail} from "@models/foldered-item.model";
@@ -11,6 +11,7 @@ import {ButtonComponent} from "@components/button/button.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
 import {ProjectSelectComponent} from "@components/project-select/project-select.component";
+import {ProjectFilterService} from "@services/project-filter.service";
 
 @Component({
   selector: 'app-item-detail-layout',
@@ -19,6 +20,7 @@ import {ProjectSelectComponent} from "@components/project-select/project-select.
     FormsModule,
     NgIf,
     NgFor,
+    AsyncPipe,
     DatePipe,
     TranslateModule,
     AvatarComponent,
@@ -54,4 +56,7 @@ export class ItemDetailLayoutComponent {
   @Output() deleteConfirmed = new EventEmitter<void>();
   @Output() deleteCancelled = new EventEmitter<void>();
   @Output() projectChange = new EventEmitter<number | null>();
+
+  constructor(protected projectFilterService: ProjectFilterService) {
+  }
 }

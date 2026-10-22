@@ -1,8 +1,8 @@
-<select
+<app-dropdown
+  *ngIf="projectFilterService.hasProjects$ | async"
   class="projectSelector"
-  [attr.aria-label]="PHRASES.PROJECT | translate"
-  (change)="handleChange($any($event.target).value)"
->
-  <option [value]="ALL_OPTION" [selected]="selectedValue === ALL_OPTION">{{ PHRASES.ALL_PROJECTS | translate }}</option>
-  <option *ngFor="let project of projects$ | async" [value]="project.id" [selected]="selectedValue === project.id.toString()">{{ project.name }}</option>
-</select>
+  [options]="(options$ | async) ?? []"
+  [value]="selectedProjectId"
+  [ariaLabel]="PHRASES.PROJECT"
+  (valueChange)="handleChange($event)"
+></app-dropdown>

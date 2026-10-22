@@ -1,42 +1,40 @@
+import {firstValueFrom} from 'rxjs';
 import {ProjectSelectComponent} from './project-select.component';
+import {ProjectSummary} from '@models/project.model';
+import {PHRASES} from '@config/phrases';
 import {projectFilterStub} from '../../testing/projectFilterStub';
 
-function selectWith(value: string): HTMLSelectElement {
-  const select = document.createElement('select');
-  ['', '3', '4'].forEach((optionValue) => select.add(new Option(optionValue, optionValue)));
-  select.value = value;
-  return select;
+function project(id: number, name: string): ProjectSummary {
+  return {id, name, description: '', owner: {id: 1, nickname: 'alice', avatar: {color: 'red', imageUrl: null}}, memberCount: 1, canManage: false};
 }
 
 describe('ProjectSelectComponent', () => {
   let component: ProjectSelectComponent;
   let emitted: (number | null)[];
+  let filter: ReturnType<typeof projectFilterStub>;
 
   beforeEach(() => {
-    component = new ProjectSelectComponent(projectFilterStub().service);
+    filter = projectFilterStub();
+    component = new ProjectSelectComponent(filter.service);
     component.projectId = 3;
     emitted = [];
     component.projectChange.subscribe((projectId) => emitted.push(projectId));
   });
 
+  it('offers No project first, then the visible projects', async () => {
+    filter.projects.next([project(3, 'Game'), project(4, 'Website')]);
+
+    expect(await firstValueFrom(component.options$)).toEqual([
+      {value: null, labelKey: PHRASES.NO_PROJECT},
+      {value: 3, label: 'Game'},
+      {value: 4, label: 'Website'},
+    ]);
+  });
+
   it('emits the chosen project or null for No project', () => {
-    component.handleChange(selectWith('4'));
-    component.handleChange(selectWith(''));
+    component.handleChange(4);
+    component.handleChange(null);
 
     expect(emitted).toEqual([4, null]);
-  });
-
-  it('keeps showing the saved project until the change is confirmed', () => {
-    const select = selectWith('4');
-
-    component.handleChange(select);
-
-    expect(select.value).toBe('3');
-  });
-
-  it('does not emit when the selection did not change', () => {
-    component.handleChange(selectWith('3'));
-
-    expect(emitted).toEqual([]);
   });
 });
