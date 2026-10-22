@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {AsyncPipe, DatePipe, NgFor, NgIf} from '@angular/common';
+import {CdkScrollable} from '@angular/cdk/scrolling';
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {FolderedItemDetail} from "@models/foldered-item.model";
@@ -22,6 +23,7 @@ import {ProjectFilterService} from "@services/project-filter.service";
     NgFor,
     AsyncPipe,
     DatePipe,
+    CdkScrollable,
     TranslateModule,
     AvatarComponent,
     IconButtonComponent,

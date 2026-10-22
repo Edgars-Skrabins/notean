@@ -1,7 +1,7 @@
 <div class="itemDetailOverlay">
   <div class="itemDetailOverlay__backdrop" (click)="closed.emit()"></div>
 
-  <div class="itemDetail" [class.itemDetail--fill]="fill">
+  <div class="itemDetail" [class.itemDetail--fill]="fill" cdkScrollable>
     <div class="itemDetail__editingBanner" *ngIf="editingNickname">
       <strong>{{ editingNickname }}</strong> {{ editingBannerText | translate }}
     </div>

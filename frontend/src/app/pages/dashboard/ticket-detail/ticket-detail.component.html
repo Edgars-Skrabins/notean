@@ -20,7 +20,7 @@
 
     <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
-    <div class="ticketDetail__body">
+    <div class="ticketDetail__body" cdkScrollable>
       <div class="ticketDetail__main">
         <input
           type="text"
