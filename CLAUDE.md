@@ -20,7 +20,7 @@ notean/
 ├── CLAUDE.md
 ├── README.md
 ├── docker-compose.yml   PostgreSQL for development and tests
-├── .claude/      Claude Code config (launch.json) and project skills
+├── .claude/      Claude Code config (launch.json)
 ├── specs/        feature specs for the whole app
 ├── frontend/     Angular app
 └── backend/      Rails API
