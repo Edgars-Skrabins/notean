@@ -9,6 +9,7 @@ import {BOARDS_ERROR_CODES, BoardsErrorCode} from "./boards";
 import {TICKETS_ERROR_CODES, TicketsErrorCode} from "./tickets";
 import {FAVORITES_ERROR_CODES, FavoritesErrorCode} from "./favorites";
 import {PROJECTS_ERROR_CODES, ProjectsErrorCode} from "./projects";
+import {SEARCH_ERROR_CODES, SearchErrorCode} from "./search";
 
 export const ERROR_CODES_BY_DOMAIN = {
   COMMON: COMMON_ERROR_CODES,
@@ -22,6 +23,7 @@ export const ERROR_CODES_BY_DOMAIN = {
   TICKETS: TICKETS_ERROR_CODES,
   FAVORITES: FAVORITES_ERROR_CODES,
   PROJECTS: PROJECTS_ERROR_CODES,
+  SEARCH: SEARCH_ERROR_CODES,
 } as const;
 
 export type ErrorDomain = keyof typeof ERROR_CODES_BY_DOMAIN;
@@ -37,7 +39,8 @@ export type ErrorCode =
   | BoardsErrorCode
   | TicketsErrorCode
   | FavoritesErrorCode
-  | ProjectsErrorCode;
+  | ProjectsErrorCode
+  | SearchErrorCode;
 
 export type {
   CommonErrorCode,
@@ -52,4 +55,5 @@ export type {
   TicketsErrorCode,
   FavoritesErrorCode,
   ProjectsErrorCode,
+  SearchErrorCode,
 };
