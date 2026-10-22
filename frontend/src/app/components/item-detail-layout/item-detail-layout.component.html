@@ -54,7 +54,7 @@
           <p class="itemDetail__sidebarValue itemDetail__sidebarValue--muted" *ngIf="!item.contributors.length">&mdash;</p>
         </div>
 
-        <div>
+        <div *ngIf="projectFilterService.hasProjects$ | async">
           <h3 class="itemDetail__sidebarLabel">{{ PHRASES.PROJECT | translate }}</h3>
           <app-project-select [projectId]="item.projectId" (projectChange)="projectChange.emit($event)"></app-project-select>
         </div>

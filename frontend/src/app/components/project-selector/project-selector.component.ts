@@ -1,41 +1,43 @@
 import {Component} from '@angular/core';
-import {AsyncPipe, NgFor} from '@angular/common';
+import {AsyncPipe, NgIf} from '@angular/common';
 import {map, Observable} from 'rxjs';
-import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ProjectFilterService} from '@services/project-filter.service';
-import {ProjectSummary} from '@models/project.model';
-
-const ALL_OPTION = '';
+import {DropdownOption} from '@models/dropdown.model';
+import {DropdownComponent} from '@components/dropdown/dropdown.component';
 
 @Component({
   selector: 'app-project-selector',
   standalone: true,
   imports: [
     AsyncPipe,
-    NgFor,
-    TranslateModule
+    NgIf,
+    DropdownComponent
   ],
   templateUrl: './project-selector.component.html',
   styleUrl: './project-selector.component.css'
 })
 export class ProjectSelectorComponent {
   protected readonly PHRASES = PHRASES;
-  protected readonly ALL_OPTION = ALL_OPTION;
 
-  readonly projects$: Observable<ProjectSummary[]>;
+  readonly options$: Observable<DropdownOption[]>;
 
   constructor(protected projectFilterService: ProjectFilterService) {
-    this.projects$ = projectFilterService.projects$.pipe(
-      map((projects) => [...projects].sort((a, b) => a.name.localeCompare(b.name))),
+    this.options$ = projectFilterService.projects$.pipe(
+      map((projects) => [
+        {value: null, labelKey: PHRASES.ALL_PROJECTS},
+        ...[...projects]
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((project) => ({value: project.id, label: project.name})),
+      ]),
     );
   }
 
-  get selectedValue(): string {
-    return String(this.projectFilterService.getSelectedProjectId() ?? ALL_OPTION);
+  get selectedProjectId(): number | null {
+    return this.projectFilterService.getSelectedProjectId();
   }
 
-  handleChange(value: string) {
-    this.projectFilterService.select(value === ALL_OPTION ? null : Number(value));
+  handleChange(value: string | number | null) {
+    this.projectFilterService.select(value as number | null);
   }
 }

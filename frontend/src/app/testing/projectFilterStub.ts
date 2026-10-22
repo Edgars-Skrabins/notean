@@ -1,4 +1,4 @@
-import {BehaviorSubject} from "rxjs";
+import {BehaviorSubject, map} from "rxjs";
 import {ProjectFilterService} from "@services/project-filter.service";
 import {ProjectSummary} from "@models/project.model";
 
@@ -14,6 +14,7 @@ export function projectFilterStub(selectedProjectId: number | null = null): Proj
   const service = {
     selectedProjectId$: selected,
     projects$: projects,
+    hasProjects$: projects.pipe(map((items) => items.length > 0)),
     getSelectedProjectId: () => selected.value,
     getProjects: () => projects.value,
     select: (projectId: number | null) => selected.next(projectId),

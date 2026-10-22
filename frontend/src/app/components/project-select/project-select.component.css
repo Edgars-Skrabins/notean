@@ -1,14 +1,8 @@
-.projectSelect {
-  width: 100%;
-  padding: 6px 10px;
-  background: var(--color-input-bg);
-  border: 1px solid var(--color-input-border);
-  border-radius: var(--radius-sm);
-  color: var(--color-text-heading);
-  font-family: inherit;
-  font-size: 0.85rem;
+:host {
+  display: block;
 }
 
-.projectSelect option {
-  background: var(--color-card-bg);
+.projectSelect {
+  display: block;
+  width: 100%;
 }

@@ -1,5 +1,4 @@
-.projectForm__textarea,
-.projectForm__select {
+.projectForm__textarea {
   box-sizing: border-box;
   width: 100%;
   padding: 12px 16px;
@@ -17,13 +16,13 @@
   resize: vertical;
 }
 
-.projectForm__textarea:focus,
-.projectForm__select:focus {
+.projectForm__textarea:focus {
   border-color: var(--color-input-border-focus);
 }
 
-.projectForm__select option {
-  background: var(--color-card-bg);
+.projectForm__owner {
+  display: block;
+  width: 100%;
 }
 
 .projectForm__value {

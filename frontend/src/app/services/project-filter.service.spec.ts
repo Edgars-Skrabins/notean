@@ -59,6 +59,18 @@ describe('ProjectFilterService', () => {
     expect(service.getSelectedProjectId()).toBe(2);
   });
 
+  it('reports whether there are any visible projects', async () => {
+    const service = create();
+    const changes: boolean[] = [];
+    service.hasProjects$.subscribe((hasProjects) => changes.push(hasProjects));
+
+    await service.load();
+    projectService.listProjects.and.returnValue(Promise.resolve({success: true, projects: []}));
+    await service.load();
+
+    expect(changes).toEqual([false, true, false]);
+  });
+
   it('falls back to All when the stored project is no longer visible', async () => {
     localStorage.setItem('selectedProject:abc', '9');
     const service = create();

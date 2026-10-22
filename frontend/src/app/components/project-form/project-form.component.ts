@@ -5,8 +5,10 @@ import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ProjectParams} from '@models/project.model';
 import {TeamMember} from '@models/team.model';
+import {DropdownOption} from '@models/dropdown.model';
 import {AvatarComponent} from '@components/avatar/avatar.component';
 import {CheckboxComponent} from '@components/checkbox/checkbox.component';
+import {DropdownComponent} from '@components/dropdown/dropdown.component';
 
 @Component({
   selector: 'app-project-form',
@@ -17,7 +19,8 @@ import {CheckboxComponent} from '@components/checkbox/checkbox.component';
     NgIf,
     TranslateModule,
     AvatarComponent,
-    CheckboxComponent
+    CheckboxComponent,
+    DropdownComponent
   ],
   templateUrl: './project-form.component.html',
   styleUrl: './project-form.component.css'
@@ -33,6 +36,10 @@ export class ProjectFormComponent {
 
   get ownerNickname(): string {
     return this.members.find((member) => member.id === this.params.ownerUserId)?.nickname ?? '';
+  }
+
+  get ownerOptions(): DropdownOption[] {
+    return this.members.map((member) => ({value: member.id, label: member.nickname}));
   }
 
   get memberNicknames(): string {

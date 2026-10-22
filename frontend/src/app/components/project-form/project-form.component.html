@@ -25,16 +25,15 @@
 </div>
 
 <div class="authField">
-  <label class="authField__label" for="projectOwner">{{ PHRASES.PROJECT_OWNER | translate }}</label>
-  <select
+  <span class="authField__label">{{ PHRASES.PROJECT_OWNER | translate }}</span>
+  <app-dropdown
     *ngIf="!readonly"
-    id="projectOwner"
-    class="projectForm__select"
-    [ngModel]="params.ownerUserId"
-    (ngModelChange)="handleOwnerChange($event)"
-  >
-    <option *ngFor="let member of members" [ngValue]="member.id">{{ member.nickname }}</option>
-  </select>
+    class="projectForm__owner"
+    [options]="ownerOptions"
+    [value]="params.ownerUserId"
+    [ariaLabel]="PHRASES.PROJECT_OWNER"
+    (valueChange)="handleOwnerChange($any($event))"
+  ></app-dropdown>
   <p class="projectForm__value" *ngIf="readonly">{{ ownerNickname }}</p>
 </div>
 

@@ -80,7 +80,7 @@ Run frontend commands from `frontend/` and backend commands from `backend/`.
 - **i18n**: `@ngx-translate/core` with the http loader
 - **Rich text**: Tiptap (core, pm, starter-kit)
 - **Diagrams**: AntV X6 with the selection, snapline and keyboard plugins
-- **Drag and drop**: Angular CDK
+- **Drag and drop and popups**: Angular CDK (drag-drop, overlay)
 - **Tests**: Karma + Jasmine
 
 ### Structure
@@ -93,7 +93,7 @@ src/app/
 ├── services/     API access and app state, all providedIn: 'root'
 ├── models/       TypeScript interfaces and response union types
 ├── guards/       functional route guards
-├── config/       axios instance, i18n config, language options, PHRASES, errorCodes/
+├── config/       axios instance, i18n config, language options, overlay positions, PHRASES, errorCodes/
 ├── testing/      shared spec fixtures (e.g. boardFixtures.ts)
 └── utils/        small pure helpers
 public/assets/translations/   en.json, lv.json

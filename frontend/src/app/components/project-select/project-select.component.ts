@@ -1,41 +1,40 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {AsyncPipe, NgFor} from '@angular/common';
-import {TranslateModule} from '@ngx-translate/core';
+import {AsyncPipe, NgIf} from '@angular/common';
+import {map, Observable} from 'rxjs';
 import {PHRASES} from '@config/phrases';
 import {ProjectFilterService} from '@services/project-filter.service';
-
-const NO_PROJECT = '';
+import {DropdownOption} from '@models/dropdown.model';
+import {DropdownComponent} from '@components/dropdown/dropdown.component';
 
 @Component({
   selector: 'app-project-select',
   standalone: true,
   imports: [
     AsyncPipe,
-    NgFor,
-    TranslateModule
+    NgIf,
+    DropdownComponent
   ],
   templateUrl: './project-select.component.html',
   styleUrl: './project-select.component.css'
 })
 export class ProjectSelectComponent {
   protected readonly PHRASES = PHRASES;
-  protected readonly NO_PROJECT = NO_PROJECT;
 
   @Input() projectId: number | null = null;
   @Output() projectChange = new EventEmitter<number | null>();
 
+  readonly options$: Observable<DropdownOption[]>;
+
   constructor(protected projectFilterService: ProjectFilterService) {
+    this.options$ = projectFilterService.projects$.pipe(
+      map((projects) => [
+        {value: null, labelKey: PHRASES.NO_PROJECT},
+        ...projects.map((project) => ({value: project.id, label: project.name})),
+      ]),
+    );
   }
 
-  get value(): string {
-    return String(this.projectId ?? NO_PROJECT);
-  }
-
-  handleChange(select: HTMLSelectElement) {
-    const projectId = select.value === NO_PROJECT ? null : Number(select.value);
-    select.value = this.value;
-    if (projectId !== this.projectId) {
-      this.projectChange.emit(projectId);
-    }
+  handleChange(value: string | number | null) {
+    this.projectChange.emit(value as number | null);
   }
 }
