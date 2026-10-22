@@ -42,7 +42,7 @@ Run frontend commands from `frontend/` and backend commands from `backend/`.
 - Every spec is implemented on its own branch, created from an up-to-date `origin/master`, and worked on in a local worktree for that branch in `.claude/worktrees/<spec-name>`, so several agents can work in parallel. The `implement-notean-spec` skill creates both and moves the session into the worktree.
 - Commits and pushes go to the spec's branch. The worktree stays local; only the branch is on GitHub.
 - Finished work reaches `master` through a pull request from the branch, merged only once it is approved. Never commit to `master` directly, except new or updated specs and Claude config.
-- Branch names are `feature/<spec-name>` for features and `fix/<spec-name>` for bug fixes, where `<spec-name>` is the spec's filename without `_SPEC.md`, lowercased, with underscores turned into hyphens (e.g. `specs/shared/DIAGRAM_INSPECT_SPEC.md` → `feature/diagram-inspect`, `specs/shared/POPUP_CLIPPING_FIX_SPEC.md` → `fix/popup-clipping-fix`).
+- Branch names are `feature/<spec-name>` for features and `fix/<spec-name>` for bug fixes, where `<spec-name>` is the spec's filename without `.spec.md` (e.g. `specs/shared/diagram-inspect.spec.md` → `feature/diagram-inspect`, `specs/shared/popup-clipping-fix.spec.md` → `fix/popup-clipping-fix`).
 - Once a branch is merged, remove its worktree with `git worktree remove .claude/worktrees/<spec-name>`.
 
 ## Commands

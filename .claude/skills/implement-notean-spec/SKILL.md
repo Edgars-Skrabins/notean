@@ -13,7 +13,7 @@ Every spec is implemented on its own branch, worked on in its own local worktree
 
 Set these up right after reading the spec, before reading the code or running the baseline tests.
 
-1. Work out the names. `<spec-name>` is the spec's filename without `_SPEC.md`, lowercased, with underscores turned into hyphens. The branch is `feature/<spec-name>` for a feature and `fix/<spec-name>` for a bug fix. If it isn't clear which one the spec is, ask the user.
+1. Work out the names. `<spec-name>` is the spec's filename without `.spec.md`. The branch is `feature/<spec-name>` for a feature and `fix/<spec-name>` for a bug fix. If it isn't clear which one the spec is, ask the user.
 2. If the session is already in `.claude/worktrees/<spec-name>` on that branch, keep working there and skip the rest of this section.
 3. If the session is in a different worktree, such as one the app created with a generated name, stop and ask the user how to proceed. Don't rename its branch or reuse it for this spec.
 4. From the main checkout, run `git fetch origin`, then:
