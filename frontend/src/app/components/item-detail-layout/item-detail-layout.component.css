@@ -16,7 +16,7 @@
 
 .itemDetail {
   position: absolute;
-  inset: 3vh 4vw;
+  inset: var(--space-5);
   overflow-y: auto;
   box-sizing: border-box;
   background: linear-gradient(165deg, var(--color-page-bg-start) 0%, var(--color-page-bg-end) 100%);
