@@ -48,7 +48,7 @@
 }
 
 .deleteProjectDialog__input {
-  padding: 10px 12px;
+  padding: 10px;
   background: var(--color-input-bg);
   border: 1px solid var(--color-input-border);
   border-radius: var(--radius-sm);
