@@ -125,6 +125,7 @@ src/environments/             environment.ts (apiUrl)
 - List screens load once and apply each mutation's response locally instead of reloading; Pages and Diagrams search filters loaded items in the browser.
 - Boards open at `/dashboard/boards/:id/{overview|kanban|backlog}`. `BoardPageComponent` provides a component-scoped `BoardPageStateService` that loads the board once; the tabs and the ticket popup (a child route of the Kanban or Backlog tab) read and update that shared board. The sidebar's board list and its personal order come from `BoardListService` (`localStorage`).
 - The header's project selector is backed by `ProjectFilterService`, which stores the choice per team (`selectedProject:<team>`, falling back to All). Lists, the sidebar boards, Favorites and My Work follow it; pass its value to the API with `projectQuery` from `@utils/projectQuery`, and new items default to the selected project.
+- The header's `GlobalSearchComponent` searches the whole team through `SearchService` (`GET /teams/:team_code/search`). It follows the project selector, opens with `/`, and shows its results in a CDK overlay panel grouped by type.
 - Realtime features open an ActionCable consumer at `ws://…/cable?token=<jwt>` from a dedicated service and subscribe to the matching backend channel.
 
 #### Path aliases
@@ -170,6 +171,7 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 #### Routes
 - Auth endpoints live under `auth/`.
 - Team routes use the team `code` as the param, not the id. Team-owned resources are nested under `teams/:team_code`.
+- `GET /teams/:team_code/search` (`SearchController`) searches projects, pages, diagrams, boards and tickets the user can see. Without `type` it returns 5 results per section; with `type` and `offset` it returns the next 10 of one section.
 - ActionCable is mounted at `/cable`.
 
 #### Controllers
@@ -191,6 +193,7 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 - A ticket belongs to a board and optionally a column; `column_id` null means it is in the board's backlog. `position` orders it within its column or the backlog.
 - Short-lived state, such as who is currently editing, lives in `Rails.cache` through plain Ruby classes (`*EditingStatus`), not tables. Changes are broadcast over ActionCable.
 - Title search uses the `TitleSearchable` concern's `search_title` scope (kept for future pagination; the UI searches client-side).
+- Global search uses the `TextSearchable` concern: models declare `text_searchable :title, ...` (title or name column first) and get the `text_search` and `title_match_first` scopes. Pages and diagrams keep a plain-text `search_text` column, refreshed from `content` on save by `SearchText` (page HTML without tags, diagram shape and connector labels).
 - List and detail endpoints preload what their JSON uses (e.g. `includes(creator: User::AVATAR_PRELOAD)`) so query counts don't grow with the number of items.
 
 #### Channels
