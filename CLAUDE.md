@@ -31,8 +31,8 @@ Run frontend commands from `frontend/` and backend commands from `backend/`.
 ## Specs workflow
 
 - Specs live in the root `specs/` folder and cover the whole feature, backend and frontend together.
-- `specs/personal/` is gitignored. New specs, TODOs and scratch notes go here by default.
-- `specs/shared/` is committed. Only put a spec here when explicitly asked to.
+- `specs/shared/` is committed. New specs go here.
+- `specs/personal/` is gitignored. Only put something here when explicitly asked to.
 - Before implementing a feature, read its spec if one exists.
 
 ## Commands
