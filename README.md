@@ -67,7 +67,7 @@ The database URLs in `backend/config/database.yml` use dev-only credentials (use
 - Backend: `bin/rails test` in `backend/`.
 - Frontend: `npm run test` in `frontend/`, which runs the unit tests via [Karma](https://karma-runner.github.io).
 
-## Frontend tasks
+## Commands
 
 Run these in `frontend/`:
 
