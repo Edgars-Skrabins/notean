@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, map, Observable} from 'rxjs';
 import {ProjectService} from "@services/project.service";
 import {TeamService} from "@services/team.service";
 import {ProjectSummary} from "@models/project.model";
@@ -15,6 +15,7 @@ export class ProjectFilterService {
   private selectedSubject: BehaviorSubject<number | null>;
 
   readonly projects$: Observable<ProjectSummary[]> = this.projectsSubject.asObservable();
+  readonly hasProjects$: Observable<boolean> = this.projects$.pipe(map((projects) => projects.length > 0));
   readonly selectedProjectId$: Observable<number | null>;
 
   constructor(
