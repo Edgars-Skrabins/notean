@@ -53,7 +53,7 @@ CSS only. No new dependencies.
 | `pages/dashboard/diagrams/diagrams.component.css` | `.diagramsView__search` | 11px 16px |
 | `pages/dashboard/backlog-tab/backlog-tab.component.css` | `.backlogTab__createInput` | 10px 12px |
 
-`.projectForm__textarea` currently shares its rule with `.projectForm__select`. If `PROJECT_SELECTOR_DROPDOWN_SPEC.md` hasn't removed the select yet, split the rule so only the textarea changes.
+`.projectForm__textarea` currently shares its rule with `.projectForm__select`. If `project-selector-dropdown.spec.md` hasn't removed the select yet, split the rule so only the textarea changes.
 
 ## 2.3 Decisions
 1. **What "outer padding" means:** only the gap between the inspect popups and the screen edges, capped at 24px. Rejected: reducing the padding inside the popups and the dashboard content area padding (both 32px).

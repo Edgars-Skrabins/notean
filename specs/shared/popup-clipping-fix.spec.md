@@ -15,7 +15,7 @@
 2. Click "+ Add assignee" in the ticket's side column.
 3. The search field and member list are cut off on the right.
 
-- **Users:** everyone who opens a popup: the assignee picker, the header user menu, and the shared `app-dropdown` from `PROJECT_SELECTOR_DROPDOWN_SPEC.md`.
+- **Users:** everyone who opens a popup: the assignee picker, the header user menu, and the shared `app-dropdown` from `project-selector-dropdown.spec.md`.
 - **Usage:**
   - Popups open below their trigger, aligned to its left edge. The header user menu is the exception: it aligns to the trigger's right edge, as it does today.
   - When there isn't room below, the popup opens above. When there isn't room on one side, it shifts to stay on screen.
@@ -64,13 +64,13 @@ The Angular CDK Overlay (`@angular/cdk/overlay`). `@angular/cdk` is already a de
 - Remove `handleDocumentClick`.
 - `.dashboardHeader__dropdown` keeps its look and its `dropdownEnter` animation.
 
-**`DropdownComponent`** (from `PROJECT_SELECTOR_DROPDOWN_SPEC.md`): that spec has been amended to use this pattern from the start. If this fix lands first, it adds `overlayPositions.ts` and the prebuilt CSS that the dropdown then uses.
+**`DropdownComponent`** (from `project-selector-dropdown.spec.md`): that spec has been amended to use this pattern from the start. If this fix lands first, it adds `overlayPositions.ts` and the prebuilt CSS that the dropdown then uses.
 
 ## 2.3 Decisions
 1. **Approach:** CDK Overlay. Popups render in an overlay layer at the top of the page, so no container can clip them. Rejected: our own `position: fixed` maths, which means more code to maintain for scroll and resize, and fitting popups inside their containers, which still clips in short or narrow containers.
 2. **Which popups:** the assignee picker, the header user menu and `app-dropdown`. The user menu isn't clipped today, but it moves too so every popup uses one mechanism. Leaving it as is was rejected.
 3. **How components use it:** `cdkOverlayOrigin` and `cdkConnectedOverlay` directly in each template, with shared positions in one config file. A shared `app-popover` wrapper component was rejected as an extra abstraction.
-4. **Relation to the dropdown spec:** `PROJECT_SELECTOR_DROPDOWN_SPEC.md` was amended so `app-dropdown` is built on the overlay from the start. Retrofitting it afterwards was rejected.
+4. **Relation to the dropdown spec:** `project-selector-dropdown.spec.md` was amended so `app-dropdown` is built on the overlay from the start. Retrofitting it afterwards was rejected.
 5. **Scrolling:** popups reposition to follow their trigger instead of closing. (Implementation choice, not one the user asked for.)
 
 # Part 3 — Implementation TODO
@@ -88,7 +88,7 @@ Baseline before starting: frontend `npm test`, 375 of 375 passing.
   - The `handleDocumentClick` tests are replaced with `handleOutsideClick` tests: an outside target closes the picker, and a target inside the trigger doesn't.
   - The other tests stay.
 - [ ] B2. Rewrite the `DashboardHeaderComponent` user menu (ts, html, css) as described in 2.2. Add or extend `dashboard-header.component.spec.ts` with the same two outside-click cases.
-- [ ] B3. If `DropdownComponent` already exists, check that it follows the pattern (see `PROJECT_SELECTOR_DROPDOWN_SPEC.md`). If it doesn't exist yet, nothing to do.
+- [ ] B3. If `DropdownComponent` already exists, check that it follows the pattern (see `project-selector-dropdown.spec.md`). If it doesn't exist yet, nothing to do.
 
 ### Z. Wrap-up
 - [ ] Z1. Run `npm test` and `npm run build` in `frontend/`. All tests pass and no style budget is exceeded.

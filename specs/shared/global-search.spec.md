@@ -49,7 +49,7 @@ A search bar in the middle of the dashboard header, similar to Jira's. It search
 # Part 2 — Technical details
 
 ## 2.1 Tools and libraries
-Existing stack: Rails and PostgreSQL, Angular, RxJS (`debounceTime`, `switchMap`), axios through `apiRequest`, ngx-translate, and the CDK overlay pattern from `POPUP_CLIPPING_FIX_SPEC.md` for the results panel. No new dependencies.
+Existing stack: Rails and PostgreSQL, Angular, RxJS (`debounceTime`, `switchMap`), axios through `apiRequest`, ngx-translate, and the CDK overlay pattern from `popup-clipping-fix.spec.md` for the results panel. No new dependencies.
 
 ## 2.2 Structure
 
@@ -125,7 +125,7 @@ Existing stack: Rails and PostgreSQL, Angular, RxJS (`debounceTime`, `switchMap`
 **`components/global-search/`** (`GlobalSearchComponent`, `app-global-search`, CSS block `globalSearch`), placed in the middle of `dashboard-header.component.html`:
 - **Input:** an input with `aria-label` that opens the panel when focused with 2+ characters.
 - **Searching:** a `Subject<string>` piped through `debounceTime(250)`, a minimum of 2 characters, and `switchMap` to `SearchService.search`, so stale responses are dropped.
-- **Panel:** rendered with the CDK overlay pattern (`POPUP_CLIPPING_FIX_SPEC.md`), at least as wide as the input. It has sections with a heading (reusing the `PROJECTS`, `DOCUMENT_PAGES`, `DIAGRAMS` and `BOARDS` phrases plus a new `TICKETS`), rows, and "Show more" rows that call `searchMore` with `offset` set to the section's current length and append the results.
+- **Panel:** rendered with the CDK overlay pattern (`popup-clipping-fix.spec.md`), at least as wide as the input. It has sections with a heading (reusing the `PROJECTS`, `DOCUMENT_PAGES`, `DIAGRAMS` and `BOARDS` phrases plus a new `TICKETS`), rows, and "Show more" rows that call `searchMore` with `offset` set to the section's current length and append the results.
 - **Snippet highlight:** split into before, match and after text and render the match in a `<mark class="globalSearch__match">`. Use text bindings only, never `innerHTML`.
 - **State:**
   - `includeAllProjects` (resets on close)
@@ -170,7 +170,7 @@ Existing stack: Rails and PostgreSQL, Angular, RxJS (`debounceTime`, `switchMap`
 
 Read Part 1 and Part 2 before starting. Work through the tasks in order and tick each one when it is done.
 
-Prerequisites: `POPUP_CLIPPING_FIX_SPEC.md` (the overlay pattern) is implemented.
+Prerequisites: `popup-clipping-fix.spec.md` (the overlay pattern) is implemented.
 
 Baseline before starting: frontend `npm test`, 375 of 375 passing. Run `bin/rails test` in `backend/` and note its count here before starting.
 

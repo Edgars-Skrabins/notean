@@ -25,7 +25,7 @@ The language switcher in the dashboard header is a row of flag buttons for Engli
 # Part 2 — Technical details
 
 ## 2.1 Tools and libraries
-ngx-translate with the http loader, as today, and `app-dropdown` from `PROJECT_SELECTOR_DROPDOWN_SPEC.md`. No new dependencies.
+ngx-translate with the http loader, as today, and `app-dropdown` from `project-selector-dropdown.spec.md`. No new dependencies.
 
 ## 2.2 Structure
 
@@ -73,7 +73,7 @@ ngx-translate with the http loader, as today, and `app-dropdown` from `PROJECT_S
 
 Read Part 1 and Part 2 before starting. Work through the tasks in order and tick each one when it is done.
 
-Prerequisites: `PROJECT_SELECTOR_DROPDOWN_SPEC.md` (`app-dropdown`) is implemented.
+Prerequisites: `project-selector-dropdown.spec.md` (`app-dropdown`) is implemented.
 
 Baseline before starting: frontend `npm test`, 375 of 375 passing.
 

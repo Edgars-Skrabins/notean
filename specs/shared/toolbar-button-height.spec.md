@@ -28,7 +28,7 @@ CSS only. No new dependencies.
 - `pages/dashboard/diagrams/diagrams.component.css`: the same for `.diagramsView__toolbar`.
 - `.button` already uses `align-items: center`, so content stays centered when the button is taller.
 
-The heights follow the search field automatically, so they stay matched when `WINDOW_AND_INPUT_SPACING_SPEC.md` changes the search padding.
+The heights follow the search field automatically, so they stay matched when `window-and-input-spacing.spec.md` changes the search padding.
 
 ## 2.3 Decisions
 1. **Approach:** toolbar buttons stretch to the search field's height. A shared fixed `--control-height` token was rejected because it has to be kept in sync by hand.
