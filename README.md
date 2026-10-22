@@ -2,6 +2,16 @@
 
 Notean is a team workspace app for documents, diagrams and kanban boards.
 
+## Tech stack
+
+- **Frontend:** Angular with TypeScript
+- **Backend:** Ruby on Rails (API-only) on Ruby 3.3.5
+- **Database:** PostgreSQL, run with Docker Compose
+- **Realtime:** Action Cable (WebSockets)
+- **Auth:** JWT bearer tokens
+
+## Project structure
+
 This repository contains the whole app:
 
 - `frontend/`: an Angular app, served at `http://localhost:4200`.
