@@ -60,7 +60,10 @@ Each option has exactly one of `label` (plain text, e.g. a project name or nickn
   - Trigger: a `<button type="button" class="dropdown__trigger">` with `aria-haspopup="listbox"`, `aria-expanded` and `aria-label`. It holds the label (`dropdown__label`, with ellipsis) and `<app-icon name="chevron-right">` rotated 90° (pointing down), flipped when open, with right padding so it isn't flush with the border.
   - Panel: `<ul class="dropdown__panel" role="listbox">` with `aria-activedescendant`. Each option is an `<li role="option" class="dropdown__option">` with a unique `id`, `aria-selected`, `dropdown__option--active` for the keyboard-active option, and a checkmark on the selected one. Its styling copies the values of `.dashboardHeader__dropdown` and `.dashboardHeader__dropdownItem`, plus a `max-height` with `overflow-y: auto`.
 - Logic: `isOpen`, `activeIndex`, `open()`, `close()`, `select(option)`, and `handleKeydown(event)` for the keys in Part 1.
-  - Outside clicks are handled with `@HostListener('document:click')` and `ElementRef.contains`, the same way as `TicketAssigneesComponent`.
+  - The panel is rendered with the CDK overlay pattern from `POPUP_CLIPPING_FIX_SPEC.md` (2.2), so no container can clip it:
+    - the trigger gets `cdkOverlayOrigin`
+    - the panel goes in a `cdkConnectedOverlay` template with `DROPDOWN_POSITIONS`, `cdkConnectedOverlayMinWidth` set to the trigger's width, and a reposition scroll strategy
+  - Outside clicks are handled with `(overlayOutsideClick)` → `handleOutsideClick(event)`, which closes unless the target is inside the trigger. This replaces a `document:click` HostListener.
   - Focus returns to the trigger on Escape.
 - Sizing: `:host { display: inline-block; }`. Callers set the width through the host element: the header keeps `max-width: 220px`, and the board/sidebar picker and project form use `width: 100%`. The panel is at least as wide as the trigger.
 - Component CSS must stay under the 4kB budget.
@@ -96,6 +99,7 @@ Each option has exactly one of `label` (plain text, e.g. a project name or nickn
 7. **API:** plain `@Input`/`@Output` (`value` / `valueChange`), following the project's convention. `ControlValueAccessor` was rejected because the project doesn't use that pattern. The project form moves from `ngModel` to these bindings.
 8. **Chevron:** reuse the existing `chevron-right` icon rotated to point down, rather than adding a new icon. (Implementation choice, not one the user asked for.)
 9. **Empty check:** a `hasProjects$` observable on `ProjectFilterService`, so the header, the picker and the sidebar label all use one source. (Implementation choice, not one the user asked for.)
+10. **(2026-10-22) Overlay from the start:** the dropdown panel uses the CDK overlay pattern from `POPUP_CLIPPING_FIX_SPEC.md`, so it can't be clipped in the detail sidebar or anywhere else. This replaces the earlier `document:click` HostListener approach. Retrofitting it after both specs land was rejected.
 
 # Part 3 — Implementation TODO
 
@@ -104,6 +108,7 @@ Read Part 1 and Part 2 before starting. Work through the tasks in order and tick
 Baseline before starting: frontend `npm test`, 375 of 375 passing.
 
 ### A. Shared dropdown
+- [ ] A0. Check that the overlay setup from `POPUP_CLIPPING_FIX_SPEC.md` (block A: the prebuilt CSS in `angular.json` and `config/overlayPositions.ts`) is in place. If not, add it here exactly as that spec describes.
 - [ ] A1. Add `DropdownOption` in `src/app/models/dropdown.model.ts`.
 - [ ] A2. Generate `components/dropdown` with `npm run newcomponent dropdown` and build the trigger, panel, inputs, output and styling from 2.2.
 - [ ] A3. Add open/close, option selection, keyboard handling, outside-click closing and focus return from Part 1 to `DropdownComponent`.
@@ -114,7 +119,7 @@ Baseline before starting: frontend `npm test`, 375 of 375 passing.
   - Home and End jump to the ends
   - Enter selects and closes
   - Escape closes without emitting
-  - an outside click closes, and a click inside doesn't
+  - `handleOutsideClick` closes for an outside target, and not for a target inside the trigger
 
 ### B. Empty-state source
 - [ ] B1. Add `hasProjects$` to `ProjectFilterService` and extend `project-filter.service.spec.ts` to cover it switching between empty and non-empty lists. Update `testing/projectFilterStub.ts` if the stub needs it.
