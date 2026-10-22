@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
+import {CdkScrollable} from '@angular/cdk/scrolling';
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {TicketService} from "@services/ticket.service";
@@ -29,6 +30,7 @@ import {BoardPageStateService} from "../board-page/board-page-state.service";
   imports: [
     FormsModule,
     NgIf,
+    CdkScrollable,
     TranslateModule,
     IconButtonComponent,
     ButtonComponent,

@@ -49,17 +49,20 @@ describe('TicketAssigneesComponent', () => {
   it('closes the picker on a click outside', () => {
     component.togglePicker();
 
-    component.handleDocumentClick({target: document.body} as unknown as MouseEvent);
+    component.handleOutsideClick({target: document.body} as unknown as MouseEvent);
 
     expect(component.isPickerOpen).toBeFalse();
   });
 
-  it('keeps the picker open on a click inside', () => {
+  it('keeps the picker open on a click inside the trigger', () => {
+    const trigger = document.createElement('button');
+    trigger.className = 'ticketAssignees__trigger';
     const inside = document.createElement('span');
-    host.appendChild(inside);
+    trigger.appendChild(inside);
+    host.appendChild(trigger);
     component.togglePicker();
 
-    component.handleDocumentClick({target: inside} as unknown as MouseEvent);
+    component.handleOutsideClick({target: inside} as unknown as MouseEvent);
 
     expect(component.isPickerOpen).toBeTrue();
   });

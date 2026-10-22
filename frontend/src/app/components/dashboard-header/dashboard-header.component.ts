@@ -1,7 +1,9 @@
-import {Component, HostListener} from '@angular/core';
+import {Component, ElementRef} from '@angular/core';
 import {TranslateModule} from "@ngx-translate/core";
 import {AsyncPipe, NgIf} from "@angular/common";
+import {OverlayModule} from "@angular/cdk/overlay";
 import {PHRASES} from "@config/phrases";
+import {MENU_POSITIONS} from "@config/overlayPositions";
 import {NavigationService} from "@services/navigation.service";
 import {AuthService} from "@services/auth.service";
 import {TeamService} from "@services/team.service";
@@ -20,6 +22,7 @@ import {AppRoutes} from "../../app/app-routes.enum";
     TranslateModule,
     NgIf,
     AsyncPipe,
+    OverlayModule,
     LanguageSwitcherComponent,
     IconButtonComponent,
     AvatarComponent,
@@ -30,6 +33,7 @@ import {AppRoutes} from "../../app/app-routes.enum";
 })
 export class DashboardHeaderComponent {
   protected readonly PHRASES = PHRASES;
+  protected readonly MENU_POSITIONS = MENU_POSITIONS;
 
   isMenuOpen = false;
 
@@ -38,7 +42,8 @@ export class DashboardHeaderComponent {
     private authService: AuthService,
     private teamService: TeamService,
     private sessionService: SessionService,
-    protected avatarService: AvatarService
+    protected avatarService: AvatarService,
+    private elementRef: ElementRef<HTMLElement>
   ) {
   }
 
@@ -59,11 +64,12 @@ export class DashboardHeaderComponent {
     this.isMenuOpen = false;
   }
 
-  @HostListener('document:click', ['$event'])
-  handleDocumentClick(event: MouseEvent) {
-    if (!(event.target as HTMLElement).closest('.dashboardHeader__menu')) {
-      this.closeMenu();
+  handleOutsideClick(event: MouseEvent) {
+    const target = event.target as Node | null;
+    if (target && this.trigger()?.contains(target)) {
+      return;
     }
+    this.closeMenu();
   }
 
   handleGoToProfile() {
@@ -91,5 +97,9 @@ export class DashboardHeaderComponent {
     this.authService.logout();
     this.sessionService.clear();
     this.navigationService.navigate(AppRoutes.LOGIN);
+  }
+
+  private trigger(): HTMLElement | null {
+    return this.elementRef.nativeElement.querySelector('.dashboardHeader__trigger');
   }
 }

@@ -1,8 +1,10 @@
-import {Component, ElementRef, EventEmitter, HostListener, Input, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgFor, NgIf} from '@angular/common';
+import {CdkConnectedOverlay, OverlayModule} from '@angular/cdk/overlay';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
+import {DROPDOWN_POSITIONS} from '@config/overlayPositions';
 import {BoardUser} from '@models/board.model';
 import {TeamMember} from '@models/team.model';
 import {AvatarComponent} from '@components/avatar/avatar.component';
@@ -15,6 +17,7 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
     FormsModule,
     NgFor,
     NgIf,
+    OverlayModule,
     TranslateModule,
     AvatarComponent,
     IconButtonComponent
@@ -24,6 +27,7 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
 })
 export class TicketAssigneesComponent {
   protected readonly PHRASES = PHRASES;
+  protected readonly DROPDOWN_POSITIONS = DROPDOWN_POSITIONS;
 
   @Input({required: true}) assignees: BoardUser[] = [];
   @Input({required: true}) members: TeamMember[] = [];
@@ -48,13 +52,6 @@ export class TicketAssigneesComponent {
     return this.members.filter((member) => !assignedIds.has(member.id) && member.nickname.toLowerCase().includes(query));
   }
 
-  @HostListener('document:click', ['$event'])
-  handleDocumentClick(event: MouseEvent) {
-    if (!this.elementRef.nativeElement.contains(event.target as Node)) {
-      this.closePicker();
-    }
-  }
-
   togglePicker() {
     this.isPickerOpen = !this.isPickerOpen;
     this.searchQuery = '';
@@ -65,8 +62,24 @@ export class TicketAssigneesComponent {
     this.searchQuery = '';
   }
 
+  focusSearch(overlay: CdkConnectedOverlay) {
+    overlay.overlayRef.overlayElement.querySelector<HTMLInputElement>('.ticketAssignees__search')?.focus();
+  }
+
+  handleOutsideClick(event: MouseEvent) {
+    const target = event.target as Node | null;
+    if (target && this.trigger()?.contains(target)) {
+      return;
+    }
+    this.closePicker();
+  }
+
   handlePick(member: TeamMember) {
     this.closePicker();
     this.add.emit(member.id);
+  }
+
+  private trigger(): HTMLButtonElement | null {
+    return this.elementRef.nativeElement.querySelector('.ticketAssignees__trigger');
   }
 }

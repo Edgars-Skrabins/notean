@@ -35,10 +35,6 @@
   gap: var(--space-4);
 }
 
-.dashboardHeader__menu {
-  position: relative;
-}
-
 .dashboardHeader__trigger {
   display: flex;
   align-items: center;
@@ -52,9 +48,6 @@
 }
 
 .dashboardHeader__dropdown {
-  position: absolute;
-  top: calc(100% + 8px);
-  right: 0;
   min-width: 180px;
   background: linear-gradient(160deg, var(--color-card-bg) 0%, var(--color-card-bg-alt) 100%);
   border: 1px solid var(--color-input-border);
