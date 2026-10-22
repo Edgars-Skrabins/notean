@@ -34,7 +34,7 @@ Run frontend commands from `frontend/` and backend commands from `backend/`.
 - `specs/shared/` is committed. New specs go here.
 - `specs/personal/` is gitignored. Only put something here when explicitly asked to.
 - Before implementing a feature, read its spec if one exists.
-- Specs are implemented with the project's `implement-notean-spec` skill (`.claude/skills/`), not the global `implement-spec`.
+- Specs are implemented with the project's `implement-notean-spec` skill (`.claude/skills/`), which follows the global `implement-spec` and adds Notean's branch, worktree and pull request rules.
 
 ## Branches and worktrees
 
