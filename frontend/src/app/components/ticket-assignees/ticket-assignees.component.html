@@ -18,18 +18,35 @@
   {{ PHRASES.ASSIGN_TO_ME | translate }}
 </button>
 
-<div class="ticketAssignees__picker">
-  <button type="button" class="ticketAssignees__link" [disabled]="busy" (click)="togglePicker()">
-    + {{ PHRASES.ADD_ASSIGNEE | translate }}
-  </button>
+<button
+  type="button"
+  class="ticketAssignees__link ticketAssignees__trigger"
+  cdkOverlayOrigin
+  #origin="cdkOverlayOrigin"
+  [disabled]="busy"
+  (click)="togglePicker()"
+>
+  + {{ PHRASES.ADD_ASSIGNEE | translate }}
+</button>
 
-  <div class="ticketAssignees__dropdown" *ngIf="isPickerOpen" (keydown.escape)="closePicker()">
+<ng-template
+  cdkConnectedOverlay
+  #overlay="cdkConnectedOverlay"
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayOpen]="isPickerOpen"
+  [cdkConnectedOverlayPositions]="DROPDOWN_POSITIONS"
+  [cdkConnectedOverlayPush]="true"
+  [cdkConnectedOverlayViewportMargin]="4"
+  (overlayOutsideClick)="handleOutsideClick($event)"
+  (attach)="focusSearch(overlay)"
+  (detach)="closePicker()"
+>
+  <div class="ticketAssignees__dropdown" (keydown.escape)="closePicker()">
     <input
       type="text"
       class="ticketAssignees__search"
       [(ngModel)]="searchQuery"
       [placeholder]="PHRASES.SEARCH_MEMBERS | translate"
-      autofocus
     />
     <button type="button" class="ticketAssignees__option" *ngFor="let member of availableMembers" (click)="handlePick(member)">
       <app-avatar [avatar]="member.avatar" [nickname]="member.nickname"></app-avatar>
@@ -37,4 +54,4 @@
     </button>
     <p class="ticketAssignees__empty" *ngIf="!availableMembers.length">{{ PHRASES.NO_MATCHING_MEMBERS | translate }}</p>
   </div>
-</div>
+</ng-template>
