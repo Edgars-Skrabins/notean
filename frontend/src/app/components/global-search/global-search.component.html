@@ -1,0 +1,68 @@
+<div class="globalSearch" cdkOverlayOrigin #origin="cdkOverlayOrigin">
+  <input
+    #input
+    type="text"
+    class="globalSearch__input"
+    [value]="query"
+    [placeholder]="PHRASES.SEARCH_EVERYTHING | translate"
+    [attr.aria-label]="PHRASES.SEARCH_EVERYTHING | translate"
+    [attr.aria-expanded]="isOpen"
+    (input)="handleInput(input.value)"
+    (focus)="handleFocus()"
+    (keydown)="handleKeydown($event)"
+  >
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayOpen]="isOpen"
+  [cdkConnectedOverlayPositions]="DROPDOWN_POSITIONS"
+  [cdkConnectedOverlayMinWidth]="panelWidth"
+  [cdkConnectedOverlayPush]="true"
+  [cdkConnectedOverlayViewportMargin]="4"
+  (overlayOutsideClick)="handleOutsideClick($event)"
+  (detach)="close()"
+>
+  <div class="globalSearch__panel" [attr.aria-busy]="isLoading">
+    <div class="globalSearch__loading" *ngIf="isLoading"></div>
+
+    <ng-container *ngIf="!isLoading">
+      <p class="globalSearch__message" *ngIf="hasError">{{ PHRASES.SEARCH_FAILED | translate }}</p>
+      <p class="globalSearch__message" *ngIf="isEmpty">{{ PHRASES.NO_SEARCH_RESULTS | translate }}</p>
+
+      <section class="globalSearch__section" *ngFor="let section of visibleSections">
+        <h3 class="globalSearch__heading">{{ SECTION_PHRASES[section.type] | translate }}</h3>
+
+        <button
+          type="button"
+          class="globalSearch__row"
+          *ngFor="let result of section.results"
+          [class.globalSearch__row--active]="isActive(result)"
+          (click)="openResult(result)"
+        >
+          <app-icon [name]="result.type" class="globalSearch__icon"></app-icon>
+          <span class="globalSearch__text">
+            <span class="globalSearch__title">{{ result.title }}</span>
+            <span class="globalSearch__context" *ngIf="context(result) as contextText">{{ contextText }}</span>
+            <span class="globalSearch__snippet" *ngIf="result.snippet && snippetParts(result.snippet) as parts">{{ parts.before }}<mark class="globalSearch__match">{{ parts.match }}</mark>{{ parts.after }}</span>
+          </span>
+        </button>
+
+        <button
+          type="button"
+          class="globalSearch__row globalSearch__more"
+          *ngIf="section.hasMore"
+          [class.globalSearch__row--active]="isActive(section)"
+          [disabled]="loadingMoreType === section.type"
+          (click)="showMore(section)"
+        >{{ PHRASES.SEARCH_SHOW_MORE | translate }}</button>
+      </section>
+    </ng-container>
+
+    <div class="globalSearch__footer" *ngIf="selectedProjectName as projectName">
+      <span>{{ PHRASES.SEARCH_IN_PROJECT | translate: {project: projectName} }}</span>
+      <button type="button" class="globalSearch__includeAll" (click)="handleIncludeAllProjects()">{{ PHRASES.SEARCH_INCLUDE_ALL_PROJECTS | translate }}</button>
+    </div>
+  </div>
+</ng-template>

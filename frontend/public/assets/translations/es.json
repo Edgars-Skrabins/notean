@@ -41,6 +41,12 @@
   "NEW_FOLDER": "Nueva carpeta",
   "NO_PAGES_YET": "Aún no hay páginas: crea una para empezar.",
   "NO_SEARCH_RESULTS": "No se encontraron resultados.",
+  "SEARCH_EVERYTHING": "Buscar en todo",
+  "SEARCH_SHOW_MORE": "Mostrar más",
+  "SEARCH_IN_PROJECT": "Buscando ahora en el proyecto '{{project}}'",
+  "SEARCH_INCLUDE_ALL_PROJECTS": "Incluir todos los proyectos",
+  "SEARCH_FAILED": "La búsqueda falló",
+  "TICKETS": "Tickets",
   "UNTITLED_PAGE": "Sin título",
   "UNTITLED_FOLDER": "Carpeta sin título",
   "DELETE_FOLDER": "Eliminar carpeta",
@@ -284,6 +290,10 @@
       "PROJECT_NAME_MISMATCH": "El nombre que escribiste no coincide con el nombre del proyecto",
       "PROJECT_DELETE_MODE_INVALID": "No se pudo eliminar el proyecto",
       "PROJECT_INVALID": "No puedes mover elementos a este proyecto"
+    },
+    "SEARCH": {
+      "QUERY_TOO_SHORT": "Escribe al menos 2 caracteres para buscar",
+      "INVALID_TYPE": "No se pudo realizar la búsqueda"
     }
   }
 }

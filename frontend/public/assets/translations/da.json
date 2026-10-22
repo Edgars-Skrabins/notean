@@ -41,6 +41,12 @@
   "NEW_FOLDER": "Ny mappe",
   "NO_PAGES_YET": "Ingen sider endnu – opret en for at komme i gang.",
   "NO_SEARCH_RESULTS": "Ingen resultater fundet.",
+  "SEARCH_EVERYTHING": "Søg i alt",
+  "SEARCH_SHOW_MORE": "Vis flere",
+  "SEARCH_IN_PROJECT": "Søger lige nu i projektet '{{project}}'",
+  "SEARCH_INCLUDE_ALL_PROJECTS": "Medtag alle projekter",
+  "SEARCH_FAILED": "Søgningen mislykkedes",
+  "TICKETS": "Opgaver",
   "UNTITLED_PAGE": "Uden titel",
   "UNTITLED_FOLDER": "Mappe uden titel",
   "DELETE_FOLDER": "Slet mappe",
@@ -284,6 +290,10 @@
       "PROJECT_NAME_MISMATCH": "Det indtastede navn matcher ikke projektets navn",
       "PROJECT_DELETE_MODE_INVALID": "Projektet kunne ikke slettes",
       "PROJECT_INVALID": "Du kan ikke flytte elementer til dette projekt"
+    },
+    "SEARCH": {
+      "QUERY_TOO_SHORT": "Skriv mindst 2 tegn for at søge",
+      "INVALID_TYPE": "Søgningen mislykkedes"
     }
   }
 }

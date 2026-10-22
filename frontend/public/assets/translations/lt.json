@@ -41,6 +41,12 @@
   "NEW_FOLDER": "Naujas aplankas",
   "NO_PAGES_YET": "Puslapių dar nėra – sukurkite pirmąjį.",
   "NO_SEARCH_RESULTS": "Rezultatų nerasta.",
+  "SEARCH_EVERYTHING": "Ieškoti visur",
+  "SEARCH_SHOW_MORE": "Rodyti daugiau",
+  "SEARCH_IN_PROJECT": "Šiuo metu ieškoma projekte '{{project}}'",
+  "SEARCH_INCLUDE_ALL_PROJECTS": "Įtraukti visus projektus",
+  "SEARCH_FAILED": "Paieška nepavyko",
+  "TICKETS": "Užduotys",
   "UNTITLED_PAGE": "Be pavadinimo",
   "UNTITLED_FOLDER": "Aplankas be pavadinimo",
   "DELETE_FOLDER": "Ištrinti aplanką",
@@ -284,6 +290,10 @@
       "PROJECT_NAME_MISMATCH": "Įvestas pavadinimas nesutampa su projekto pavadinimu",
       "PROJECT_DELETE_MODE_INVALID": "Nepavyko ištrinti projekto",
       "PROJECT_INVALID": "Negalite perkelti elementų į šį projektą"
+    },
+    "SEARCH": {
+      "QUERY_TOO_SHORT": "Paieškai įveskite bent 2 simbolius",
+      "INVALID_TYPE": "Nepavyko atlikti paieškos"
     }
   }
 }

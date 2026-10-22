@@ -41,6 +41,12 @@
   "NEW_FOLDER": "Uus kaust",
   "NO_PAGES_YET": "Lehti veel pole – alustamiseks loo üks.",
   "NO_SEARCH_RESULTS": "Tulemusi ei leitud.",
+  "SEARCH_EVERYTHING": "Otsi kõikjalt",
+  "SEARCH_SHOW_MORE": "Näita rohkem",
+  "SEARCH_IN_PROJECT": "Praegu otsitakse projektist '{{project}}'",
+  "SEARCH_INCLUDE_ALL_PROJECTS": "Kaasa kõik projektid",
+  "SEARCH_FAILED": "Otsing ebaõnnestus",
+  "TICKETS": "Piletid",
   "UNTITLED_PAGE": "Pealkirjata",
   "UNTITLED_FOLDER": "Pealkirjata kaust",
   "DELETE_FOLDER": "Kustuta kaust",
@@ -284,6 +290,10 @@
       "PROJECT_NAME_MISMATCH": "Sisestatud nimi ei vasta projekti nimele",
       "PROJECT_DELETE_MODE_INVALID": "Projekti ei õnnestunud kustutada",
       "PROJECT_INVALID": "Sa ei saa sellesse projekti üksusi teisaldada"
+    },
+    "SEARCH": {
+      "QUERY_TOO_SHORT": "Otsimiseks sisesta vähemalt 2 märki",
+      "INVALID_TYPE": "Otsing ebaõnnestus"
     }
   }
 }
