@@ -31,3 +31,4 @@ Set these up right after reading the spec, before reading the code or running th
 
 - In the summary for the user's review, name the branch and worktree the work is on.
 - Once the user has approved and told you to push, push the branch and open a pull request from it into `master` (`gh pr create --base master`). Never merge it yourself; it is merged only after it has been approved.
+- Once the pull request is open, leave the worktree with `ExitWorktree` (`action: "keep"`, so the branch survives), stop any dev servers running from it, and remove it from the main checkout with `git worktree remove .claude/worktrees/<spec-name>`. The branch stays, locally and on GitHub.
