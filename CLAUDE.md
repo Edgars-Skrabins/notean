@@ -35,6 +35,13 @@ Run frontend commands from `frontend/` and backend commands from `backend/`.
 - `specs/personal/` is gitignored. Only put something here when explicitly asked to.
 - Before implementing a feature, read its spec if one exists.
 
+## Branches and worktrees
+
+- Every spec is implemented on its own branch in its own git worktree, so several agents can work in parallel.
+- Branches are created from an up-to-date `master`. Never commit to `master` directly.
+- Branch names are `feature/<spec-name>` for features and `fix/<spec-name>` for bug fixes, where `<spec-name>` is the spec's filename without the extension (e.g. `specs/shared/diagram-inspect.md` → `feature/diagram-inspect`).
+- If the worktree was created with a generated branch name, rename the branch (`git branch -m feature/<spec-name>`) before the first commit.
+
 ## Commands
 
 ### Frontend (run in `frontend/`)
