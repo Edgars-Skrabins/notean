@@ -20,7 +20,7 @@ notean/
 ├── CLAUDE.md
 ├── README.md
 ├── docker-compose.yml   PostgreSQL for development and tests
-├── .claude/      Claude Code config (launch.json)
+├── .claude/      Claude Code config (launch.json, skills/)
 ├── specs/        feature specs for the whole app
 ├── frontend/     Angular app
 └── backend/      Rails API
@@ -34,13 +34,16 @@ Run frontend commands from `frontend/` and backend commands from `backend/`.
 - `specs/shared/` is committed. New specs go here.
 - `specs/personal/` is gitignored. Only put something here when explicitly asked to.
 - Before implementing a feature, read its spec if one exists.
+- Specs are implemented with the project's `implement-notean-spec` skill (`.claude/skills/`), not the global `implement-spec`.
 
 ## Branches and worktrees
 
-- Every spec is implemented on its own branch in its own git worktree, so several agents can work in parallel.
-- Branches are created from an up-to-date `master`. Never commit to `master` directly.
+- Sessions start in the main checkout on `master`. Several sessions share it, so never switch branches there and never change app code there. Questions, research and spec writing happen in the main checkout.
+- Every spec is implemented on its own branch, created from an up-to-date `origin/master`, and worked on in a local worktree for that branch in `.claude/worktrees/<spec-name>`, so several agents can work in parallel. The `implement-notean-spec` skill creates both and moves the session into the worktree.
+- Commits and pushes go to the spec's branch. The worktree stays local; only the branch is on GitHub.
+- Finished work reaches `master` through a pull request from the branch, merged only once it is approved. Never commit to `master` directly, except new or updated specs and Claude config.
 - Branch names are `feature/<spec-name>` for features and `fix/<spec-name>` for bug fixes, where `<spec-name>` is the spec's filename without `_SPEC.md`, lowercased, with underscores turned into hyphens (e.g. `specs/shared/DIAGRAM_INSPECT_SPEC.md` → `feature/diagram-inspect`, `specs/shared/POPUP_CLIPPING_FIX_SPEC.md` → `fix/popup-clipping-fix`).
-- If the worktree was created with a generated branch name, rename the branch (`git branch -m feature/<spec-name>`) before the first commit.
+- Once a branch is merged, remove its worktree with `git worktree remove .claude/worktrees/<spec-name>`.
 
 ## Commands
 
