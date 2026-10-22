@@ -4,6 +4,12 @@
   min-width: 420px;
 }
 
+.authCard__language {
+  position: fixed;
+  top: var(--space-5);
+  right: var(--space-5);
+}
+
 .authCard {
   position: relative;
   overflow: hidden;

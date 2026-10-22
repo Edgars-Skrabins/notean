@@ -1,20 +1,25 @@
 import {Component} from '@angular/core';
-import {NgFor, NgClass} from '@angular/common';
+import {PHRASES} from '@config/phrases';
 import {LanguageService} from '@services/language.service';
 import {languageOptions} from '@config/languageOptions';
+import {DropdownOption} from '@models/dropdown.model';
+import {DropdownComponent} from '@components/dropdown/dropdown.component';
 
 @Component({
   selector: 'app-language-switcher',
   standalone: true,
   imports: [
-    NgFor,
-    NgClass
+    DropdownComponent
   ],
   templateUrl: './language-switcher.component.html',
   styleUrl: './language-switcher.component.css'
 })
 export class LanguageSwitcherComponent {
-  protected readonly languages = languageOptions;
+  protected readonly PHRASES = PHRASES;
+  readonly options: DropdownOption[] = languageOptions.map((language) => ({
+    value: language.code,
+    label: `${language.flag} ${language.label}`,
+  }));
 
   constructor(private languageService: LanguageService) {
   }
@@ -23,7 +28,7 @@ export class LanguageSwitcherComponent {
     return this.languageService.getCurrentLanguage();
   }
 
-  handleSelectLanguage(code: string) {
-    this.languageService.setLanguage(code);
+  handleSelectLanguage(code: string | number | null) {
+    this.languageService.setLanguage(code as string);
   }
 }

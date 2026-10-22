@@ -96,7 +96,7 @@ src/app/
 ├── config/       axios instance, i18n config, language options, overlay positions, PHRASES, errorCodes/
 ├── testing/      shared spec fixtures (e.g. boardFixtures.ts)
 └── utils/        small pure helpers
-public/assets/translations/   en.json, lv.json
+public/assets/translations/   one <code>.json per language (en, lv, et, lt, ru, sv, fi, de, da, fr, es)
 src/environments/             environment.ts (apiUrl)
 ```
 
@@ -131,9 +131,9 @@ src/environments/             environment.ts (apiUrl)
 Import with the tsconfig aliases instead of relative paths: `@components/*`, `@config/*`, `@pages/*`, `@models/*`, `@services/*`, `@utils/*`.
 
 #### i18n
-- All user-facing text goes through ngx-translate. Add the key to `PHRASES` in `config/phrases.ts`, then to both `en.json` and `lv.json`.
+- All user-facing text goes through ngx-translate. Add the key to `PHRASES` in `config/phrases.ts`, then to every translation file in `public/assets/translations/` (`en.json`, `lv.json` and the other languages in `supportedTranslations`).
 - Templates use `{{ PHRASES.KEY | translate }}`.
-- API error codes live per domain in `config/errorCodes/` and mirror the backend's `ErrorCodes` modules. Translations sit under `ERRORS.<DOMAIN>.<CODE>` in both JSON files, and `errorPhrase(code)` from `@utils/errorPhrase` returns the key. `NETWORK_ERROR` and `UNKNOWN_ERROR` are frontend-only. Never show backend text to users.
+- API error codes live per domain in `config/errorCodes/` and mirror the backend's `ErrorCodes` modules. Translations sit under `ERRORS.<DOMAIN>.<CODE>` in every translation file, and `errorPhrase(code)` from `@utils/errorPhrase` returns the key. `NETWORK_ERROR` and `UNKNOWN_ERROR` are frontend-only. Never show backend text to users.
 
 #### Style
 - Code uses 2-space indentation and single quotes in `.ts` files (see `.editorconfig`).
@@ -180,7 +180,7 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 - Role checks use `require_team_role!(team, :admin, :owner)`, which returns nil after rendering 403.
 - Project visibility goes through `project_access` (a `ProjectAccess` for the current user and team): scope `set_<resource>` with `project_access.scope(...)` so hidden items 404, filter lists with `project_filtered`, and set an item's project with `assign_project`. When an item's project changes, run `ProjectAccessCleanup` to drop assignments of people who lost access.
 - JSON is built by hand with private `*_json` and `*_summary_json` helper methods. Board-scoped controllers share `set_board` (`BoardScoped` concern) and the ticket JSON helpers (`TicketJson` concern). There is no jbuilder or serializer gem.
-- Response convention: success responses carry only the payload under a resource key (`{ page: ... }`). Errors are rendered with `render_error(ErrorCodes::Pages::PAGE_NOT_FOUND, :not_found)`, producing `{ code: "PAGE_NOT_FOUND" }` with the right status. Add new codes to the matching module in `app/errors/error_codes/` and to the frontend's `config/errorCodes/` plus both translation files. Keys are snake_case.
+- Response convention: success responses carry only the payload under a resource key (`{ page: ... }`). Errors are rendered with `render_error(ErrorCodes::Pages::PAGE_NOT_FOUND, :not_found)`, producing `{ code: "PAGE_NOT_FOUND" }` with the right status. Add new codes to the matching module in `app/errors/error_codes/` and to the frontend's `config/errorCodes/` plus every translation file. Keys are snake_case.
 - User-supplied rich-text HTML is sanitised with `Rails::Html::SafeListSanitizer` before saving.
 
 #### Models
