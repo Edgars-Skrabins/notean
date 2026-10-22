@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_11_140200) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_22_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -82,6 +82,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_11_140200) do
     t.datetime "updated_at", null: false
     t.integer "folder_id"
     t.integer "project_id"
+    t.text "search_text", default: "", null: false
     t.index ["created_by_user_id"], name: "index_diagrams_on_created_by_user_id"
     t.index ["folder_id"], name: "index_diagrams_on_folder_id"
     t.index ["project_id"], name: "index_diagrams_on_project_id"
@@ -150,6 +151,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_11_140200) do
     t.datetime "updated_at", null: false
     t.integer "folder_id"
     t.integer "project_id"
+    t.text "search_text", default: "", null: false
     t.index ["created_by_user_id"], name: "index_pages_on_created_by_user_id"
     t.index ["folder_id"], name: "index_pages_on_folder_id"
     t.index ["project_id"], name: "index_pages_on_project_id"
