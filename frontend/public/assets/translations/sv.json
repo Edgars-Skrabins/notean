@@ -41,6 +41,12 @@
   "NEW_FOLDER": "Ny mapp",
   "NO_PAGES_YET": "Inga sidor ännu – skapa en för att komma igång.",
   "NO_SEARCH_RESULTS": "Inga resultat hittades.",
+  "SEARCH_EVERYTHING": "Sök överallt",
+  "SEARCH_SHOW_MORE": "Visa fler",
+  "SEARCH_IN_PROJECT": "Söker just nu i projektet '{{project}}'",
+  "SEARCH_INCLUDE_ALL_PROJECTS": "Inkludera alla projekt",
+  "SEARCH_FAILED": "Sökningen misslyckades",
+  "TICKETS": "Ärenden",
   "UNTITLED_PAGE": "Namnlös",
   "UNTITLED_FOLDER": "Namnlös mapp",
   "DELETE_FOLDER": "Ta bort mapp",
@@ -284,6 +290,10 @@
       "PROJECT_NAME_MISMATCH": "Namnet du skrev matchar inte projektets namn",
       "PROJECT_DELETE_MODE_INVALID": "Det gick inte att ta bort projektet",
       "PROJECT_INVALID": "Du kan inte flytta objekt till det här projektet"
+    },
+    "SEARCH": {
+      "QUERY_TOO_SHORT": "Skriv minst 2 tecken för att söka",
+      "INVALID_TYPE": "Det gick inte att söka"
     }
   }
 }

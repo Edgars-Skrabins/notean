@@ -41,6 +41,12 @@
   "NEW_FOLDER": "Jauna mape",
   "NO_PAGES_YET": "Vēl nav lapu — izveidojiet vienu, lai sāktu.",
   "NO_SEARCH_RESULTS": "Nekas netika atrasts.",
+  "SEARCH_EVERYTHING": "Meklēt visur",
+  "SEARCH_SHOW_MORE": "Rādīt vairāk",
+  "SEARCH_IN_PROJECT": "Pašlaik meklē projektā '{{project}}'",
+  "SEARCH_INCLUDE_ALL_PROJECTS": "Iekļaut visus projektus",
+  "SEARCH_FAILED": "Meklēšana neizdevās",
+  "TICKETS": "Uzdevumi",
   "UNTITLED_PAGE": "Bez nosaukuma",
   "UNTITLED_FOLDER": "Mape bez nosaukuma",
   "DELETE_FOLDER": "Dzēst mapi",
@@ -284,6 +290,10 @@
       "PROJECT_NAME_MISMATCH": "Ierakstītais nosaukums neatbilst projekta nosaukumam",
       "PROJECT_DELETE_MODE_INVALID": "Neizdevās dzēst projektu",
       "PROJECT_INVALID": "Šajā projektā nevar pārvietot vienumus"
+    },
+    "SEARCH": {
+      "QUERY_TOO_SHORT": "Ievadiet vismaz 2 rakstzīmes, lai meklētu",
+      "INVALID_TYPE": "Neizdevās veikt meklēšanu"
     }
   }
 }

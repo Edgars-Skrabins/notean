@@ -26,4 +26,23 @@ class PageTest < ActiveSupport::TestCase
     assert_equal [ "Release 50% done" ], @team.pages.search_title("50%").pluck(:title)
     assert_equal 2, @team.pages.search_title("RELEASE").count
   end
+
+  test "saving content updates search_text" do
+    page = Page.create!(team: @team, creator: @user, title: "Notes", content: "<p>Hello <em>world</em></p>")
+
+    assert_equal "Hello world", page.search_text
+
+    page.update!(content: "<p>Bye</p>")
+
+    assert_equal "Bye", page.reload.search_text
+  end
+
+  test "saving only the title leaves search_text alone" do
+    page = Page.create!(team: @team, creator: @user, title: "Notes", content: "<p>Hello</p>")
+    page.update_column(:search_text, "kept")
+
+    page.update!(title: "Renamed")
+
+    assert_equal "kept", page.reload.search_text
+  end
 end

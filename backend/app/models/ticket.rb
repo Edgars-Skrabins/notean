@@ -1,4 +1,8 @@
 class Ticket < ApplicationRecord
+  include TextSearchable
+
+  text_searchable :title, :description
+
   belongs_to :board
   belongs_to :column, optional: true
   belongs_to :team

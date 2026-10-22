@@ -5,9 +5,10 @@
 .dashboardHeader {
   height: 64px;
   padding: 0 32px;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 480px) 1fr;
   align-items: center;
-  justify-content: space-between;
+  gap: var(--space-4);
   background: linear-gradient(160deg, rgba(93, 63, 189, 0.55) 0%, rgba(70, 46, 156, 0.4) 100%);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -29,7 +30,12 @@
   letter-spacing: -0.01em;
 }
 
+.dashboardHeader__search {
+  width: 100%;
+}
+
 .dashboardHeader__actions {
+  justify-self: end;
   display: flex;
   align-items: center;
   gap: var(--space-4);

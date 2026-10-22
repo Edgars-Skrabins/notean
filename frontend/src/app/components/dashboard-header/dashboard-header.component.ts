@@ -13,6 +13,7 @@ import {LanguageSwitcherComponent} from "@components/language-switcher/language-
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {AvatarComponent} from "@components/avatar/avatar.component";
 import {ProjectSelectorComponent} from "@components/project-selector/project-selector.component";
+import {GlobalSearchComponent} from "@components/global-search/global-search.component";
 import {AppRoutes} from "../../app/app-routes.enum";
 
 @Component({
@@ -26,7 +27,8 @@ import {AppRoutes} from "../../app/app-routes.enum";
     LanguageSwitcherComponent,
     IconButtonComponent,
     AvatarComponent,
-    ProjectSelectorComponent
+    ProjectSelectorComponent,
+    GlobalSearchComponent
   ],
   templateUrl: './dashboard-header.component.html',
   styleUrl: './dashboard-header.component.css'

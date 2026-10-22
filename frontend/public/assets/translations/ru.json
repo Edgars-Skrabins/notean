@@ -41,6 +41,12 @@
   "NEW_FOLDER": "Новая папка",
   "NO_PAGES_YET": "Страниц пока нет — создайте первую.",
   "NO_SEARCH_RESULTS": "Ничего не найдено.",
+  "SEARCH_EVERYTHING": "Искать везде",
+  "SEARCH_SHOW_MORE": "Показать ещё",
+  "SEARCH_IN_PROJECT": "Сейчас поиск в проекте '{{project}}'",
+  "SEARCH_INCLUDE_ALL_PROJECTS": "Включить все проекты",
+  "SEARCH_FAILED": "Не удалось выполнить поиск",
+  "TICKETS": "Задачи",
   "UNTITLED_PAGE": "Без названия",
   "UNTITLED_FOLDER": "Папка без названия",
   "DELETE_FOLDER": "Удалить папку",
@@ -284,6 +290,10 @@
       "PROJECT_NAME_MISMATCH": "Введённое название не совпадает с названием проекта",
       "PROJECT_DELETE_MODE_INVALID": "Не удалось удалить проект",
       "PROJECT_INVALID": "Нельзя переместить элементы в этот проект"
+    },
+    "SEARCH": {
+      "QUERY_TOO_SHORT": "Введите не менее 2 символов для поиска",
+      "INVALID_TYPE": "Не удалось выполнить поиск"
     }
   }
 }

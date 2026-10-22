@@ -41,6 +41,12 @@
   "NEW_FOLDER": "Uusi kansio",
   "NO_PAGES_YET": "Ei vielä sivuja – luo sellainen aloittaaksesi.",
   "NO_SEARCH_RESULTS": "Tuloksia ei löytynyt.",
+  "SEARCH_EVERYTHING": "Hae kaikkialta",
+  "SEARCH_SHOW_MORE": "Näytä lisää",
+  "SEARCH_IN_PROJECT": "Haetaan nyt projektista '{{project}}'",
+  "SEARCH_INCLUDE_ALL_PROJECTS": "Sisällytä kaikki projektit",
+  "SEARCH_FAILED": "Haku epäonnistui",
+  "TICKETS": "Tiketit",
   "UNTITLED_PAGE": "Nimetön",
   "UNTITLED_FOLDER": "Nimetön kansio",
   "DELETE_FOLDER": "Poista kansio",
@@ -284,6 +290,10 @@
       "PROJECT_NAME_MISMATCH": "Kirjoittamasi nimi ei vastaa projektin nimeä",
       "PROJECT_DELETE_MODE_INVALID": "Projektia ei voitu poistaa",
       "PROJECT_INVALID": "Et voi siirtää kohteita tähän projektiin"
+    },
+    "SEARCH": {
+      "QUERY_TOO_SHORT": "Kirjoita vähintään 2 merkkiä hakeaksesi",
+      "INVALID_TYPE": "Haku epäonnistui"
     }
   }
 }
