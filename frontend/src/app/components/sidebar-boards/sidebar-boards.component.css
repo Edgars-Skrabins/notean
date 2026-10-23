@@ -94,6 +94,11 @@
   cursor: pointer;
 }
 
+.sidebarBoards__create:hover {
+  background: none;
+  color: var(--color-text-heading);
+}
+
 .sidebarBoards__empty {
   margin: var(--space-1) 0 0;
   padding-left: calc(var(--space-5) + 10px);
