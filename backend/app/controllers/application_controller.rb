@@ -27,7 +27,7 @@ class ApplicationController < ActionController::API
   end
 
   def create_page_params
-    params.fetch(:page, {}).permit(:title, :project_id)
+    params.fetch(:page, {}).permit(:title, :content, :folder_id, :project_id)
   end
 
   def update_page_params
@@ -35,7 +35,7 @@ class ApplicationController < ActionController::API
   end
 
   def create_diagram_params
-    params.fetch(:diagram, {}).permit(:title, :project_id)
+    params.fetch(:diagram, {}).permit(:title, :content, :folder_id, :project_id)
   end
 
   def update_diagram_params
