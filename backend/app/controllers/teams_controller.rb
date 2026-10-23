@@ -1,6 +1,6 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_team, only: [ :activate, :members, :show, :update_nickname, :update, :destroy ]
+  before_action :set_team, only: [ :activate, :members, :show, :update_nickname, :update, :update_features, :destroy ]
 
   def mine
     membership = active_membership(current_user)
@@ -77,6 +77,14 @@ class TeamsController < ApplicationController
     else
       render_error(ErrorCodes::Teams::TEAM_RENAME_FAILED, :unprocessable_entity)
     end
+  end
+
+  def update_features
+    return unless require_team_role!(@team, :owner)
+
+    @team.update!(update_team_features_params)
+    ActionCable.server.broadcast(TeamChannel.stream_name(@team), { type: "features_changed", team: team_json(@team) })
+    render json: { team: team_json(@team) }
   end
 
   def destroy
