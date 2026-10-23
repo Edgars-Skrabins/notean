@@ -21,7 +21,7 @@ The frontend won't work without the backend running.
 
 ## Prerequisites
 
-- Node.js and npm
+- Node.js 
 - Ruby 3.3.5 (see `backend/.ruby-version`)
 - Bundler (`gem install bundler`)
 - Docker with Compose, which runs the PostgreSQL database
