@@ -16,6 +16,7 @@ import {TicketSummary} from "@models/ticket.model";
 import {mapAvatar, RawAvatar} from "@services/avatar.service";
 import {teamPath} from "@utils/teamPath";
 import {projectQuery} from "@utils/projectQuery";
+import {mapBoardPriority, RawBoardPriority} from "@services/priority.service";
 
 export interface RawBoardUser {
   id: number;
@@ -28,6 +29,7 @@ export interface RawTicketSummary {
   title: string;
   position: number;
   column_id: number | null;
+  priority_id?: number | null;
   assignees: RawBoardUser[];
   created_at: string;
   updated_at: string;
@@ -52,6 +54,7 @@ interface RawBoardSummary {
 interface RawBoardDetail extends RawBoardSummary {
   columns: RawBoardColumn[];
   backlog?: RawTicketSummary[];
+  priorities?: RawBoardPriority[];
 }
 
 interface RawBoardOverview {
@@ -79,6 +82,7 @@ export function mapTicketSummary(raw: RawTicketSummary): TicketSummary {
     title: raw.title,
     position: raw.position,
     columnId: raw.column_id,
+    priorityId: raw.priority_id ?? null,
     assignees: raw.assignees.map(mapBoardUser),
     createdAt: raw.created_at,
     updatedAt: raw.updated_at,
@@ -110,6 +114,7 @@ export function mapBoardDetail(raw: RawBoardDetail): BoardDetail {
     ...mapBoardSummary(raw),
     columns: raw.columns.map(mapBoardColumn),
     backlog: (raw.backlog ?? []).map(mapTicketSummary),
+    priorities: (raw.priorities ?? []).map(mapBoardPriority),
   };
 }
 

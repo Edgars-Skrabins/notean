@@ -3,6 +3,7 @@ import {BoardService} from "@services/board.service";
 import {TeamService} from "@services/team.service";
 import {BoardDetail} from "@models/board.model";
 import {TicketStatus, TicketStatusGroup, TicketSummary} from "@models/ticket.model";
+import {BoardPriority} from "@models/priority.model";
 import {ErrorCode} from "@config/errorCodes";
 import {PHRASES} from "@config/phrases";
 
@@ -30,6 +31,26 @@ export class BoardPageStateService {
 
   reload() {
     return this.load(this.boardId);
+  }
+
+  setPriorities(priorities: BoardPriority[]) {
+    if (!this.board) {
+      return;
+    }
+    this.board.priorities = priorities;
+    const ids = new Set(priorities.map((priority) => priority.id));
+    this.ticketsByStatus().forEach((group) => group.tickets.forEach((ticket) => {
+      if (ticket.priorityId !== null && !ids.has(ticket.priorityId)) {
+        ticket.priorityId = null;
+      }
+    }));
+  }
+
+  priorityById(id: number | null): BoardPriority | null {
+    if (id === null || !this.board) {
+      return null;
+    }
+    return this.board.priorities.find((priority) => priority.id === id) ?? null;
   }
 
   get statuses(): TicketStatus[] {
@@ -105,6 +126,7 @@ export class BoardPageStateService {
       title: ticket.title,
       position: ticket.position,
       columnId: ticket.columnId,
+      priorityId: ticket.priorityId,
       assignees: ticket.assignees,
       createdAt: ticket.createdAt,
       updatedAt: ticket.updatedAt,
@@ -118,6 +140,7 @@ export class BoardPageStateService {
     const ticket = this.findTicket(updated.id);
     if (ticket) {
       ticket.title = updated.title;
+      ticket.priorityId = updated.priorityId;
       ticket.assignees = updated.assignees;
       ticket.updatedAt = updated.updatedAt;
     }

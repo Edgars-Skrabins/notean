@@ -83,4 +83,32 @@ describe('BoardPageStateService', () => {
     expect(state.board!.columns[0].tickets.map((ticket) => ticket.id)).toEqual([1]);
     expect(state.board!.backlog.map((ticket) => ticket.id)).toEqual([4]);
   });
+
+  it('finds a priority by id and returns null for none or an unknown id', () => {
+    const state = createBoardState();
+
+    expect(state.priorityById(21)?.name).toBe('High');
+    expect(state.priorityById(null)).toBeNull();
+    expect(state.priorityById(99)).toBeNull();
+  });
+
+  it('replaces the priorities and clears deleted ones from tickets', () => {
+    const state = createBoardState();
+    state.board!.backlog[0].priorityId = 21;
+    state.board!.columns[0].tickets[0].priorityId = 20;
+
+    state.setPriorities([{id: 20, name: 'Low', color: 'blue', position: 0, ticketCount: 1}]);
+
+    expect(state.board!.priorities.map((priority) => priority.id)).toEqual([20]);
+    expect(state.board!.backlog[0].priorityId).toBeNull();
+    expect(state.board!.columns[0].tickets[0].priorityId).toBe(20);
+  });
+
+  it('keeps a ticket priority in sync when the ticket is updated', () => {
+    const state = createBoardState();
+
+    state.updateTicket({...ticketSummary(4, null, 1), priorityId: 21});
+
+    expect(state.findTicket(4)?.priorityId).toBe(21);
+  });
 });

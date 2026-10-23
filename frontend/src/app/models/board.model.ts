@@ -1,6 +1,7 @@
 import {Result} from "@models/result.model";
 import {BoardsErrorCode, ProjectsErrorCode, TeamAccessErrorCode} from "@config/errorCodes";
 import {TicketSummary} from './ticket.model';
+import {BoardPriority} from './priority.model';
 import {Avatar} from "@models/avatar.model";
 
 export interface BoardUser {
@@ -28,6 +29,7 @@ export interface BoardSummary {
 export interface BoardDetail extends BoardSummary {
   columns: BoardColumn[];
   backlog: TicketSummary[];
+  priorities: BoardPriority[];
 }
 
 export interface BoardOverviewColumn {

@@ -15,6 +15,7 @@ const ticket = (id: number, title: string, position: number, columnId: number | 
   title,
   position,
   columnId,
+  priorityId: null,
   assignees: [],
   createdAt: '2024-01-01T00:00:00Z',
   updatedAt: '2024-01-02T00:00:00Z',
@@ -102,6 +103,18 @@ describe('mapBoardDetail', () => {
   it('maps the backlog and defaults it to an empty list', () => {
     expect(mapBoardDetail(raw).backlog).toEqual([]);
     expect(mapBoardDetail({...raw, backlog: [rawTicket(6, 'Idea', 0, null)]}).backlog).toEqual([ticket(6, 'Idea', 0, null)]);
+  });
+
+  it('maps the priorities and each ticket priority', () => {
+    const result = mapBoardDetail({
+      ...raw,
+      backlog: [{...rawTicket(6, 'Idea', 0, null), priority_id: 7}],
+      priorities: [{id: 7, name: 'High', color: 'orange', position: 3, ticket_count: 1}],
+    });
+
+    expect(result.priorities).toEqual([{id: 7, name: 'High', color: 'orange', position: 3, ticketCount: 1}]);
+    expect(result.backlog[0].priorityId).toBe(7);
+    expect(mapBoardDetail(raw).priorities).toEqual([]);
   });
 });
 

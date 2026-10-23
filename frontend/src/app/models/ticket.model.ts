@@ -7,6 +7,7 @@ export interface TicketSummary {
   title: string;
   position: number;
   columnId: number | null;
+  priorityId: number | null;
   assignees: BoardUser[];
   createdAt: string;
   updatedAt: string;

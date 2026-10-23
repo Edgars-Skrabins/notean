@@ -33,8 +33,9 @@ export class TicketService {
     return this.requestTicket(axiosInstance.get(this.ticketsUrl(teamCode, boardId, id)));
   }
 
-  async updateTicket(teamCode: string, boardId: number, id: number, changes: { title?: string; description?: string }): Promise<TicketResponse> {
-    return this.patchTicket(teamCode, boardId, id, changes);
+  async updateTicket(teamCode: string, boardId: number, id: number, changes: { title?: string; description?: string; priorityId?: number | null }): Promise<TicketResponse> {
+    const {priorityId, ...rest} = changes;
+    return this.patchTicket(teamCode, boardId, id, priorityId === undefined ? rest : {...rest, priority_id: priorityId});
   }
 
   async moveTicket(teamCode: string, boardId: number, id: number, move: { columnId: number; position?: number }): Promise<TicketResponse> {
