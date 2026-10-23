@@ -28,6 +28,7 @@ export class DropdownComponent {
   @Input({required: true}) options: DropdownOption[] = [];
   @Input() value: string | number | null = null;
   @Input() ariaLabel = '';
+  @Input() size: 'md' | 'sm' = 'md';
   @Output() valueChange = new EventEmitter<string | number | null>();
 
   isOpen = false;

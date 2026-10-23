@@ -19,6 +19,13 @@
   cursor: pointer;
 }
 
+.dropdown__trigger--sm {
+  box-sizing: border-box;
+  height: var(--control-height-sm);
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
 .dropdown__trigger:focus-visible,
 .dropdown__trigger[aria-expanded="true"] {
   outline: none;

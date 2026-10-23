@@ -122,4 +122,21 @@ describe('DropdownComponent prefix', () => {
     expect(withoutPrefix.querySelector('.dropdown__prefix')).toBeNull();
     expect(withoutPrefix.textContent?.trim()).toBe('Plain');
   });
+
+  it('adds the compact trigger class only for size sm', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DropdownComponent, TranslateModule.forRoot()],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(DropdownComponent);
+    fixture.componentInstance.options = [{value: 'en', label: 'English'}];
+    fixture.detectChanges();
+
+    const button = fixture.nativeElement.querySelector('.dropdown__trigger') as HTMLElement;
+    expect(button.classList).not.toContain('dropdown__trigger--sm');
+
+    fixture.componentRef.setInput('size', 'sm');
+    fixture.detectChanges();
+
+    expect(button.classList).toContain('dropdown__trigger--sm');
+  });
 });

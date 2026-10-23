@@ -1,6 +1,7 @@
 <button
   type="button"
   class="dropdown__trigger"
+  [class.dropdown__trigger--sm]="size === 'sm'"
   cdkOverlayOrigin
   #origin="cdkOverlayOrigin"
   aria-haspopup="listbox"
