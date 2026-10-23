@@ -20,7 +20,7 @@
   (overlayOutsideClick)="handleOutsideClick($event)"
   (detach)="close()"
 >
-  <div class="ticketFilter__panel" (keydown.escape)="close()">
+  <div class="ticketFilter__panel" (keydown.escape)="close(); $event.preventDefault()">
     <section class="ticketFilter__section">
       <h3 class="ticketFilter__heading">{{ PHRASES.FILTER_ASSIGNEE | translate }}</h3>
       <app-checkbox

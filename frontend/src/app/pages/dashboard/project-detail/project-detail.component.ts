@@ -25,6 +25,7 @@ import {ProjectSettingsDialogComponent} from "@components/project-settings-dialo
 import {errorPhrase} from "@utils/errorPhrase";
 import {boardRoute} from "@utils/ticketRoute";
 import {AppRoutes} from "../../../app/app-routes.enum";
+import {EscapeService} from "@services/escape.service";
 
 export interface ProjectItem {
   id: number;
@@ -79,6 +80,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChan
 
   private featuresSubscription?: Subscription;
 
+  private unregisterEscape = () => {};
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -88,7 +91,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChan
     private boardService: BoardService,
     private teamService: TeamService,
     private toastService: ToastService,
-    private navigationService: NavigationService
+    private navigationService: NavigationService,
+    private escapeService: EscapeService
   ) {
   }
 
@@ -113,6 +117,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChan
   }
 
   ngOnInit() {
+    this.unregisterEscape = this.escapeService.push(() => this.handleGoBack());
     const projectId = Number(this.route.snapshot.paramMap.get('id'));
     this.featuresSubscription = this.teamService.features$.subscribe((features) => {
       this.features = features;
@@ -128,6 +133,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChan
   }
 
   ngOnDestroy() {
+    this.unregisterEscape();
     this.featuresSubscription?.unsubscribe();
   }
 

@@ -118,6 +118,8 @@
   "CONFIRM_DISCARD_NEW_PAGE": "Atmesti šį naują puslapį?",
   "CONFIRM_DISCARD_NEW_DIAGRAM": "Atmesti šią naują diagramą?",
   "CONFIRM_LEAVE_UNSAVED_CHANGES": "Turite neišsaugotų pakeitimų. Išeiti neišsaugojus?",
+  "DISCARD": "Atmesti",
+  "CONFIRM_DISCARD_CHANGES": "Atmesti neišsaugotus pakeitimus?",
   "PROFILE_UPDATED": "Profilio informacija atnaujinta",
   "NICKNAME_TOO_SHORT": "Slapyvardį turi sudaryti bent 3 simboliai",
   "NICKNAME_TOO_LONG": "Slapyvardį gali sudaryti ne daugiau kaip 30 simbolių",

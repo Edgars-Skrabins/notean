@@ -1,4 +1,4 @@
-import {Component, OnDestroy} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {Subscription} from "rxjs";
 import {TranslateModule} from "@ngx-translate/core";
@@ -12,6 +12,7 @@ import {HasUnsavedChanges} from "@models/unsaved-changes.model";
 import {CheckboxComponent} from "@components/checkbox/checkbox.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {AppRoutes} from "../../../app/app-routes.enum";
+import {EscapeService} from "@services/escape.service";
 
 @Component({
   selector: 'app-settings',
@@ -25,7 +26,7 @@ import {AppRoutes} from "../../../app/app-routes.enum";
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.css'
 })
-export class SettingsComponent implements HasUnsavedChanges, OnDestroy {
+export class SettingsComponent implements HasUnsavedChanges, OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
 
   savedSettings: UserSettings;
@@ -36,10 +37,13 @@ export class SettingsComponent implements HasUnsavedChanges, OnDestroy {
   private resolveLeave: ((canLeave: boolean) => void) | null = null;
   private settingsSubscription: Subscription;
 
+  private unregisterEscape = () => {};
+
   constructor(
     private navigationService: NavigationService,
     private settingsService: SettingsService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private escapeService: EscapeService
   ) {
     this.savedSettings = this.settingsService.getSettings();
     this.settings = {...this.savedSettings};
@@ -56,7 +60,12 @@ export class SettingsComponent implements HasUnsavedChanges, OnDestroy {
       .some((key) => this.settings[key] !== this.savedSettings[key]);
   }
 
+  ngOnInit() {
+    this.unregisterEscape = this.escapeService.push(() => this.handleGoBack());
+  }
+
   ngOnDestroy() {
+    this.unregisterEscape();
     this.settingsSubscription.unsubscribe();
   }
 

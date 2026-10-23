@@ -43,7 +43,7 @@
           [(ngModel)]="renameDraftTitle"
           (click)="$event.stopPropagation()"
           (keydown.enter)="commitRenameFolder(folder)"
-          (keydown.escape)="cancelRenameFolder()"
+          (keydown.escape)="cancelRenameFolder(); $event.preventDefault()"
           (blur)="commitRenameFolder(folder)"
           autofocus
         />
@@ -116,7 +116,7 @@
           [(ngModel)]="renameItemDraftTitle"
           (click)="$event.stopPropagation()"
           (keydown.enter)="commitRenameItem(item)"
-          (keydown.escape)="cancelRenameItem()"
+          (keydown.escape)="cancelRenameItem(); $event.preventDefault()"
           (blur)="commitRenameItem(item)"
         />
       </div>

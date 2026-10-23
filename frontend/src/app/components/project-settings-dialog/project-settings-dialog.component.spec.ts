@@ -7,6 +7,7 @@ import {ToastType} from '@models/toast.model';
 import {ProjectDetail} from '@models/project.model';
 import {PHRASES} from '@config/phrases';
 import {projectFilterStub, ProjectFilterStub} from '../../testing/projectFilterStub';
+import {escapeServiceStub, EscapeServiceStub} from '../../testing/escapeServiceStub';
 
 const alice = {id: 1, nickname: 'alice', avatar: {color: 'red' as const, imageUrl: null}};
 const bob = {id: 2, nickname: 'bob', avatar: {color: 'blue' as const, imageUrl: null}};
@@ -20,6 +21,7 @@ describe('ProjectSettingsDialogComponent', () => {
   let projectService: jasmine.SpyObj<ProjectService>;
   let toastService: jasmine.SpyObj<ToastService>;
   let projectFilter: ProjectFilterStub;
+  let escape: EscapeServiceStub;
 
   beforeEach(() => {
     projectService = jasmine.createSpyObj<ProjectService>('ProjectService', ['updateProject', 'deleteProject']);
@@ -27,7 +29,8 @@ describe('ProjectSettingsDialogComponent', () => {
     teamService.getCurrentTeamCode.and.returnValue('abc');
     toastService = jasmine.createSpyObj<ToastService>('ToastService', ['show']);
     projectFilter = projectFilterStub(5);
-    component = new ProjectSettingsDialogComponent(projectService, projectFilter.service, teamService, toastService);
+    escape = escapeServiceStub();
+    component = new ProjectSettingsDialogComponent(projectService, projectFilter.service, teamService, toastService, escape.service);
     component.project = projectDetail();
     component.ngOnInit();
   });
@@ -114,5 +117,16 @@ describe('ProjectSettingsDialogComponent', () => {
     component.handleConfirmLeave();
     flushMicrotasks();
     expect(closed).toHaveBeenCalled();
+  }));
+
+  it('closes on Escape through the same unsaved-changes check', fakeAsync(() => {
+    const closed = spyOn(component.closed, 'emit');
+    component.handleParamsChange({...component.params, description: 'Changed'});
+
+    escape.press();
+    flushMicrotasks();
+
+    expect(component.isLeaveConfirmOpen).toBeTrue();
+    expect(closed).not.toHaveBeenCalled();
   }));
 });

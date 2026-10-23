@@ -1,10 +1,11 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ProjectParams} from '@models/project.model';
 import {TeamMember} from '@models/team.model';
 import {ButtonComponent} from '@components/button/button.component';
 import {ProjectFormComponent} from '@components/project-form/project-form.component';
+import {EscapeService} from '@services/escape.service';
 
 @Component({
   selector: 'app-new-project-dialog',
@@ -17,7 +18,7 @@ import {ProjectFormComponent} from '@components/project-form/project-form.compon
   templateUrl: './new-project-dialog.component.html',
   styleUrl: './new-project-dialog.component.css'
 })
-export class NewProjectDialogComponent implements OnInit {
+export class NewProjectDialogComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
 
   @Input({required: true}) members: TeamMember[] = [];
@@ -29,8 +30,18 @@ export class NewProjectDialogComponent implements OnInit {
 
   params!: ProjectParams;
 
+  private unregisterEscape = () => {};
+
+  constructor(private escapeService: EscapeService) {
+  }
+
   ngOnInit() {
+    this.unregisterEscape = this.escapeService.push(() => this.cancelled.emit());
     this.params = {name: '', description: '', ownerUserId: this.currentUserId, memberIds: [this.currentUserId]};
+  }
+
+  ngOnDestroy() {
+    this.unregisterEscape();
   }
 
   get canCreate(): boolean {

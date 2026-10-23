@@ -7,6 +7,7 @@ import {ToastService} from "@services/toast.service";
 import {ToastType} from "@models/toast.model";
 import {UserSettings} from "@models/settings.model";
 import {PHRASES} from "@config/phrases";
+import {escapeServiceStub} from "../../../testing/escapeServiceStub";
 
 describe('SettingsComponent', () => {
   let component: SettingsComponent;
@@ -19,7 +20,7 @@ describe('SettingsComponent', () => {
     settingsService = jasmine.createSpyObj<SettingsService>('SettingsService', ['getSettings', 'update'], {settings$});
     settingsService.getSettings.and.callFake(() => settings$.value);
     toastService = jasmine.createSpyObj('ToastService', ['show']);
-    component = new SettingsComponent({} as NavigationService, settingsService, toastService);
+    component = new SettingsComponent({} as NavigationService, settingsService, toastService, escapeServiceStub().service);
   });
 
   afterEach(() => {

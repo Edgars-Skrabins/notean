@@ -89,6 +89,17 @@ describe('DropdownComponent', () => {
     expect(emitted).toEqual([]);
   });
 
+  it('consumes Escape only while open', () => {
+    const closedEvent = new KeyboardEvent('keydown', {key: 'Escape', cancelable: true});
+    component.handleKeydown(closedEvent);
+    expect(closedEvent.defaultPrevented).toBeFalse();
+
+    component.open();
+    const openEvent = new KeyboardEvent('keydown', {key: 'Escape', cancelable: true});
+    component.handleKeydown(openEvent);
+    expect(openEvent.defaultPrevented).toBeTrue();
+  });
+
   it('closes on an outside click, but not on a click inside the trigger', () => {
     component.open();
 

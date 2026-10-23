@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {NgIf} from '@angular/common';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
@@ -15,6 +15,7 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
 import {ConfirmDialogComponent} from '@components/confirm-dialog/confirm-dialog.component';
 import {DeleteProjectDialogComponent} from '@components/delete-project-dialog/delete-project-dialog.component';
 import {errorPhrase} from '@utils/errorPhrase';
+import {EscapeService} from '@services/escape.service';
 
 function toParams(project: ProjectDetail): ProjectParams {
   return {
@@ -50,7 +51,7 @@ function sameParams(a: ProjectParams, b: ProjectParams): boolean {
   templateUrl: './project-settings-dialog.component.html',
   styleUrl: './project-settings-dialog.component.css'
 })
-export class ProjectSettingsDialogComponent implements OnInit {
+export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
 
   @Input({required: true}) project!: ProjectDetail;
@@ -67,12 +68,14 @@ export class ProjectSettingsDialogComponent implements OnInit {
   isLeaveConfirmOpen = false;
 
   private resolveLeave: ((canLeave: boolean) => void) | null = null;
+  private unregisterEscape = () => {};
 
   constructor(
     private projectService: ProjectService,
     private projectFilterService: ProjectFilterService,
     private teamService: TeamService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private escapeService: EscapeService
   ) {
   }
 
@@ -85,7 +88,12 @@ export class ProjectSettingsDialogComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.unregisterEscape = this.escapeService.push(() => this.handleClose());
     this.applyProject(this.project);
+  }
+
+  ngOnDestroy() {
+    this.unregisterEscape();
   }
 
   handleParamsChange(params: ProjectParams) {

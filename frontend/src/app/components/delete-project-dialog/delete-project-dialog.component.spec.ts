@@ -1,11 +1,15 @@
 import {DeleteProjectDialogComponent} from './delete-project-dialog.component';
+import {escapeServiceStub, EscapeServiceStub} from '../../testing/escapeServiceStub';
 
 describe('DeleteProjectDialogComponent', () => {
   let component: DeleteProjectDialogComponent;
+  let escape: EscapeServiceStub;
 
   beforeEach(() => {
-    component = new DeleteProjectDialogComponent();
+    escape = escapeServiceStub();
+    component = new DeleteProjectDialogComponent(escape.service);
     component.projectName = 'Game';
+    component.ngOnInit();
   });
 
   it('keeps the items by default', () => {
@@ -37,5 +41,15 @@ describe('DeleteProjectDialogComponent', () => {
     component.handleDelete();
 
     expect(confirmed).not.toHaveBeenCalled();
+  });
+
+  it('cancels on Escape and stops listening once destroyed', () => {
+    const cancelled = spyOn(component.cancelled, 'emit');
+
+    escape.press();
+    expect(cancelled).toHaveBeenCalledTimes(1);
+
+    component.ngOnDestroy();
+    expect(escape.handlers).toEqual([]);
   });
 });

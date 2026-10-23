@@ -65,6 +65,10 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
     return this.draftTitle !== '' || this.draftContent !== '' || this.draftProjectId !== this.initialDraftProjectId;
   }
 
+  get hasEditChanges(): boolean {
+    return !!this.item && (this.draftTitle !== this.item.title || this.draftContent !== this.item.content);
+  }
+
   ngOnInit() {
     this.route.paramMap.subscribe((params) => {
       if (!params.has('id')) {
@@ -104,8 +108,21 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.mode = 'view';
-    this.editingService.stopEditing();
+    this.leaveEditMode();
+  }
+
+  handleEscape() {
+    if (this.mode === 'edit' && this.hasEditChanges) {
+      this.showDiscardConfirm = true;
+      return;
+    }
+
+    if (this.mode === 'view') {
+      this.handleClose();
+      return;
+    }
+
+    this.handleCancel();
   }
 
   handleDelete() {
@@ -196,6 +213,12 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
 
   handleConfirmDiscard() {
     this.showDiscardConfirm = false;
+
+    if (this.mode === 'edit') {
+      this.leaveEditMode();
+      return;
+    }
+
     this.handleGoBack();
   }
 
@@ -239,6 +262,11 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
     this.draftProjectId = this.projectFilterService.getSelectedProjectId();
     this.initialDraftProjectId = this.draftProjectId;
     this.folderId = folder !== null ? Number(folder) : null;
+  }
+
+  private leaveEditMode() {
+    this.mode = 'view';
+    this.editingService.stopEditing();
   }
 
   private requestDiscard() {

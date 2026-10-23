@@ -24,7 +24,7 @@
       [(ngModel)]="nameDraft"
       [attr.aria-label]="PHRASES.RENAME_PRIORITY | translate"
       (keydown.enter)="commitRename(priority)"
-      (keydown.escape)="cancelRename()"
+      (keydown.escape)="cancelRename(); $event.preventDefault()"
       (blur)="commitRename(priority)"
     />
     <button

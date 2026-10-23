@@ -1,10 +1,11 @@
 import {NewProjectDialogComponent} from './new-project-dialog.component';
+import {escapeServiceStub} from '../../testing/escapeServiceStub';
 
 describe('NewProjectDialogComponent', () => {
   let component: NewProjectDialogComponent;
 
   beforeEach(() => {
-    component = new NewProjectDialogComponent();
+    component = new NewProjectDialogComponent(escapeServiceStub().service);
     component.currentUserId = 7;
     component.ngOnInit();
   });

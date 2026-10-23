@@ -10,7 +10,7 @@
         class="boardPage__titleInput"
         [(ngModel)]="renameDraft"
         (keydown.enter)="commitRename()"
-        (keydown.escape)="cancelRename()"
+        (keydown.escape)="cancelRename(); $event.preventDefault()"
         (blur)="commitRename()"
         autofocus
       />
