@@ -46,7 +46,7 @@
 }
 
 .projectSettingsDialog__danger {
-  margin-top: var(--space-6);
+  margin-top: var(--space-5);
   padding: var(--space-4);
   border: 1px solid rgba(255, 157, 157, 0.35);
   border-radius: var(--radius-md);

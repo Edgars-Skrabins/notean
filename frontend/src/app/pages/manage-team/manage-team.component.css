@@ -6,17 +6,17 @@
   background: linear-gradient(160deg, var(--color-card-bg) 0%, var(--color-card-bg-alt) 100%);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
-  padding: 56px 48px 64px;
+  padding: var(--space-5);
 }
 
 .manageTeam__title {
-  margin: 0 0 var(--space-7);
+  margin: 0 0 var(--space-5);
   font-size: 1.6rem;
   font-weight: 700;
 }
 
 .manageTeam__section {
-  margin-bottom: var(--space-7);
+  margin-bottom: var(--space-5);
 }
 
 .manageTeam__section:last-child {
@@ -94,6 +94,5 @@
 @media (max-width: 480px) {
   .manageTeam {
     width: 100%;
-    padding: 40px 24px 48px;
   }
 }

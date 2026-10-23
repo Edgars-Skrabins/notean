@@ -16,14 +16,14 @@
 
 .itemDetail {
   position: absolute;
-  inset: var(--space-5);
+  inset: var(--space-4);
   overflow-y: auto;
   box-sizing: border-box;
   background: linear-gradient(165deg, var(--color-page-bg-start) 0%, var(--color-page-bg-end) 100%);
   border: 1px solid var(--color-input-border);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
-  padding: var(--space-6);
+  padding: var(--space-5);
 }
 
 .itemDetail__editingBanner {
@@ -51,7 +51,7 @@
 
 .itemDetail__body {
   display: flex;
-  gap: var(--space-6);
+  gap: var(--space-5);
   align-items: flex-start;
 }
 
