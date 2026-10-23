@@ -1,7 +1,7 @@
 class SearchController < ApplicationController
   TYPES = %w[project page diagram board ticket].freeze
   TYPE_FEATURES = { "page" => :pages, "diagram" => :diagrams, "board" => :boards, "ticket" => :boards }.freeze
-  MIN_QUERY_LENGTH = 2
+  MIN_QUERY_LENGTH = 1
   SECTION_LIMIT = 5
   MORE_LIMIT = 10
   SNIPPET_LENGTH = 80
