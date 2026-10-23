@@ -27,7 +27,7 @@
           [(ngModel)]="titleDraft"
           [placeholder]="PHRASES.TICKET_TITLE_PLACEHOLDER | translate"
           (keydown.enter)="commitTitle()"
-          (keydown.escape)="cancelTitleEdit()"
+          (keydown.escape)="cancelTitleEdit($event)"
           (blur)="commitTitle()"
         />
 
@@ -35,7 +35,7 @@
           class="ticketDetail__descriptionInput"
           [(ngModel)]="descriptionDraft"
           [placeholder]="PHRASES.TICKET_DESCRIPTION_PLACEHOLDER | translate"
-          (keydown.escape)="cancelDescriptionEdit()"
+          (keydown.escape)="cancelDescriptionEdit($event)"
           (blur)="commitDescription()"
         ></textarea>
       </div>

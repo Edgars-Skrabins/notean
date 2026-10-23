@@ -13,6 +13,7 @@ import {TicketDetail} from "@models/ticket.model";
 import {PHRASES} from "@config/phrases";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 import {createBoardState, ticketDetail} from "../../../testing/boardFixtures";
+import {escapeServiceStub, EscapeServiceStub} from "../../../testing/escapeServiceStub";
 
 describe('TicketDetailComponent editing', () => {
   let component: TicketDetailComponent;
@@ -24,6 +25,7 @@ describe('TicketDetailComponent editing', () => {
   let projectService: jasmine.SpyObj<ProjectService>;
   let state: BoardPageStateService;
   let ticket: TicketDetail;
+  let escape: EscapeServiceStub;
   const route = {snapshot: {paramMap: new Map([['ticketId', '1']])}} as unknown as ActivatedRoute;
 
   beforeEach(() => {
@@ -38,7 +40,8 @@ describe('TicketDetailComponent editing', () => {
     const authService = jasmine.createSpyObj<AuthService>('AuthService', ['getCurrentUser']);
     authService.getCurrentUser.and.returnValue({id: 1, email: 'alice@example.com'});
     state = createBoardState();
-    component = new TicketDetailComponent(route, router, state, ticketService, favoriteService, toastService, teamService, projectService, authService);
+    escape = escapeServiceStub();
+    component = new TicketDetailComponent(route, router, state, ticketService, favoriteService, toastService, teamService, projectService, authService, escape.service);
 
     ticket = {...ticketDetail(1, 10), title: 'My Ticket'};
     component.ticket = ticket;
@@ -89,12 +92,30 @@ describe('TicketDetailComponent editing', () => {
     expect(component.titleDraft).toBe('Renamed');
   }));
 
-  it('cancelTitleEdit restores the saved title', () => {
+  it('closes the popup on Escape', () => {
+    component.ngOnInit();
+
+    escape.press();
+
+    expect(router.navigate).toHaveBeenCalledWith(['../..'], {relativeTo: route});
+  });
+
+  it('cancelTitleEdit restores the saved title and consumes Esc', () => {
+    const event = new KeyboardEvent('keydown', {key: 'Escape', cancelable: true});
     component.titleDraft = 'Renamed';
 
-    component.cancelTitleEdit();
+    component.cancelTitleEdit(event);
 
     expect(component.titleDraft).toBe('My Ticket');
+    expect(event.defaultPrevented).toBeTrue();
+  });
+
+  it('cancelTitleEdit leaves Esc to the popup when the title is unchanged', () => {
+    const event = new KeyboardEvent('keydown', {key: 'Escape', cancelable: true});
+
+    component.cancelTitleEdit(event);
+
+    expect(event.defaultPrevented).toBeFalse();
   });
 
   it('commitDescription skips the request when the description is unchanged', () => {
@@ -126,12 +147,22 @@ describe('TicketDetailComponent editing', () => {
     expect(component.ticket?.description).toBe('Details');
   }));
 
-  it('cancelDescriptionEdit restores the saved description', () => {
+  it('cancelDescriptionEdit restores the saved description and consumes Esc', () => {
+    const event = new KeyboardEvent('keydown', {key: 'Escape', cancelable: true});
     component.descriptionDraft = 'New details';
 
-    component.cancelDescriptionEdit();
+    component.cancelDescriptionEdit(event);
 
     expect(component.descriptionDraft).toBe('Details');
+    expect(event.defaultPrevented).toBeTrue();
+  });
+
+  it('cancelDescriptionEdit leaves Esc to the popup when the description is unchanged', () => {
+    const event = new KeyboardEvent('keydown', {key: 'Escape', cancelable: true});
+
+    component.cancelDescriptionEdit(event);
+
+    expect(event.defaultPrevented).toBeFalse();
   });
 
   it('loads the ticket from the route on init', fakeAsync(() => {
