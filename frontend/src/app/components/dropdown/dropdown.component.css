@@ -14,9 +14,16 @@
   border-radius: var(--radius-sm);
   color: var(--color-text-heading);
   font-family: inherit;
-  font-size: 0.85rem;
+  font-size: var(--font-sm);
   text-align: left;
   cursor: pointer;
+}
+
+.dropdown__trigger--sm {
+  box-sizing: border-box;
+  height: var(--control-height-sm);
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .dropdown__trigger:focus-visible,
@@ -83,7 +90,7 @@
   align-items: center;
   gap: var(--space-3);
   color: var(--color-text-muted);
-  font-size: 0.85rem;
+  font-size: var(--font-sm);
   padding: 10px 12px;
   border-radius: var(--radius-sm);
   cursor: pointer;

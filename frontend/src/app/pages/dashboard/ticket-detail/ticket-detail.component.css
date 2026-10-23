@@ -73,7 +73,7 @@
 .ticketDetail__fieldTitle {
   margin: 0;
   color: var(--color-text-faint);
-  font-size: 0.7rem;
+  font-size: var(--font-xs);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -89,7 +89,7 @@
   border-radius: var(--radius-sm);
   padding: 10px;
   color: var(--color-text-heading);
-  font-size: 1.4rem;
+  font-size: var(--font-xl);
   font-weight: 700;
   font-family: inherit;
   outline: none;
@@ -104,7 +104,7 @@
   border-radius: var(--radius-sm);
   padding: 10px;
   color: var(--color-text-heading);
-  font-size: 0.95rem;
+  font-size: var(--font-md);
   font-family: inherit;
   line-height: 1.5;
   outline: none;

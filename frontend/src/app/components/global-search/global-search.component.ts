@@ -15,7 +15,7 @@ import {boardRoute, ticketRoute} from '@utils/ticketRoute';
 import {SnippetParts, splitSnippet} from '@utils/splitSnippet';
 import {AppRoutes} from '../../app/app-routes.enum';
 
-export const MIN_QUERY_LENGTH = 2;
+export const MIN_QUERY_LENGTH = 1;
 export const SEARCH_DEBOUNCE_MS = 250;
 
 const SECTION_PHRASES: Record<SearchResultType, string> = {

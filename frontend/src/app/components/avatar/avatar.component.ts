@@ -16,7 +16,7 @@ import {apiUrl} from "@utils/apiUrl";
 export class AvatarComponent {
   @Input() avatar: Avatar | null = null;
   @Input() nickname = '';
-  @Input() size: 24 | 32 | 96 = 24;
+  @Input() size: 24 | 28 | 32 | 96 = 24;
   @Input() previewUrl: string | null = null;
 
   private failedSrc: string | null = null;

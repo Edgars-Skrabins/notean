@@ -8,7 +8,7 @@
   justify-content: space-between;
   gap: var(--space-3);
   font-family: "Courier New", monospace;
-  font-size: 0.95rem;
+  font-size: var(--font-md);
   letter-spacing: 0.02em;
   color: var(--color-text-heading);
   background: var(--color-input-bg);

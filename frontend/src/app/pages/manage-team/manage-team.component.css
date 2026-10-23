@@ -11,7 +11,7 @@
 
 .manageTeam__title {
   margin: 0 0 var(--space-5);
-  font-size: 1.6rem;
+  font-size: var(--font-xl);
   font-weight: 700;
 }
 
@@ -31,7 +31,7 @@
 
 .manageTeam__sectionTitle {
   margin: 0 0 var(--space-4);
-  font-size: 1.05rem;
+  font-size: var(--font-lg);
   font-weight: 600;
   color: var(--color-text-heading);
 }
@@ -66,12 +66,12 @@
 .manageTeam__memberName {
   color: var(--color-text-heading);
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: var(--font-md);
 }
 
 .manageTeam__memberRole {
   color: var(--color-text-muted);
-  font-size: 0.8rem;
+  font-size: var(--font-xs);
 }
 
 .manageTeam__deleteButton {
@@ -81,7 +81,7 @@
   background: rgba(255, 87, 87, 0.14);
   color: #ff9d9d;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: var(--font-sm);
   font-family: inherit;
   cursor: pointer;
   transition: background var(--transition-fast);

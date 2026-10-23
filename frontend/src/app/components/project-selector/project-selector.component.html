@@ -4,5 +4,6 @@
   [options]="(options$ | async) ?? []"
   [value]="selectedProjectId"
   [ariaLabel]="PHRASES.PROJECT"
+  size="sm"
   (valueChange)="handleChange($event)"
 ></app-dropdown>

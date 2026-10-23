@@ -28,7 +28,7 @@
   align-items: center;
   gap: var(--space-2);
   color: var(--color-text-heading);
-  font-size: 0.85rem;
+  font-size: var(--font-sm);
 }
 
 .pieChart__swatch {
@@ -44,5 +44,5 @@
 .pieChart__empty {
   margin: 0;
   color: var(--color-text-faint);
-  font-size: 0.85rem;
+  font-size: var(--font-sm);
 }

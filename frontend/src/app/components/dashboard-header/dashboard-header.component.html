@@ -10,7 +10,7 @@
     <app-language-switcher></app-language-switcher>
 
     <div class="dashboardHeader__trigger" cdkOverlayOrigin #origin="cdkOverlayOrigin">
-      <app-avatar [avatar]="avatarService.avatar$ | async" [nickname]="nickname"></app-avatar>
+      <app-avatar [avatar]="avatarService.avatar$ | async" [nickname]="nickname" [size]="28"></app-avatar>
       <span class="dashboardHeader__nickname">{{ nickname }}</span>
       <app-icon-button
         icon="menu"

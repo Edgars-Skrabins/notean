@@ -175,11 +175,22 @@ class SearchControllerTest < ActionDispatch::IntegrationTest
     assert_equal "PROJECT_NOT_FOUND", body["code"]
   end
 
-  test "a query shorter than two characters gives 422" do
-    body = search(" a ")
+  test "a one-character query searches" do
+    page("Xylophone")
 
-    assert_response :unprocessable_entity
-    assert_equal "QUERY_TOO_SHORT", body["code"]
+    body = search(" x ")
+
+    assert_response :success
+    assert_equal [ "Xylophone" ], titles(body, "page")
+  end
+
+  test "an empty or whitespace-only query gives 422" do
+    [ "", "   " ].each do |query|
+      body = search(query)
+
+      assert_response :unprocessable_entity
+      assert_equal "QUERY_TOO_SHORT", body["code"]
+    end
   end
 
   test "an unknown type gives 422" do

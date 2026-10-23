@@ -30,7 +30,7 @@
 .newProjectDialog__title {
   margin: 0 0 var(--space-4);
   color: var(--color-text-heading);
-  font-size: 1.1rem;
+  font-size: var(--font-lg);
 }
 
 .newProjectDialog__actions {

@@ -11,7 +11,7 @@
   padding: 9px 20px;
   color: #ffffff;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: var(--font-sm);
   font-family: inherit;
   cursor: pointer;
   transition: transform var(--transition-fast), filter var(--transition-fast);

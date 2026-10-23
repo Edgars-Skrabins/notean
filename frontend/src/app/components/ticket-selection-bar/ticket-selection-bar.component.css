@@ -16,7 +16,7 @@
 .ticketSelectionBar__count {
   margin-right: var(--space-2);
   color: var(--color-text-heading);
-  font-size: 0.85rem;
+  font-size: var(--font-sm);
   font-weight: 600;
 }
 

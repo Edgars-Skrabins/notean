@@ -16,7 +16,7 @@
   border: none;
   color: var(--color-text-muted);
   font-family: inherit;
-  font-size: 0.85rem;
+  font-size: var(--font-sm);
   cursor: pointer;
 }
 
@@ -27,14 +27,14 @@
 .projectDetail__title {
   margin: 0;
   color: var(--color-text-heading);
-  font-size: 1.6rem;
+  font-size: var(--font-xl);
   font-weight: 700;
 }
 
 .projectDetail__description {
   margin: var(--space-2) 0 0;
   color: var(--color-text-muted);
-  font-size: 0.95rem;
+  font-size: var(--font-md);
 }
 
 .projectDetail__items {
@@ -44,7 +44,7 @@
 .projectDetail__heading {
   margin: 0 0 var(--space-3);
   color: var(--color-text-heading);
-  font-size: 1.1rem;
+  font-size: var(--font-lg);
 }
 
 .projectDetail__group + .projectDetail__group {
@@ -55,7 +55,7 @@
 .projectDetail__sidebarLabel {
   margin: 0 0 var(--space-1);
   color: var(--color-text-faint);
-  font-size: 0.7rem;
+  font-size: var(--font-xs);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -64,7 +64,7 @@
 .projectDetail__empty {
   margin: 0;
   color: var(--color-text-muted);
-  font-size: 0.9rem;
+  font-size: var(--font-md);
 }
 
 .projectDetail__sidebar {
@@ -85,7 +85,7 @@
   gap: var(--space-2);
   margin: 0;
   color: var(--color-text-heading);
-  font-size: 0.85rem;
+  font-size: var(--font-sm);
 }
 
 .projectDetail__person + .projectDetail__person {
@@ -101,7 +101,7 @@
 .projectDetail__ownerLabel {
   margin-left: auto;
   color: var(--color-text-faint);
-  font-size: 0.75rem;
+  font-size: var(--font-xs);
 }
 
 @media (max-width: 720px) {

@@ -64,12 +64,17 @@ describe('GlobalSearchComponent', () => {
     fixture.detectChanges();
   });
 
-  it('sends no request under 2 characters', fakeAsync(() => {
-    type('a');
-    type(' b ');
+  it('sends no request for whitespace only', fakeAsync(() => {
+    type('   ');
 
     expect(searchService.search).not.toHaveBeenCalled();
     expect(component.isOpen).toBeFalse();
+  }));
+
+  it('searches from the first character', fakeAsync(() => {
+    type(' r ');
+
+    expect(searchService.search).toHaveBeenCalledOnceWith('abc', 'r', null);
   }));
 
   it('searches once after typing stops', fakeAsync(() => {

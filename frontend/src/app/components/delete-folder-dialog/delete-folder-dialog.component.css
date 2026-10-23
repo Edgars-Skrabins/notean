@@ -31,7 +31,7 @@
 .deleteFolderDialog__title {
   margin: 0 0 var(--space-4);
   color: var(--color-text-heading);
-  font-size: 1.05rem;
+  font-size: var(--font-lg);
   font-weight: 700;
 }
 

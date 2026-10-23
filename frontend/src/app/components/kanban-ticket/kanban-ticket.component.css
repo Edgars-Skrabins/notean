@@ -29,7 +29,7 @@
 .kanbanTicket__title {
   display: block;
   color: var(--color-text-heading);
-  font-size: 0.85rem;
+  font-size: var(--font-sm);
   font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
