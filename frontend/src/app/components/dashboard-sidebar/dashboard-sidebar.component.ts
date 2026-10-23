@@ -7,6 +7,7 @@ import {SettingsService} from "@services/settings.service";
 import {FavoritesListComponent} from "@components/favorites-list/favorites-list.component";
 import {SidebarBoardsComponent} from "@components/sidebar-boards/sidebar-boards.component";
 import {IconComponent} from "@components/icon/icon.component";
+import {TooltipDirective} from "@components/tooltip/tooltip.directive";
 import {AppRoutes} from "../../app/app-routes.enum";
 
 @Component({
@@ -20,7 +21,8 @@ import {AppRoutes} from "../../app/app-routes.enum";
     TranslateModule,
     FavoritesListComponent,
     SidebarBoardsComponent,
-    IconComponent
+    IconComponent,
+    TooltipDirective
   ],
   templateUrl: './dashboard-sidebar.component.html',
   styleUrl: './dashboard-sidebar.component.css'
