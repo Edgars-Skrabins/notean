@@ -153,6 +153,7 @@
 
   .itemDetail__sidebar {
     width: 100%;
+    box-sizing: border-box;
     flex-direction: row;
     flex-wrap: wrap;
   }
