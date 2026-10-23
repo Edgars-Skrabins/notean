@@ -1,0 +1,27 @@
+:host {
+  display: block;
+}
+
+.ticketSelectionBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-input-bg-focus);
+  border: 1px solid var(--color-input-border-focus);
+  border-radius: var(--radius-md);
+}
+
+.ticketSelectionBar__count {
+  margin-right: var(--space-2);
+  color: var(--color-text-heading);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.ticketSelectionBar__end {
+  display: flex;
+  gap: 2px;
+  margin-left: auto;
+}

@@ -8,7 +8,7 @@ export const TEST_TEAM_CODE = 'abc';
 export const TEST_BOARD_ID = 9;
 
 export function ticketSummary(id: number, columnId: number | null, position = 0): TicketSummary {
-  return {id, title: `Ticket ${id}`, position, columnId, assignees: [], updatedAt: '2026-10-01T00:00:00Z'};
+  return {id, title: `Ticket ${id}`, position, columnId, assignees: [], createdAt: '2026-10-01T00:00:00Z', updatedAt: '2026-10-01T00:00:00Z'};
 }
 
 export function ticketDetail(id: number, columnId: number | null, position = 0): TicketDetail {
@@ -17,7 +17,6 @@ export function ticketDetail(id: number, columnId: number | null, position = 0):
     description: 'Details',
     boardId: TEST_BOARD_ID,
     creator: {id: 1, nickname: 'alice', avatar: {color: 'red', imageUrl: null}},
-    createdAt: '2026-10-01T00:00:00Z',
   };
 }
 

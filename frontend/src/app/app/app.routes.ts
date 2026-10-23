@@ -17,7 +17,7 @@ import {DiagramDetailComponent} from "../pages/dashboard/diagram-detail/diagram-
 import {BoardPageComponent} from "../pages/dashboard/board-page/board-page.component";
 import {BoardOverviewTabComponent} from "../pages/dashboard/board-overview-tab/board-overview-tab.component";
 import {KanbanTabComponent} from "../pages/dashboard/kanban-tab/kanban-tab.component";
-import {BacklogTabComponent} from "../pages/dashboard/backlog-tab/backlog-tab.component";
+import {ListTabComponent} from "../pages/dashboard/list-tab/list-tab.component";
 import {TicketDetailComponent} from "../pages/dashboard/ticket-detail/ticket-detail.component";
 import {ProfileComponent} from "../pages/dashboard/profile/profile.component";
 import {SettingsComponent} from "../pages/dashboard/settings/settings.component";
@@ -64,9 +64,11 @@ export const routes: Routes = [
             component: KanbanTabComponent,
             children: [{path: `${AppRoutes.TICKETS}/:ticketId`, component: TicketDetailComponent}],
           },
+          {path: AppRoutes.LEGACY_BACKLOG, redirectTo: AppRoutes.LIST, pathMatch: 'full'},
+          {path: `${AppRoutes.LEGACY_BACKLOG}/${AppRoutes.TICKETS}/:ticketId`, redirectTo: `${AppRoutes.LIST}/${AppRoutes.TICKETS}/:ticketId`},
           {
-            path: AppRoutes.BACKLOG,
-            component: BacklogTabComponent,
+            path: AppRoutes.LIST,
+            component: ListTabComponent,
             children: [{path: `${AppRoutes.TICKETS}/:ticketId`, component: TicketDetailComponent}],
           },
         ],

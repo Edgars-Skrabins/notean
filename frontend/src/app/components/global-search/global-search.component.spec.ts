@@ -172,7 +172,7 @@ describe('GlobalSearchComponent', () => {
     expect(component.resultRoute(result('ticket', 5, {boardId: 4, inBacklog: false})))
       .toEqual([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 4, AppRoutes.KANBAN, AppRoutes.TICKETS, 5]);
     expect(component.resultRoute(result('ticket', 6, {boardId: 4, inBacklog: true})))
-      .toEqual([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 4, AppRoutes.BACKLOG, AppRoutes.TICKETS, 6]);
+      .toEqual([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 4, AppRoutes.LIST, AppRoutes.TICKETS, 6]);
   });
 
   it('closes on Escape', fakeAsync(() => {

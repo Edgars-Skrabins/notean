@@ -2,7 +2,7 @@ import {AxiosResponse} from "axios";
 import {Injectable} from '@angular/core';
 import {axiosInstance} from "@config/axiosConfig";
 import {apiRequest} from "@utils/apiRequest";
-import {TicketDetail, TicketResponse, DeleteTicketResponse} from "@models/ticket.model";
+import {BulkTicketAction, BulkTicketsResponse, TicketDetail, TicketResponse, DeleteTicketResponse} from "@models/ticket.model";
 import {mapBoardUser, mapTicketSummary, RawBoardUser, RawTicketSummary} from "@services/board.service";
 import {teamPath} from "@utils/teamPath";
 
@@ -10,7 +10,6 @@ interface RawTicketDetail extends RawTicketSummary {
   description: string | null;
   board_id: number;
   creator: RawBoardUser;
-  created_at: string;
 }
 
 export function mapTicketDetail(raw: RawTicketDetail): TicketDetail {
@@ -19,7 +18,6 @@ export function mapTicketDetail(raw: RawTicketDetail): TicketDetail {
     description: raw.description ?? '',
     boardId: raw.board_id,
     creator: mapBoardUser(raw.creator),
-    createdAt: raw.created_at,
   };
 }
 
@@ -66,6 +64,33 @@ export class TicketService {
     );
   }
 
+  async bulkUpdate(teamCode: string, boardId: number, ticketIds: number[], action: BulkTicketAction): Promise<BulkTicketsResponse> {
+    return apiRequest<BulkTicketsResponse>(
+      axiosInstance.patch(this.bulkUrl(teamCode, boardId), {bulk: {ticket_ids: ticketIds, ...this.bulkActionParams(action)}}),
+      (data) => ({success: true, tickets: data.tickets.map(mapTicketSummary)}),
+    );
+  }
+
+  async bulkDelete(teamCode: string, boardId: number, ticketIds: number[]): Promise<DeleteTicketResponse> {
+    return apiRequest<DeleteTicketResponse>(
+      axiosInstance.delete(this.bulkUrl(teamCode, boardId), {data: {bulk: {ticket_ids: ticketIds}}}),
+      () => ({success: true}),
+    );
+  }
+
+  private bulkActionParams(action: BulkTicketAction): object {
+    if ('columnId' in action) {
+      return {column_id: action.columnId};
+    }
+    if ('toBacklog' in action) {
+      return {to_backlog: true};
+    }
+    if ('addAssigneeId' in action) {
+      return {add_assignee_id: action.addAssigneeId};
+    }
+    return {remove_assignee_id: action.removeAssigneeId};
+  }
+
   private patchTicket(teamCode: string, boardId: number, id: number, changes: object): Promise<TicketResponse> {
     return this.requestTicket(axiosInstance.patch(this.ticketsUrl(teamCode, boardId, id), {ticket: changes}));
   }
@@ -75,6 +100,10 @@ export class TicketService {
       request,
       (data) => ({success: true, ticket: mapTicketDetail(data.ticket)}),
     );
+  }
+
+  private bulkUrl(teamCode: string, boardId: number) {
+    return teamPath(teamCode, 'boards', boardId, 'tickets', 'bulk');
   }
 
   private assigneesUrl(teamCode: string, boardId: number, ticketId: number) {

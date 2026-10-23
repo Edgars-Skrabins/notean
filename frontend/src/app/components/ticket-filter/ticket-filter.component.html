@@ -1,0 +1,50 @@
+<button
+  type="button"
+  class="ticketFilter__trigger"
+  cdkOverlayOrigin
+  #origin="cdkOverlayOrigin"
+  [attr.aria-expanded]="isOpen"
+  (click)="toggle()"
+>
+  {{ PHRASES.FILTER | translate }}
+  <span class="ticketFilter__badge" *ngIf="activeCount">{{ activeCount }}</span>
+</button>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayOpen]="isOpen"
+  [cdkConnectedOverlayPositions]="MENU_POSITIONS"
+  [cdkConnectedOverlayPush]="true"
+  [cdkConnectedOverlayViewportMargin]="4"
+  (overlayOutsideClick)="handleOutsideClick($event)"
+  (detach)="close()"
+>
+  <div class="ticketFilter__panel" (keydown.escape)="close()">
+    <section class="ticketFilter__section">
+      <h3 class="ticketFilter__heading">{{ PHRASES.FILTER_ASSIGNEE | translate }}</h3>
+      <app-checkbox
+        *ngFor="let member of members"
+        [checked]="filters.assigneeIds.has(member.id)"
+        (checkedChange)="toggleAssignee(member.id, $event)"
+      >{{ member.nickname }}</app-checkbox>
+      <app-checkbox
+        [checked]="filters.assigneeIds.has('none')"
+        (checkedChange)="toggleAssignee('none', $event)"
+      >{{ PHRASES.UNASSIGNED | translate }}</app-checkbox>
+    </section>
+
+    <section class="ticketFilter__section">
+      <h3 class="ticketFilter__heading">{{ PHRASES.FILTER_STATUS | translate }}</h3>
+      <app-checkbox
+        *ngFor="let status of statuses; trackBy: trackByStatus"
+        [checked]="filters.columnIds.has(status.columnId)"
+        (checkedChange)="toggleStatus(status.columnId, $event)"
+      >{{ status.columnId === null ? (status.title | translate) : status.title }}</app-checkbox>
+    </section>
+
+    <button type="button" class="ticketFilter__clear" [disabled]="!activeCount" (click)="clear()">
+      {{ PHRASES.CLEAR_FILTERS | translate }}
+    </button>
+  </div>
+</ng-template>

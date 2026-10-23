@@ -1,0 +1,108 @@
+.listTab {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 960px;
+}
+
+.listTab__toolbar {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.listTab__search {
+  flex: 1;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  color: var(--color-text-heading);
+  font-size: 0.9rem;
+  font-family: inherit;
+  outline: none;
+}
+
+.listTab__search:focus {
+  border-color: var(--color-input-border-focus);
+}
+
+.listTab__group,
+.listTab__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.listTab__groupHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding-left: var(--space-3);
+}
+
+.listTab__groupTitle {
+  margin: 0;
+  color: var(--color-text-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.listTab__groupCount {
+  color: var(--color-text-faint);
+  font-size: 0.85rem;
+}
+
+.listTab__chevron {
+  transform: rotate(90deg);
+  transition: transform var(--transition-fast);
+}
+
+.listTab__chevron--collapsed {
+  transform: rotate(0deg);
+}
+
+.listTab__empty,
+.listTab__groupEmpty {
+  margin: 0;
+  color: var(--color-text-faint);
+  font-size: 0.9rem;
+}
+
+.listTab__groupEmpty {
+  padding-left: var(--space-3);
+}
+
+.listTab__createButton {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  background: none;
+  border: 1px dashed var(--color-input-border);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  color: var(--color-text-muted);
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.listTab__createButton:hover {
+  color: var(--color-text-heading);
+  border-color: var(--color-input-border-focus);
+}
+
+.listTab__createIcon {
+  width: 16px;
+  height: 16px;
+}
+
+.listTab__createInput {
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border-focus);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+  color: var(--color-text-heading);
+  font-family: inherit;
+  font-size: 0.9rem;
+  outline: none;
+}

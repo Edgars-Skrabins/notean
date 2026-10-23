@@ -29,6 +29,7 @@ export interface RawTicketSummary {
   position: number;
   column_id: number | null;
   assignees: RawBoardUser[];
+  created_at: string;
   updated_at: string;
 }
 
@@ -79,6 +80,7 @@ export function mapTicketSummary(raw: RawTicketSummary): TicketSummary {
     position: raw.position,
     columnId: raw.column_id,
     assignees: raw.assignees.map(mapBoardUser),
+    createdAt: raw.created_at,
     updatedAt: raw.updated_at,
   };
 }

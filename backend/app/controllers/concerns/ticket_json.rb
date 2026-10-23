@@ -27,6 +27,7 @@ module TicketJson
       position: ticket.position,
       column_id: ticket.column_id,
       assignees: assignees_json(ticket),
+      created_at: ticket.created_at,
       updated_at: ticket.updated_at
     }
   end

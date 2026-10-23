@@ -44,4 +44,43 @@ describe('BoardPageStateService', () => {
     expect(state.findTicket(4)?.title).toBe('Renamed');
     expect(state.findTicket(1)).toBeNull();
   });
+
+  it('lists Backlog and then each column as statuses, with their tickets', () => {
+    const state = createBoardState();
+
+    expect(state.statuses).toEqual([
+      {columnId: null, title: 'BACKLOG'},
+      {columnId: 10, title: 'To Do'},
+      {columnId: 11, title: 'Done'},
+    ]);
+    expect(state.ticketsByStatus().map((group) => group.tickets.map((ticket) => ticket.id))).toEqual([[3, 4], [1, 2], []]);
+  });
+
+  it('applies moved tickets to the end of their new group in position order', () => {
+    const state = createBoardState();
+
+    state.applyTickets([ticketSummary(4, 10, 3), ticketSummary(3, 10, 2)]);
+
+    expect(state.board!.backlog.map((ticket) => ticket.id)).toEqual([]);
+    expect(state.board!.columns[0].tickets.map((ticket) => ticket.id)).toEqual([1, 2, 3, 4]);
+  });
+
+  it('applies updated tickets in place within their group', () => {
+    const state = createBoardState();
+    const alice = {id: 1, nickname: 'alice', avatar: {color: 'red' as const, imageUrl: null}};
+
+    state.applyTickets([{...ticketSummary(1, 10, 5), assignees: [alice]}]);
+
+    expect(state.board!.columns[0].tickets.map((ticket) => ticket.id)).toEqual([1, 2]);
+    expect(state.findTicket(1)?.assignees).toEqual([alice]);
+  });
+
+  it('removes several tickets from any group', () => {
+    const state = createBoardState();
+
+    state.removeTickets([2, 3]);
+
+    expect(state.board!.columns[0].tickets.map((ticket) => ticket.id)).toEqual([1]);
+    expect(state.board!.backlog.map((ticket) => ticket.id)).toEqual([4]);
+  });
 });

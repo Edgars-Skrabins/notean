@@ -74,6 +74,10 @@ class ApplicationController < ActionController::API
     params.require(:ticket).permit(:title, :description, :column_id, :position, :to_backlog)
   end
 
+  def bulk_ticket_params
+    params.require(:bulk).permit(:column_id, :to_backlog, :add_assignee_id, :remove_assignee_id, ticket_ids: [])
+  end
+
   def create_assignee_params
     params.require(:assignee).permit(:user_id)
   end

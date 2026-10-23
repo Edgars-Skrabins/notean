@@ -18,6 +18,10 @@ Rails.application.routes.draw do
       get :overview, on: :member
       resources :columns, only: [ :create, :update, :destroy ]
       resources :tickets, only: [ :create, :show, :update, :destroy ] do
+        collection do
+          patch :bulk, action: :bulk_update
+          delete :bulk, action: :bulk_destroy
+        end
         resources :assignees, only: [ :create, :destroy ], controller: "ticket_assignees", param: :user_id
       end
     end

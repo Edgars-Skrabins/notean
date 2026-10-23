@@ -1,0 +1,121 @@
+<p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+
+<div class="listTab" *ngIf="state.board">
+  <div class="listTab__toolbar">
+    <input
+      type="text"
+      class="listTab__search"
+      [(ngModel)]="searchQuery"
+      [placeholder]="PHRASES.SEARCH_TICKETS | translate"
+    />
+    <app-ticket-filter
+      [members]="members"
+      [statuses]="state.statuses"
+      [filters]="filters"
+      (filtersChange)="handleFiltersChange($event)"
+    ></app-ticket-filter>
+  </div>
+
+  <app-ticket-selection-bar
+    *ngIf="selectedTickets.length"
+    [count]="selectedTickets.length"
+    [statuses]="state.statuses"
+    [members]="members"
+    [assignedMembers]="assignedMembers"
+    [busy]="isBulkBusy"
+    (setStatus)="handleBulkStatus($event)"
+    (assign)="handleBulkAssign($event)"
+    (unassign)="handleBulkUnassign($event)"
+    (deleteSelected)="requestBulkDelete()"
+    (clearSelection)="clearSelection()"
+  ></app-ticket-selection-bar>
+
+  <p class="listTab__empty" *ngIf="!hasTickets">{{ PHRASES.BOARD_NO_TICKETS | translate }}</p>
+
+  <section class="listTab__group" *ngFor="let group of groups; trackBy: trackByGroup">
+    <header class="listTab__groupHeader">
+      <app-checkbox
+        [checked]="isGroupSelected(group)"
+        [disabled]="!group.visibleTickets.length"
+        [ariaLabel]="PHRASES.SELECT_GROUP | translate"
+        (checkedChange)="setGroupSelected(group, $event)"
+      ></app-checkbox>
+      <h2 class="listTab__groupTitle">{{ group.status.columnId === null ? (group.status.title | translate) : group.status.title }}</h2>
+      <span class="listTab__groupCount">{{ group.visibleTickets.length }}</span>
+      <app-icon-button
+        class="listTab__chevron"
+        [class.listTab__chevron--collapsed]="isCollapsed(group.status)"
+        icon="chevron-right"
+        [size]="28"
+        [tooltip]="(isCollapsed(group.status) ? PHRASES.EXPAND_GROUP : PHRASES.COLLAPSE_GROUP) | translate"
+        (pressed)="toggleCollapsed(group.status)"
+      ></app-icon-button>
+    </header>
+
+    <ng-container *ngIf="!isCollapsed(group.status)">
+      <div
+        class="listTab__list"
+        cdkDropList
+        [cdkDropListData]="group.visibleTickets"
+        (cdkDropListDropped)="handleDropped(group, $event)"
+      >
+        <app-list-row
+          *ngFor="let ticket of group.visibleTickets; trackBy: trackByTicket"
+          cdkDrag
+          cdkDragLockAxis="y"
+          [cdkDragData]="ticket"
+          [ticket]="ticket"
+          [statusTitle]="group.status.columnId === null ? (group.status.title | translate) : group.status.title"
+          [selected]="isSelected(ticket)"
+          (selectedChange)="setSelected(ticket, $event)"
+          (opened)="handleOpenTicket(ticket)"
+          (moveToBoard)="handleMoveRequested(ticket)"
+          (deleteTicket)="requestDelete(ticket)"
+        ></app-list-row>
+      </div>
+
+      <p class="listTab__groupEmpty" *ngIf="!group.visibleTickets.length">{{ PHRASES.NO_TICKETS_IN_GROUP | translate }}</p>
+
+      <ng-container *ngIf="group.status.columnId === null">
+        <button type="button" class="listTab__createButton" *ngIf="!isCreating" (click)="handleStartCreate()">
+          <app-icon name="plus" class="listTab__createIcon"></app-icon>
+          {{ PHRASES.CREATE_TICKET | translate }}
+        </button>
+        <input
+          *ngIf="isCreating"
+          type="text"
+          class="listTab__createInput"
+          [(ngModel)]="newTicketTitle"
+          [placeholder]="PHRASES.TICKET_TITLE_PLACEHOLDER | translate"
+          (keydown.enter)="handleCreate()"
+          (keydown.escape)="handleCloseCreate()"
+          (blur)="handleCloseCreate()"
+          autofocus
+        />
+      </ng-container>
+    </ng-container>
+  </section>
+</div>
+
+<router-outlet></router-outlet>
+
+<app-move-to-board-dialog
+  *ngIf="ticketToMove && state.board"
+  [columns]="state.board.columns"
+  (moved)="handleMoveConfirmed($event)"
+  (cancelled)="handleMoveCancelled()"
+></app-move-to-board-dialog>
+
+<app-confirm-dialog
+  *ngIf="ticketPendingDeletion"
+  [message]="PHRASES.CONFIRM_DELETE_TICKET | translate"
+  (confirmed)="handleConfirmDelete()"
+  (cancelled)="handleCancelDelete()"
+></app-confirm-dialog>
+
+<app-confirm-dialog
+  *ngIf="isBulkDeleteConfirmOpen"
+  [message]="PHRASES.CONFIRM_DELETE_TICKETS | translate: {count: selectedTickets.length}"
+  (confirmed)="handleConfirmBulkDelete()"
+  (cancelled)="handleCancelBulkDelete()"
+></app-confirm-dialog>

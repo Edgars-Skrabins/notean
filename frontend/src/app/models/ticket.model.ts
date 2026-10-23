@@ -8,6 +8,7 @@ export interface TicketSummary {
   position: number;
   columnId: number | null;
   assignees: BoardUser[];
+  createdAt: string;
   updatedAt: string;
 }
 
@@ -15,9 +16,27 @@ export interface TicketDetail extends TicketSummary {
   description: string;
   boardId: number;
   creator: BoardUser;
-  createdAt: string;
+}
+
+export interface TicketStatus {
+  columnId: number | null;
+  title: string;
+}
+
+export interface TicketStatusGroup {
+  status: TicketStatus;
+  tickets: TicketSummary[];
+}
+
+export interface TicketFilters {
+  assigneeIds: Set<number | 'none'>;
+  columnIds: Set<number | null>;
 }
 
 export type TicketResponse = Result<{ ticket: TicketDetail }, TeamAccessErrorCode | BoardsErrorCode | TicketsErrorCode>;
+
+export type BulkTicketAction = { columnId: number } | { toBacklog: true } | { addAssigneeId: number } | { removeAssigneeId: number };
+
+export type BulkTicketsResponse = Result<{ tickets: TicketSummary[] }, TeamAccessErrorCode | BoardsErrorCode | TicketsErrorCode>;
 
 export type DeleteTicketResponse = Result<object, TeamAccessErrorCode | BoardsErrorCode | TicketsErrorCode>;
