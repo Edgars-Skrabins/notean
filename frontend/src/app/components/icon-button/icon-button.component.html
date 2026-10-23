@@ -1,7 +1,7 @@
 <button
   type="button"
   class="iconButton iconButton--{{ variant }} iconButton--size{{ size }}"
-  [title]="tooltip"
+  [appTooltip]="tooltip"
   [attr.aria-label]="tooltip"
   [disabled]="disabled"
   (click)="pressed.emit()"

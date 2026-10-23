@@ -110,6 +110,7 @@ src/environments/             environment.ts (apiUrl)
 - Inputs and outputs use `@Input()` and `@Output()` with `EventEmitter`, not signals.
 - CSS class names follow a camelCase BEM style: `kanbanCard`, `itemTree__row`, `dashboardStub__title`.
 - Reuse the shared components in `components/` (buttons, icons, dialogs and so on) rather than building new ones.
+- Icon-only controls get a styled tooltip with the `appTooltip` directive (`components/tooltip/`) plus an `aria-label`, never a native `title`. `app-icon-button` applies it from its `tooltip` input.
 
 #### Services and HTTP
 - All HTTP goes through `axiosInstance` from `@config/axiosConfig`, not Angular's `HttpClient`. `HttpClient` is only used to load translation files.

@@ -1,11 +1,13 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {IconComponent, IconName} from "@components/icon/icon.component";
+import {TooltipDirective} from "@components/tooltip/tooltip.directive";
 
 @Component({
   selector: 'app-icon-button',
   standalone: true,
   imports: [
-    IconComponent
+    IconComponent,
+    TooltipDirective
   ],
   templateUrl: './icon-button.component.html',
   styleUrl: './icon-button.component.css'

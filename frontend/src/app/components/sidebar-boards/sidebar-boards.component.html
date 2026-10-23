@@ -2,7 +2,8 @@
   <button
     type="button"
     class="sidebarBoards__toggle"
-    [title]="PHRASES.BOARDS | translate"
+    [appTooltip]="collapsed ? (PHRASES.BOARDS | translate) : ''"
+    [attr.aria-label]="PHRASES.BOARDS | translate"
     [attr.aria-expanded]="boardListService.isOpen"
     (click)="collapsed || handleToggle()"
   >
