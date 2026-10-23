@@ -1,4 +1,4 @@
-<div class="listRow" [class.listRow--selected]="selected">
+<div class="listRow" [class.listRow--selected]="selected" (click)="handleRowClick($event)">
   <app-checkbox
     class="listRow__checkbox"
     [checked]="selected"
@@ -6,7 +6,7 @@
     (checkedChange)="selectedChange.emit($event)"
   ></app-checkbox>
 
-  <button type="button" class="listRow__main" (click)="opened.emit()">
+  <button type="button" class="listRow__main">
     <span class="listRow__title">{{ ticket.title }}</span>
   </button>
 

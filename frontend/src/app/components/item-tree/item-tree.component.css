@@ -44,7 +44,7 @@
 .itemTree__row--item {
   background: var(--color-input-bg);
   border: 1px solid var(--color-input-border);
-  padding: 12px 16px;
+  padding-right: var(--space-2);
   transition: background var(--transition-fast), border-color var(--transition-fast);
 }
 
@@ -54,7 +54,7 @@
 }
 
 .itemTree__row--item .itemTree__rowMain {
-  padding: 0;
+  padding: 12px var(--space-2) 12px 36px;
 }
 
 .itemTree__chevronSlot {
@@ -81,10 +81,11 @@
   align-items: center;
   gap: var(--space-2);
   flex: 1;
+  align-self: stretch;
   min-width: 0;
   background: none;
   border: none;
-  padding: 8px 0;
+  padding: 8px var(--space-2) 8px 0;
   cursor: pointer;
   text-align: left;
   font-family: inherit;

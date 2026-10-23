@@ -132,6 +132,15 @@ describe('FolderedItemService', () => {
     expect(patch).toHaveBeenCalledWith('/teams/abc/pages/7', {page: {folder_id: 3}});
   });
 
+  it('renames with only the title in the item key', async () => {
+    const patch = spyOn(axiosInstance, 'patch').and.returnValue(Promise.resolve({data: {diagram: rawItem}}));
+
+    const response = await new DiagramService().rename('abc', 7, 'Renamed');
+
+    expect(patch).toHaveBeenCalledOnceWith('/teams/abc/diagrams/7', {diagram: {title: 'Renamed'}});
+    expect(response.success && response.item.id).toBe(7);
+  });
+
   it('returns the server code when a request fails', async () => {
     const error = new AxiosError('Request failed');
     error.response = {data: {code: 'PAGE_NOT_FOUND'}, status: 404, statusText: '', headers: {}, config: {} as never};

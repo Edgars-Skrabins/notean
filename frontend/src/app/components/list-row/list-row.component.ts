@@ -35,4 +35,12 @@ export class ListRowComponent {
   @Output() selectedChange = new EventEmitter<boolean>();
   @Output() moveToBoard = new EventEmitter<void>();
   @Output() deleteTicket = new EventEmitter<void>();
+
+  handleRowClick(event: MouseEvent) {
+    if ((event.target as HTMLElement).closest('.listRow__checkbox, .listRow__assignees, .listRow__actions')) {
+      return;
+    }
+
+    this.opened.emit();
+  }
 }

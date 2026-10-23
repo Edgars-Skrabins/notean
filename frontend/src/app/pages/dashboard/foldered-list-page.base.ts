@@ -186,6 +186,21 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
       });
   }
 
+  handleRenameItem(event: { itemId: number; title: string }) {
+    this.itemService.rename(this.teamCode, event.itemId, event.title)
+      .then((response) => {
+        if (!response.success) {
+          this.alertMessage = errorPhrase(response.code);
+          return;
+        }
+
+        this.alertMessage = '';
+        const renamed = this.toTreeItem(response.item);
+        this.items = this.items.map((item) => item.id === renamed.id ? renamed : item);
+        this.favoriteService.renameItem(this.itemType, renamed.id, renamed.title);
+      });
+  }
+
   handleDeleteItem(event: { itemId: number }) {
     this.itemService.delete(this.teamCode, event.itemId)
       .then((response) => {

@@ -11,6 +11,7 @@
       [class.itemTree__row--invalidTarget]="isDropZoneInvalid(toFolderDrop(folder))"
       [class.itemTree__row--hoverTarget]="isHovered(toFolderDrop(folder))"
       [style.paddingLeft.px]="depth * 20"
+      (click)="handleFolderRowClick($event, folder)"
     >
       <div class="itemTree__chevronSlot">
         <app-icon-button
@@ -92,15 +93,41 @@
       (cdkDragMoved)="handleDragMoved($event)"
       (cdkDragEnded)="handleDragEnded($event)"
       class="itemTree__row itemTree__row--item"
-      [style.paddingLeft.px]="depth * 20 + 36"
+      [style.paddingLeft.px]="depth * 20"
+      (click)="handleItemRowClick($event, item)"
     >
-      <button type="button" class="itemTree__rowMain" (click)="openItem.emit(item)">
-        <app-icon name="edit" class="itemTree__rowIcon"></app-icon>
+      <button
+        *ngIf="renamingItemId !== item.id"
+        type="button"
+        class="itemTree__rowMain"
+        (click)="openItem.emit(item)"
+      >
+        <app-icon [name]="itemIcon" class="itemTree__rowIcon"></app-icon>
         <span class="itemTree__rowTitle">{{ item.title }}</span>
         <span class="itemTree__rowMeta">{{ item.meta.creator.nickname }} &middot; {{ item.meta.updatedAt | date }}</span>
       </button>
 
+      <div *ngIf="renamingItemId === item.id" class="itemTree__rowMain itemTree__rowMain--renaming">
+        <app-icon [name]="itemIcon" class="itemTree__rowIcon"></app-icon>
+        <input
+          #itemRenameInput
+          type="text"
+          class="itemTree__renameInput"
+          [(ngModel)]="renameItemDraftTitle"
+          (click)="$event.stopPropagation()"
+          (keydown.enter)="commitRenameItem(item)"
+          (keydown.escape)="cancelRenameItem()"
+          (blur)="commitRenameItem(item)"
+        />
+      </div>
+
       <div class="itemTree__rowActions">
+        <app-icon-button
+          icon="edit"
+          [tooltip]="PHRASES.RENAME_ITEM | translate"
+          [size]="28"
+          (pressed)="startRenameItem(item)"
+        ></app-icon-button>
         <app-favorite-star [type]="favoritableType" [itemId]="item.id" [title]="item.title"></app-favorite-star>
         <app-icon-button
           icon="trash"
