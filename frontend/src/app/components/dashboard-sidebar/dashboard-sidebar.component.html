@@ -1,5 +1,5 @@
 <nav class="dashboardSidebar" [class.dashboardSidebar--collapsed]="collapsed">
-  <a class="dashboardSidebar__item" [routerLink]="AppRoutes.DASHBOARD_HOME" routerLinkActive="dashboardSidebar__item--active" [title]="PHRASES.HOME | translate">
+  <a class="dashboardSidebar__item" [routerLink]="AppRoutes.DASHBOARD_HOME" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="collapsed ? (PHRASES.HOME | translate) : ''" [attr.aria-label]="PHRASES.HOME | translate">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M3 12l9-9 9 9"></path>
       <path d="M5 10v10a1 1 0 0 0 1 1h3v-6h6v6h3a1 1 0 0 0 1-1V10"></path>
@@ -7,17 +7,17 @@
     <span class="dashboardSidebar__label">{{ PHRASES.HOME | translate }}</span>
   </a>
 
-  <a class="dashboardSidebar__item" [routerLink]="AppRoutes.PROJECTS" routerLinkActive="dashboardSidebar__item--active" [title]="PHRASES.PROJECTS | translate">
+  <a class="dashboardSidebar__item" [routerLink]="AppRoutes.PROJECTS" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="collapsed ? (PHRASES.PROJECTS | translate) : ''" [attr.aria-label]="PHRASES.PROJECTS | translate">
     <app-icon name="project" class="dashboardSidebar__icon"></app-icon>
     <span class="dashboardSidebar__label">{{ PHRASES.PROJECTS | translate }}</span>
   </a>
 
-  <a class="dashboardSidebar__item" [routerLink]="AppRoutes.DOCUMENT_PAGES" routerLinkActive="dashboardSidebar__item--active" [title]="PHRASES.DOCUMENT_PAGES | translate">
+  <a class="dashboardSidebar__item" [routerLink]="AppRoutes.DOCUMENT_PAGES" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="collapsed ? (PHRASES.DOCUMENT_PAGES | translate) : ''" [attr.aria-label]="PHRASES.DOCUMENT_PAGES | translate">
     <app-icon name="page" class="dashboardSidebar__icon"></app-icon>
     <span class="dashboardSidebar__label">{{ PHRASES.DOCUMENT_PAGES | translate }}</span>
   </a>
 
-  <a class="dashboardSidebar__item" [routerLink]="AppRoutes.DIAGRAMS" routerLinkActive="dashboardSidebar__item--active" [title]="PHRASES.DIAGRAMS | translate">
+  <a class="dashboardSidebar__item" [routerLink]="AppRoutes.DIAGRAMS" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="collapsed ? (PHRASES.DIAGRAMS | translate) : ''" [attr.aria-label]="PHRASES.DIAGRAMS | translate">
     <app-icon name="diagram" class="dashboardSidebar__icon"></app-icon>
     <span class="dashboardSidebar__label">{{ PHRASES.DIAGRAMS | translate }}</span>
   </a>
