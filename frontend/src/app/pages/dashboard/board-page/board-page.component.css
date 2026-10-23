@@ -28,7 +28,7 @@
 .boardPage__title {
   margin: 0;
   color: var(--color-text-heading);
-  font-size: 1.4rem;
+  font-size: var(--font-xl);
   font-weight: 700;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -41,7 +41,7 @@
   border-radius: var(--radius-sm);
   padding: 6px 10px;
   color: var(--color-text-heading);
-  font-size: 1.4rem;
+  font-size: var(--font-xl);
   font-weight: 700;
   font-family: inherit;
   outline: none;
@@ -68,7 +68,7 @@
   padding: var(--space-2) 0;
   color: var(--color-text-muted);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: var(--font-md);
   font-weight: 600;
   border-bottom: 2px solid transparent;
   margin-bottom: -1px;

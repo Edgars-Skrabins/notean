@@ -35,7 +35,7 @@
 .listRow__title {
   display: block;
   color: var(--color-text-heading);
-  font-size: 0.9rem;
+  font-size: var(--font-md);
   font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -46,7 +46,7 @@
 .listRow__date {
   flex-shrink: 0;
   color: var(--color-text-muted);
-  font-size: 0.8rem;
+  font-size: var(--font-xs);
   white-space: nowrap;
 }
 
@@ -63,7 +63,7 @@
   flex-shrink: 0;
   width: 110px;
   color: var(--color-text-muted);
-  font-size: 0.8rem;
+  font-size: var(--font-xs);
 }
 
 .listRow__priorityName {

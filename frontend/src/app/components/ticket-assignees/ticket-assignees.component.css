@@ -7,7 +7,7 @@
 .ticketAssignees__title {
   margin: 0;
   color: var(--color-text-faint);
-  font-size: 0.7rem;
+  font-size: var(--font-xs);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -22,13 +22,13 @@
 .ticketAssignees__name {
   flex: 1;
   color: var(--color-text-heading);
-  font-size: 0.85rem;
+  font-size: var(--font-sm);
 }
 
 .ticketAssignees__empty {
   margin: 0;
   color: var(--color-text-faint);
-  font-size: 0.85rem;
+  font-size: var(--font-sm);
 }
 
 .ticketAssignees__link {
@@ -38,7 +38,7 @@
   border: none;
   color: var(--color-primary-light);
   font-family: inherit;
-  font-size: 0.85rem;
+  font-size: var(--font-sm);
   cursor: pointer;
 }
 

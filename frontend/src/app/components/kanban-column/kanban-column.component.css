@@ -24,7 +24,7 @@
   min-width: 0;
   color: var(--color-text-heading);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: var(--font-md);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -39,7 +39,7 @@
   padding: 4px 8px;
   color: var(--color-text-heading);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: var(--font-md);
   font-family: inherit;
   outline: none;
 }

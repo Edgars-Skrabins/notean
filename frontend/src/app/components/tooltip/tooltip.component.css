@@ -3,7 +3,7 @@
   border-radius: var(--radius-sm);
   background: #0d0820;
   color: var(--color-text-heading);
-  font-size: 12px;
+  font-size: var(--font-xs);
   line-height: 1.3;
   white-space: nowrap;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);

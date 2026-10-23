@@ -101,7 +101,7 @@
 .itemTree__rowTitle {
   color: var(--color-text-heading);
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: var(--font-md);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -122,7 +122,7 @@
   padding: 4px 8px;
   color: var(--color-text-heading);
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: var(--font-md);
   font-family: inherit;
   outline: none;
 }
@@ -130,7 +130,7 @@
 .itemTree__rowMeta {
   margin-left: auto;
   color: var(--color-text-muted);
-  font-size: 0.8rem;
+  font-size: var(--font-xs);
   flex-shrink: 0;
   padding-left: var(--space-4);
 }

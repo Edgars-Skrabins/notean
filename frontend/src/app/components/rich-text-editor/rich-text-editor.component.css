@@ -24,7 +24,7 @@
   background: none;
   color: var(--color-text-muted);
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: var(--font-sm);
   transition: background var(--transition-fast), color var(--transition-fast);
 }
 
@@ -63,7 +63,7 @@
 
 .richTextEditor__host h2 {
   margin: var(--space-4) 0 var(--space-2);
-  font-size: 1.2rem;
+  font-size: var(--font-xl);
   font-weight: 700;
 }
 

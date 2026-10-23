@@ -31,7 +31,7 @@
 .confirmDialog__message {
   margin: 0 0 var(--space-5);
   color: var(--color-text-heading);
-  font-size: 0.95rem;
+  font-size: var(--font-md);
   line-height: 1.5;
 }
 

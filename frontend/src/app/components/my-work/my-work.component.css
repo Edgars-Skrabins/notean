@@ -6,14 +6,14 @@
 .myWork__title {
   margin: 0 0 var(--space-4);
   color: var(--color-text-heading);
-  font-size: 1rem;
+  font-size: var(--font-lg);
   font-weight: 600;
 }
 
 .myWork__message {
   margin: 0;
   color: var(--color-text-faint);
-  font-size: 0.9rem;
+  font-size: var(--font-md);
 }
 
 .myWork__group {
@@ -30,7 +30,7 @@
   border: none;
   color: var(--color-text-muted);
   font-family: inherit;
-  font-size: 0.75rem;
+  font-size: var(--font-xs);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -62,7 +62,7 @@
   flex: 1;
   min-width: 0;
   color: var(--color-text-heading);
-  font-size: 0.9rem;
+  font-size: var(--font-md);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -70,5 +70,5 @@
 
 .myWork__ticketPlace {
   color: var(--color-text-muted);
-  font-size: 0.8rem;
+  font-size: var(--font-xs);
 }

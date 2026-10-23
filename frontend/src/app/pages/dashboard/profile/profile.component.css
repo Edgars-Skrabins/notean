@@ -11,7 +11,7 @@
 
 .profile__title {
   margin: 0 0 var(--space-5);
-  font-size: 1.6rem;
+  font-size: var(--font-xl);
   font-weight: 700;
 }
 

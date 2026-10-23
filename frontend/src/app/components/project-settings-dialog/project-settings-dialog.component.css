@@ -37,7 +37,7 @@
 .projectSettingsDialog__title {
   margin: 0;
   color: var(--color-text-heading);
-  font-size: 1.1rem;
+  font-size: var(--font-lg);
 }
 
 .projectSettingsDialog__actions {
@@ -55,5 +55,5 @@
 .projectSettingsDialog__dangerTitle {
   margin: 0 0 var(--space-3);
   color: var(--color-error);
-  font-size: 0.9rem;
+  font-size: var(--font-md);
 }
