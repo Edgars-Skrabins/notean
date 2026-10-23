@@ -2,6 +2,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {TranslateModule} from '@ngx-translate/core';
 import {ItemTreeComponent, TreeFolder, TreeItem} from './item-tree.component';
 import {FavoriteService} from '@services/favorite.service';
+import {PHRASES} from '@config/phrases';
 
 function buildItem(overrides: Partial<TreeItem> = {}): TreeItem {
   return {
@@ -84,4 +85,65 @@ describe('ItemTreeComponent', () => {
     expect(component.isExpanded(1)).toBeFalse();
   });
 
+  describe('item rename', () => {
+    let renamed: { itemId: number; title: string }[];
+
+    beforeEach(() => {
+      renamed = [];
+      component.renameItem.subscribe((event) => renamed.push(event));
+      render([], [buildItem()]);
+      query<HTMLButtonElement>(`.itemTree__row--item [aria-label="${PHRASES.RENAME_ITEM}"]`).click();
+      fixture.detectChanges();
+    });
+
+    function renameInput(): HTMLInputElement {
+      return query<HTMLInputElement>('.itemTree__renameInput');
+    }
+
+    function typeTitle(title: string) {
+      renameInput().value = title;
+      renameInput().dispatchEvent(new Event('input'));
+    }
+
+    function press(key: string) {
+      renameInput().dispatchEvent(new KeyboardEvent('keydown', {key}));
+      fixture.detectChanges();
+    }
+
+    it('opens an input with the current title selected', async () => {
+      await fixture.whenStable();
+      const input = renameInput();
+
+      expect(input.value).toBe('Notes');
+      expect(document.activeElement).toBe(input);
+      expect(input.selectionStart).toBe(0);
+      expect(input.selectionEnd).toBe('Notes'.length);
+      expect(openedItems).toEqual([]);
+    });
+
+    it('commits the trimmed title on Enter', () => {
+      typeTitle('  Meeting notes ');
+      press('Enter');
+
+      expect(renamed).toEqual([{itemId: 10, title: 'Meeting notes'}]);
+      expect(renameInput()).toBeNull();
+    });
+
+    it('cancels on Escape', () => {
+      typeTitle('Meeting notes');
+      press('Escape');
+
+      expect(renamed).toEqual([]);
+      expect(renameInput()).toBeNull();
+      expect(query('.itemTree__row--item .itemTree__rowTitle').textContent).toBe('Notes');
+    });
+
+    it('cancels an empty title', () => {
+      typeTitle('   ');
+      press('Enter');
+
+      expect(renamed).toEqual([]);
+      expect(renameInput()).toBeNull();
+    });
+  });
 });

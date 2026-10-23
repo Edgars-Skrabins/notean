@@ -51,6 +51,7 @@
   "UNTITLED_FOLDER": "Untitled folder",
   "DELETE_FOLDER": "Delete folder",
   "RENAME_FOLDER": "Rename folder",
+  "RENAME_ITEM": "Rename",
   "DELETE_FOLDER_CONFIRM_TITLE": "Delete",
   "DELETE_FOLDER_KEEP_CONTENTS_CHECKBOX": "Delete nested contents",
   "EXPAND_FOLDER": "Expand folder",

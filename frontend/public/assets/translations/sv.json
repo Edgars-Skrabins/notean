@@ -51,6 +51,7 @@
   "UNTITLED_FOLDER": "Namnlös mapp",
   "DELETE_FOLDER": "Ta bort mapp",
   "RENAME_FOLDER": "Byt namn på mapp",
+  "RENAME_ITEM": "Byt namn",
   "DELETE_FOLDER_CONFIRM_TITLE": "Ta bort",
   "DELETE_FOLDER_KEEP_CONTENTS_CHECKBOX": "Ta bort innehållet i mappen",
   "EXPAND_FOLDER": "Expandera mapp",

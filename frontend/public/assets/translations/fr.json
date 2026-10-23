@@ -51,6 +51,7 @@
   "UNTITLED_FOLDER": "Dossier sans titre",
   "DELETE_FOLDER": "Supprimer le dossier",
   "RENAME_FOLDER": "Renommer le dossier",
+  "RENAME_ITEM": "Renommer",
   "DELETE_FOLDER_CONFIRM_TITLE": "Supprimer",
   "DELETE_FOLDER_KEEP_CONTENTS_CHECKBOX": "Supprimer le contenu imbriqué",
   "EXPAND_FOLDER": "Déplier le dossier",

@@ -106,6 +106,10 @@ export abstract class FolderedItemService<E extends ErrorCode> {
     return this.requestItem(axiosInstance.patch(this.itemsUrl(teamCode, id), {[this.key]: params}));
   }
 
+  async rename(teamCode: string, id: number, title: string): Promise<FolderedItemResponse<E>> {
+    return this.requestItem(axiosInstance.patch(this.itemsUrl(teamCode, id), {[this.key]: {title}}));
+  }
+
   async moveToFolder(teamCode: string, id: number, folderId: number | null): Promise<FolderedItemResponse<E>> {
     return this.requestItem(axiosInstance.patch(this.itemsUrl(teamCode, id), {[this.key]: {folder_id: folderId}}));
   }

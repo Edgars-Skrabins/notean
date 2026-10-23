@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnChanges, Output, ViewChild} from '@angular/core';
 import {DatePipe, NgFor, NgIf, NgTemplateOutlet} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {CdkDrag, CdkDragEnd, CdkDragMove} from '@angular/cdk/drag-drop';
@@ -76,6 +76,7 @@ export class ItemTreeComponent implements OnChanges {
   @Output() deleteFolder = new EventEmitter<{ folderId: number; mode: FolderDeleteMode }>();
   @Output() deleteItem = new EventEmitter<{ itemId: number }>();
   @Output() renameFolder = new EventEmitter<{ folderId: number; title: string }>();
+  @Output() renameItem = new EventEmitter<{ itemId: number; title: string }>();
   @Output() moveItem = new EventEmitter<{ itemId: number; folderId: number | null }>();
   @Output() moveFolder = new EventEmitter<{ folderId: number; parentId: number | null }>();
 
@@ -85,11 +86,25 @@ export class ItemTreeComponent implements OnChanges {
   itemPendingDeletion: TreeItem | null = null;
   renamingFolderId: number | null = null;
   renameDraftTitle = '';
+  renamingItemId: number | null = null;
+  renameItemDraftTitle = '';
   draggingNode: DragNode | null = null;
   hoveredTarget: DropTarget | null = null;
   readonly rootTarget: DropTarget = {kind: 'root'};
 
   private expandedFolderIds = new Set<number>();
+
+  @ViewChild('itemRenameInput')
+  set itemRenameInput(input: ElementRef<HTMLInputElement> | undefined) {
+    if (!input) {
+      return;
+    }
+
+    setTimeout(() => {
+      input.nativeElement.focus();
+      input.nativeElement.select();
+    });
+  }
 
   ngOnChanges() {
     this.rootFolders = this.buildFolders(null);
@@ -123,7 +138,7 @@ export class ItemTreeComponent implements OnChanges {
   }
 
   handleItemRowClick(event: MouseEvent, item: TreeItem) {
-    if (event.target === event.currentTarget) {
+    if (event.target === event.currentTarget && this.renamingItemId !== item.id) {
       this.openItem.emit(item);
     }
   }
@@ -182,6 +197,28 @@ export class ItemTreeComponent implements OnChanges {
 
   cancelRenameFolder() {
     this.renamingFolderId = null;
+  }
+
+  startRenameItem(item: TreeItem) {
+    this.renamingItemId = item.id;
+    this.renameItemDraftTitle = item.title;
+  }
+
+  commitRenameItem(item: TreeItem) {
+    if (this.renamingItemId !== item.id) {
+      return;
+    }
+
+    const title = this.renameItemDraftTitle.trim();
+    this.renamingItemId = null;
+
+    if (title && title !== item.title) {
+      this.renameItem.emit({itemId: item.id, title});
+    }
+  }
+
+  cancelRenameItem() {
+    this.renamingItemId = null;
   }
 
   handleDragStarted(node: DragNode) {

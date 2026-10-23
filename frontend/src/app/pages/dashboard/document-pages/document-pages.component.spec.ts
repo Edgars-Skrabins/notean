@@ -9,6 +9,7 @@ import {FavoriteService} from "@services/favorite.service";
 import {FolderSummary} from "@models/folder.model";
 import {FolderedItemDetail} from "@models/foldered-item.model";
 import {projectFilterStub, ProjectFilterStub} from "../../../testing/projectFilterStub";
+import {errorPhrase} from "@utils/errorPhrase";
 
 function folder(id: number, parentId: number | null, title = `Folder ${id}`): FolderSummary {
   return {id, title, parentId, creator: {id: 1, nickname: 'alice'}, createdAt: '', updatedAt: ''};
@@ -38,9 +39,9 @@ describe('DocumentPagesComponent', () => {
 
   beforeEach(fakeAsync(() => {
     projectFilter = projectFilterStub();
-    pageService = jasmine.createSpyObj<PageService>('PageService', ['list', 'moveToFolder', 'delete', 'create']);
+    pageService = jasmine.createSpyObj<PageService>('PageService', ['list', 'moveToFolder', 'delete', 'create', 'rename']);
     folderService = jasmine.createSpyObj<FolderService>('FolderService', ['listFolders', 'createFolder', 'renameFolder', 'moveFolder', 'deleteFolder']);
-    favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem']);
+    favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem', 'renameItem']);
     const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeamCode']);
     teamService.getCurrentTeamCode.and.returnValue('abc');
     folderService.listFolders.and.returnValue(Promise.resolve({success: true, folders: [folder(1, null), folder(2, 1), folder(3, 2)]}));
@@ -109,6 +110,30 @@ describe('DocumentPagesComponent', () => {
     expect(component.items.map((item) => item.id)).toEqual([11, 12]);
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Page', 10);
     expectNoReload();
+  }));
+
+  it('renames a page and its favorites without reloading', fakeAsync(() => {
+    pageService.rename.and.returnValue(Promise.resolve({success: true, item: page(12, null, 'Big ideas')}));
+
+    component.handleRenameItem({itemId: 12, title: 'Big ideas'});
+    tick();
+
+    expect(pageService.rename).toHaveBeenCalledWith('abc', 12, 'Big ideas');
+    expect(component.items.find((item) => item.id === 12)?.title).toBe('Big ideas');
+    expect(favoriteService.renameItem).toHaveBeenCalledWith('Page', 12, 'Big ideas');
+    expect(component.alertMessage).toBe('');
+    expectNoReload();
+  }));
+
+  it('keeps the old title and shows the error when a rename fails', fakeAsync(() => {
+    pageService.rename.and.returnValue(Promise.resolve({success: false, code: 'PAGE_NOT_FOUND'}));
+
+    component.handleRenameItem({itemId: 12, title: 'Big ideas'});
+    tick();
+
+    expect(component.items.find((item) => item.id === 12)?.title).toBe('Ideas');
+    expect(component.alertMessage).toBe(errorPhrase('PAGE_NOT_FOUND'));
+    expect(favoriteService.renameItem).not.toHaveBeenCalled();
   }));
 
   it('cascade delete removes the folder subtree and its pages', fakeAsync(() => {

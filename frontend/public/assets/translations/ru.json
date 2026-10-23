@@ -51,6 +51,7 @@
   "UNTITLED_FOLDER": "Папка без названия",
   "DELETE_FOLDER": "Удалить папку",
   "RENAME_FOLDER": "Переименовать папку",
+  "RENAME_ITEM": "Переименовать",
   "DELETE_FOLDER_CONFIRM_TITLE": "Удалить",
   "DELETE_FOLDER_KEEP_CONTENTS_CHECKBOX": "Удалить вложенное содержимое",
   "EXPAND_FOLDER": "Развернуть папку",
