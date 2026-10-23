@@ -18,7 +18,8 @@ export class LanguageSwitcherComponent {
   protected readonly PHRASES = PHRASES;
   readonly options: DropdownOption[] = languageOptions.map((language) => ({
     value: language.code,
-    label: `${language.flag} ${language.label}`,
+    label: language.label,
+    prefix: language.flag,
   }));
 
   constructor(private languageService: LanguageService) {
