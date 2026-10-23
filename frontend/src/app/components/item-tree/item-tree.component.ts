@@ -4,7 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {CdkDrag, CdkDragEnd, CdkDragMove} from '@angular/cdk/drag-drop';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
-import {IconComponent} from '@components/icon/icon.component';
+import {IconComponent, IconName} from '@components/icon/icon.component';
 import {IconButtonComponent} from '@components/icon-button/icon-button.component';
 import {DeleteFolderDialogComponent} from '@components/delete-folder-dialog/delete-folder-dialog.component';
 import {ConfirmDialogComponent} from '@components/confirm-dialog/confirm-dialog.component';
@@ -66,6 +66,7 @@ export class ItemTreeComponent implements OnChanges {
   @Input() folders: TreeFolder[] = [];
   @Input() items: TreeItem[] = [];
   @Input() itemLabel = '';
+  @Input({required: true}) itemIcon!: IconName;
   @Input({required: true}) favoritableType!: 'Page' | 'Diagram';
   @Input({required: true}) deleteItemConfirmMessage!: string;
 

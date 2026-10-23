@@ -97,7 +97,7 @@
       (click)="handleItemRowClick($event, item)"
     >
       <button type="button" class="itemTree__rowMain" (click)="openItem.emit(item)">
-        <app-icon name="edit" class="itemTree__rowIcon"></app-icon>
+        <app-icon [name]="itemIcon" class="itemTree__rowIcon"></app-icon>
         <span class="itemTree__rowTitle">{{ item.title }}</span>
         <span class="itemTree__rowMeta">{{ item.meta.creator.nickname }} &middot; {{ item.meta.updatedAt | date }}</span>
       </button>

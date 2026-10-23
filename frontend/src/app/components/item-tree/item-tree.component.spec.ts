@@ -30,6 +30,7 @@ describe('ItemTreeComponent', () => {
 
     fixture = TestBed.createComponent(ItemTreeComponent);
     component = fixture.componentInstance;
+    component.itemIcon = 'page';
     component.favoritableType = 'Page';
     component.deleteItemConfirmMessage = 'Delete?';
     openedItems = [];
