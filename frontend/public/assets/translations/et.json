@@ -182,6 +182,18 @@
   "COLLAPSE_GROUP": "Ahenda grupp",
   "EXPAND_GROUP": "Laienda grupp",
   "BULK_ACTION_FAILED": "Valitud ülesandeid ei õnnestunud uuendada",
+  "PRIORITY": "Prioriteet",
+  "PRIORITIES": "Prioriteedid",
+  "NO_PRIORITY": "Prioriteet puudub",
+  "ADD_PRIORITY": "Lisa prioriteet",
+  "NEW_PRIORITY": "Uus prioriteet",
+  "RENAME_PRIORITY": "Nimeta prioriteet ümber",
+  "CHANGE_PRIORITY_COLOR": "Muuda värvi",
+  "DELETE_PRIORITY": "Kustuta prioriteet",
+  "REORDER_PRIORITY": "Lohista ümberjärjestamiseks",
+  "CONFIRM_DELETE_PRIORITY": "Kas kustutada '{{name}}'? {{count}} ülesandel ei ole enam prioriteeti",
+  "CONFIRM_DELETE_PRIORITY_ONE": "Kas kustutada '{{name}}'? 1 ülesandel ei ole enam prioriteeti",
+  "CONFIRM_DELETE_UNUSED_PRIORITY": "Kas kustutada '{{name}}'?",
   "MOVE_TO_BOARD": "Teisalda tahvlile",
   "MOVE_TO_BACKLOG": "Teisalda ootejärjekorda",
   "MOVE": "Teisalda",
@@ -292,6 +304,11 @@
       "ASSIGNEE_NOT_FOUND": "See inimene ei ole määratud",
       "ASSIGNEE_NO_ACCESS": "See inimene ei näe seda tahvlit",
       "BULK_ACTION_INVALID": "See hulgitoiming pole kehtiv"
+    },
+    "PRIORITIES": {
+      "PRIORITY_NOT_FOUND": "Prioriteeti ei leitud",
+      "PRIORITY_NAME_TAKEN": "Selle nimega prioriteet on juba olemas",
+      "PRIORITY_SAVE_FAILED": "Prioriteeti ei õnnestunud salvestada"
     },
     "FAVORITES": {
       "FAVORITE_NOT_FOUND": "Lemmikut ei leitud",

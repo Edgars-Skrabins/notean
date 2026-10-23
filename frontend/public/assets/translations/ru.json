@@ -182,6 +182,18 @@
   "COLLAPSE_GROUP": "Свернуть группу",
   "EXPAND_GROUP": "Развернуть группу",
   "BULK_ACTION_FAILED": "Не удалось обновить выбранные задачи",
+  "PRIORITY": "Приоритет",
+  "PRIORITIES": "Приоритеты",
+  "NO_PRIORITY": "Без приоритета",
+  "ADD_PRIORITY": "Добавить приоритет",
+  "NEW_PRIORITY": "Новый приоритет",
+  "RENAME_PRIORITY": "Переименовать приоритет",
+  "CHANGE_PRIORITY_COLOR": "Изменить цвет",
+  "DELETE_PRIORITY": "Удалить приоритет",
+  "REORDER_PRIORITY": "Перетащите, чтобы изменить порядок",
+  "CONFIRM_DELETE_PRIORITY": "Удалить «{{name}}»? Задачи ({{count}}) останутся без приоритета",
+  "CONFIRM_DELETE_PRIORITY_ONE": "Удалить «{{name}}»? 1 задача останется без приоритета",
+  "CONFIRM_DELETE_UNUSED_PRIORITY": "Удалить «{{name}}»?",
   "MOVE_TO_BOARD": "Переместить на доску",
   "MOVE_TO_BACKLOG": "Переместить в бэклог",
   "MOVE": "Переместить",
@@ -292,6 +304,11 @@
       "ASSIGNEE_NOT_FOUND": "Этот человек не назначен",
       "ASSIGNEE_NO_ACCESS": "Этот человек не видит эту доску",
       "BULK_ACTION_INVALID": "Это групповое действие недопустимо"
+    },
+    "PRIORITIES": {
+      "PRIORITY_NOT_FOUND": "Приоритет не найден",
+      "PRIORITY_NAME_TAKEN": "Приоритет с таким названием уже существует",
+      "PRIORITY_SAVE_FAILED": "Не удалось сохранить приоритет"
     },
     "FAVORITES": {
       "FAVORITE_NOT_FOUND": "Элемент избранного не найден",

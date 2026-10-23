@@ -57,8 +57,30 @@
 }
 
 .ticketDetail__side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
   width: 220px;
   flex-shrink: 0;
+}
+
+.ticketDetail__field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.ticketDetail__fieldTitle {
+  margin: 0;
+  color: var(--color-text-faint);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.ticketDetail__priority {
+  display: block;
 }
 
 .ticketDetail__titleInput {

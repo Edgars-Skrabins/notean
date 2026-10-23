@@ -182,6 +182,18 @@
   "COLLAPSE_GROUP": "Sakļaut grupu",
   "EXPAND_GROUP": "Izvērst grupu",
   "BULK_ACTION_FAILED": "Neizdevās atjaunināt atlasītos uzdevumus",
+  "PRIORITY": "Prioritāte",
+  "PRIORITIES": "Prioritātes",
+  "NO_PRIORITY": "Bez prioritātes",
+  "ADD_PRIORITY": "Pievienot prioritāti",
+  "NEW_PRIORITY": "Jauna prioritāte",
+  "RENAME_PRIORITY": "Pārdēvēt prioritāti",
+  "CHANGE_PRIORITY_COLOR": "Mainīt krāsu",
+  "DELETE_PRIORITY": "Dzēst prioritāti",
+  "REORDER_PRIORITY": "Velciet, lai pārkārtotu",
+  "CONFIRM_DELETE_PRIORITY": "Dzēst '{{name}}'? {{count}} uzdevumi paliks bez prioritātes",
+  "CONFIRM_DELETE_PRIORITY_ONE": "Dzēst '{{name}}'? 1 uzdevums paliks bez prioritātes",
+  "CONFIRM_DELETE_UNUSED_PRIORITY": "Dzēst '{{name}}'?",
   "MOVE_TO_BOARD": "Pārvietot uz dēli",
   "MOVE_TO_BACKLOG": "Pārvietot uz uzdevumu krātuvi",
   "MOVE": "Pārvietot",
@@ -292,6 +304,11 @@
       "ASSIGNEE_NOT_FOUND": "Šī persona nav piešķirta",
       "ASSIGNEE_NO_ACCESS": "Šī persona neredz šo dēli",
       "BULK_ACTION_INVALID": "Šī grupas darbība nav derīga"
+    },
+    "PRIORITIES": {
+      "PRIORITY_NOT_FOUND": "Prioritāte nav atrasta",
+      "PRIORITY_NAME_TAKEN": "Prioritāte ar šādu nosaukumu jau pastāv",
+      "PRIORITY_SAVE_FAILED": "Neizdevās saglabāt prioritāti"
     },
     "FAVORITES": {
       "FAVORITE_NOT_FOUND": "Izlases ieraksts nav atrasts",

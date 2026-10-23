@@ -1,0 +1,58 @@
+<div class="priorityList__rows" cdkDropList [cdkDropListData]="priorities" (cdkDropListDropped)="handleDropped($event)">
+  <div
+    class="priorityList__row"
+    *ngFor="let priority of priorities; trackBy: trackById"
+    cdkDrag
+    cdkDragLockAxis="y"
+  >
+    <span
+      class="priorityList__handle"
+      cdkDragHandle
+      [appTooltip]="PHRASES.REORDER_PRIORITY | translate"
+      [attr.aria-label]="PHRASES.REORDER_PRIORITY | translate"
+    >
+      <app-icon name="menu"></app-icon>
+    </span>
+
+    <app-priority-color-picker [color]="priority.color" (colorChange)="changeColor(priority, $event)"></app-priority-color-picker>
+
+    <input
+      *ngIf="editingId === priority.id"
+      type="text"
+      class="priorityList__nameInput"
+      maxlength="40"
+      [(ngModel)]="nameDraft"
+      [attr.aria-label]="PHRASES.RENAME_PRIORITY | translate"
+      (keydown.enter)="commitRename(priority)"
+      (keydown.escape)="cancelRename()"
+      (blur)="commitRename(priority)"
+    />
+    <button
+      *ngIf="editingId !== priority.id"
+      type="button"
+      class="priorityList__name"
+      [appTooltip]="PHRASES.RENAME_PRIORITY | translate"
+      (click)="startRename(priority)"
+    >{{ priority.name }}</button>
+
+    <app-icon-button
+      icon="trash"
+      variant="danger"
+      [size]="28"
+      [tooltip]="PHRASES.DELETE_PRIORITY | translate"
+      (pressed)="requestDelete(priority)"
+    ></app-icon-button>
+  </div>
+</div>
+
+<button type="button" class="priorityList__add" (click)="handleAdd()">
+  <app-icon name="plus" class="priorityList__addIcon"></app-icon>
+  {{ PHRASES.ADD_PRIORITY | translate }}
+</button>
+
+<app-confirm-dialog
+  *ngIf="pendingDeletion"
+  [message]="deleteMessage"
+  (confirmed)="handleConfirmDelete()"
+  (cancelled)="handleCancelDelete()"
+></app-confirm-dialog>

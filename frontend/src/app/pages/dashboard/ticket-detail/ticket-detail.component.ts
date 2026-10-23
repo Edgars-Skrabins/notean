@@ -21,6 +21,8 @@ import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.
 import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
 import {MoveToBoardDialogComponent} from "@components/move-to-board-dialog/move-to-board-dialog.component";
 import {TicketAssigneesComponent} from "@components/ticket-assignees/ticket-assignees.component";
+import {DropdownComponent} from "@components/dropdown/dropdown.component";
+import {DropdownOption} from "@models/dropdown.model";
 import {errorPhrase} from "@utils/errorPhrase";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 
@@ -37,7 +39,8 @@ import {BoardPageStateService} from "../board-page/board-page-state.service";
     ConfirmDialogComponent,
     FavoriteStarComponent,
     MoveToBoardDialogComponent,
-    TicketAssigneesComponent
+    TicketAssigneesComponent,
+    DropdownComponent
   ],
   templateUrl: './ticket-detail.component.html',
   styleUrl: './ticket-detail.component.css'
@@ -78,6 +81,13 @@ export class TicketDetailComponent implements OnInit {
 
   private get boardId(): number {
     return this.state.boardId;
+  }
+
+  get priorityOptions(): DropdownOption[] {
+    return [
+      {value: null, labelKey: PHRASES.NO_PRIORITY},
+      ...(this.state.board?.priorities ?? []).map((priority) => ({value: priority.id, label: priority.name, color: priority.color})),
+    ];
   }
 
   ngOnInit() {
@@ -204,6 +214,21 @@ export class TicketDetailComponent implements OnInit {
     if (this.ticket) {
       this.descriptionDraft = this.ticket.description;
     }
+  }
+
+  handlePriorityChange(value: string | number | null) {
+    const priorityId = value === null ? null : Number(value);
+    this.ticketService.updateTicket(this.teamCode, this.boardId, this.ticketId, {priorityId})
+      .then((response) => {
+        if (!response.success) {
+          this.alertMessage = errorPhrase(response.code);
+          return;
+        }
+
+        this.alertMessage = '';
+        this.ticket = response.ticket;
+        this.state.updateTicket(response.ticket);
+      });
   }
 
   private loadAssignableMembers() {

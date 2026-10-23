@@ -182,6 +182,18 @@
   "COLLAPSE_GROUP": "Fäll ihop gruppen",
   "EXPAND_GROUP": "Fäll ut gruppen",
   "BULK_ACTION_FAILED": "Det gick inte att uppdatera de valda ärendena",
+  "PRIORITY": "Prioritet",
+  "PRIORITIES": "Prioriteter",
+  "NO_PRIORITY": "Ingen prioritet",
+  "ADD_PRIORITY": "Lägg till prioritet",
+  "NEW_PRIORITY": "Ny prioritet",
+  "RENAME_PRIORITY": "Byt namn på prioritet",
+  "CHANGE_PRIORITY_COLOR": "Ändra färg",
+  "DELETE_PRIORITY": "Ta bort prioritet",
+  "REORDER_PRIORITY": "Dra för att ändra ordning",
+  "CONFIRM_DELETE_PRIORITY": "Ta bort '{{name}}'? {{count}} ärenden får ingen prioritet",
+  "CONFIRM_DELETE_PRIORITY_ONE": "Ta bort '{{name}}'? 1 ärende får ingen prioritet",
+  "CONFIRM_DELETE_UNUSED_PRIORITY": "Ta bort '{{name}}'?",
   "MOVE_TO_BOARD": "Flytta till tavlan",
   "MOVE_TO_BACKLOG": "Flytta till backloggen",
   "MOVE": "Flytta",
@@ -292,6 +304,11 @@
       "ASSIGNEE_NOT_FOUND": "Den här personen är inte tilldelad",
       "ASSIGNEE_NO_ACCESS": "Den här personen kan inte se den här tavlan",
       "BULK_ACTION_INVALID": "Den här massåtgärden är inte giltig"
+    },
+    "PRIORITIES": {
+      "PRIORITY_NOT_FOUND": "Prioriteten hittades inte",
+      "PRIORITY_NAME_TAKEN": "Det finns redan en prioritet med det namnet",
+      "PRIORITY_SAVE_FAILED": "Det gick inte att spara prioriteten"
     },
     "FAVORITES": {
       "FAVORITE_NOT_FOUND": "Favoriten hittades inte",

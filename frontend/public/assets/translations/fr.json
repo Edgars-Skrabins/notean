@@ -182,6 +182,18 @@
   "COLLAPSE_GROUP": "Réduire le groupe",
   "EXPAND_GROUP": "Développer le groupe",
   "BULK_ACTION_FAILED": "Impossible de mettre à jour les tickets sélectionnés",
+  "PRIORITY": "Priorité",
+  "PRIORITIES": "Priorités",
+  "NO_PRIORITY": "Aucune priorité",
+  "ADD_PRIORITY": "Ajouter une priorité",
+  "NEW_PRIORITY": "Nouvelle priorité",
+  "RENAME_PRIORITY": "Renommer la priorité",
+  "CHANGE_PRIORITY_COLOR": "Changer la couleur",
+  "DELETE_PRIORITY": "Supprimer la priorité",
+  "REORDER_PRIORITY": "Glisser pour réordonner",
+  "CONFIRM_DELETE_PRIORITY": "Supprimer « {{name}} » ? {{count}} tickets n'auront plus de priorité",
+  "CONFIRM_DELETE_PRIORITY_ONE": "Supprimer « {{name}} » ? 1 ticket n'aura plus de priorité",
+  "CONFIRM_DELETE_UNUSED_PRIORITY": "Supprimer « {{name}} » ?",
   "MOVE_TO_BOARD": "Déplacer vers le tableau",
   "MOVE_TO_BACKLOG": "Déplacer vers le backlog",
   "MOVE": "Déplacer",
@@ -292,6 +304,11 @@
       "ASSIGNEE_NOT_FOUND": "Cette personne n'est pas assignée",
       "ASSIGNEE_NO_ACCESS": "Cette personne ne peut pas voir ce tableau",
       "BULK_ACTION_INVALID": "Cette action groupée n'est pas valide"
+    },
+    "PRIORITIES": {
+      "PRIORITY_NOT_FOUND": "Priorité introuvable",
+      "PRIORITY_NAME_TAKEN": "Une priorité portant ce nom existe déjà",
+      "PRIORITY_SAVE_FAILED": "Impossible d'enregistrer la priorité"
     },
     "FAVORITES": {
       "FAVORITE_NOT_FOUND": "Favori introuvable",

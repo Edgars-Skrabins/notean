@@ -182,6 +182,18 @@
   "COLLAPSE_GROUP": "Collapse group",
   "EXPAND_GROUP": "Expand group",
   "BULK_ACTION_FAILED": "Could not update the selected tickets",
+  "PRIORITY": "Priority",
+  "PRIORITIES": "Priorities",
+  "NO_PRIORITY": "No priority",
+  "ADD_PRIORITY": "Add priority",
+  "NEW_PRIORITY": "New priority",
+  "RENAME_PRIORITY": "Rename priority",
+  "CHANGE_PRIORITY_COLOR": "Change colour",
+  "DELETE_PRIORITY": "Delete priority",
+  "REORDER_PRIORITY": "Drag to reorder",
+  "CONFIRM_DELETE_PRIORITY": "Delete '{{name}}'? {{count}} tickets will have no priority",
+  "CONFIRM_DELETE_PRIORITY_ONE": "Delete '{{name}}'? 1 ticket will have no priority",
+  "CONFIRM_DELETE_UNUSED_PRIORITY": "Delete '{{name}}'?",
   "MOVE_TO_BOARD": "Move to board",
   "MOVE_TO_BACKLOG": "Move to backlog",
   "MOVE": "Move",
@@ -292,6 +304,11 @@
       "ASSIGNEE_NOT_FOUND": "This person is not assigned",
       "ASSIGNEE_NO_ACCESS": "This person can't see this board",
       "BULK_ACTION_INVALID": "This bulk action is not valid"
+    },
+    "PRIORITIES": {
+      "PRIORITY_NOT_FOUND": "Priority not found",
+      "PRIORITY_NAME_TAKEN": "A priority with this name already exists",
+      "PRIORITY_SAVE_FAILED": "Could not save the priority"
     },
     "FAVORITES": {
       "FAVORITE_NOT_FOUND": "Favorite not found",

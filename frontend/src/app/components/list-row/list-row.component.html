@@ -10,6 +10,12 @@
     <span class="listRow__title">{{ ticket.title }}</span>
   </button>
 
+  <span class="listRow__priority">
+    <ng-container *ngIf="priority">
+      <span class="priorityDot" [attr.data-color]="priority.color"></span>
+      <span class="listRow__priorityName">{{ priority.name }}</span>
+    </ng-container>
+  </span>
   <span class="listRow__status">{{ statusTitle }}</span>
   <span class="listRow__date">{{ ticket.createdAt | date: 'mediumDate' }}</span>
   <app-avatar-stack class="listRow__assignees" [users]="ticket.assignees"></app-avatar-stack>

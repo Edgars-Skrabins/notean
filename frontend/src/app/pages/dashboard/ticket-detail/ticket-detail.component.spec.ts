@@ -240,4 +240,34 @@ describe('TicketDetailComponent editing', () => {
     expect(projectService.getProject).toHaveBeenCalledWith('abc', 4);
     expect(component.members.map((member) => member.nickname)).toEqual(['Alice', 'Carol']);
   }));
+
+  it('offers No priority and the board priorities in order with their colours', () => {
+    expect(component.priorityOptions).toEqual([
+      {value: null, labelKey: PHRASES.NO_PRIORITY},
+      {value: 20, label: 'Low', color: 'blue'},
+      {value: 21, label: 'High', color: 'orange'},
+    ]);
+  });
+
+  it('saves a chosen priority and updates the ticket on the board', fakeAsync(() => {
+    ticketService.updateTicket.and.returnValue(Promise.resolve({success: true, ticket: {...ticket, priorityId: 21}}));
+
+    component.handlePriorityChange(21);
+    flushMicrotasks();
+
+    expect(ticketService.updateTicket).toHaveBeenCalledWith('abc', 9, 0, {priorityId: 21});
+    expect(component.ticket?.priorityId).toBe(21);
+    expect(state.findTicket(1)?.priorityId).toBe(21);
+  }));
+
+  it('sends null when No priority is chosen', fakeAsync(() => {
+    state.findTicket(1)!.priorityId = 21;
+    ticketService.updateTicket.and.returnValue(Promise.resolve({success: true, ticket: {...ticket, priorityId: null}}));
+
+    component.handlePriorityChange(null);
+    flushMicrotasks();
+
+    expect(ticketService.updateTicket).toHaveBeenCalledWith('abc', 9, 0, {priorityId: null});
+    expect(state.findTicket(1)?.priorityId).toBeNull();
+  }));
 });
