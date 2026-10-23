@@ -1,5 +1,6 @@
 class SearchController < ApplicationController
   TYPES = %w[project page diagram board ticket].freeze
+  TYPE_FEATURES = { "page" => :pages, "diagram" => :diagrams, "board" => :boards, "ticket" => :boards }.freeze
   MIN_QUERY_LENGTH = 2
   SECTION_LIMIT = 5
   MORE_LIMIT = 10
@@ -15,6 +16,7 @@ class SearchController < ApplicationController
 
     type = params[:type]
     return render_error(ErrorCodes::Search::INVALID_TYPE, :unprocessable_entity) if type.present? && TYPES.exclude?(type)
+    return render_error(ErrorCodes::Teams::FEATURE_DISABLED, :forbidden) if type.present? && enabled_types.exclude?(type)
 
     @boards = project_filtered(@team.boards)
     return if @boards.nil?
@@ -22,11 +24,15 @@ class SearchController < ApplicationController
     if type.present?
       render json: { section: section_json(type, [ params[:offset].to_i, 0 ].max, MORE_LIMIT) }
     else
-      render json: { sections: TYPES.map { |section_type| section_json(section_type, 0, SECTION_LIMIT) } }
+      render json: { sections: enabled_types.map { |section_type| section_json(section_type, 0, SECTION_LIMIT) } }
     end
   end
 
   private
+
+  def enabled_types
+    TYPES.select { |type| TYPE_FEATURES[type].nil? || @team.feature_enabled?(TYPE_FEATURES[type]) }
+  end
 
   def section_json(type, offset, limit)
     records = search_scope(type).text_search(@term).title_match_first(@term).offset(offset).limit(limit + 1).to_a
