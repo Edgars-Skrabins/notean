@@ -103,7 +103,7 @@ src/environments/             environment.ts (apiUrl)
 #### App and routing
 - Route paths are defined in the `AppRoutes` enum in `app/app-routes.enum.ts` and wired in `app/app.routes.ts`. Use the enum, never string literals.
 - Auth and team flow pages are top-level routes. Feature screens are child routes of `dashboard`, a shell (`DashboardComponent` with header and sidebar).
-- Guards are functional `CanActivateFn`s: `authGuard` (logged in), `teamGuard` (active team selected), `teamRoleGuard` (role is `admin` or `owner`).
+- Guards are functional `CanActivateFn`s: `authGuard` (logged in), `teamGuard` (active team selected), `teamRoleGuard` (role is `admin` or `owner`), and `featureGuard(feature)` (the team has that feature on, otherwise redirects to Home) on the pages, diagrams and boards routes.
 
 #### Components
 - Every component is `standalone: true` with its own `.ts`, `.html` and `.css` files, using `templateUrl` and `styleUrl`.
@@ -127,6 +127,7 @@ src/environments/             environment.ts (apiUrl)
 - The header's project selector is backed by `ProjectFilterService`, which stores the choice per team (`selectedProject:<team>`, falling back to All). Lists, the sidebar boards, Favorites and My Work follow it; pass its value to the API with `projectQuery` from `@utils/projectQuery`, and new items default to the selected project.
 - The header's `GlobalSearchComponent` searches the whole team through `SearchService` (`GET /teams/:team_code/search`). It follows the project selector, opens with `/`, and shows its results in a CDK overlay panel grouped by type.
 - Realtime features open an ActionCable consumer at `ws://…/cable?token=<jwt>` from a dedicated service and subscribe to the matching backend channel.
+- Team feature flags (`pagesEnabled`, `diagramsEnabled`, `boardsEnabled` on `Team`, mapped by `mapTeam`) are read through `TeamService.features$` and `isFeatureEnabled`. `TeamChannelService`, connected from `DashboardComponent`, applies `features_changed` broadcasts, and the dashboard sends members on a just-disabled feature's screen to Home with a toast. A `FEATURE_DISABLED` 403 reloads the session (`setFeatureDisabledHandler`). Hide a disabled feature's UI with `features$`.
 
 #### Path aliases
 Import with the tsconfig aliases instead of relative paths: `@components/*`, `@config/*`, `@pages/*`, `@models/*`, `@services/*`, `@utils/*`.
@@ -159,7 +160,7 @@ app/
 ├── controllers/   one controller per resource
 ├── models/        ActiveRecord models plus cache-backed *EditingStatus classes (on EditingStatus)
 ├── errors/        error_codes/, one ErrorCodes module per domain
-└── channels/      ActionCable connection and editing presence channels (on EditingChannel)
+└── channels/      ActionCable connection, editing presence channels (on EditingChannel) and TeamChannel
 config/
 ├── routes.rb
 └── initializers/  cors.rb, rack_attack.rb
@@ -180,6 +181,7 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 - Auth: `before_action :authenticate_user!` reads `Authorization: Bearer <jwt>` through `current_user`.
 - Team scoping follows a `before_action` chain: `set_team` (found by `params[:team_code]`), then `authorize_team_member!`, then `set_<resource>` scoped through `@team`. `set_team`, `authorize_team_member!`, `member_json`, `team_json` and `title_or_default` are shared in `ApplicationController`.
 - Role checks use `require_team_role!(team, :admin, :owner)`, which returns nil after rendering 403.
+- Feature flags: controllers of a switchable feature include `FeatureGated` and add `before_action -> { require_feature!(:boards) }` after `authorize_team_member!`, which renders 403 `FEATURE_DISABLED` when the team has it off. Aggregating endpoints (favorites, My Work, search) leave disabled types out instead of erroring.
 - Project visibility goes through `project_access` (a `ProjectAccess` for the current user and team): scope `set_<resource>` with `project_access.scope(...)` so hidden items 404, filter lists with `project_filtered`, and set an item's project with `assign_project`. When an item's project changes, run `ProjectAccessCleanup` to drop assignments of people who lost access.
 - JSON is built by hand with private `*_json` and `*_summary_json` helper methods. Board-scoped controllers share `set_board` (`BoardScoped` concern) and the ticket JSON helpers (`TicketJson` concern). There is no jbuilder or serializer gem.
 - Response convention: success responses carry only the payload under a resource key (`{ page: ... }`). Errors are rendered with `render_error(ErrorCodes::Pages::PAGE_NOT_FOUND, :not_found)`, producing `{ code: "PAGE_NOT_FOUND" }` with the right status. Add new codes to the matching module in `app/errors/error_codes/` and to the frontend's `config/errorCodes/` plus every translation file. Keys are snake_case.
@@ -188,6 +190,7 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 #### Models
 - Creators are stored as `created_by_user_id` with a `creator` association to `User`.
 - `Membership` joins users and teams. Its `role` enum is `user`, `admin` and `owner`, with exactly one owner per team.
+- Teams have `pages_enabled`, `diagrams_enabled` and `boards_enabled` flags (all on by default), checked with `Team#feature_enabled?`. Only the owner changes them (`PATCH /teams/:code/features`). Tickets, columns and assignees follow `boards`; folders follow their item type. Flags never delete data.
 - Tickets have any number of assignees through `ticket_assignees` (team members only, ordered by assignment time; assigning touches the ticket).
 - Pages, diagrams and boards can belong to a project (`BelongsToProject` concern); tickets follow their board's project. Project items are private to the project's members plus the team owner and admins.
 - A ticket belongs to a board and optionally a column; `column_id` null means it is in the board's backlog. `position` orders it within its column or the backlog.
@@ -198,7 +201,8 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 
 #### Channels
 - `ApplicationCable::Connection` authenticates with the JWT passed as the `?token=` query param.
-- Editing channels only subscribe members of the item's team who can see the item's project.
+- Editing channels only subscribe members of the item's team who can see the item's project, and only while the item's feature is on.
+- `TeamChannel` (`team_code` param, members only) streams `team:<id>` and carries `{ type: "features_changed", team }` broadcasts.
 
 #### Security
 - rack-attack throttles the auth and join-team endpoints. A throttled request gets a 429 with `{ code: "RATE_LIMITED" }`.
