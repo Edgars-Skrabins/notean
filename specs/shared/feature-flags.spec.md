@@ -1,7 +1,7 @@
 # Team feature flags — Spec
 
 **Type:** feature
-**Status:** ready for implementation
+**Status:** in progress
 **Last updated:** 2026-10-23
 
 # Part 1 — Business logic and usage
@@ -139,6 +139,8 @@ Rails migration, ActionCable (new team channel), Angular guards and services, `@
 4. **Hidden data:** left out everywhere (favorites, My Work, search, project page). Data is kept.
 5. **Storage:** three boolean columns on `teams`. A `team_features` table was rejected as unnecessary for three fixed flags.
 6. **Tickets follow Boards:** they have no flag of their own. (Follows from boards owning tickets.)
+7. **Gating board-list-tab's endpoints (2026-10-23):** `board-list-tab.spec.md` is in progress, so it adds the `:boards` gate (`FeatureGated`) to its own new board endpoints.
+8. **Manual check (2026-10-23):** the dev server ports were taken by another worktree, so Z3 is left for the user to do later.
 
 # Part 3 — Implementation TODO
 
@@ -151,35 +153,37 @@ Read Part 1 and Part 2 before starting. Work through the tasks in order and tick
 
 Baseline before starting: run `npm test` in `frontend/` and `bin/rails test` in `backend/`, and note the counts here.
 
+Baseline (2026-10-23): backend 300 runs, 0 failures; frontend 407 specs, 0 failures.
+
 ### A. Data model
-- [ ] A1. Add the migration for the three flags, run `bin/rails db:migrate`, and add `Team#feature_enabled?` with a model test.
+- [x] A1. Add the migration for the three flags, run `bin/rails db:migrate`, and add `Team#feature_enabled?` with a model test.
 
 ### B. Enforcement (backend)
-- [ ] B1. Add `ErrorCodes::Teams::FEATURE_DISABLED` and the `FeatureGated` concern, and gate the pages, diagrams, boards, columns, tickets and ticket assignees controllers. Add controller tests for each (403 when off).
-- [ ] B2. Gate `FoldersController` by item type, with tests.
-- [ ] B3. Filter favorites, My Work and search, with tests.
-- [ ] B4. Make the editing channels reject when the feature is off, with a channel test.
+- [x] B1. Add `ErrorCodes::Teams::FEATURE_DISABLED` and the `FeatureGated` concern, and gate the pages, diagrams, boards, columns, tickets and ticket assignees controllers. Add controller tests for each (403 when off).
+- [x] B2. Gate `FoldersController` by item type, with tests.
+- [x] B3. Filter favorites, My Work and search, with tests.
+- [x] B4. Make the editing channels reject when the feature is off, with a channel test.
 
 ### C. Managing and broadcasting (backend)
-- [ ] C1. Add `TeamChannel` with a channel test.
-- [ ] C2. Add the `update_features` route, strong params and action with the broadcast, and tests (owner only, broadcast sent).
-- [ ] C3. Run `bin/rubocop` and `bin/brakeman`.
+- [x] C1. Add `TeamChannel` with a channel test.
+- [x] C2. Add the `update_features` route, strong params and action with the broadcast, and tests (owner only, broadcast sent).
+- [x] C3. Run `bin/rubocop` and `bin/brakeman`.
 
 ### D. Frontend data and live updates
-- [ ] D1. Add the flags to the `Team` model, add `features$`, `isFeatureEnabled`, `updateFeatures` and `applyFeatures` to `TeamService`, and extend `team.service.spec.ts`.
-- [ ] D2. Add `TeamChannelService` and connect it from `DashboardComponent`.
-- [ ] D3. Add `featureGuard`, apply it to the routes, and add a guard test.
-- [ ] D4. Redirect live to Home with the toast when the current feature is turned off.
-- [ ] D5. Reload the session on a `FEATURE_DISABLED` 403 in `axiosConfig`.
+- [x] D1. Add the flags to the `Team` model, add `features$`, `isFeatureEnabled`, `updateFeatures` and `applyFeatures` to `TeamService`, and extend `team.service.spec.ts`.
+- [x] D2. Add `TeamChannelService` and connect it from `DashboardComponent`.
+- [x] D3. Add `featureGuard`, apply it to the routes, and add a guard test.
+- [x] D4. Redirect live to Home with the toast when the current feature is turned off.
+- [x] D5. Reload the session on a `FEATURE_DISABLED` 403 in `axiosConfig`.
 
 ### E. Frontend UI
-- [ ] E1. Hide the sidebar entries, the boards section, Home's My Work and filtered favorites per flag. Extend the related specs (favorites, board list).
-- [ ] E2. Add the Features section to Manage team with toasts, and a `manage-team.component.spec.ts` case that it is owner only and calls `updateFeatures`.
-- [ ] E3. Add the error code and phrases to every translation file.
+- [x] E1. Hide the sidebar entries, the boards section, Home's My Work and filtered favorites per flag. Extend the related specs (favorites, board list).
+- [x] E2. Add the Features section to Manage team with toasts, and a `manage-team.component.spec.ts` case that it is owner only and calls `updateFeatures`.
+- [x] E3. Add the error code and phrases to every translation file.
 
 ### Z. Wrap-up
-- [ ] Z1. Run `bin/rails test`, `bin/rubocop` and `bin/brakeman` in `backend/`, and `npm test` and `npm run build` in `frontend/`.
-- [ ] Z2. Update `CLAUDE.md`: feature flags on teams, `FeatureGated`, `TeamChannel`, `featureGuard` and `TeamChannelService`.
+- [x] Z1. Run `bin/rails test`, `bin/rubocop` and `bin/brakeman` in `backend/`, and `npm test` and `npm run build` in `frontend/`.
+- [x] Z2. Update `CLAUDE.md`: feature flags on teams, `FeatureGated`, `TeamChannel`, `featureGuard` and `TeamChannelService`.
 - [ ] Z3. Manual check in the running app with two browsers (the owner, and a member on a board):
   - The owner turns Boards off: the member is moved to Home with a toast, and the boards sidebar, ticket favorites, My Work and search tickets disappear.
   - A board URL redirects to Home.
