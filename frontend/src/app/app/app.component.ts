@@ -4,7 +4,7 @@ import {filter} from "rxjs";
 import {LanguageService} from "@services/language.service";
 import {AuthService} from "@services/auth.service";
 import {SessionService} from "@services/session.service";
-import {setUnauthorizedHandler} from "@config/axiosConfig";
+import {setFeatureDisabledHandler, setUnauthorizedHandler} from "@config/axiosConfig";
 import {AppRoutes} from "./app-routes.enum";
 import {ToastContainerComponent} from "@components/toast-container/toast-container.component";
 
@@ -34,6 +34,10 @@ export class AppComponent {
       this.authService.logout();
       this.sessionService.clear();
       this.router.navigate([AppRoutes.LOGIN]);
+    });
+
+    setFeatureDisabledHandler(() => {
+      this.sessionService.load();
     });
 
     this.router.events

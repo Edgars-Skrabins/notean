@@ -21,11 +21,20 @@ export function setUnauthorizedHandler(handler: () => void) {
   unauthorizedHandler = handler;
 }
 
+let featureDisabledHandler: (() => void) | null = null;
+
+export function setFeatureDisabledHandler(handler: () => void) {
+  featureDisabledHandler = handler;
+}
+
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
       unauthorizedHandler?.();
+    }
+    if (error.response?.status === 403 && error.response.data?.code === 'FEATURE_DISABLED') {
+      featureDisabledHandler?.();
     }
     return Promise.reject(error);
   },
