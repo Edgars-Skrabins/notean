@@ -231,6 +231,8 @@
   "TYPE_NAME_TO_CONFIRM": "Norėdami patvirtinti, įveskite {{name}}",
   "PROJECT_DELETED": "Projektas ištrintas",
   "BACK_TO_PROJECTS": "Atgal į projektus",
+  "PROJECT_ITEMS": "Elementai",
+  "NO_PROJECT_ITEMS": "Šiame projekte dar nėra elementų",
   "FEATURES": "Funkcijos",
   "FEATURE_PAGES": "Puslapiai",
   "FEATURE_DIAGRAMS": "Diagramos",

@@ -231,6 +231,8 @@
   "TYPE_NAME_TO_CONFIRM": "Skriv {{name}} för att bekräfta",
   "PROJECT_DELETED": "Projektet har tagits bort",
   "BACK_TO_PROJECTS": "Tillbaka till projekt",
+  "PROJECT_ITEMS": "Objekt",
+  "NO_PROJECT_ITEMS": "Det finns inga objekt i det här projektet än",
   "FEATURES": "Funktioner",
   "FEATURE_PAGES": "Sidor",
   "FEATURE_DIAGRAMS": "Diagram",
