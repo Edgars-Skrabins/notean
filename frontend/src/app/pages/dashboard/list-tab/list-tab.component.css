@@ -33,6 +33,10 @@
   gap: var(--space-2);
 }
 
+.listTab__list {
+  gap: 6px;
+}
+
 .listTab__groupHeader {
   display: flex;
   align-items: center;
