@@ -115,6 +115,18 @@ export class ItemTreeComponent implements OnChanges {
     }
   }
 
+  handleFolderRowClick(event: MouseEvent, folder: BuiltFolder) {
+    if (event.target === event.currentTarget && this.renamingFolderId !== folder.id) {
+      this.toggleExpand(folder);
+    }
+  }
+
+  handleItemRowClick(event: MouseEvent, item: TreeItem) {
+    if (event.target === event.currentTarget) {
+      this.openItem.emit(item);
+    }
+  }
+
   requestDeleteFolder(folder: TreeFolder) {
     this.folderPendingDeletion = folder;
   }
