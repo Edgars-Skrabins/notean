@@ -24,4 +24,13 @@ class DiagramEditingChannelTest < ActionCable::Channel::TestCase
 
     assert subscription.rejected?
   end
+
+  test "a member is rejected while diagrams are turned off" do
+    @team.update!(diagrams_enabled: false)
+    stub_connection current_user: @user
+
+    subscribe diagram_id: @diagram.id
+
+    assert subscription.rejected?
+  end
 end

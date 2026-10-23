@@ -43,4 +43,13 @@ class PageEditingChannelTest < ActionCable::Channel::TestCase
 
     assert subscription.rejected?
   end
+
+  test "a member is rejected while pages are turned off" do
+    @team.update!(pages_enabled: false)
+    stub_connection current_user: @user
+
+    subscribe page_id: @page.id
+
+    assert subscription.rejected?
+  end
 end
