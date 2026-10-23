@@ -1,7 +1,10 @@
 class PagesController < ApplicationController
+  include FeatureGated
+
   before_action :authenticate_user!
   before_action :set_team
   before_action :authorize_team_member!
+  before_action -> { require_feature!(:pages) }
   before_action :set_page, only: [ :show, :update, :destroy ]
 
   def index

@@ -1,10 +1,12 @@
 class TicketAssigneesController < ApplicationController
   include BoardScoped
   include TicketJson
+  include FeatureGated
 
   before_action :authenticate_user!
   before_action :set_team
   before_action :authorize_team_member!
+  before_action -> { require_feature!(:boards) }
   before_action :set_board
   before_action :set_ticket
   before_action :authorize_assignee_change!

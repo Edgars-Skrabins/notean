@@ -208,4 +208,20 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal one, ten
   end
+
+  test "returns FEATURE_DISABLED when boards are turned off" do
+    board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
+    @team.update!(boards_enabled: false)
+
+    get "/teams/#{@team.code}/boards", headers: @headers
+    assert_response :forbidden
+    assert_equal({ "code" => "FEATURE_DISABLED" }, JSON.parse(response.body))
+
+    get "/teams/#{@team.code}/boards/#{board.id}/overview", headers: @headers
+    assert_response :forbidden
+
+    post "/teams/#{@team.code}/boards", params: { board: { title: "New" } }, headers: @headers, as: :json
+    assert_response :forbidden
+    assert_equal 1, @team.boards.count
+  end
 end

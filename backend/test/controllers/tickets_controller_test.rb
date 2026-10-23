@@ -226,4 +226,17 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "COLUMN_NOT_FOUND", JSON.parse(response.body)["code"]
     assert_nil idea.reload.column_id
   end
+
+  test "returns FEATURE_DISABLED when boards are turned off" do
+    ticket = Ticket.create!(column: @todo, board: @board, team: @team, created_by_user_id: @user.id, title: "Existing", position: 0)
+    @team.update!(boards_enabled: false)
+
+    get "/teams/#{@team.code}/boards/#{@board.id}/tickets/#{ticket.id}", headers: @headers
+    assert_response :forbidden
+    assert_equal({ "code" => "FEATURE_DISABLED" }, JSON.parse(response.body))
+
+    delete "/teams/#{@team.code}/boards/#{@board.id}/tickets/#{ticket.id}", headers: @headers
+    assert_response :forbidden
+    assert Ticket.exists?(ticket.id)
+  end
 end

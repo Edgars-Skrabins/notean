@@ -1,7 +1,10 @@
 class DiagramsController < ApplicationController
+  include FeatureGated
+
   before_action :authenticate_user!
   before_action :set_team
   before_action :authorize_team_member!
+  before_action -> { require_feature!(:diagrams) }
   before_action :set_diagram, only: [ :show, :update, :destroy ]
 
   def index

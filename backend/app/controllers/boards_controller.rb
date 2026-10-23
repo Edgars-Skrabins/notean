@@ -1,5 +1,6 @@
 class BoardsController < ApplicationController
   include TicketJson
+  include FeatureGated
 
   RECENT_TICKETS_LIMIT = 5
   RECENT_ACTIVITY_PERIOD = 7.days
@@ -7,6 +8,7 @@ class BoardsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_team
   before_action :authorize_team_member!
+  before_action -> { require_feature!(:boards) }
   before_action :set_board, only: [ :show, :update, :destroy, :overview ]
 
   def index
