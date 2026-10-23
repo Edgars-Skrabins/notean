@@ -1,3 +1,4 @@
+import {AxiosError, AxiosResponse} from "axios";
 import {axiosInstance} from "@config/axiosConfig";
 import {mapTicketDetail, TicketService} from "./ticket.service";
 
@@ -78,5 +79,39 @@ describe('TicketService', () => {
 
     expect(post).toHaveBeenCalledWith(`${url}/1/assignees`, {assignee: {user_id: 5}});
     expect(remove).toHaveBeenCalledWith(`${url}/1/assignees/5`);
+  });
+
+  it('sends each bulk action with the ticket ids and maps the returned tickets', async () => {
+    const patch = spyOn(axiosInstance, 'patch').and.returnValue(Promise.resolve({data: {tickets: [baseRaw]}}));
+
+    const response = await service.bulkUpdate('abc', 9, [1, 2], {columnId: 3});
+    await service.bulkUpdate('abc', 9, [1], {toBacklog: true});
+    await service.bulkUpdate('abc', 9, [1], {addAssigneeId: 5});
+    await service.bulkUpdate('abc', 9, [1], {removeAssigneeId: 5});
+
+    expect(patch).toHaveBeenCalledWith(`${url}/bulk`, {bulk: {ticket_ids: [1, 2], column_id: 3}});
+    expect(patch).toHaveBeenCalledWith(`${url}/bulk`, {bulk: {ticket_ids: [1], to_backlog: true}});
+    expect(patch).toHaveBeenCalledWith(`${url}/bulk`, {bulk: {ticket_ids: [1], add_assignee_id: 5}});
+    expect(patch).toHaveBeenCalledWith(`${url}/bulk`, {bulk: {ticket_ids: [1], remove_assignee_id: 5}});
+    expect(response.success && response.tickets.map((ticket) => [ticket.id, ticket.columnId, ticket.createdAt]))
+      .toEqual([[1, 3, '2024-01-01T00:00:00Z']]);
+  });
+
+  it('returns the error code when a bulk action fails', async () => {
+    const failure = new AxiosError('failed', undefined, undefined, undefined, {status: 404, data: {code: 'TICKET_NOT_FOUND'}} as AxiosResponse);
+    spyOn(axiosInstance, 'patch').and.returnValue(Promise.reject(failure));
+
+    const response = await service.bulkUpdate('abc', 9, [1], {columnId: 3});
+
+    expect(response).toEqual({success: false, code: 'TICKET_NOT_FOUND'});
+  });
+
+  it('bulk deletes tickets by id', async () => {
+    const remove = spyOn(axiosInstance, 'delete').and.returnValue(Promise.resolve({data: null}));
+
+    const response = await service.bulkDelete('abc', 9, [1, 2]);
+
+    expect(remove).toHaveBeenCalledWith(`${url}/bulk`, {data: {bulk: {ticket_ids: [1, 2]}}});
+    expect(response.success).toBeTrue();
   });
 });
