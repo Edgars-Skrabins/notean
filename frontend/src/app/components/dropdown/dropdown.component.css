@@ -25,8 +25,22 @@
   border-color: var(--color-input-border-focus);
 }
 
-.dropdown__label {
+.dropdown__label,
+.dropdown__optionLabel {
   flex: 1;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dropdown__prefix {
+  display: inline-flex;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.dropdown__text {
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -79,14 +93,6 @@
 .dropdown__option--active {
   background: rgba(255, 255, 255, 0.08);
   color: var(--color-text-heading);
-}
-
-.dropdown__optionLabel {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .dropdown__check {
