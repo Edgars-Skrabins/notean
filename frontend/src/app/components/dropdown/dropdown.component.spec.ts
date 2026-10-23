@@ -1,4 +1,6 @@
 import {ElementRef} from '@angular/core';
+import {TestBed} from '@angular/core/testing';
+import {TranslateModule} from '@ngx-translate/core';
 import {DropdownComponent} from './dropdown.component';
 
 function key(name: string): KeyboardEvent {
@@ -95,5 +97,29 @@ describe('DropdownComponent', () => {
 
     component.handleOutsideClick({target: document.createElement('div')} as unknown as MouseEvent);
     expect(component.isOpen).toBeFalse();
+  });
+});
+
+describe('DropdownComponent prefix', () => {
+  it('renders a prefix before the label only for options that have one', async () => {
+    await TestBed.configureTestingModule({
+      imports: [DropdownComponent, TranslateModule.forRoot()],
+    }).compileComponents();
+    const fixture = TestBed.createComponent(DropdownComponent);
+    fixture.componentInstance.options = [{value: 'en', label: 'English', prefix: '🇬🇧'}, {value: 'plain', label: 'Plain'}];
+    fixture.componentInstance.value = 'en';
+    fixture.componentInstance.open();
+    fixture.detectChanges();
+
+    const triggerLabel = fixture.nativeElement.querySelector('.dropdown__label') as HTMLElement;
+    expect(triggerLabel.firstElementChild?.className).toBe('dropdown__prefix');
+    expect(triggerLabel.firstElementChild?.textContent).toBe('🇬🇧');
+
+    const [withPrefix, withoutPrefix] = Array.from(document.querySelectorAll('.dropdown__optionLabel'));
+    expect(withPrefix.firstElementChild?.className).toBe('dropdown__prefix');
+    expect(withPrefix.firstElementChild?.textContent).toBe('🇬🇧');
+    expect(withPrefix.lastElementChild?.textContent).toBe('English');
+    expect(withoutPrefix.querySelector('.dropdown__prefix')).toBeNull();
+    expect(withoutPrefix.textContent?.trim()).toBe('Plain');
   });
 });

@@ -13,17 +13,17 @@ describe('LanguageSwitcherComponent', () => {
 
   it('lists every language in order with its flag and native name', () => {
     expect(component.options).toEqual([
-      {value: 'en', label: '🇬🇧 English'},
-      {value: 'da', label: '🇩🇰 Dansk'},
-      {value: 'de', label: '🇩🇪 Deutsch'},
-      {value: 'et', label: '🇪🇪 Eesti'},
-      {value: 'es', label: '🇪🇸 Español'},
-      {value: 'fr', label: '🇫🇷 Français'},
-      {value: 'lv', label: '🇱🇻 Latviešu'},
-      {value: 'lt', label: '🇱🇹 Lietuvių'},
-      {value: 'fi', label: '🇫🇮 Suomi'},
-      {value: 'sv', label: '🇸🇪 Svenska'},
-      {value: 'ru', label: '🇷🇺 Русский'},
+      {value: 'en', label: 'English', prefix: '🇬🇧'},
+      {value: 'da', label: 'Dansk', prefix: '🇩🇰'},
+      {value: 'de', label: 'Deutsch', prefix: '🇩🇪'},
+      {value: 'et', label: 'Eesti', prefix: '🇪🇪'},
+      {value: 'es', label: 'Español', prefix: '🇪🇸'},
+      {value: 'fr', label: 'Français', prefix: '🇫🇷'},
+      {value: 'lv', label: 'Latviešu', prefix: '🇱🇻'},
+      {value: 'lt', label: 'Lietuvių', prefix: '🇱🇹'},
+      {value: 'fi', label: 'Suomi', prefix: '🇫🇮'},
+      {value: 'sv', label: 'Svenska', prefix: '🇸🇪'},
+      {value: 'ru', label: 'Русский', prefix: '🇷🇺'},
     ]);
   });
 
