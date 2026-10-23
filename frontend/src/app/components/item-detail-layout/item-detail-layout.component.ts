@@ -38,16 +38,20 @@ import {ProjectFilterService} from "@services/project-filter.service";
 export class ItemDetailLayoutComponent {
   protected readonly PHRASES = PHRASES;
 
-  @Input({required: true}) item!: FolderedItemDetail;
+  @Input() item: FolderedItemDetail | null = null;
   @Input({required: true}) favoriteType!: FavoritableType;
   @Input({required: true}) titlePlaceholder!: string;
   @Input({required: true}) editingBannerText!: string;
   @Input({required: true}) confirmDeleteMessage!: string;
-  @Input() mode: 'view' | 'edit' = 'view';
+  @Input() discardConfirmMessage = '';
+  @Input() mode: 'view' | 'edit' | 'create' = 'view';
   @Input() draftTitle = '';
   @Input() editingNickname: string | null = null;
   @Input() alertMessage = '';
   @Input() showDeleteConfirm = false;
+  @Input() showDiscardConfirm = false;
+  @Input() draftProjectId: number | null = null;
+  @Input() busy = false;
   @Input() fill = false;
   @Output() draftTitleChange = new EventEmitter<string>();
   @Output() closed = new EventEmitter<void>();
@@ -58,7 +62,24 @@ export class ItemDetailLayoutComponent {
   @Output() deleteConfirmed = new EventEmitter<void>();
   @Output() deleteCancelled = new EventEmitter<void>();
   @Output() projectChange = new EventEmitter<number | null>();
+  @Output() createRequested = new EventEmitter<void>();
+  @Output() discardConfirmed = new EventEmitter<void>();
+  @Output() discardCancelled = new EventEmitter<void>();
+  @Output() draftProjectChange = new EventEmitter<number | null>();
 
   constructor(protected projectFilterService: ProjectFilterService) {
+  }
+
+  get selectedProjectId(): number | null {
+    return this.mode === 'create' ? this.draftProjectId : this.item?.projectId ?? null;
+  }
+
+  handleProjectSelected(projectId: number | null) {
+    if (this.mode === 'create') {
+      this.draftProjectChange.emit(projectId);
+      return;
+    }
+
+    this.projectChange.emit(projectId);
   }
 }

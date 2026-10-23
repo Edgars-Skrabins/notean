@@ -15,8 +15,9 @@ class PagesController < ApplicationController
   end
 
   def create
-    @page = @team.pages.new(created_by_user_id: current_user.id, content: "")
+    @page = @team.pages.new(created_by_user_id: current_user.id, folder_id: create_page_params[:folder_id])
     @page.title = title_or_default(create_page_params[:title])
+    @page.content = Rails::Html::SafeListSanitizer.new.sanitize(create_page_params[:content].to_s)
     return unless assign_project(@page, create_page_params[:project_id])
 
     if @page.save

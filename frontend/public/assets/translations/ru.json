@@ -115,6 +115,8 @@
   "NICKNAME": "Никнейм",
   "ENTER_NICKNAME": "Введите никнейм",
   "LEAVE": "Уйти",
+  "CONFIRM_DISCARD_NEW_PAGE": "Отменить создание этой страницы?",
+  "CONFIRM_DISCARD_NEW_DIAGRAM": "Отменить создание этой диаграммы?",
   "CONFIRM_LEAVE_UNSAVED_CHANGES": "У вас есть несохранённые изменения. Уйти без сохранения?",
   "PROFILE_UPDATED": "Данные профиля обновлены",
   "NICKNAME_TOO_SHORT": "Никнейм должен содержать не менее 3 символов",

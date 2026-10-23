@@ -6,6 +6,7 @@ import {teamPath} from "@utils/teamPath";
 import {projectQuery} from "@utils/projectQuery";
 import {mapAvatar, RawAvatar} from "@services/avatar.service";
 import {
+  CreateFolderedItemParams,
   DeleteFolderedItemResponse,
   FolderedItemDetail,
   FolderedItemEditingUser,
@@ -90,8 +91,10 @@ export abstract class FolderedItemService<E extends ErrorCode> {
     );
   }
 
-  async create(teamCode: string, title: string, projectId: number | null = null): Promise<FolderedItemResponse<E>> {
-    return this.requestItem(axiosInstance.post(this.itemsUrl(teamCode), {[this.key]: {title, project_id: projectId}}));
+  async create(teamCode: string, params: CreateFolderedItemParams): Promise<FolderedItemResponse<E>> {
+    return this.requestItem(axiosInstance.post(this.itemsUrl(teamCode), {
+      [this.key]: {title: params.title, content: params.content, project_id: params.projectId, folder_id: params.folderId}
+    }));
   }
 
   async setProject(teamCode: string, id: number, projectId: number | null): Promise<FolderedItemResponse<E>> {

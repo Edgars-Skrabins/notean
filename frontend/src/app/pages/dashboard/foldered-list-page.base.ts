@@ -8,7 +8,6 @@ import {TreeFolder, TreeItem} from "@components/item-tree/item-tree.component";
 import {errorPhrase} from "@utils/errorPhrase";
 import {itemIdsWithin, promoteFolderContents, removeFolderCascade} from "@utils/folderTree";
 import {Router} from "@angular/router";
-import {TranslateService} from "@ngx-translate/core";
 import {ErrorCode} from "@config/errorCodes";
 import {FolderedItemSummary} from "@models/foldered-item.model";
 import {FolderedItemService} from "@services/foldered-item.service";
@@ -19,7 +18,6 @@ import {AppRoutes} from "../../app/app-routes.enum";
 export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   protected abstract readonly itemType: FolderItemType;
   protected abstract readonly itemRoute: AppRoutes;
-  protected abstract readonly untitledItemPhrase: string;
 
   folders: TreeFolder[] = [];
   items: TreeItem[] = [];
@@ -38,7 +36,6 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
     private teamService: TeamService,
     private favoriteService: FavoriteService,
     private router: Router,
-    private translateService: TranslateService,
     private projectFilterService: ProjectFilterService
   ) {
     this.teamCode = this.teamService.getCurrentTeamCode();
@@ -49,24 +46,8 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   }
 
   handleCreateItem(parentId: number | null) {
-    const untitledTitle = this.translateService.instant(this.untitledItemPhrase);
-
-    this.itemService.create(this.teamCode, untitledTitle, this.projectFilterService.getSelectedProjectId())
-      .then((response) => {
-        if (!response.success) {
-          this.alertMessage = errorPhrase(response.code);
-          return;
-        }
-
-        const itemId = response.item.id;
-        const afterMove = parentId !== null
-          ? this.itemService.moveToFolder(this.teamCode, itemId, parentId)
-          : Promise.resolve(response);
-
-        afterMove.then(() => {
-          this.router.navigate([AppRoutes.DASHBOARD, this.itemRoute, itemId], {queryParams: {edit: true}});
-        });
-      });
+    const queryParams = parentId !== null ? {folder: parentId} : {};
+    this.router.navigate([AppRoutes.DASHBOARD, this.itemRoute, AppRoutes.NEW], {queryParams});
   }
 
   get isSearching(): boolean {

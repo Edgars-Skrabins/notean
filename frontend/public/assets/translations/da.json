@@ -115,6 +115,8 @@
   "NICKNAME": "Kaldenavn",
   "ENTER_NICKNAME": "Indtast kaldenavn",
   "LEAVE": "Forlad",
+  "CONFIRM_DISCARD_NEW_PAGE": "Kassér denne nye side?",
+  "CONFIRM_DISCARD_NEW_DIAGRAM": "Kassér dette nye diagram?",
   "CONFIRM_LEAVE_UNSAVED_CHANGES": "Du har ændringer, der ikke er gemt. Vil du forlade siden uden at gemme?",
   "PROFILE_UPDATED": "Profiloplysninger opdateret",
   "NICKNAME_TOO_SHORT": "Kaldenavnet skal være mindst 3 tegn",

@@ -14,6 +14,15 @@ class Diagram < ApplicationRecord
   has_many :favorites, as: :favoritable, dependent: :destroy
 
   validates :title, presence: true
+  validate :folder_matches_item
 
   before_save { self.search_text = SearchText.from_diagram(content) if content_changed? }
+
+  private
+
+  def folder_matches_item
+    return if folder_id.nil?
+
+    errors.add(:folder_id, :invalid) unless folder && folder.team_id == team_id && folder.item_type == self.class.name
+  end
 end

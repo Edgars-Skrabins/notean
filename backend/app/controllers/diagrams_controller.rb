@@ -15,7 +15,7 @@ class DiagramsController < ApplicationController
   end
 
   def create
-    @diagram = @team.diagrams.new(created_by_user_id: current_user.id, content: "")
+    @diagram = @team.diagrams.new(created_by_user_id: current_user.id, content: create_diagram_params[:content].to_s, folder_id: create_diagram_params[:folder_id])
     @diagram.title = title_or_default(create_diagram_params[:title])
     return unless assign_project(@diagram, create_diagram_params[:project_id])
 

@@ -115,6 +115,8 @@
   "NICKNAME": "Hüüdnimi",
   "ENTER_NICKNAME": "Sisesta hüüdnimi",
   "LEAVE": "Lahku",
+  "CONFIRM_DISCARD_NEW_PAGE": "Kas loobuda sellest uuest lehest?",
+  "CONFIRM_DISCARD_NEW_DIAGRAM": "Kas loobuda sellest uuest diagrammist?",
   "CONFIRM_LEAVE_UNSAVED_CHANGES": "Sul on salvestamata muudatusi. Kas lahkuda salvestamata?",
   "PROFILE_UPDATED": "Profiili andmed uuendatud",
   "NICKNAME_TOO_SHORT": "Hüüdnimi peab olema vähemalt 3 märki pikk",

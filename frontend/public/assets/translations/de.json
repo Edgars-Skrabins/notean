@@ -115,6 +115,8 @@
   "NICKNAME": "Spitzname",
   "ENTER_NICKNAME": "Spitzname eingeben",
   "LEAVE": "Verlassen",
+  "CONFIRM_DISCARD_NEW_PAGE": "Diese neue Seite verwerfen?",
+  "CONFIRM_DISCARD_NEW_DIAGRAM": "Dieses neue Diagramm verwerfen?",
   "CONFIRM_LEAVE_UNSAVED_CHANGES": "Du hast ungespeicherte Änderungen. Ohne Speichern verlassen?",
   "PROFILE_UPDATED": "Profilinformationen aktualisiert",
   "NICKNAME_TOO_SHORT": "Der Spitzname muss mindestens 3 Zeichen lang sein",

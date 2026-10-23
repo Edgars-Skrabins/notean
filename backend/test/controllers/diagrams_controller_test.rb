@@ -55,4 +55,40 @@ class DiagramsControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
   end
+
+  test "create stores the content and folder" do
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Diagram", title: "Flows")
+    content = { cells: [ { shape: "process", attrs: { text: { text: "Start" } } } ] }.to_json
+
+    post "/teams/#{@team.code}/diagrams", params: { diagram: { title: "Flow", content: content, folder_id: folder.id } }, headers: @headers, as: :json
+
+    assert_response :created
+    diagram = Diagram.find(JSON.parse(response.body)["diagram"]["id"])
+    assert_equal content, diagram.content
+    assert_equal folder.id, diagram.folder_id
+    assert_includes diagram.search_text, "Start"
+    assert_empty diagram.contributors
+  end
+
+  test "create rejects a folder of another type" do
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Specs")
+
+    assert_no_difference "Diagram.count" do
+      post "/teams/#{@team.code}/diagrams", params: { diagram: { title: "Flow", folder_id: folder.id } }, headers: @headers, as: :json
+    end
+
+    assert_response :unprocessable_entity
+    assert_equal({ "code" => "DIAGRAM_CREATE_FAILED" }, JSON.parse(response.body))
+  end
+
+  test "create rejects a folder from another team" do
+    other_team = Team.create!(name: "Design", password: "supersecret")
+    folder = Folder.create!(team: other_team, creator: @user, item_type: "Diagram", title: "Elsewhere")
+
+    assert_no_difference "Diagram.count" do
+      post "/teams/#{@team.code}/diagrams", params: { diagram: { title: "Flow", folder_id: folder.id } }, headers: @headers, as: :json
+    end
+
+    assert_response :unprocessable_entity
+  end
 end

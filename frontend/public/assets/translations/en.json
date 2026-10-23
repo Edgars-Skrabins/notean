@@ -115,6 +115,8 @@
   "NICKNAME": "Nickname",
   "ENTER_NICKNAME": "Enter nickname",
   "LEAVE": "Leave",
+  "CONFIRM_DISCARD_NEW_PAGE": "Discard this new page?",
+  "CONFIRM_DISCARD_NEW_DIAGRAM": "Discard this new diagram?",
   "CONFIRM_LEAVE_UNSAVED_CHANGES": "You have unsaved changes. Leave without saving?",
   "PROFILE_UPDATED": "Updated profile information",
   "NICKNAME_TOO_SHORT": "Nickname must be at least 3 characters",

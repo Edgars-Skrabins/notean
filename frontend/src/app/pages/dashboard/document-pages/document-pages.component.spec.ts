@@ -1,6 +1,5 @@
 import {fakeAsync, tick} from "@angular/core/testing";
 import {Router} from "@angular/router";
-import {TranslateService} from "@ngx-translate/core";
 import {DocumentPagesComponent} from "./document-pages.component";
 import {PageService} from "@services/page.service";
 import {FolderService} from "@services/folder.service";
@@ -36,9 +35,11 @@ describe('DocumentPagesComponent', () => {
   let folderService: jasmine.SpyObj<FolderService>;
   let favoriteService: jasmine.SpyObj<FavoriteService>;
   let projectFilter: ProjectFilterStub;
+  let router: jasmine.SpyObj<Router>;
 
   beforeEach(fakeAsync(() => {
     projectFilter = projectFilterStub();
+    router = jasmine.createSpyObj<Router>('Router', ['navigate']);
     pageService = jasmine.createSpyObj<PageService>('PageService', ['list', 'moveToFolder', 'delete', 'create', 'rename']);
     folderService = jasmine.createSpyObj<FolderService>('FolderService', ['listFolders', 'createFolder', 'renameFolder', 'moveFolder', 'deleteFolder']);
     favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem', 'renameItem']);
@@ -55,8 +56,7 @@ describe('DocumentPagesComponent', () => {
       folderService,
       teamService,
       favoriteService,
-      {} as Router,
-      {translate: () => undefined, instant: (key: string) => key} as unknown as TranslateService,
+      router,
       projectFilter.service,
     );
     component.ngOnInit();
@@ -176,13 +176,16 @@ describe('DocumentPagesComponent', () => {
     expect(pageService.list).toHaveBeenCalledWith('abc', 4);
   }));
 
-  it('creates pages in the selected project', fakeAsync(() => {
-    projectFilter.selected.next(4);
-    pageService.create.and.returnValue(new Promise(() => undefined));
-
+  it('opens create mode without calling the API', () => {
     component.handleCreateItem(null);
 
-    expect(pageService.create).toHaveBeenCalledWith('abc', 'UNTITLED_PAGE', 4);
-    component.ngOnDestroy();
-  }));
+    expect(pageService.create).not.toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledOnceWith(['dashboard', 'pages', 'new'], {queryParams: {}});
+  });
+
+  it('passes the folder to create mode', () => {
+    component.handleCreateItem(3);
+
+    expect(router.navigate).toHaveBeenCalledOnceWith(['dashboard', 'pages', 'new'], {queryParams: {folder: 3}});
+  });
 });

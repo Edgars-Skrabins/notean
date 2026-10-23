@@ -102,4 +102,57 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
   end
+
+  test "create stores the content and folder" do
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Specs")
+
+    post "/teams/#{@team.code}/pages", params: { page: { title: "Plan", content: "<p>Hello world</p>", folder_id: folder.id } }, headers: @headers, as: :json
+
+    assert_response :created
+    page = Page.find(JSON.parse(response.body)["page"]["id"])
+    assert_equal "<p>Hello world</p>", page.content
+    assert_equal folder.id, page.folder_id
+    assert_equal "Hello world", page.search_text
+    assert_empty page.contributors
+  end
+
+  test "create sanitises the page HTML" do
+    post "/teams/#{@team.code}/pages", params: { page: { title: "Plan", content: "<p>Hi</p><script>alert(1)</script>" } }, headers: @headers, as: :json
+
+    assert_response :created
+    assert_not_includes Page.find(JSON.parse(response.body)["page"]["id"]).content, "<script>"
+  end
+
+  test "create rejects a folder of another type" do
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Diagram", title: "Flows")
+
+    assert_no_difference "Page.count" do
+      post "/teams/#{@team.code}/pages", params: { page: { title: "Plan", folder_id: folder.id } }, headers: @headers, as: :json
+    end
+
+    assert_response :unprocessable_entity
+    assert_equal({ "code" => "PAGE_CREATE_FAILED" }, JSON.parse(response.body))
+  end
+
+  test "create rejects a folder from another team" do
+    other_team = Team.create!(name: "Design", password: "supersecret")
+    folder = Folder.create!(team: other_team, creator: @user, item_type: "Page", title: "Elsewhere")
+
+    assert_no_difference "Page.count" do
+      post "/teams/#{@team.code}/pages", params: { page: { title: "Plan", folder_id: folder.id } }, headers: @headers, as: :json
+    end
+
+    assert_response :unprocessable_entity
+  end
+
+  test "update rejects a folder from another team" do
+    other_team = Team.create!(name: "Design", password: "supersecret")
+    folder = Folder.create!(team: other_team, creator: @user, item_type: "Page", title: "Elsewhere")
+
+    patch "/teams/#{@team.code}/pages/#{@page.id}", params: { page: { folder_id: folder.id } }, headers: @headers, as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal({ "code" => "PAGE_UPDATE_FAILED" }, JSON.parse(response.body))
+    assert_nil @page.reload.folder_id
+  end
 end
