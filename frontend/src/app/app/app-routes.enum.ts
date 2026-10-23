@@ -17,6 +17,7 @@ export enum AppRoutes {
   LIST = 'list',
   LEGACY_BACKLOG = 'backlog',
   TICKETS = 'tickets',
+  NEW = 'new',
   PROFILE = 'profile',
   SETTINGS = 'settings',
 }

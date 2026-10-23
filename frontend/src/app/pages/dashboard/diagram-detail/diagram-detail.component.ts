@@ -1,5 +1,6 @@
 import {Component} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
+import {TranslateService} from "@ngx-translate/core";
 import {NgIf} from '@angular/common';
 import {DiagramService} from "@services/diagram.service";
 import {DiagramEditingService} from "@services/diagram-editing.service";
@@ -8,6 +9,8 @@ import {AuthService} from "@services/auth.service";
 import {NavigationService} from "@services/navigation.service";
 import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
+import {ProjectFilterService} from "@services/project-filter.service";
+import {PHRASES} from "@config/phrases";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {FlowchartEditorComponent} from "@components/flowchart-editor/flowchart-editor.component";
 import {ItemDetailLayoutComponent} from "@components/item-detail-layout/item-detail-layout.component";
@@ -27,6 +30,7 @@ import {FolderedItemDetailComponent} from "../foldered-item-detail.base";
 export class DiagramDetailComponent extends FolderedItemDetailComponent {
   protected readonly favoriteType = 'Diagram';
   protected readonly listRoute = AppRoutes.DIAGRAMS;
+  protected readonly untitledItemPhrase = PHRASES.UNTITLED_DIAGRAM;
 
   constructor(
     route: ActivatedRoute,
@@ -36,8 +40,10 @@ export class DiagramDetailComponent extends FolderedItemDetailComponent {
     authService: AuthService,
     navigationService: NavigationService,
     favoriteService: FavoriteService,
-    toastService: ToastService
+    toastService: ToastService,
+    projectFilterService: ProjectFilterService,
+    translateService: TranslateService
   ) {
-    super(route, diagramService, diagramEditingService, teamService, authService, navigationService, favoriteService, toastService);
+    super(route, diagramService, diagramEditingService, teamService, authService, navigationService, favoriteService, toastService, projectFilterService, translateService);
   }
 }

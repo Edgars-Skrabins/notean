@@ -2,7 +2,7 @@ import {Component} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
 import {Router} from '@angular/router';
-import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {PageService} from "@services/page.service";
 import {FolderService} from "@services/folder.service";
@@ -34,7 +34,6 @@ export class DocumentPagesComponent extends FolderedListPageComponent {
   protected readonly PHRASES = PHRASES;
   protected readonly itemType: FolderItemType = 'Page';
   protected readonly itemRoute = AppRoutes.DOCUMENT_PAGES;
-  protected readonly untitledItemPhrase = PHRASES.UNTITLED_PAGE;
 
   constructor(
     pageService: PageService,
@@ -42,9 +41,8 @@ export class DocumentPagesComponent extends FolderedListPageComponent {
     teamService: TeamService,
     favoriteService: FavoriteService,
     router: Router,
-    translateService: TranslateService,
     projectFilterService: ProjectFilterService
   ) {
-    super(pageService, folderService, teamService, favoriteService, router, translateService, projectFilterService);
+    super(pageService, folderService, teamService, favoriteService, router, projectFilterService);
   }
 }

@@ -29,6 +29,13 @@ export interface FolderedItemDetail extends FolderedItemSummary {
   currentlyEditing: FolderedItemEditingUser | null;
 }
 
+export interface CreateFolderedItemParams {
+  title: string;
+  content: string;
+  projectId: number | null;
+  folderId: number | null;
+}
+
 export interface SaveFolderedItemParams {
   title: string;
   content: string;

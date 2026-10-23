@@ -49,8 +49,10 @@ export const routes: Routes = [
       {path: AppRoutes.PROJECTS, component: ProjectsComponent},
       {path: `${AppRoutes.PROJECTS}/:id`, component: ProjectDetailComponent, canDeactivate: [unsavedChangesGuard]},
       {path: AppRoutes.DOCUMENT_PAGES, component: DocumentPagesComponent, canActivate: [featureGuard('pages')]},
+      {path: `${AppRoutes.DOCUMENT_PAGES}/${AppRoutes.NEW}`, component: PageDetailComponent, canActivate: [featureGuard('pages')]},
       {path: `${AppRoutes.DOCUMENT_PAGES}/:id`, component: PageDetailComponent, canActivate: [featureGuard('pages')]},
       {path: AppRoutes.DIAGRAMS, component: DiagramsComponent, canActivate: [featureGuard('diagrams')]},
+      {path: `${AppRoutes.DIAGRAMS}/${AppRoutes.NEW}`, component: DiagramDetailComponent, canActivate: [featureGuard('diagrams')]},
       {path: `${AppRoutes.DIAGRAMS}/:id`, component: DiagramDetailComponent, canActivate: [featureGuard('diagrams')]},
       {
         path: `${AppRoutes.BOARDS}/:id`,

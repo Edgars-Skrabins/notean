@@ -7,7 +7,7 @@
     </div>
 
     <div class="itemDetail__header">
-      <div class="itemDetail__actions" *ngIf="mode === 'view'">
+      <div class="itemDetail__actions" *ngIf="mode === 'view' && item">
         <app-favorite-star [type]="favoriteType" [itemId]="item.id" [title]="item.title" [size]="36"></app-favorite-star>
         <app-button variant="ghost" (pressed)="deleteRequested.emit()">{{ PHRASES.DELETE | translate }}</app-button>
         <app-button variant="primary" (pressed)="editRequested.emit()">{{ PHRASES.EDIT | translate }}</app-button>
@@ -16,6 +16,10 @@
         <app-button variant="ghost" (pressed)="cancelRequested.emit()">{{ PHRASES.CANCEL | translate }}</app-button>
         <app-button variant="primary" (pressed)="saveRequested.emit()">{{ PHRASES.SAVE | translate }}</app-button>
       </div>
+      <div class="itemDetail__actions" *ngIf="mode === 'create'">
+        <app-button variant="ghost" (pressed)="cancelRequested.emit()">{{ PHRASES.CANCEL | translate }}</app-button>
+        <app-button variant="primary" [disabled]="busy" (pressed)="createRequested.emit()">{{ PHRASES.CREATE | translate }}</app-button>
+      </div>
       <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE | translate" (pressed)="closed.emit()"></app-icon-button>
     </div>
 
@@ -23,9 +27,9 @@
 
     <div class="itemDetail__body">
       <div class="itemDetail__main">
-        <h1 class="itemDetail__title" *ngIf="mode === 'view'">{{ item.title }}</h1>
+        <h1 class="itemDetail__title" *ngIf="mode === 'view' && item">{{ item.title }}</h1>
         <input
-          *ngIf="mode === 'edit'"
+          *ngIf="mode !== 'view'"
           type="text"
           class="itemDetail__titleInput"
           [ngModel]="draftTitle"
@@ -36,37 +40,41 @@
       </div>
 
       <div class="itemDetail__sidebar">
-        <div>
-          <h3 class="itemDetail__sidebarLabel">{{ PHRASES.OWNER | translate }}</h3>
-          <p class="itemDetail__sidebarValue itemDetail__person">
-            <app-avatar [avatar]="item.creator.avatar" [nickname]="item.creator.nickname"></app-avatar>
-            {{ item.creator.nickname }}
-          </p>
-        </div>
+        <ng-container *ngIf="mode !== 'create' && item">
+          <div>
+            <h3 class="itemDetail__sidebarLabel">{{ PHRASES.OWNER | translate }}</h3>
+            <p class="itemDetail__sidebarValue itemDetail__person">
+              <app-avatar [avatar]="item.creator.avatar" [nickname]="item.creator.nickname"></app-avatar>
+              {{ item.creator.nickname }}
+            </p>
+          </div>
 
-        <div>
-          <h3 class="itemDetail__sidebarLabel">{{ PHRASES.CONTRIBUTORS | translate }}</h3>
-          <p class="itemDetail__sidebarValue itemDetail__person" *ngFor="let contributor of item.contributors">
-            <app-avatar [avatar]="contributor.avatar" [nickname]="contributor.nickname"></app-avatar>
-            {{ contributor.nickname }}
-          </p>
-          <p class="itemDetail__sidebarValue itemDetail__sidebarValue--muted" *ngIf="!item.contributors.length">&mdash;</p>
-        </div>
+          <div>
+            <h3 class="itemDetail__sidebarLabel">{{ PHRASES.CONTRIBUTORS | translate }}</h3>
+            <p class="itemDetail__sidebarValue itemDetail__person" *ngFor="let contributor of item.contributors">
+              <app-avatar [avatar]="contributor.avatar" [nickname]="contributor.nickname"></app-avatar>
+              {{ contributor.nickname }}
+            </p>
+            <p class="itemDetail__sidebarValue itemDetail__sidebarValue--muted" *ngIf="!item.contributors.length">&mdash;</p>
+          </div>
+        </ng-container>
 
         <div *ngIf="projectFilterService.hasProjects$ | async">
           <h3 class="itemDetail__sidebarLabel">{{ PHRASES.PROJECT | translate }}</h3>
-          <app-project-select [projectId]="item.projectId" (projectChange)="projectChange.emit($event)"></app-project-select>
+          <app-project-select [projectId]="selectedProjectId" (projectChange)="handleProjectSelected($event)"></app-project-select>
         </div>
 
-        <div>
-          <h3 class="itemDetail__sidebarLabel">{{ PHRASES.CREATED | translate }}</h3>
-          <p class="itemDetail__sidebarValue">{{ item.createdAt | date }}</p>
-        </div>
+        <ng-container *ngIf="mode !== 'create' && item">
+          <div>
+            <h3 class="itemDetail__sidebarLabel">{{ PHRASES.CREATED | translate }}</h3>
+            <p class="itemDetail__sidebarValue">{{ item.createdAt | date }}</p>
+          </div>
 
-        <div>
-          <h3 class="itemDetail__sidebarLabel">{{ PHRASES.LAST_EDITED | translate }}</h3>
-          <p class="itemDetail__sidebarValue">{{ item.updatedAt | date }}</p>
-        </div>
+          <div>
+            <h3 class="itemDetail__sidebarLabel">{{ PHRASES.LAST_EDITED | translate }}</h3>
+            <p class="itemDetail__sidebarValue">{{ item.updatedAt | date }}</p>
+          </div>
+        </ng-container>
       </div>
     </div>
   </div>
@@ -76,5 +84,13 @@
     [message]="confirmDeleteMessage | translate"
     (confirmed)="deleteConfirmed.emit()"
     (cancelled)="deleteCancelled.emit()"
+  ></app-confirm-dialog>
+
+  <app-confirm-dialog
+    *ngIf="showDiscardConfirm"
+    [message]="discardConfirmMessage | translate"
+    [confirmLabel]="PHRASES.LEAVE"
+    (confirmed)="discardConfirmed.emit()"
+    (cancelled)="discardCancelled.emit()"
   ></app-confirm-dialog>
 </div>

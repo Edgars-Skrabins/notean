@@ -121,12 +121,12 @@ describe('FolderedItemService', () => {
     const patch = spyOn(axiosInstance, 'patch').and.returnValue(Promise.resolve({data: {page: rawItem}}));
     const service = new PageService();
 
-    await service.create('abc', 'Notes', 4);
+    await service.create('abc', {title: 'Notes', content: '<p>Hi</p>', projectId: 4, folderId: 3});
     await service.setProject('abc', 7, null);
     await service.save('abc', 7, {title: 'Notes', content: '<p></p>'});
     await service.moveToFolder('abc', 7, 3);
 
-    expect(post).toHaveBeenCalledWith('/teams/abc/pages', {page: {title: 'Notes', project_id: 4}});
+    expect(post).toHaveBeenCalledWith('/teams/abc/pages', {page: {title: 'Notes', content: '<p>Hi</p>', project_id: 4, folder_id: 3}});
     expect(patch).toHaveBeenCalledWith('/teams/abc/pages/7', {page: {project_id: null}});
     expect(patch).toHaveBeenCalledWith('/teams/abc/pages/7', {page: {title: 'Notes', content: '<p></p>'}});
     expect(patch).toHaveBeenCalledWith('/teams/abc/pages/7', {page: {folder_id: 3}});
