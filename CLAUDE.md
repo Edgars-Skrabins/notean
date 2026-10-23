@@ -123,7 +123,8 @@ src/environments/             environment.ts (apiUrl)
 - Board and ticket URLs are built with `boardRoute` / `ticketRoute` from `@utils/ticketRoute`.
 - `SessionService` loads `GET /users/me` (user, settings, avatar, last-active team) on startup and after login and register, and hands the parts to `SettingsService.set`, `AvatarService.set` and `TeamService.applyActiveTeam`. Its `clear()` resets all three on logout and 401. The other services don't load on their own.
 - List screens load once and apply each mutation's response locally instead of reloading; Pages and Diagrams search filters loaded items in the browser.
-- Boards open at `/dashboard/boards/:id/{overview|kanban|backlog}`. `BoardPageComponent` provides a component-scoped `BoardPageStateService` that loads the board once; the tabs and the ticket popup (a child route of the Kanban or Backlog tab) read and update that shared board. The sidebar's board list and its personal order come from `BoardListService` (`localStorage`).
+- Boards open at `/dashboard/boards/:id/{overview|kanban|list}` (the old `backlog` URLs redirect to `list`). `BoardPageComponent` provides a component-scoped `BoardPageStateService` that loads the board once; the tabs and the ticket popup (a child route of the Kanban or List tab) read and update that shared board.
+- The List tab (`ListTabComponent` with `ListRowComponent` rows) shows every ticket grouped by status (Backlog, then each column), with client-side search, `TicketFilterComponent` and a `TicketSelectionBarComponent` for bulk actions through `TicketService.bulkUpdate` / `bulkDelete`. The sidebar's board list and its personal order come from `BoardListService` (`localStorage`).
 - The header's project selector is backed by `ProjectFilterService`, which stores the choice per team (`selectedProject:<team>`, falling back to All). Lists, the sidebar boards, Favorites and My Work follow it; pass its value to the API with `projectQuery` from `@utils/projectQuery`, and new items default to the selected project.
 - The header's `GlobalSearchComponent` searches the whole team through `SearchService` (`GET /teams/:team_code/search`). It follows the project selector, opens with `/`, and shows its results in a CDK overlay panel grouped by type.
 - Realtime features open an ActionCable consumer at `ws://…/cable?token=<jwt>` from a dedicated service and subscribe to the matching backend channel.
@@ -172,6 +173,7 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 - Auth endpoints live under `auth/`.
 - Team routes use the team `code` as the param, not the id. Team-owned resources are nested under `teams/:team_code`.
 - `GET /teams/:team_code/search` (`SearchController`) searches projects, pages, diagrams, boards and tickets the user can see. Without `type` it returns 5 results per section; with `type` and `offset` it returns the next 10 of one section.
+- `PATCH` and `DELETE /teams/:team_code/boards/:board_id/tickets/bulk` (`TicketsController#bulk_update` / `#bulk_destroy`) take `{ bulk: { ticket_ids, ... } }` with exactly one of `column_id`, `to_backlog`, `add_assignee_id` or `remove_assignee_id` for the update. They are all-or-nothing: an id outside the board fails the whole request.
 - ActionCable is mounted at `/cable`.
 
 #### Controllers
