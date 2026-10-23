@@ -9,6 +9,7 @@
   (click)="toggle()"
   (keydown)="handleKeydown($event)"
 >
+  <span class="priorityDot" *ngIf="selectedOption?.color" [attr.data-color]="selectedOption?.color"></span>
   <span class="dropdown__label" *ngIf="selectedOption as option">{{ option.labelKey ? (option.labelKey | translate) : option.label }}</span>
   <app-icon class="dropdown__chevron" [class.dropdown__chevron--open]="isOpen" name="chevron-right"></app-icon>
 </button>
@@ -40,6 +41,7 @@
       (mouseenter)="activeIndex = index"
       (click)="select(option)"
     >
+      <span class="priorityDot" *ngIf="option.color" [attr.data-color]="option.color"></span>
       <span class="dropdown__optionLabel">{{ option.labelKey ? (option.labelKey | translate) : option.label }}</span>
       <svg *ngIf="option.value === value" class="dropdown__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="20 6 9 17 4 12"></polyline>
