@@ -16,6 +16,7 @@ Rails.application.routes.draw do
     resources :boards, only: [ :index, :create, :show, :update, :destroy ] do
       get :overview, on: :member
       resources :columns, only: [ :create, :update, :destroy ]
+      resources :priorities, only: [ :create, :update, :destroy ]
       resources :tickets, only: [ :create, :show, :update, :destroy ] do
         collection do
           patch :bulk, action: :bulk_update

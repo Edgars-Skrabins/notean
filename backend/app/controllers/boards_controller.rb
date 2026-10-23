@@ -1,5 +1,6 @@
 class BoardsController < ApplicationController
   include TicketJson
+  include PriorityJson
 
   RECENT_TICKETS_LIMIT = 5
   RECENT_ACTIVITY_PERIOD = 7.days
@@ -77,7 +78,7 @@ class BoardsController < ApplicationController
   private
 
   def set_board
-    @board = project_access.scope(@team.boards).includes(creator: User::AVATAR_PRELOAD, columns: { tickets: TicketJson::ASSIGNEES_PRELOAD }, backlog_tickets: TicketJson::ASSIGNEES_PRELOAD).find_by(id: params[:id])
+    @board = project_access.scope(@team.boards).includes(creator: User::AVATAR_PRELOAD, columns: { tickets: TicketJson::ASSIGNEES_PRELOAD }, backlog_tickets: TicketJson::ASSIGNEES_PRELOAD, priorities: []).find_by(id: params[:id])
 
     render_error(ErrorCodes::Boards::BOARD_NOT_FOUND, :not_found) if @board.nil?
   end
@@ -96,7 +97,8 @@ class BoardsController < ApplicationController
   def board_json(board)
     board_summary_json(board).merge(
       columns: board.columns.map { |column| column_json(column) },
-      backlog: board.backlog_tickets.map { |ticket| ticket_summary_json(ticket) }
+      backlog: board.backlog_tickets.map { |ticket| ticket_summary_json(ticket) },
+      priorities: priorities_json(board)
     )
   end
 
