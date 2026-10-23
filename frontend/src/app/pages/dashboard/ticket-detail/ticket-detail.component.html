@@ -3,8 +3,6 @@
 
   <div class="ticketDetail">
     <div class="ticketDetail__header">
-      <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE | translate" (pressed)="handleGoBack()"></app-icon-button>
-
       <div class="ticketDetail__headerActions">
         <app-button *ngIf="ticket.columnId !== null" variant="ghost" icon="inbox" (pressed)="handleMoveToBacklog()">{{ PHRASES.MOVE_TO_BACKLOG | translate }}</app-button>
         <app-button *ngIf="ticket.columnId === null" variant="ghost" icon="columns" (pressed)="handleOpenMoveDialog()">{{ PHRASES.MOVE_TO_BOARD | translate }}</app-button>
@@ -15,6 +13,7 @@
           [tooltip]="PHRASES.DELETE_TICKET | translate"
           (pressed)="handleDelete()"
         ></app-icon-button>
+        <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE | translate" (pressed)="handleGoBack()"></app-icon-button>
       </div>
     </div>
 

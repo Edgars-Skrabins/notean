@@ -7,8 +7,6 @@
     </div>
 
     <div class="itemDetail__header">
-      <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE | translate" (pressed)="closed.emit()"></app-icon-button>
-
       <div class="itemDetail__actions" *ngIf="mode === 'view'">
         <app-favorite-star [type]="favoriteType" [itemId]="item.id" [title]="item.title" [size]="36"></app-favorite-star>
         <app-button variant="ghost" (pressed)="deleteRequested.emit()">{{ PHRASES.DELETE | translate }}</app-button>
@@ -18,6 +16,7 @@
         <app-button variant="ghost" (pressed)="cancelRequested.emit()">{{ PHRASES.CANCEL | translate }}</app-button>
         <app-button variant="primary" (pressed)="saveRequested.emit()">{{ PHRASES.SAVE | translate }}</app-button>
       </div>
+      <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE | translate" (pressed)="closed.emit()"></app-icon-button>
     </div>
 
     <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
