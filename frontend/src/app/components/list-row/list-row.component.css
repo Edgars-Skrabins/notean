@@ -56,6 +56,22 @@
   text-overflow: ellipsis;
 }
 
+.listRow__priority {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  width: 110px;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+}
+
+.listRow__priorityName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .listRow__assignees {
   flex-shrink: 0;
 }

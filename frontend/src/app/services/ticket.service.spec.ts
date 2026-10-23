@@ -24,6 +24,7 @@ describe('mapTicketDetail', () => {
       description: 'Details',
       boardId: 9,
       columnId: 3,
+      priorityId: null,
       assignees: [],
       creator: {id: 4, nickname: 'bob', avatar: {color: 'red', imageUrl: null}},
       createdAt: '2024-01-01T00:00:00Z',
@@ -48,6 +49,19 @@ describe('TicketService', () => {
 
     expect(post).toHaveBeenCalledWith(url, {ticket: {title: 'Bug', column_id: 3}});
     expect(post).toHaveBeenCalledWith(url, {ticket: {title: 'Idea', column_id: null}});
+  });
+
+  it('sends a priority change as priority_id, including null to clear it', async () => {
+    const patch = spyOn(axiosInstance, 'patch').and.returnValue(Promise.resolve({data: {ticket: {...baseRaw, priority_id: 4}}}));
+
+    const response = await service.updateTicket('abc', 9, 1, {priorityId: 4});
+    await service.updateTicket('abc', 9, 1, {priorityId: null});
+    await service.updateTicket('abc', 9, 1, {title: 'Renamed'});
+
+    expect(patch).toHaveBeenCalledWith(`${url}/1`, {ticket: {priority_id: 4}});
+    expect(patch).toHaveBeenCalledWith(`${url}/1`, {ticket: {priority_id: null}});
+    expect(patch).toHaveBeenCalledWith(`${url}/1`, {ticket: {title: 'Renamed'}});
+    expect(response.success && response.ticket.priorityId).toBe(4);
   });
 
   it('sends the move, backlog and reorder changes', async () => {

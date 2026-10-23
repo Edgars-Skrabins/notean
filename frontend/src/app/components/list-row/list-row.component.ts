@@ -3,6 +3,7 @@ import {DatePipe, NgIf} from '@angular/common';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {TicketSummary} from '@models/ticket.model';
+import {BoardPriority} from '@models/priority.model';
 import {IconButtonComponent} from '@components/icon-button/icon-button.component';
 import {FavoriteStarComponent} from '@components/favorite-star/favorite-star.component';
 import {AvatarStackComponent} from '@components/avatar-stack/avatar-stack.component';
@@ -28,6 +29,7 @@ export class ListRowComponent {
 
   @Input({required: true}) ticket!: TicketSummary;
   @Input({required: true}) statusTitle = '';
+  @Input() priority: BoardPriority | null = null;
   @Input() selected = false;
   @Output() opened = new EventEmitter<void>();
   @Output() selectedChange = new EventEmitter<boolean>();

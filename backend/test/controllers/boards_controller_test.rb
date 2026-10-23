@@ -209,6 +209,35 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal one, ten
   end
 
+  test "show includes the board's priorities with their ticket counts and each ticket's priority" do
+    board, todo, = board_with_columns
+    high = board.priorities.find_by!(name: "High")
+    ticket = ticket_on(board, todo, "Bug", 0)
+    ticket.update!(priority: high)
+
+    get "/teams/#{@team.code}/boards/#{board.id}", headers: @headers
+
+    body = JSON.parse(response.body)["board"]
+    assert_equal [ "Very low", "Low", "Medium", "High", "Very high" ], body["priorities"].map { |priority| priority["name"] }
+    assert_equal 1, body["priorities"][3]["ticket_count"]
+    assert_equal high.id, body["columns"][0]["tickets"][0]["priority_id"]
+  end
+
+  test "show runs the same number of queries for 1 and 10 tickets and priorities" do
+    board, todo, = board_with_columns
+    board.priorities.where.not(position: 0).destroy_all
+    ticket_on(board, todo, "First", 0).update!(priority: board.priorities.first)
+    one = query_count { get "/teams/#{@team.code}/boards/#{board.id}", headers: @headers }
+
+    9.times do |index|
+      priority = board.priorities.create!(name: "Priority #{index}", color: "blue", position: index + 1)
+      ticket_on(board, index.even? ? todo : nil, "T#{index}", index + 1).update!(priority: priority)
+    end
+    ten = query_count { get "/teams/#{@team.code}/boards/#{board.id}", headers: @headers }
+
+    assert_equal one, ten
+  end
+
   test "returns FEATURE_DISABLED when boards are turned off" do
     board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
     @team.update!(boards_enabled: false)

@@ -7,6 +7,7 @@ import {DIAGRAMS_ERROR_CODES, DiagramsErrorCode} from "./diagrams";
 import {FOLDERS_ERROR_CODES, FoldersErrorCode} from "./folders";
 import {BOARDS_ERROR_CODES, BoardsErrorCode} from "./boards";
 import {TICKETS_ERROR_CODES, TicketsErrorCode} from "./tickets";
+import {PRIORITIES_ERROR_CODES, PrioritiesErrorCode} from "./priorities";
 import {FAVORITES_ERROR_CODES, FavoritesErrorCode} from "./favorites";
 import {PROJECTS_ERROR_CODES, ProjectsErrorCode} from "./projects";
 import {SEARCH_ERROR_CODES, SearchErrorCode} from "./search";
@@ -21,6 +22,7 @@ export const ERROR_CODES_BY_DOMAIN = {
   FOLDERS: FOLDERS_ERROR_CODES,
   BOARDS: BOARDS_ERROR_CODES,
   TICKETS: TICKETS_ERROR_CODES,
+  PRIORITIES: PRIORITIES_ERROR_CODES,
   FAVORITES: FAVORITES_ERROR_CODES,
   PROJECTS: PROJECTS_ERROR_CODES,
   SEARCH: SEARCH_ERROR_CODES,
@@ -38,6 +40,7 @@ export type ErrorCode =
   | FoldersErrorCode
   | BoardsErrorCode
   | TicketsErrorCode
+  | PrioritiesErrorCode
   | FavoritesErrorCode
   | ProjectsErrorCode
   | SearchErrorCode;
@@ -53,6 +56,7 @@ export type {
   FoldersErrorCode,
   BoardsErrorCode,
   TicketsErrorCode,
+  PrioritiesErrorCode,
   FavoritesErrorCode,
   ProjectsErrorCode,
   SearchErrorCode,

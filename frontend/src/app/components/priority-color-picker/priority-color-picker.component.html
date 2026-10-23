@@ -1,0 +1,38 @@
+<button
+  type="button"
+  class="priorityColorPicker__trigger"
+  cdkOverlayOrigin
+  #origin="cdkOverlayOrigin"
+  [appTooltip]="PHRASES.CHANGE_PRIORITY_COLOR | translate"
+  [attr.aria-label]="PHRASES.CHANGE_PRIORITY_COLOR | translate"
+  [attr.aria-expanded]="isOpen"
+  [disabled]="disabled"
+  (click)="toggle()"
+>
+  <span class="priorityDot priorityColorPicker__dot" [attr.data-color]="color"></span>
+</button>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayOpen]="isOpen"
+  [cdkConnectedOverlayPositions]="DROPDOWN_POSITIONS"
+  [cdkConnectedOverlayPush]="true"
+  [cdkConnectedOverlayViewportMargin]="4"
+  (overlayOutsideClick)="handleOutsideClick($event)"
+  (detach)="close()"
+>
+  <div class="priorityColorPicker__panel" (keydown.escape)="close()">
+    <button
+      *ngFor="let option of COLORS"
+      type="button"
+      class="priorityColorPicker__swatch"
+      [class.priorityColorPicker__swatch--selected]="option === color"
+      [attr.aria-label]="COLOR_PHRASES[option] | translate"
+      [attr.aria-pressed]="option === color"
+      (click)="pick(option)"
+    >
+      <span class="priorityDot priorityColorPicker__dot" [attr.data-color]="option"></span>
+    </button>
+  </div>
+</ng-template>

@@ -40,15 +40,27 @@
         ></textarea>
       </div>
 
-      <app-ticket-assignees
-        class="ticketDetail__side"
-        [assignees]="ticket.assignees"
-        [members]="members"
-        [currentUserId]="currentUserId"
-        [busy]="isUpdatingAssignees"
-        (add)="handleAddAssignee($event)"
-        (remove)="handleRemoveAssignee($event)"
-      ></app-ticket-assignees>
+      <div class="ticketDetail__side">
+        <div class="ticketDetail__field">
+          <h3 class="ticketDetail__fieldTitle">{{ PHRASES.PRIORITY | translate }}</h3>
+          <app-dropdown
+            class="ticketDetail__priority"
+            [options]="priorityOptions"
+            [value]="ticket.priorityId"
+            [ariaLabel]="PHRASES.PRIORITY"
+            (valueChange)="handlePriorityChange($event)"
+          ></app-dropdown>
+        </div>
+
+        <app-ticket-assignees
+          [assignees]="ticket.assignees"
+          [members]="members"
+          [currentUserId]="currentUserId"
+          [busy]="isUpdatingAssignees"
+          (add)="handleAddAssignee($event)"
+          (remove)="handleRemoveAssignee($event)"
+        ></app-ticket-assignees>
+      </div>
     </div>
   </div>
 

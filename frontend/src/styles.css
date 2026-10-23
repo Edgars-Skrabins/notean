@@ -54,6 +54,52 @@
 
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
+
+  --priority-grey: #9E9AAF;
+  --priority-blue: #4FC3F7;
+  --priority-teal: #4DB6AC;
+  --priority-green: #81C784;
+  --priority-yellow: #FFD54F;
+  --priority-orange: #FF8A3D;
+  --priority-red: #EF5350;
+  --priority-purple: #9C6BFF;
+}
+
+.priorityDot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--priority-grey);
+}
+
+.priorityDot[data-color="blue"] {
+  background: var(--priority-blue);
+}
+
+.priorityDot[data-color="teal"] {
+  background: var(--priority-teal);
+}
+
+.priorityDot[data-color="green"] {
+  background: var(--priority-green);
+}
+
+.priorityDot[data-color="yellow"] {
+  background: var(--priority-yellow);
+}
+
+.priorityDot[data-color="orange"] {
+  background: var(--priority-orange);
+}
+
+.priorityDot[data-color="red"] {
+  background: var(--priority-red);
+}
+
+.priorityDot[data-color="purple"] {
+  background: var(--priority-purple);
 }
 
 body {

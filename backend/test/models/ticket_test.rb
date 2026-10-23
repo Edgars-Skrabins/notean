@@ -86,4 +86,22 @@ class TicketTest < ActiveSupport::TestCase
     assert_nil Ticket.find_by(id: on_column.id)
     assert Ticket.exists?(in_backlog.id)
   end
+
+  test "a ticket has no priority by default and accepts one from its own board" do
+    ticket = Ticket.new(column: @column, team: @team, created_by_user_id: @user.id, title: "Fix bug", position: 0)
+
+    assert ticket.valid?
+    assert_nil ticket.priority
+
+    ticket.priority = @board.priorities.first
+    assert ticket.valid?
+  end
+
+  test "rejects a priority from another board" do
+    other_board = Board.create!(team: @team, creator: @user, title: "Other")
+    ticket = Ticket.new(column: @column, team: @team, created_by_user_id: @user.id, title: "Fix bug", position: 0, priority: other_board.priorities.first)
+
+    assert_not ticket.valid?
+    assert_includes ticket.errors[:priority], "must belong to the same board"
+  end
 end

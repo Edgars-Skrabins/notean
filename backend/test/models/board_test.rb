@@ -34,4 +34,21 @@ class BoardTest < ActiveSupport::TestCase
 
     assert_nil Column.find_by(id: column.id)
   end
+
+  test "a new board starts with the five default priorities in order" do
+    board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
+
+    assert_equal [
+      [ "Very low", "grey", 0 ], [ "Low", "blue", 1 ], [ "Medium", "yellow", 2 ], [ "High", "orange", 3 ], [ "Very high", "red", 4 ]
+    ], board.priorities.map { |priority| [ priority.name, priority.color, priority.position ] }
+  end
+
+  test "destroying a board destroys its priorities" do
+    board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
+    Ticket.create!(board: board, team: @team, created_by_user_id: @user.id, title: "Fix bug", position: 0, priority: board.priorities.first)
+
+    board.destroy
+
+    assert_equal 0, BoardPriority.where(board_id: board.id).count
+  end
 end

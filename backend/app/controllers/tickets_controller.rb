@@ -38,6 +38,12 @@ class TicketsController < ApplicationController
     @ticket.title = update_ticket_params[:title] if update_ticket_params[:title].present?
     @ticket.description = update_ticket_params[:description] if update_ticket_params.key?(:description)
 
+    if update_ticket_params.key?(:priority_id)
+      priority_id = update_ticket_params[:priority_id]
+      @ticket.priority = priority_id.nil? ? nil : @board.priorities.find_by(id: priority_id)
+      return render_error(ErrorCodes::Priorities::PRIORITY_NOT_FOUND, :not_found) if priority_id && @ticket.priority.nil?
+    end
+
     if to_backlog?
       move_ticket(nil)
     elsif update_ticket_params[:column_id].present?

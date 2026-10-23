@@ -66,6 +66,7 @@
           [cdkDragData]="ticket"
           [ticket]="ticket"
           [statusTitle]="group.status.columnId === null ? (group.status.title | translate) : group.status.title"
+          [priority]="state.priorityById(ticket.priorityId)"
           [selected]="isSelected(ticket)"
           (selectedChange)="setSelected(ticket, $event)"
           (opened)="handleOpenTicket(ticket)"

@@ -66,12 +66,20 @@ class ApplicationController < ActionController::API
     params.require(:column).permit(:title)
   end
 
+  def create_priority_params
+    params.require(:priority).permit(:name, :color)
+  end
+
+  def update_priority_params
+    params.require(:priority).permit(:name, :color, :position)
+  end
+
   def create_ticket_params
     params.fetch(:ticket, {}).permit(:title, :column_id)
   end
 
   def update_ticket_params
-    params.require(:ticket).permit(:title, :description, :column_id, :position, :to_backlog)
+    params.require(:ticket).permit(:title, :description, :column_id, :position, :to_backlog, :priority_id)
   end
 
   def bulk_ticket_params

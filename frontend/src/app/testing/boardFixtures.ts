@@ -8,7 +8,7 @@ export const TEST_TEAM_CODE = 'abc';
 export const TEST_BOARD_ID = 9;
 
 export function ticketSummary(id: number, columnId: number | null, position = 0): TicketSummary {
-  return {id, title: `Ticket ${id}`, position, columnId, assignees: [], createdAt: '2026-10-01T00:00:00Z', updatedAt: '2026-10-01T00:00:00Z'};
+  return {id, title: `Ticket ${id}`, position, columnId, priorityId: null, assignees: [], createdAt: '2026-10-01T00:00:00Z', updatedAt: '2026-10-01T00:00:00Z'};
 }
 
 export function ticketDetail(id: number, columnId: number | null, position = 0): TicketDetail {
@@ -33,6 +33,10 @@ export function boardDetail(): BoardDetail {
       {id: 11, title: 'Done', position: 1, tickets: []},
     ],
     backlog: [ticketSummary(3, null, 0), ticketSummary(4, null, 1)],
+    priorities: [
+      {id: 20, name: 'Low', color: 'blue', position: 0, ticketCount: 0},
+      {id: 21, name: 'High', color: 'orange', position: 1, ticketCount: 0},
+    ],
   };
 }
 

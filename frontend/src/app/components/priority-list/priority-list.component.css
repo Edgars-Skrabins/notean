@@ -1,0 +1,86 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 420px;
+}
+
+.priorityList__rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.priorityList__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-sm);
+}
+
+.priorityList__handle {
+  display: inline-flex;
+  width: 16px;
+  height: 16px;
+  color: var(--color-text-faint);
+  cursor: grab;
+}
+
+.priorityList__name,
+.priorityList__nameInput {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-heading);
+  font-family: inherit;
+  font-size: 0.9rem;
+}
+
+.priorityList__name {
+  background: none;
+  border: 1px solid transparent;
+  text-align: left;
+  cursor: text;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.priorityList__name:hover {
+  border-color: var(--color-input-border);
+}
+
+.priorityList__nameInput {
+  background: var(--color-input-bg-focus);
+  border: 1px solid var(--color-input-border-focus);
+  outline: none;
+}
+
+.priorityList__add {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-start;
+  padding: 6px 10px;
+  background: none;
+  border: 1px dashed var(--color-input-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.priorityList__add:hover {
+  color: var(--color-text-heading);
+  border-color: var(--color-input-border-focus);
+}
+
+.priorityList__addIcon {
+  width: 14px;
+  height: 14px;
+}

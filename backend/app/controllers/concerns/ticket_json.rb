@@ -13,6 +13,7 @@ module TicketJson
       board_id: ticket.board_id,
       column_id: ticket.column_id,
       position: ticket.position,
+      priority_id: ticket.priority_id,
       creator: member_json(ticket.creator),
       assignees: assignees_json(ticket),
       created_at: ticket.created_at,
@@ -26,6 +27,7 @@ module TicketJson
       title: ticket.title,
       position: ticket.position,
       column_id: ticket.column_id,
+      priority_id: ticket.priority_id,
       assignees: assignees_json(ticket),
       created_at: ticket.created_at,
       updated_at: ticket.updated_at

@@ -9,6 +9,7 @@
   (click)="toggle()"
   (keydown)="handleKeydown($event)"
 >
+  <span class="priorityDot" *ngIf="selectedOption?.color" [attr.data-color]="selectedOption?.color"></span>
   <span class="dropdown__label" *ngIf="selectedOption as option">
     <span class="dropdown__prefix" *ngIf="option.prefix">{{ option.prefix }}</span>
     <span class="dropdown__text">{{ option.labelKey ? (option.labelKey | translate) : option.label }}</span>
@@ -43,6 +44,7 @@
       (mouseenter)="activeIndex = index"
       (click)="select(option)"
     >
+      <span class="priorityDot" *ngIf="option.color" [attr.data-color]="option.color"></span>
       <span class="dropdown__optionLabel">
         <span class="dropdown__prefix" *ngIf="option.prefix">{{ option.prefix }}</span>
         <span class="dropdown__text">{{ option.labelKey ? (option.labelKey | translate) : option.label }}</span>

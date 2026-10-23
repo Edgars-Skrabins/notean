@@ -182,6 +182,18 @@
   "COLLAPSE_GROUP": "Pienennä ryhmä",
   "EXPAND_GROUP": "Laajenna ryhmä",
   "BULK_ACTION_FAILED": "Valittujen tehtävien päivitys epäonnistui",
+  "PRIORITY": "Prioriteetti",
+  "PRIORITIES": "Prioriteetit",
+  "NO_PRIORITY": "Ei prioriteettia",
+  "ADD_PRIORITY": "Lisää prioriteetti",
+  "NEW_PRIORITY": "Uusi prioriteetti",
+  "RENAME_PRIORITY": "Nimeä prioriteetti uudelleen",
+  "CHANGE_PRIORITY_COLOR": "Vaihda väriä",
+  "DELETE_PRIORITY": "Poista prioriteetti",
+  "REORDER_PRIORITY": "Järjestä vetämällä",
+  "CONFIRM_DELETE_PRIORITY": "Poistetaanko '{{name}}'? {{count}} tehtävältä poistuu prioriteetti",
+  "CONFIRM_DELETE_PRIORITY_ONE": "Poistetaanko '{{name}}'? 1 tehtävältä poistuu prioriteetti",
+  "CONFIRM_DELETE_UNUSED_PRIORITY": "Poistetaanko '{{name}}'?",
   "MOVE_TO_BOARD": "Siirrä tauluun",
   "MOVE_TO_BACKLOG": "Siirrä työjonoon",
   "MOVE": "Siirrä",
@@ -299,6 +311,11 @@
       "ASSIGNEE_NOT_FOUND": "Tätä henkilöä ei ole määritetty",
       "ASSIGNEE_NO_ACCESS": "Tämä henkilö ei näe tätä taulua",
       "BULK_ACTION_INVALID": "Tämä joukkotoiminto ei ole kelvollinen"
+    },
+    "PRIORITIES": {
+      "PRIORITY_NOT_FOUND": "Prioriteettia ei löytynyt",
+      "PRIORITY_NAME_TAKEN": "Tämänniminen prioriteetti on jo olemassa",
+      "PRIORITY_SAVE_FAILED": "Prioriteetin tallennus epäonnistui"
     },
     "FAVORITES": {
       "FAVORITE_NOT_FOUND": "Suosikkia ei löytynyt",

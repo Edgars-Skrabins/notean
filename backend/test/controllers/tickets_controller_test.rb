@@ -408,4 +408,40 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal one, ten
   end
+
+  test "update sets and clears a ticket's priority" do
+    idea = ticket_in(nil, "Idea", 0)
+    high = @board.priorities.find_by!(name: "High")
+
+    patch tickets_url(idea.id), params: { ticket: { priority_id: high.id } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal high.id, JSON.parse(response.body)["ticket"]["priority_id"]
+    assert_equal high, idea.reload.priority
+
+    patch tickets_url(idea.id), params: { ticket: { priority_id: nil } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_nil JSON.parse(response.body)["ticket"]["priority_id"]
+    assert_nil idea.reload.priority_id
+  end
+
+  test "update rejects a priority from another board" do
+    idea = ticket_in(nil, "Idea", 0)
+    other_board = Board.create!(team: @team, creator: @user, title: "Other")
+
+    patch tickets_url(idea.id), params: { ticket: { priority_id: other_board.priorities.first.id } }, headers: @headers, as: :json
+
+    assert_response :not_found
+    assert_equal "PRIORITY_NOT_FOUND", JSON.parse(response.body)["code"]
+    assert_nil idea.reload.priority_id
+  end
+
+  test "ticket summaries include priority_id" do
+    ticket_in(nil, "Idea", 0).update!(priority: @board.priorities.first)
+
+    get "/teams/#{@team.code}/boards/#{@board.id}", headers: @headers
+
+    assert_equal @board.priorities.first.id, JSON.parse(response.body)["board"]["backlog"][0]["priority_id"]
+  end
 end
