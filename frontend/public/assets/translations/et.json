@@ -244,6 +244,8 @@
   "TYPE_NAME_TO_CONFIRM": "Kinnitamiseks sisesta {{name}}",
   "PROJECT_DELETED": "Projekt kustutatud",
   "BACK_TO_PROJECTS": "Tagasi projektide juurde",
+  "PROJECT_ITEMS": "Üksused",
+  "NO_PROJECT_ITEMS": "Selles projektis pole veel üksusi",
   "FEATURES": "Funktsioonid",
   "FEATURE_PAGES": "Lehed",
   "FEATURE_DIAGRAMS": "Diagrammid",

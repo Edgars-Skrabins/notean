@@ -1,0 +1,59 @@
+.projectSettingsDialogOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.projectSettingsDialogOverlay__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(7, 4, 15, 0.6);
+}
+
+.projectSettingsDialog {
+  position: relative;
+  width: 520px;
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  box-sizing: border-box;
+  background: linear-gradient(160deg, var(--color-card-bg) 0%, var(--color-card-bg-alt) 100%);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-5);
+}
+
+.projectSettingsDialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+
+.projectSettingsDialog__title {
+  margin: 0;
+  color: var(--color-text-heading);
+  font-size: 1.1rem;
+}
+
+.projectSettingsDialog__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.projectSettingsDialog__danger {
+  margin-top: var(--space-6);
+  padding: var(--space-4);
+  border: 1px solid rgba(255, 157, 157, 0.35);
+  border-radius: var(--radius-md);
+}
+
+.projectSettingsDialog__dangerTitle {
+  margin: 0 0 var(--space-3);
+  color: var(--color-error);
+  font-size: 0.9rem;
+}

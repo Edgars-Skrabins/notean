@@ -1,0 +1,43 @@
+<div class="projectSettingsDialogOverlay">
+  <div class="projectSettingsDialogOverlay__backdrop" (click)="handleClose()"></div>
+
+  <div class="projectSettingsDialog">
+    <div class="projectSettingsDialog__header">
+      <h3 class="projectSettingsDialog__title">{{ PHRASES.SETTINGS | translate }}</h3>
+      <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE | translate" (pressed)="handleClose()"></app-icon-button>
+    </div>
+
+    <app-project-form
+      [params]="params"
+      [members]="members"
+      [nameError]="nameError"
+      (paramsChange)="handleParamsChange($event)"
+    ></app-project-form>
+
+    <div class="projectSettingsDialog__actions">
+      <app-button variant="primary" [disabled]="!hasUnsavedChanges || isSaving" (pressed)="handleSave()">
+        {{ PHRASES.SAVE | translate }}
+      </app-button>
+    </div>
+
+    <section class="projectSettingsDialog__danger">
+      <h3 class="projectSettingsDialog__dangerTitle">{{ PHRASES.DANGER_ZONE | translate }}</h3>
+      <app-button variant="danger" icon="trash" (pressed)="handleOpenDelete()">{{ PHRASES.DELETE_PROJECT | translate }}</app-button>
+    </section>
+  </div>
+
+  <app-delete-project-dialog
+    *ngIf="isDeleteDialogOpen"
+    [projectName]="project.name"
+    (confirmed)="handleConfirmDelete($event)"
+    (cancelled)="handleCancelDelete()"
+  ></app-delete-project-dialog>
+
+  <app-confirm-dialog
+    *ngIf="isLeaveConfirmOpen"
+    [message]="PHRASES.CONFIRM_LEAVE_UNSAVED_CHANGES | translate"
+    [confirmLabel]="PHRASES.LEAVE"
+    (confirmed)="handleConfirmLeave()"
+    (cancelled)="handleCancelLeave()"
+  ></app-confirm-dialog>
+</div>

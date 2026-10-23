@@ -1,9 +1,12 @@
 .projectDetail {
-  max-width: 560px;
+  display: flex;
+  gap: var(--space-6);
+  align-items: flex-start;
 }
 
-.projectDetail__title {
-  margin-bottom: var(--space-5);
+.projectDetail__main {
+  flex: 1;
+  min-width: 0;
 }
 
 .projectDetail__back {
@@ -21,15 +24,93 @@
   color: var(--color-text-heading);
 }
 
-.projectDetail__danger {
-  margin-top: var(--space-6);
-  padding: var(--space-4);
-  border: 1px solid rgba(255, 157, 157, 0.35);
-  border-radius: var(--radius-md);
+.projectDetail__title {
+  margin: 0;
+  color: var(--color-text-heading);
+  font-size: 1.6rem;
+  font-weight: 700;
 }
 
-.projectDetail__dangerTitle {
+.projectDetail__description {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+.projectDetail__items {
+  margin-top: var(--space-6);
+}
+
+.projectDetail__heading {
   margin: 0 0 var(--space-3);
-  color: var(--color-error);
+  color: var(--color-text-heading);
+  font-size: 1.1rem;
+}
+
+.projectDetail__group + .projectDetail__group {
+  margin-top: var(--space-4);
+}
+
+.projectDetail__groupTitle,
+.projectDetail__sidebarLabel {
+  margin: 0 0 var(--space-1);
+  color: var(--color-text-faint);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.projectDetail__empty {
+  margin: 0;
+  color: var(--color-text-muted);
   font-size: 0.9rem;
+}
+
+.projectDetail__sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+}
+
+.projectDetail__person {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0;
+  color: var(--color-text-heading);
+  font-size: 0.85rem;
+}
+
+.projectDetail__person + .projectDetail__person {
+  margin-top: var(--space-2);
+}
+
+.projectDetail__nickname {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.projectDetail__ownerLabel {
+  margin-left: auto;
+  color: var(--color-text-faint);
+  font-size: 0.75rem;
+}
+
+@media (max-width: 720px) {
+  .projectDetail {
+    flex-direction: column;
+  }
+
+  .projectDetail__sidebar {
+    width: 100%;
+    box-sizing: border-box;
+  }
 }

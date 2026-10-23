@@ -244,6 +244,8 @@
   "TYPE_NAME_TO_CONFIRM": "Vahvista kirjoittamalla {{name}}",
   "PROJECT_DELETED": "Projekti poistettu",
   "BACK_TO_PROJECTS": "Takaisin projekteihin",
+  "PROJECT_ITEMS": "Kohteet",
+  "NO_PROJECT_ITEMS": "Tässä projektissa ei ole vielä kohteita",
   "FEATURES": "Ominaisuudet",
   "FEATURE_PAGES": "Sivut",
   "FEATURE_DIAGRAMS": "Kaaviot",

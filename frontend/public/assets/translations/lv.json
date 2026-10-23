@@ -244,6 +244,8 @@
   "TYPE_NAME_TO_CONFIRM": "Ierakstiet {{name}}, lai apstiprinātu",
   "PROJECT_DELETED": "Projekts dzēsts",
   "BACK_TO_PROJECTS": "Atpakaļ uz projektiem",
+  "PROJECT_ITEMS": "Vienumi",
+  "NO_PROJECT_ITEMS": "Šajā projektā vēl nav vienumu",
   "FEATURES": "Funkcijas",
   "FEATURE_PAGES": "Lapas",
   "FEATURE_DIAGRAMS": "Diagrammas",

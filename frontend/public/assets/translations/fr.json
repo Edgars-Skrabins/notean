@@ -244,6 +244,8 @@
   "TYPE_NAME_TO_CONFIRM": "Saisissez {{name}} pour confirmer",
   "PROJECT_DELETED": "Projet supprimé",
   "BACK_TO_PROJECTS": "Retour aux projets",
+  "PROJECT_ITEMS": "Éléments",
+  "NO_PROJECT_ITEMS": "Aucun élément dans ce projet pour le moment",
   "FEATURES": "Fonctionnalités",
   "FEATURE_PAGES": "Pages",
   "FEATURE_DIAGRAMS": "Diagrammes",

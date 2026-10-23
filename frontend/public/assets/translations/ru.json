@@ -244,6 +244,8 @@
   "TYPE_NAME_TO_CONFIRM": "Введите {{name}} для подтверждения",
   "PROJECT_DELETED": "Проект удалён",
   "BACK_TO_PROJECTS": "Назад к проектам",
+  "PROJECT_ITEMS": "Элементы",
+  "NO_PROJECT_ITEMS": "В этом проекте пока нет элементов",
   "FEATURES": "Функции",
   "FEATURE_PAGES": "Страницы",
   "FEATURE_DIAGRAMS": "Диаграммы",

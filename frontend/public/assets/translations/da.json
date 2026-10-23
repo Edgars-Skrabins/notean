@@ -244,6 +244,8 @@
   "TYPE_NAME_TO_CONFIRM": "Skriv {{name}} for at bekræfte",
   "PROJECT_DELETED": "Projekt slettet",
   "BACK_TO_PROJECTS": "Tilbage til projekter",
+  "PROJECT_ITEMS": "Elementer",
+  "NO_PROJECT_ITEMS": "Der er endnu ingen elementer i dette projekt",
   "FEATURES": "Funktioner",
   "FEATURE_PAGES": "Sider",
   "FEATURE_DIAGRAMS": "Diagrammer",
