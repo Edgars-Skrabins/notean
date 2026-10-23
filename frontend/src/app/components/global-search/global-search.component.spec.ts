@@ -180,13 +180,23 @@ describe('GlobalSearchComponent', () => {
       .toEqual([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 4, AppRoutes.LIST, AppRoutes.TICKETS, 6]);
   });
 
-  it('closes on Escape', fakeAsync(() => {
+  it('closes on Escape and consumes it', fakeAsync(() => {
     type('rocket');
+    const event = new KeyboardEvent('keydown', {key: 'Escape', cancelable: true});
 
-    component.handleKeydown(new KeyboardEvent('keydown', {key: 'Escape'}));
+    component.handleKeydown(event);
 
     expect(component.isOpen).toBeFalse();
+    expect(event.defaultPrevented).toBeTrue();
   }));
+
+  it('leaves Escape to the layer below when the panel is closed', () => {
+    const event = new KeyboardEvent('keydown', {key: 'Escape', cancelable: true});
+
+    component.handleKeydown(event);
+
+    expect(event.defaultPrevented).toBeFalse();
+  });
 });
 
 describe('splitSnippet', () => {

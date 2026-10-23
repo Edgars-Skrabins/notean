@@ -156,6 +156,9 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
         this.showMore(item.section);
       }
     } else if (event.key === 'Escape') {
+      if (this.isOpen) {
+        event.preventDefault();
+      }
       this.close();
       this.input.nativeElement.blur();
     }

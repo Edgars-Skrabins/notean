@@ -36,6 +36,44 @@ describe('FlowchartEditorComponent', () => {
     fixture.destroy();
   });
 
+  describe('clearing the selection on Escape', () => {
+    function escapeEvent(): KeyboardEvent {
+      return new KeyboardEvent('keydown', {key: 'Escape', cancelable: true});
+    }
+
+    it('clears a selection and consumes Esc', () => {
+      component.handleAddShape('flow-process');
+      getGraph().select(getGraph().getNodes()[0]);
+      const event = escapeEvent();
+
+      component.handleClearSelection(event);
+
+      expect(getGraph().getSelectedCells().length).toBe(0);
+      expect(event.defaultPrevented).toBeTrue();
+    });
+
+    it('leaves Esc to the popup when nothing is selected', () => {
+      const event = escapeEvent();
+
+      component.handleClearSelection(event);
+
+      expect(event.defaultPrevented).toBeFalse();
+    });
+
+    it('leaves the selection to the label editor while a label is being edited', () => {
+      component.handleAddShape('flow-process');
+      const node = getGraph().getNodes()[0];
+      getGraph().select(node);
+      (component as any).openLabelEditor('node', node);
+      const event = escapeEvent();
+
+      component.handleClearSelection(event);
+
+      expect(getGraph().getSelectedCells().length).toBe(1);
+      expect(event.defaultPrevented).toBeFalse();
+    });
+  });
+
   describe('placing shapes', () => {
     it('adds a node to the canvas with the expected shape and label', () => {
       component.handleAddShape('flow-process');
