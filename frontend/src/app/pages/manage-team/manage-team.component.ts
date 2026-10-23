@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgFor, NgIf} from '@angular/common';
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
@@ -15,6 +15,7 @@ import {TeamCodeDisplayComponent} from "@components/team-code-display/team-code-
 import {AvatarComponent} from "@components/avatar/avatar.component";
 import {CheckboxComponent} from "@components/checkbox/checkbox.component";
 import {errorPhrase} from "@utils/errorPhrase";
+import {EscapeService} from "@services/escape.service";
 
 @Component({
   selector: 'app-manage-team',
@@ -32,7 +33,7 @@ import {errorPhrase} from "@utils/errorPhrase";
   templateUrl: './manage-team.component.html',
   styleUrl: './manage-team.component.css'
 })
-export class ManageTeamComponent implements OnInit {
+export class ManageTeamComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
   protected readonly teamRoleLabel = teamRoleLabel;
   protected readonly featureOptions: { feature: TeamFeature; label: string }[] = [
@@ -51,11 +52,14 @@ export class ManageTeamComponent implements OnInit {
 
   protected teamCode: string;
 
+  private unregisterEscape = () => {};
+
   constructor(
     private navigationService: NavigationService,
     private teamService: TeamService,
     private translateService: TranslateService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private escapeService: EscapeService
   ) {
     const team = this.teamService.getCurrentTeam()!;
     this.teamCode = team.code;
@@ -72,11 +76,16 @@ export class ManageTeamComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.unregisterEscape = this.escapeService.push(() => this.handleGoBack());
     this.teamService.fetchTeamMembers(this.teamCode)
       .then((members) => {
         this.isLoadingMembers = false;
         this.members = members;
       });
+  }
+
+  ngOnDestroy() {
+    this.unregisterEscape();
   }
 
   handleRenameTeam() {

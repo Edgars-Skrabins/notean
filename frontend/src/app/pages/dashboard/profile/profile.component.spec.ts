@@ -8,6 +8,7 @@ import {AvatarService} from "@services/avatar.service";
 import {ToastType} from "@models/toast.model";
 import {Avatar} from "@models/avatar.model";
 import {PHRASES} from "@config/phrases";
+import {escapeServiceStub} from "../../../testing/escapeServiceStub";
 
 describe('ProfileComponent', () => {
   let component: ProfileComponent;
@@ -32,7 +33,7 @@ describe('ProfileComponent', () => {
     avatarSubject = new BehaviorSubject<Avatar | null>({color: 'blue', imageUrl: null});
     avatarService = jasmine.createSpyObj<AvatarService>('AvatarService', ['getAvatar', 'update'], {avatar$: avatarSubject});
     avatarService.getAvatar.and.callFake(() => avatarSubject.value);
-    component = new ProfileComponent({} as NavigationService, teamService, toastService, avatarService);
+    component = new ProfileComponent({} as NavigationService, teamService, toastService, avatarService, escapeServiceStub().service);
   });
 
   afterEach(() => {

@@ -11,6 +11,7 @@ import {ToastType} from "@models/toast.model";
 import {TeamRole} from "@models/team.model";
 import {PHRASES} from "@config/phrases";
 import {testTeam} from "../../testing/teamFixtures";
+import {escapeServiceStub} from "../../testing/escapeServiceStub";
 
 function teamServiceSpy() {
   const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeam', 'getCurrentRole', 'fetchTeamMembers', 'isFeatureEnabled', 'updateFeatures']);
@@ -26,7 +27,7 @@ describe('ManageTeamComponent.isOwner', () => {
 
   beforeEach(() => {
     teamService = teamServiceSpy();
-    component = new ManageTeamComponent({} as NavigationService, teamService, {} as TranslateService, {} as ToastService);
+    component = new ManageTeamComponent({} as NavigationService, teamService, {} as TranslateService, {} as ToastService, escapeServiceStub().service);
   });
 
   it('returns false when the current role is user', () => {
