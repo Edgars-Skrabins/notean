@@ -1,7 +1,8 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ButtonComponent} from '@components/button/button.component';
+import {EscapeService} from '@services/escape.service';
 
 @Component({
   selector: 'app-confirm-dialog',
@@ -13,7 +14,7 @@ import {ButtonComponent} from '@components/button/button.component';
   templateUrl: './confirm-dialog.component.html',
   styleUrl: './confirm-dialog.component.css'
 })
-export class ConfirmDialogComponent {
+export class ConfirmDialogComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
 
   @Input({required: true}) message!: string;
@@ -21,6 +22,19 @@ export class ConfirmDialogComponent {
   @Input() confirmVariant: 'primary' | 'ghost' | 'danger' = 'danger';
   @Output() confirmed = new EventEmitter<void>();
   @Output() cancelled = new EventEmitter<void>();
+
+  private unregisterEscape = () => {};
+
+  constructor(private escapeService: EscapeService) {
+  }
+
+  ngOnInit() {
+    this.unregisterEscape = this.escapeService.push(() => this.handleCancel());
+  }
+
+  ngOnDestroy() {
+    this.unregisterEscape();
+  }
 
   handleConfirm() {
     this.confirmed.emit();

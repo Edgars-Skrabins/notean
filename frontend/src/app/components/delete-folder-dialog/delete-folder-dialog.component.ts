@@ -1,9 +1,10 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ButtonComponent} from '@components/button/button.component';
 import {CheckboxComponent} from '@components/checkbox/checkbox.component';
 import {FolderDeleteMode} from "@models/folder.model";
+import {EscapeService} from '@services/escape.service';
 
 @Component({
   selector: 'app-delete-folder-dialog',
@@ -16,7 +17,7 @@ import {FolderDeleteMode} from "@models/folder.model";
   templateUrl: './delete-folder-dialog.component.html',
   styleUrl: './delete-folder-dialog.component.css'
 })
-export class DeleteFolderDialogComponent {
+export class DeleteFolderDialogComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
 
   @Input({required: true}) folderTitle!: string;
@@ -24,6 +25,19 @@ export class DeleteFolderDialogComponent {
   @Output() cancelled = new EventEmitter<void>();
 
   deleteNestedContents = false;
+
+  private unregisterEscape = () => {};
+
+  constructor(private escapeService: EscapeService) {
+  }
+
+  ngOnInit() {
+    this.unregisterEscape = this.escapeService.push(() => this.handleCancel());
+  }
+
+  ngOnDestroy() {
+    this.unregisterEscape();
+  }
 
   handleConfirm() {
     this.confirmed.emit({mode: this.deleteNestedContents ? 'cascade' : 'promote'});
