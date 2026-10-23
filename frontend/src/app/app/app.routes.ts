@@ -25,6 +25,7 @@ import {authGuard} from "../guards/auth.guard";
 import {teamGuard} from "../guards/team.guard";
 import {teamRoleGuard} from "../guards/team-role.guard";
 import {unsavedChangesGuard} from "../guards/unsaved-changes.guard";
+import {featureGuard} from "../guards/feature.guard";
 import {AppRoutes} from "./app-routes.enum";
 
 export const routes: Routes = [
@@ -47,13 +48,14 @@ export const routes: Routes = [
       {path: AppRoutes.DASHBOARD_HOME, component: HomeComponent},
       {path: AppRoutes.PROJECTS, component: ProjectsComponent},
       {path: `${AppRoutes.PROJECTS}/:id`, component: ProjectDetailComponent, canDeactivate: [unsavedChangesGuard]},
-      {path: AppRoutes.DOCUMENT_PAGES, component: DocumentPagesComponent},
-      {path: `${AppRoutes.DOCUMENT_PAGES}/:id`, component: PageDetailComponent},
-      {path: AppRoutes.DIAGRAMS, component: DiagramsComponent},
-      {path: `${AppRoutes.DIAGRAMS}/:id`, component: DiagramDetailComponent},
+      {path: AppRoutes.DOCUMENT_PAGES, component: DocumentPagesComponent, canActivate: [featureGuard('pages')]},
+      {path: `${AppRoutes.DOCUMENT_PAGES}/:id`, component: PageDetailComponent, canActivate: [featureGuard('pages')]},
+      {path: AppRoutes.DIAGRAMS, component: DiagramsComponent, canActivate: [featureGuard('diagrams')]},
+      {path: `${AppRoutes.DIAGRAMS}/:id`, component: DiagramDetailComponent, canActivate: [featureGuard('diagrams')]},
       {
         path: `${AppRoutes.BOARDS}/:id`,
         component: BoardPageComponent,
+        canActivate: [featureGuard('boards')],
         children: [
           {path: '', redirectTo: AppRoutes.KANBAN, pathMatch: 'full'},
           {path: AppRoutes.OVERVIEW, component: BoardOverviewTabComponent},
