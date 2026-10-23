@@ -5,21 +5,22 @@ import {AuthService} from "@services/auth.service";
 import {SettingsService} from "@services/settings.service";
 import {AvatarService} from "@services/avatar.service";
 import {TeamService} from "@services/team.service";
+import {testTeam, rawTestTeam} from "../testing/teamFixtures";
 
 const rawSession = {
   user: {id: 1, email: 'alice@example.com'},
   settings: {show_favorites_on_home: false, show_favorites_in_sidebar: true, show_my_work_on_home: true},
   avatar: {color: 'blue' as const, image_url: null},
-  team: {team: {id: 2, name: 'Engineering', code: 'abc'}, role: 'owner' as const, nickname: 'Alice'},
+  team: {team: rawTestTeam(testTeam({id: 2, name: 'Engineering', code: 'abc'})), role: 'owner' as const, nickname: 'Alice'},
 };
 
 describe('mapSession', () => {
-  it('maps settings and avatar and keeps user and team', () => {
+  it('maps settings, avatar and team and keeps user', () => {
     expect(mapSession(rawSession)).toEqual({
       user: {id: 1, email: 'alice@example.com'},
       settings: {showFavoritesOnHome: false, showFavoritesInSidebar: true, showMyWorkOnHome: true},
       avatar: {color: 'blue', imageUrl: null},
-      team: {team: {id: 2, name: 'Engineering', code: 'abc'}, role: 'owner', nickname: 'Alice'},
+      team: {team: testTeam({id: 2, name: 'Engineering', code: 'abc'}), role: 'owner', nickname: 'Alice'},
     });
   });
 });
@@ -61,7 +62,7 @@ describe('SessionService', () => {
     expect(response.success).toBeTrue();
     expect(settingsService.set).toHaveBeenCalledWith({showFavoritesOnHome: false, showFavoritesInSidebar: true, showMyWorkOnHome: true});
     expect(avatarService.set).toHaveBeenCalledWith({color: 'blue', imageUrl: null});
-    expect(teamService.applyActiveTeam).toHaveBeenCalledWith(rawSession.team);
+    expect(teamService.applyActiveTeam).toHaveBeenCalledWith({team: testTeam(testTeam({id: 2, name: 'Engineering', code: 'abc'})), role: 'owner', nickname: 'Alice'});
   });
 
   it('passes a null team on so the stored team is cleared', async () => {

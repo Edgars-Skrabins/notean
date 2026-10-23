@@ -1,6 +1,7 @@
 import {SwitchTeamComponent} from "./switch-team.component";
 import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
+import {testTeam} from "../../testing/teamFixtures";
 
 describe('SwitchTeamComponent.isActive', () => {
   let component: SwitchTeamComponent;
@@ -12,20 +13,20 @@ describe('SwitchTeamComponent.isActive', () => {
   });
 
   it('returns false when the team code does not match the current team', () => {
-    teamService.getCurrentTeam.and.returnValue({id: 1, name: 'Team A', code: 'aaa'});
+    teamService.getCurrentTeam.and.returnValue(testTeam({id: 1, name: 'Team A', code: 'aaa'}));
 
-    expect(component.isActive({id: 2, name: 'Team B', code: 'bbb', role: 'user', nickname: 'Alice'})).toBeFalse();
+    expect(component.isActive({...testTeam(testTeam({id: 2, name: 'Team B', code: 'bbb'})), role: 'user', nickname: 'Alice'})).toBeFalse();
   });
 
   it('returns true when the team code matches the current team', () => {
-    teamService.getCurrentTeam.and.returnValue({id: 1, name: 'Team A', code: 'aaa'});
+    teamService.getCurrentTeam.and.returnValue(testTeam({id: 1, name: 'Team A', code: 'aaa'}));
 
-    expect(component.isActive({id: 1, name: 'Team A', code: 'aaa', role: 'owner', nickname: 'Alice'})).toBeTrue();
+    expect(component.isActive({...testTeam(testTeam({id: 1, name: 'Team A', code: 'aaa'})), role: 'owner', nickname: 'Alice'})).toBeTrue();
   });
 
   it('returns false when there is no current team', () => {
     teamService.getCurrentTeam.and.returnValue(null);
 
-    expect(component.isActive({id: 1, name: 'Team A', code: 'aaa', role: 'user', nickname: 'Alice'})).toBeFalse();
+    expect(component.isActive({...testTeam(testTeam({id: 1, name: 'Team A', code: 'aaa'})), role: 'user', nickname: 'Alice'})).toBeFalse();
   });
 });

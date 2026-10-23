@@ -4,6 +4,10 @@ import {Avatar} from "@models/avatar.model";
 
 export type TeamRole = 'user' | 'admin' | 'owner';
 
+export type TeamFeature = 'pages' | 'diagrams' | 'boards';
+
+export type TeamFeatures = Record<TeamFeature, boolean>;
+
 export enum NicknameError {
   TOO_SHORT = 'TOO_SHORT',
   TOO_LONG = 'TOO_LONG',
@@ -14,6 +18,9 @@ export interface Team {
   id: number;
   name: string;
   code: string;
+  pagesEnabled: boolean;
+  diagramsEnabled: boolean;
+  boardsEnabled: boolean;
 }
 
 export interface TeamWithRole extends Team {
@@ -49,5 +56,7 @@ export type ActivateTeamResponse = Result<{ team: Team; role: TeamRole; nickname
 export type RenameTeamResponse = Result<{ team: Team }, TeamsErrorCode>;
 
 export type DeleteTeamResponse = Result<object, TeamsErrorCode>;
+
+export type UpdateFeaturesResponse = Result<{ team: Team }, TeamsErrorCode>;
 
 export type UpdateNicknameResponse = Result<{ nickname: string }, TeamsErrorCode>;

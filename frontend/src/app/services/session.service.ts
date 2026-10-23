@@ -4,15 +4,15 @@ import {apiRequest} from "@utils/apiRequest";
 import {AuthService} from "@services/auth.service";
 import {mapSettings, RawSettings, SettingsService} from "@services/settings.service";
 import {AvatarService, mapAvatar, RawAvatar} from "@services/avatar.service";
-import {TeamService} from "@services/team.service";
+import {mapActiveTeam, RawActiveTeam, TeamService} from "@services/team.service";
 import {AuthUser} from "@models/auth.model";
-import {ActiveTeam, SessionData, SessionResponse} from "@models/session.model";
+import {SessionData, SessionResponse} from "@models/session.model";
 
 interface RawSession {
   user: AuthUser;
   settings: RawSettings;
   avatar: RawAvatar;
-  team: ActiveTeam | null;
+  team: RawActiveTeam | null;
 }
 
 export function mapSession(raw: RawSession): SessionData {
@@ -20,7 +20,7 @@ export function mapSession(raw: RawSession): SessionData {
     user: raw.user,
     settings: mapSettings(raw.settings),
     avatar: mapAvatar(raw.avatar),
-    team: raw.team,
+    team: raw.team ? mapActiveTeam(raw.team) : null,
   };
 }
 
