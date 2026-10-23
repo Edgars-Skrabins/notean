@@ -14,7 +14,7 @@
   position: relative;
   overflow: hidden;
   background: linear-gradient(160deg, var(--color-card-bg) 0%, var(--color-card-bg-alt) 100%);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
   padding: 56px 48px 80px;
   animation: authCardEnter 480ms ease both;

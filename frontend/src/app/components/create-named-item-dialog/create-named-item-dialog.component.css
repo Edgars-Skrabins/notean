@@ -38,7 +38,7 @@
 .createNamedItemDialog__input {
   background: var(--color-input-bg);
   border: 1px solid var(--color-input-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   padding: 10px;
   color: var(--color-text-heading);
   font-size: 0.95rem;

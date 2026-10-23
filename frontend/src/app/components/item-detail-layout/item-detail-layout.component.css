@@ -21,7 +21,7 @@
   box-sizing: border-box;
   background: linear-gradient(165deg, var(--color-page-bg-start) 0%, var(--color-page-bg-end) 100%);
   border: 1px solid var(--color-input-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
   padding: var(--space-6);
 }
@@ -29,7 +29,7 @@
 .itemDetail__editingBanner {
   background: rgba(156, 107, 255, 0.15);
   border: 1px solid var(--color-input-border-focus);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   padding: 10px 16px;
   margin-bottom: var(--space-4);
   color: var(--color-text-heading);
@@ -90,7 +90,7 @@
   box-sizing: border-box;
   background: var(--color-input-bg);
   border: 1px solid var(--color-input-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   padding: 10px;
   color: var(--color-text-heading);
   font-size: 1.2rem;

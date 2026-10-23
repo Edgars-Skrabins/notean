@@ -10,7 +10,7 @@
   margin-bottom: var(--space-3);
   background: var(--color-input-bg);
   border: 1px solid var(--color-input-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
 }
 
 .richTextEditor__toolbarButton {
