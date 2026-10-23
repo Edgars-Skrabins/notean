@@ -6,6 +6,8 @@ class MyWorkController < ApplicationController
   before_action :authorize_team_member!
 
   def index
+    return render json: { tickets: [] } unless @team.feature_enabled?(:boards)
+
     boards = project_filtered(@team.boards)
     return if boards.nil?
 

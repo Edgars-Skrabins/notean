@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   post "teams/:code/activate" => "teams#activate"
   get "teams/:code/members" => "teams#members"
   patch "teams/:code/nickname" => "teams#update_nickname"
+  patch "teams/:code/features" => "teams#update_features"
   get "users/me" => "users#me"
   patch "users/me/settings" => "users#update_settings"
   patch "users/me/avatar" => "users#update_avatar"

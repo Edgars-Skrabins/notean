@@ -80,4 +80,12 @@ class MyWorkControllerTest < ActionDispatch::IntegrationTest
     assert_equal 10, JSON.parse(response.body)["tickets"].length
     assert_equal one, ten
   end
+
+  test "returns an empty list when boards are turned off" do
+    ticket("Mine")
+    @team.update!(boards_enabled: false)
+
+    assert_equal [], my_work
+    assert_response :success
+  end
 end

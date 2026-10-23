@@ -53,4 +53,14 @@ class ColumnsControllerTest < ActionDispatch::IntegrationTest
     assert_response :no_content
     assert_nil Column.find_by(id: column.id)
   end
+
+  test "returns FEATURE_DISABLED when boards are turned off" do
+    @team.update!(boards_enabled: false)
+
+    post "/teams/#{@team.code}/boards/#{@board.id}/columns", params: { column: { title: "Doing" } }, headers: @headers, as: :json
+
+    assert_response :forbidden
+    assert_equal({ "code" => "FEATURE_DISABLED" }, JSON.parse(response.body))
+    assert_equal 0, @board.columns.count
+  end
 end

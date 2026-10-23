@@ -231,6 +231,12 @@
   "TYPE_NAME_TO_CONFIRM": "Skriv {{name}} för att bekräfta",
   "PROJECT_DELETED": "Projektet har tagits bort",
   "BACK_TO_PROJECTS": "Tillbaka till projekt",
+  "FEATURES": "Funktioner",
+  "FEATURE_PAGES": "Sidor",
+  "FEATURE_DIAGRAMS": "Diagram",
+  "FEATURE_BOARDS": "Tavlor",
+  "FEATURES_UPDATED": "Funktionerna har uppdaterats",
+  "FEATURE_TURNED_OFF": "Teamets ägare har stängt av den här funktionen",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Din session har gått ut. Logga in igen",
@@ -256,7 +262,8 @@
       "TEAM_CREATE_FAILED": "Det gick inte att skapa teamet",
       "TEAM_RENAME_FAILED": "Det gick inte att byta namn på teamet",
       "NICKNAME_TAKEN": "Det här smeknamnet används redan i teamet",
-      "NICKNAME_INVALID": "Det här smeknamnet är inte giltigt"
+      "NICKNAME_INVALID": "Det här smeknamnet är inte giltigt",
+      "FEATURE_DISABLED": "Den här funktionen är avstängd för det här teamet"
     },
     "PAGES": {
       "PAGE_NOT_FOUND": "Sidan hittades inte",

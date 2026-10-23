@@ -231,6 +231,12 @@
   "TYPE_NAME_TO_CONFIRM": "Type {{name}} to confirm",
   "PROJECT_DELETED": "Project deleted",
   "BACK_TO_PROJECTS": "Back to projects",
+  "FEATURES": "Features",
+  "FEATURE_PAGES": "Pages",
+  "FEATURE_DIAGRAMS": "Diagrams",
+  "FEATURE_BOARDS": "Boards",
+  "FEATURES_UPDATED": "Features updated",
+  "FEATURE_TURNED_OFF": "This feature was turned off by the team owner",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Your session has expired. Please log in again",
@@ -256,7 +262,8 @@
       "TEAM_CREATE_FAILED": "Could not create the team",
       "TEAM_RENAME_FAILED": "Could not rename the team",
       "NICKNAME_TAKEN": "This nickname is already taken in this team",
-      "NICKNAME_INVALID": "This nickname isn't valid"
+      "NICKNAME_INVALID": "This nickname isn't valid",
+      "FEATURE_DISABLED": "This feature is turned off for this team"
     },
     "PAGES": {
       "PAGE_NOT_FOUND": "Page not found",

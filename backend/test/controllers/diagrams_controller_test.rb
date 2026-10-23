@@ -36,4 +36,23 @@ class DiagramsControllerTest < ActionDispatch::IntegrationTest
     assert_equal show_one, show_ten
     assert_equal update_one, update_ten
   end
+
+  test "returns FEATURE_DISABLED when diagrams are turned off" do
+    @team.update!(diagrams_enabled: false)
+
+    get "/teams/#{@team.code}/diagrams", headers: @headers
+    assert_response :forbidden
+    assert_equal({ "code" => "FEATURE_DISABLED" }, JSON.parse(response.body))
+
+    get "/teams/#{@team.code}/diagrams/#{@diagram.id}", headers: @headers
+    assert_response :forbidden
+  end
+
+  test "diagrams stay available when only another feature is turned off" do
+    @team.update!(pages_enabled: false, boards_enabled: false)
+
+    get "/teams/#{@team.code}/diagrams/#{@diagram.id}", headers: @headers
+
+    assert_response :success
+  end
 end

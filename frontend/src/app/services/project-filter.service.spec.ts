@@ -2,6 +2,7 @@ import {ProjectFilterService} from "./project-filter.service";
 import {ProjectService} from "@services/project.service";
 import {TeamService} from "@services/team.service";
 import {ProjectSummary} from "@models/project.model";
+import {testTeam} from "../testing/teamFixtures";
 
 function project(id: number): ProjectSummary {
   return {id, name: `P${id}`, description: '', owner: {id: 1, nickname: 'alice', avatar: {color: 'red', imageUrl: null}}, memberCount: 1, canManage: true};
@@ -21,7 +22,7 @@ describe('ProjectFilterService', () => {
     projectService.listProjects.and.returnValue(Promise.resolve({success: true, projects: [project(1), project(2)]}));
     teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeamCode', 'getCurrentTeam']);
     teamService.getCurrentTeamCode.and.returnValue('abc');
-    teamService.getCurrentTeam.and.returnValue({id: 1, name: 'Team', code: 'abc'});
+    teamService.getCurrentTeam.and.returnValue(testTeam({id: 1, name: 'Team', code: 'abc'}));
   });
 
   afterEach(() => localStorage.clear());
@@ -36,7 +37,7 @@ describe('ProjectFilterService', () => {
     expect(localStorage.getItem('selectedProject:abc')).toBe('2');
     expect(create().getSelectedProjectId()).toBe(2);
 
-    teamService.getCurrentTeam.and.returnValue({id: 2, name: 'Other', code: 'xyz'});
+    teamService.getCurrentTeam.and.returnValue(testTeam({id: 2, name: 'Other', code: 'xyz'}));
     expect(create().getSelectedProjectId()).toBeNull();
   });
 

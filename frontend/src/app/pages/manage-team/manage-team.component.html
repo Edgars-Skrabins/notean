@@ -36,7 +36,18 @@
     </div>
   </section>
 
-  <section class="manageTeam__section" *ngIf="showDeleteTeam">
+  <section class="manageTeam__section" *ngIf="isOwner">
+    <h3 class="manageTeam__sectionTitle">{{ PHRASES.FEATURES | translate }}</h3>
+    <div class="manageTeam__features">
+      <app-checkbox
+        *ngFor="let option of featureOptions"
+        [checked]="features[option.feature]"
+        (checkedChange)="handleFeatureChange(option.feature, $event)"
+      >{{ option.label | translate }}</app-checkbox>
+    </div>
+  </section>
+
+  <section class="manageTeam__section" *ngIf="isOwner">
     <button type="button" class="manageTeam__deleteButton" (click)="handleDeleteTeam()">{{ PHRASES.DELETE_TEAM | translate }}</button>
   </section>
 </div>

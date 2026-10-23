@@ -48,4 +48,21 @@ class TeamTest < ActiveSupport::TestCase
       assert_equal "brand-new-unique-code", team.code
     end
   end
+
+  test "enables every feature by default" do
+    team = build_team
+
+    Team::FEATURES.each { |feature| assert team.feature_enabled?(feature) }
+  end
+
+  test "reports a disabled feature" do
+    team = build_team(boards_enabled: false)
+
+    assert_not team.feature_enabled?(:boards)
+    assert team.feature_enabled?(:pages)
+  end
+
+  test "reports an unknown feature as disabled" do
+    assert_not build_team.feature_enabled?(:projects)
+  end
 end

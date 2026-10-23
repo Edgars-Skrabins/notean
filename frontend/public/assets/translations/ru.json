@@ -231,6 +231,12 @@
   "TYPE_NAME_TO_CONFIRM": "Введите {{name}} для подтверждения",
   "PROJECT_DELETED": "Проект удалён",
   "BACK_TO_PROJECTS": "Назад к проектам",
+  "FEATURES": "Функции",
+  "FEATURE_PAGES": "Страницы",
+  "FEATURE_DIAGRAMS": "Диаграммы",
+  "FEATURE_BOARDS": "Доски",
+  "FEATURES_UPDATED": "Функции обновлены",
+  "FEATURE_TURNED_OFF": "Владелец команды отключил эту функцию",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Сеанс истёк. Пожалуйста, войдите снова",
@@ -256,7 +262,8 @@
       "TEAM_CREATE_FAILED": "Не удалось создать команду",
       "TEAM_RENAME_FAILED": "Не удалось переименовать команду",
       "NICKNAME_TAKEN": "Этот никнейм уже занят в этой команде",
-      "NICKNAME_INVALID": "Недопустимый никнейм"
+      "NICKNAME_INVALID": "Недопустимый никнейм",
+      "FEATURE_DISABLED": "Эта функция отключена для этой команды"
     },
     "PAGES": {
       "PAGE_NOT_FOUND": "Страница не найдена",

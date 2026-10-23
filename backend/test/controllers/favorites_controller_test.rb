@@ -217,4 +217,22 @@ class FavoritesControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ false, true ], favorites.map { |favorite| favorite["in_backlog"] }
     assert_equal [ @board.id, @board.id ], favorites.map { |favorite| favorite["board_id"] }
   end
+
+  test "index leaves out favorites whose feature is turned off, tickets following boards" do
+    page_favorite = favorite(@page, 0, 0)
+    diagram_favorite = favorite(@diagram, 1, 1)
+    favorite(@board, 2, 2)
+    favorite(@ticket, 3, 3)
+    @team.update!(boards_enabled: false)
+
+    get "/teams/#{@team.code}/favorites", headers: @headers
+    assert_response :success
+    assert_equal [ page_favorite.id, diagram_favorite.id ], JSON.parse(response.body)["favorites"].map { |f| f["id"] }
+
+    @team.update!(boards_enabled: true, pages_enabled: false)
+
+    get "/teams/#{@team.code}/favorites", headers: @headers
+    assert_equal %w[Diagram Board Ticket], JSON.parse(response.body)["favorites"].map { |f| f["favoritable_type"] }
+    assert_equal 4, Favorite.where(team: @team).count
+  end
 end

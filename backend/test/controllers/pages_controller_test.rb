@@ -81,4 +81,25 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal show_one, show_ten
     assert_equal update_one, update_ten
   end
+
+  test "returns FEATURE_DISABLED when pages are turned off" do
+    @team.update!(pages_enabled: false)
+
+    get "/teams/#{@team.code}/pages", headers: @headers
+    assert_response :forbidden
+    assert_equal({ "code" => "FEATURE_DISABLED" }, JSON.parse(response.body))
+
+    patch "/teams/#{@team.code}/pages/#{@page.id}", params: { page: { title: "Changed" } }, headers: @headers, as: :json
+    assert_response :forbidden
+    assert_equal "Notes", @page.reload.title
+  end
+
+  test "serves pages again once they are turned back on" do
+    @team.update!(pages_enabled: false)
+    @team.update!(pages_enabled: true)
+
+    get "/teams/#{@team.code}/pages/#{@page.id}", headers: @headers
+
+    assert_response :success
+  end
 end
