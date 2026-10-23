@@ -10,7 +10,7 @@
   padding: 11px 14px;
   background: none;
   border: none;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   color: var(--color-text-muted);
   font-family: inherit;
   font-size: 0.9rem;
@@ -61,7 +61,7 @@
   align-items: center;
   gap: var(--space-2);
   padding: 6px 10px;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   color: var(--color-text-muted);
   text-decoration: none;
   font-size: 0.85rem;
@@ -92,6 +92,11 @@
   border: none;
   font-family: inherit;
   cursor: pointer;
+}
+
+.sidebarBoards__create:hover {
+  background: none;
+  color: var(--color-text-heading);
 }
 
 .sidebarBoards__empty {
