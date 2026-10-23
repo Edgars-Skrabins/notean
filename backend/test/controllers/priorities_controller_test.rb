@@ -105,6 +105,16 @@ class PrioritiesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "PRIORITY_NOT_FOUND", JSON.parse(response.body)["code"]
   end
 
+  test "returns FEATURE_DISABLED when boards are turned off" do
+    @team.update!(boards_enabled: false)
+
+    post priorities_url, params: { priority: { name: "Urgent", color: "red" } }, headers: @headers, as: :json
+
+    assert_response :forbidden
+    assert_equal({ "code" => "FEATURE_DISABLED" }, JSON.parse(response.body))
+    assert_equal 5, @board.priorities.count
+  end
+
   test "non-members cannot manage a board's priorities" do
     outsider = User.create!(email: "mallory@example.com", password: "supersecret")
 
