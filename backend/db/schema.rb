@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_22_120000) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_23_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -187,6 +187,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_22_120000) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "pages_enabled", default: true, null: false
+    t.boolean "diagrams_enabled", default: true, null: false
+    t.boolean "boards_enabled", default: true, null: false
     t.index ["code"], name: "index_teams_on_code", unique: true
   end
 
