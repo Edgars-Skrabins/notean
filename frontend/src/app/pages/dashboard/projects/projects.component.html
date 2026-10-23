@@ -5,10 +5,12 @@
   </div>
 
   <ng-container *ngIf="projectFilterService.projects$ | async as projects">
-    <div class="projects__grid" *ngIf="projects.length">
-      <button type="button" class="projects__card" *ngFor="let project of projects" (click)="handleOpenProject(project)">
-        <span class="projects__name">{{ project.name }}</span>
-        <span class="projects__description">{{ project.description }}</span>
+    <div class="projects__list" *ngIf="projects.length">
+      <button type="button" class="projects__row" *ngFor="let project of projects" (click)="handleOpenProject(project)">
+        <span class="projects__text">
+          <span class="projects__name">{{ project.name }}</span>
+          <span class="projects__description">{{ project.description }}</span>
+        </span>
         <span class="projects__meta">
           <app-avatar [avatar]="project.owner.avatar" [nickname]="project.owner.nickname"></app-avatar>
           {{ project.owner.nickname }} · {{ PHRASES.MEMBER_COUNT | translate: {count: project.memberCount} }}
