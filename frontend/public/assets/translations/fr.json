@@ -115,6 +115,8 @@
   "NICKNAME": "Pseudo",
   "ENTER_NICKNAME": "Saisissez un pseudo",
   "LEAVE": "Quitter",
+  "CONFIRM_DISCARD_NEW_PAGE": "Abandonner cette nouvelle page ?",
+  "CONFIRM_DISCARD_NEW_DIAGRAM": "Abandonner ce nouveau diagramme ?",
   "CONFIRM_LEAVE_UNSAVED_CHANGES": "Vous avez des modifications non enregistrées. Quitter sans enregistrer ?",
   "PROFILE_UPDATED": "Informations du profil mises à jour",
   "NICKNAME_TOO_SHORT": "Le pseudo doit contenir au moins 3 caractères",

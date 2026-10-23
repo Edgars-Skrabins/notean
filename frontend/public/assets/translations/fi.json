@@ -115,6 +115,8 @@
   "NICKNAME": "Nimimerkki",
   "ENTER_NICKNAME": "Anna nimimerkki",
   "LEAVE": "Poistu",
+  "CONFIRM_DISCARD_NEW_PAGE": "Hylätäänkö tämä uusi sivu?",
+  "CONFIRM_DISCARD_NEW_DIAGRAM": "Hylätäänkö tämä uusi kaavio?",
   "CONFIRM_LEAVE_UNSAVED_CHANGES": "Sinulla on tallentamattomia muutoksia. Poistutaanko tallentamatta?",
   "PROFILE_UPDATED": "Profiilitiedot päivitetty",
   "NICKNAME_TOO_SHORT": "Nimimerkissä on oltava vähintään 3 merkkiä",

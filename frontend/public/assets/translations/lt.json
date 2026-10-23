@@ -115,6 +115,8 @@
   "NICKNAME": "Slapyvardis",
   "ENTER_NICKNAME": "Įveskite slapyvardį",
   "LEAVE": "Išeiti",
+  "CONFIRM_DISCARD_NEW_PAGE": "Atmesti šį naują puslapį?",
+  "CONFIRM_DISCARD_NEW_DIAGRAM": "Atmesti šią naują diagramą?",
   "CONFIRM_LEAVE_UNSAVED_CHANGES": "Turite neišsaugotų pakeitimų. Išeiti neišsaugojus?",
   "PROFILE_UPDATED": "Profilio informacija atnaujinta",
   "NICKNAME_TOO_SHORT": "Slapyvardį turi sudaryti bent 3 simboliai",

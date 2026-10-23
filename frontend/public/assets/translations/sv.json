@@ -115,6 +115,8 @@
   "NICKNAME": "Smeknamn",
   "ENTER_NICKNAME": "Ange smeknamn",
   "LEAVE": "Lämna",
+  "CONFIRM_DISCARD_NEW_PAGE": "Kasta den här nya sidan?",
+  "CONFIRM_DISCARD_NEW_DIAGRAM": "Kasta det här nya diagrammet?",
   "CONFIRM_LEAVE_UNSAVED_CHANGES": "Du har osparade ändringar. Vill du lämna utan att spara?",
   "PROFILE_UPDATED": "Profilinformationen har uppdaterats",
   "NICKNAME_TOO_SHORT": "Smeknamnet måste vara minst 3 tecken",

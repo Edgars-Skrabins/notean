@@ -115,6 +115,8 @@
   "NICKNAME": "Apodo",
   "ENTER_NICKNAME": "Introduce un apodo",
   "LEAVE": "Salir",
+  "CONFIRM_DISCARD_NEW_PAGE": "¿Descartar esta página nueva?",
+  "CONFIRM_DISCARD_NEW_DIAGRAM": "¿Descartar este diagrama nuevo?",
   "CONFIRM_LEAVE_UNSAVED_CHANGES": "Tienes cambios sin guardar. ¿Salir sin guardar?",
   "PROFILE_UPDATED": "Información del perfil actualizada",
   "NICKNAME_TOO_SHORT": "El apodo debe tener al menos 3 caracteres",

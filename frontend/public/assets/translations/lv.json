@@ -115,6 +115,8 @@
   "NICKNAME": "Segvārds",
   "ENTER_NICKNAME": "Ievadiet segvārdu",
   "LEAVE": "Iziet",
+  "CONFIRM_DISCARD_NEW_PAGE": "Atmest šo jauno lapu?",
+  "CONFIRM_DISCARD_NEW_DIAGRAM": "Atmest šo jauno diagrammu?",
   "CONFIRM_LEAVE_UNSAVED_CHANGES": "Jums ir nesaglabātas izmaiņas. Iziet bez saglabāšanas?",
   "PROFILE_UPDATED": "Profila informācija atjaunināta",
   "NICKNAME_TOO_SHORT": "Segvārdam jābūt vismaz 3 rakstzīmes garam",
