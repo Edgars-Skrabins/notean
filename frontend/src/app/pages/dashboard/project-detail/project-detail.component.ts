@@ -1,76 +1,91 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {NgIf} from '@angular/common';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {ActivatedRoute, Router} from '@angular/router';
+import {DatePipe, NgFor, NgIf} from '@angular/common';
+import {Subscription} from 'rxjs';
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
+import {ErrorCode} from "@config/errorCodes";
 import {ProjectService} from "@services/project.service";
-import {ProjectFilterService} from "@services/project-filter.service";
-import {TeamService} from "@services/team.service";
+import {TeamService, ALL_FEATURES_ENABLED} from "@services/team.service";
 import {ToastService} from "@services/toast.service";
 import {NavigationService} from "@services/navigation.service";
+import {PageService} from "@services/page.service";
+import {DiagramService} from "@services/diagram.service";
+import {BoardService} from "@services/board.service";
 import {ToastType} from "@models/toast.model";
-import {DeleteProjectMode, ProjectDetail, ProjectParams} from "@models/project.model";
-import {TeamMember} from "@models/team.model";
+import {ProjectDetail} from "@models/project.model";
+import {TeamFeature, TeamFeatures, TeamMember} from "@models/team.model";
+import {BoardUser} from "@models/board.model";
 import {HasUnsavedChanges} from "@models/unsaved-changes.model";
-import {ProjectFormComponent} from "@components/project-form/project-form.component";
+import {IconName} from "@components/icon/icon.component";
+import {AvatarComponent} from "@components/avatar/avatar.component";
 import {ButtonComponent} from "@components/button/button.component";
-import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
-import {DeleteProjectDialogComponent} from "@components/delete-project-dialog/delete-project-dialog.component";
+import {ProjectItemRowComponent} from "@components/project-item-row/project-item-row.component";
+import {ProjectSettingsDialogComponent} from "@components/project-settings-dialog/project-settings-dialog.component";
 import {errorPhrase} from "@utils/errorPhrase";
+import {boardRoute} from "@utils/ticketRoute";
 import {AppRoutes} from "../../../app/app-routes.enum";
 
-function toParams(project: ProjectDetail): ProjectParams {
-  return {
-    name: project.name,
-    description: project.description,
-    ownerUserId: project.owner.id,
-    memberIds: project.members.map((member) => member.id),
-  };
+export interface ProjectItem {
+  id: number;
+  title: string;
+  creator: { nickname: string };
+  updatedAt: string;
 }
 
-function sameParams(a: ProjectParams, b: ProjectParams): boolean {
-  const sortedA = [...a.memberIds].sort();
-  const sortedB = [...b.memberIds].sort();
-  return a.name === b.name
-    && a.description === b.description
-    && a.ownerUserId === b.ownerUserId
-    && sortedA.length === sortedB.length
-    && sortedA.every((id, index) => id === sortedB[index]);
+export interface ProjectItemGroup {
+  feature: TeamFeature;
+  label: string;
+  icon: IconName;
+  items: ProjectItem[];
+}
+
+function newestFirst(items: ProjectItem[]): ProjectItem[] {
+  return [...items].sort((a, b) => Date.parse(b.updatedAt) - Date.parse(a.updatedAt));
 }
 
 @Component({
   selector: 'app-project-detail',
   standalone: true,
   imports: [
+    DatePipe,
+    NgFor,
     NgIf,
     TranslateModule,
-    ProjectFormComponent,
+    AvatarComponent,
     ButtonComponent,
-    ConfirmDialogComponent,
-    DeleteProjectDialogComponent
+    ProjectItemRowComponent,
+    ProjectSettingsDialogComponent
   ],
   templateUrl: './project-detail.component.html',
   styleUrl: './project-detail.component.css'
 })
-export class ProjectDetailComponent implements OnInit, HasUnsavedChanges {
+export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChanges {
   protected readonly PHRASES = PHRASES;
 
+  @ViewChild(ProjectSettingsDialogComponent) settingsDialog?: ProjectSettingsDialogComponent;
+
   project: ProjectDetail | null = null;
-  savedParams: ProjectParams | null = null;
-  params: ProjectParams | null = null;
   members: TeamMember[] = [];
   alertMessage = '';
-  nameError = '';
-  isSaving = false;
-  isDeleteDialogOpen = false;
-  isLeaveConfirmOpen = false;
+  features: TeamFeatures = ALL_FEATURES_ENABLED;
+  itemsLoaded = false;
+  isSettingsOpen = false;
+  groups: ProjectItemGroup[] = [
+    {feature: 'pages', label: PHRASES.DOCUMENT_PAGES, icon: 'page', items: []},
+    {feature: 'diagrams', label: PHRASES.DIAGRAMS, icon: 'diagram', items: []},
+    {feature: 'boards', label: PHRASES.BOARDS, icon: 'board', items: []},
+  ];
 
-  private resolveLeave: ((canLeave: boolean) => void) | null = null;
+  private featuresSubscription?: Subscription;
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private projectService: ProjectService,
-    private projectFilterService: ProjectFilterService,
+    private pageService: PageService,
+    private diagramService: DiagramService,
+    private boardService: BoardService,
     private teamService: TeamService,
     private toastService: ToastService,
     private navigationService: NavigationService
@@ -81,85 +96,73 @@ export class ProjectDetailComponent implements OnInit, HasUnsavedChanges {
     return this.teamService.getCurrentTeamCode();
   }
 
-  get hasUnsavedChanges(): boolean {
-    return !!this.params && !!this.savedParams && !sameParams(this.params, this.savedParams);
+  get visibleGroups(): ProjectItemGroup[] {
+    return this.groups.filter((group) => this.features[group.feature] && group.items.length);
+  }
+
+  get people(): { user: BoardUser; isOwner: boolean }[] {
+    if (!this.project) {
+      return [];
+    }
+
+    const owner = this.project.owner;
+    return [
+      {user: owner, isOwner: true},
+      ...this.project.members.filter((member) => member.id !== owner.id).map((user) => ({user, isOwner: false})),
+    ];
   }
 
   ngOnInit() {
     const projectId = Number(this.route.snapshot.paramMap.get('id'));
-    this.teamService.fetchTeamMembers(this.teamCode).then((members) => {
-      this.members = members;
+    this.featuresSubscription = this.teamService.features$.subscribe((features) => {
+      this.features = features;
     });
     this.projectService.getProject(this.teamCode, projectId).then((response) => {
       if (!response.success) {
         this.alertMessage = errorPhrase(response.code);
         return;
       }
-      this.applyProject(response.project);
+      this.project = response.project;
+    });
+    this.loadItems(projectId);
+  }
+
+  ngOnDestroy() {
+    this.featuresSubscription?.unsubscribe();
+  }
+
+  handleOpenItem(group: ProjectItemGroup, item: ProjectItem) {
+    switch (group.feature) {
+      case 'pages':
+        this.router.navigate([AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES, item.id]);
+        break;
+      case 'diagrams':
+        this.router.navigate([AppRoutes.DASHBOARD, AppRoutes.DIAGRAMS, item.id]);
+        break;
+      case 'boards':
+        this.router.navigate(boardRoute(item.id));
+        break;
+    }
+  }
+
+  handleOpenSettings() {
+    this.teamService.fetchTeamMembers(this.teamCode).then((members) => {
+      this.members = members;
+      this.isSettingsOpen = true;
     });
   }
 
-  handleParamsChange(params: ProjectParams) {
-    this.params = params;
-    this.nameError = '';
+  handleSettingsClosed() {
+    this.isSettingsOpen = false;
   }
 
-  handleSave() {
-    if (!this.project || !this.params || !this.hasUnsavedChanges || this.isSaving) {
-      return;
-    }
-
-    this.isSaving = true;
-    this.projectService.updateProject(this.teamCode, this.project.id, {...this.params, name: this.params.name.trim()})
-      .then((response) => {
-        if (!response.success) {
-          if (response.code === 'PROJECT_NAME_TAKEN') {
-            this.nameError = errorPhrase(response.code);
-          } else {
-            this.toastService.show({type: ToastType.ERROR, message: errorPhrase(response.code)});
-          }
-          return;
-        }
-
-        this.applyProject(response.project);
-        this.projectFilterService.load();
-        this.toastService.show({type: ToastType.SUCCESS, message: PHRASES.PROJECT_SAVED});
-      })
-      .finally(() => {
-        this.isSaving = false;
-      });
+  handleSaved(project: ProjectDetail) {
+    this.project = project;
   }
 
-  handleOpenDelete() {
-    this.isDeleteDialogOpen = true;
-  }
-
-  handleCancelDelete() {
-    this.isDeleteDialogOpen = false;
-  }
-
-  handleConfirmDelete(event: { mode: DeleteProjectMode; confirmName: string }) {
-    if (!this.project) {
-      return;
-    }
-
-    const projectId = this.project.id;
-    this.projectService.deleteProject(this.teamCode, projectId, event.mode, event.confirmName)
-      .then((response) => {
-        if (!response.success) {
-          this.toastService.show({type: ToastType.ERROR, message: errorPhrase(response.code)});
-          return;
-        }
-
-        this.isDeleteDialogOpen = false;
-        this.savedParams = this.params;
-        if (this.projectFilterService.getSelectedProjectId() === projectId) {
-          this.projectFilterService.select(null);
-        }
-        this.projectFilterService.load();
-        this.toastService.show({type: ToastType.SUCCESS, message: PHRASES.PROJECT_DELETED});
-        this.handleGoBack();
-      });
+  handleDeleted() {
+    this.isSettingsOpen = false;
+    this.handleGoBack();
   }
 
   handleGoBack() {
@@ -167,35 +170,25 @@ export class ProjectDetailComponent implements OnInit, HasUnsavedChanges {
   }
 
   confirmLeave(): boolean | Promise<boolean> {
-    if (!this.hasUnsavedChanges) {
-      return true;
-    }
-
-    this.resolveLeave?.(false);
-    this.isLeaveConfirmOpen = true;
-
-    return new Promise((resolve) => {
-      this.resolveLeave = resolve;
-    });
+    return this.settingsDialog?.confirmLeave() ?? true;
   }
 
-  handleConfirmLeave() {
-    this.closeLeaveConfirm(true);
+  private loadItems(projectId: number) {
+    const requests: Record<TeamFeature, () => Promise<ProjectItem[]>> = {
+      pages: () => this.pageService.list(this.teamCode, projectId).then((response) => response.success ? response.items : this.failedItems(response.code)),
+      diagrams: () => this.diagramService.list(this.teamCode, projectId).then((response) => response.success ? response.items : this.failedItems(response.code)),
+      boards: () => this.boardService.listBoards(this.teamCode, projectId).then((response) => response.success ? response.boards : this.failedItems(response.code)),
+    };
+
+    Promise.all(this.groups.map((group) => this.teamService.isFeatureEnabled(group.feature) ? requests[group.feature]() : Promise.resolve([])))
+      .then((results) => {
+        this.groups = this.groups.map((group, index) => ({...group, items: newestFirst(results[index])}));
+        this.itemsLoaded = true;
+      });
   }
 
-  handleCancelLeave() {
-    this.closeLeaveConfirm(false);
-  }
-
-  private applyProject(project: ProjectDetail) {
-    this.project = project;
-    this.savedParams = toParams(project);
-    this.params = toParams(project);
-  }
-
-  private closeLeaveConfirm(canLeave: boolean) {
-    this.isLeaveConfirmOpen = false;
-    this.resolveLeave?.(canLeave);
-    this.resolveLeave = null;
+  private failedItems(code: ErrorCode): ProjectItem[] {
+    this.toastService.show({type: ToastType.ERROR, message: errorPhrase(code)});
+    return [];
   }
 }

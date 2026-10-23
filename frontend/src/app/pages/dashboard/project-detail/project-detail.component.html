@@ -2,38 +2,48 @@
 
 <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
-<div class="projectDetail dashboardStub" *ngIf="project && params">
-  <h2 class="dashboardStub__title projectDetail__title">{{ project.name }}</h2>
+<div class="projectDetail" *ngIf="project">
+  <div class="projectDetail__main">
+    <h2 class="projectDetail__title">{{ project.name }}</h2>
+    <p class="projectDetail__description" *ngIf="project.description">{{ project.description }}</p>
 
-  <app-project-form
-    [params]="params"
-    [members]="members"
-    [readonly]="!project.canManage"
-    [nameError]="nameError"
-    (paramsChange)="handleParamsChange($event)"
-  ></app-project-form>
+    <section class="projectDetail__items">
+      <h3 class="projectDetail__heading">{{ PHRASES.PROJECT_ITEMS | translate }}</h3>
 
-  <app-button *ngIf="project.canManage" variant="primary" [disabled]="!hasUnsavedChanges || isSaving" (pressed)="handleSave()">
-    {{ PHRASES.SAVE | translate }}
-  </app-button>
+      <div class="projectDetail__group" *ngFor="let group of visibleGroups">
+        <h4 class="projectDetail__groupTitle">{{ group.label | translate }}</h4>
+        <app-project-item-row
+          *ngFor="let item of group.items"
+          [icon]="group.icon"
+          [title]="item.title"
+          [meta]="item.creator.nickname + ' · ' + (item.updatedAt | date)"
+          (opened)="handleOpenItem(group, item)"
+        ></app-project-item-row>
+      </div>
 
-  <section class="projectDetail__danger" *ngIf="project.canManage">
-    <h3 class="projectDetail__dangerTitle">{{ PHRASES.DANGER_ZONE | translate }}</h3>
-    <app-button variant="danger" icon="trash" (pressed)="handleOpenDelete()">{{ PHRASES.DELETE_PROJECT | translate }}</app-button>
-  </section>
+      <p class="projectDetail__empty" *ngIf="itemsLoaded && !visibleGroups.length">{{ PHRASES.NO_PROJECT_ITEMS | translate }}</p>
+    </section>
+  </div>
+
+  <aside class="projectDetail__sidebar">
+    <app-button *ngIf="project.canManage" variant="ghost" (pressed)="handleOpenSettings()">{{ PHRASES.SETTINGS | translate }}</app-button>
+
+    <div>
+      <h3 class="projectDetail__sidebarLabel">{{ PHRASES.PROJECT_MEMBERS | translate }}</h3>
+      <p class="projectDetail__person" *ngFor="let person of people">
+        <app-avatar [avatar]="person.user.avatar" [nickname]="person.user.nickname"></app-avatar>
+        <span class="projectDetail__nickname">{{ person.user.nickname }}</span>
+        <span class="projectDetail__ownerLabel" *ngIf="person.isOwner">{{ PHRASES.OWNER | translate }}</span>
+      </p>
+    </div>
+  </aside>
 </div>
 
-<app-delete-project-dialog
-  *ngIf="isDeleteDialogOpen && project"
-  [projectName]="project.name"
-  (confirmed)="handleConfirmDelete($event)"
-  (cancelled)="handleCancelDelete()"
-></app-delete-project-dialog>
-
-<app-confirm-dialog
-  *ngIf="isLeaveConfirmOpen"
-  [message]="PHRASES.CONFIRM_LEAVE_UNSAVED_CHANGES | translate"
-  [confirmLabel]="PHRASES.LEAVE"
-  (confirmed)="handleConfirmLeave()"
-  (cancelled)="handleCancelLeave()"
-></app-confirm-dialog>
+<app-project-settings-dialog
+  *ngIf="isSettingsOpen && project"
+  [project]="project"
+  [members]="members"
+  (saved)="handleSaved($event)"
+  (deleted)="handleDeleted()"
+  (closed)="handleSettingsClosed()"
+></app-project-settings-dialog>
