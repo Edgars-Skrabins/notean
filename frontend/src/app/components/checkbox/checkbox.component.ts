@@ -10,6 +10,7 @@ import {Component, EventEmitter, Input, Output} from '@angular/core';
 export class CheckboxComponent {
   @Input() checked = false;
   @Input() disabled = false;
+  @Input() ariaLabel = '';
   @Output() checkedChange = new EventEmitter<boolean>();
 
   handleChange(checked: boolean) {

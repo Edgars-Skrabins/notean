@@ -4,6 +4,7 @@
     class="checkbox__input"
     [checked]="checked"
     [disabled]="disabled"
+    [attr.aria-label]="ariaLabel || null"
     (change)="handleChange($any($event.target).checked)"
   />
   <span class="checkbox__circle"></span>

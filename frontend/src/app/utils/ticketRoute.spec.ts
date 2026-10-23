@@ -6,8 +6,8 @@ describe('ticketRoute', () => {
     expect(ticketRoute(5, 13, false)).toEqual([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 5, AppRoutes.KANBAN, AppRoutes.TICKETS, 13]);
   });
 
-  it('opens a backlog ticket over the backlog tab', () => {
-    expect(ticketRoute(5, 13, true)).toEqual([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 5, AppRoutes.BACKLOG, AppRoutes.TICKETS, 13]);
+  it('opens a backlog ticket over the list tab', () => {
+    expect(ticketRoute(5, 13, true)).toEqual([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 5, AppRoutes.LIST, AppRoutes.TICKETS, 13]);
   });
 });
 

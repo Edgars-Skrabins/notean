@@ -1,0 +1,37 @@
+<button
+  type="button"
+  class="menuButton__trigger"
+  cdkOverlayOrigin
+  #origin="cdkOverlayOrigin"
+  aria-haspopup="menu"
+  [attr.aria-expanded]="isOpen"
+  [disabled]="disabled"
+  (click)="toggle()"
+>
+  {{ label | translate }}
+  <app-icon class="menuButton__chevron" name="chevron-right"></app-icon>
+</button>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayOpen]="isOpen"
+  [cdkConnectedOverlayPositions]="DROPDOWN_POSITIONS"
+  [cdkConnectedOverlayPush]="true"
+  [cdkConnectedOverlayViewportMargin]="4"
+  (overlayOutsideClick)="handleOutsideClick($event)"
+  (detach)="close()"
+>
+  <div class="menuButton__panel" role="menu" (keydown.escape)="close()">
+    <button
+      *ngFor="let option of options; trackBy: trackByValue"
+      type="button"
+      role="menuitem"
+      class="menuButton__option"
+      (click)="pick(option)"
+    >
+      <app-avatar *ngIf="option.avatar" [avatar]="option.avatar" [nickname]="option.label ?? ''"></app-avatar>
+      <span class="menuButton__optionLabel">{{ option.labelKey ? (option.labelKey | translate) : option.label }}</span>
+    </button>
+  </div>
+</ng-template>

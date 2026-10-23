@@ -2,6 +2,8 @@ class TicketsController < ApplicationController
   include BoardScoped
   include TicketJson
 
+  BULK_ACTIONS = [ :column_id, :to_backlog, :add_assignee_id, :remove_assignee_id ].freeze
+
   before_action :authenticate_user!
   before_action :set_team
   before_action :authorize_team_member!
@@ -57,6 +59,46 @@ class TicketsController < ApplicationController
     head :no_content
   end
 
+  def bulk_update
+    return render_error(ErrorCodes::Tickets::BULK_ACTION_INVALID, :unprocessable_entity) unless valid_bulk_action?
+
+    tickets = load_bulk_tickets
+    return if tickets.nil?
+
+    case bulk_action
+    when :column_id, :to_backlog
+      column = nil
+      if bulk_action == :column_id
+        column = @board.columns.find_by(id: bulk_ticket_params[:column_id])
+        return render_error(ErrorCodes::Boards::COLUMN_NOT_FOUND, :not_found) if column.nil?
+      end
+      Ticket.transaction { move_tickets(tickets, column) }
+    when :add_assignee_id
+      user = find_assignable_user(bulk_ticket_params[:add_assignee_id])
+      return if user.nil?
+
+      Ticket.transaction { assign_tickets(tickets, user) }
+    when :remove_assignee_id
+      Ticket.transaction { unassign_tickets(tickets, bulk_ticket_params[:remove_assignee_id]) }
+    end
+
+    render json: { tickets: bulk_tickets_json }
+  end
+
+  def bulk_destroy
+    return render_error(ErrorCodes::Tickets::BULK_ACTION_INVALID, :unprocessable_entity) if bulk_ticket_ids.empty?
+
+    tickets = load_bulk_tickets
+    return if tickets.nil?
+
+    Ticket.transaction do
+      column_ids = tickets.map(&:column_id).uniq
+      tickets.each(&:destroy!)
+      column_ids.each { |column_id| reindex_group(column_id) }
+    end
+    head :no_content
+  end
+
   private
 
   def set_ticket
@@ -71,6 +113,66 @@ class TicketsController < ApplicationController
 
   def to_backlog?
     ActiveModel::Type::Boolean.new.cast(update_ticket_params[:to_backlog])
+  end
+
+  def bulk_ticket_ids
+    Array(bulk_ticket_params[:ticket_ids]).map(&:to_i).uniq
+  end
+
+  def bulk_actions_given
+    BULK_ACTIONS.select do |action|
+      value = bulk_ticket_params[action]
+      action == :to_backlog ? ActiveModel::Type::Boolean.new.cast(value) : value.present?
+    end
+  end
+
+  def bulk_action
+    bulk_actions_given.first
+  end
+
+  def valid_bulk_action?
+    bulk_ticket_ids.any? && bulk_actions_given.length == 1
+  end
+
+  def load_bulk_tickets
+    tickets = @board.tickets.where(id: bulk_ticket_ids).index_by(&:id)
+    if tickets.length != bulk_ticket_ids.length
+      render_error(ErrorCodes::Tickets::TICKET_NOT_FOUND, :not_found)
+      return nil
+    end
+    bulk_ticket_ids.map { |id| tickets[id] }
+  end
+
+  def move_tickets(tickets, target_column)
+    source_column_ids = tickets.map(&:column_id).uniq - [ target_column&.id ]
+    start = (@board.tickets.where(column: target_column).where.not(id: tickets.map(&:id)).maximum(:position) || -1) + 1
+    tickets.each_with_index do |ticket, index|
+      ticket.update_columns(column_id: target_column&.id, position: start + index, updated_at: Time.current)
+    end
+    source_column_ids.each { |column_id| reindex_group(column_id) }
+  end
+
+  def reindex_group(column_id)
+    @board.tickets.where(column_id: column_id).order(:position).each_with_index do |ticket, index|
+      ticket.update_column(:position, index) unless ticket.position == index
+    end
+  end
+
+  def assign_tickets(tickets, user)
+    now = Time.current
+    rows = tickets.map { |ticket| { ticket_id: ticket.id, user_id: user.id, created_at: now, updated_at: now } }
+    TicketAssignee.insert_all(rows, unique_by: [ :ticket_id, :user_id ])
+    @board.tickets.where(id: tickets.map(&:id)).touch_all
+  end
+
+  def unassign_tickets(tickets, user_id)
+    TicketAssignee.where(ticket_id: tickets.map(&:id), user_id: user_id).delete_all
+    @board.tickets.where(id: tickets.map(&:id)).touch_all
+  end
+
+  def bulk_tickets_json
+    tickets = @board.tickets.includes(TicketJson::ASSIGNEES_PRELOAD).where(id: bulk_ticket_ids).index_by(&:id)
+    bulk_ticket_ids.map { |id| ticket_summary_json(tickets[id]) }
   end
 
   def move_ticket(target_column)

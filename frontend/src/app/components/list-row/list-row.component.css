@@ -2,31 +2,37 @@
   display: block;
 }
 
-.backlogRow {
+.listRow {
   display: flex;
   align-items: center;
-  gap: var(--space-2);
+  gap: var(--space-3);
+  padding-left: var(--space-3);
   background: var(--color-input-bg);
   border: 1px solid var(--color-input-border);
   border-radius: var(--radius-sm);
   cursor: grab;
 }
 
-.backlogRow:hover {
+.listRow:hover,
+.listRow--selected {
   border-color: var(--color-input-border-focus);
 }
 
-.backlogRow__main {
+.listRow__checkbox {
+  flex-shrink: 0;
+}
+
+.listRow__main {
   flex: 1;
   min-width: 0;
   background: none;
   border: none;
-  padding: 10px 12px;
+  padding: 10px 0;
   text-align: left;
   cursor: pointer;
 }
 
-.backlogRow__title {
+.listRow__title {
   display: block;
   color: var(--color-text-heading);
   font-size: 0.9rem;
@@ -36,13 +42,29 @@
   white-space: nowrap;
 }
 
-.backlogRow__assignees {
+.listRow__status,
+.listRow__date {
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.listRow__status {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.listRow__assignees {
   flex-shrink: 0;
 }
 
-.backlogRow__actions {
+.listRow__actions {
   display: flex;
+  justify-content: flex-end;
   gap: 2px;
+  min-width: 88px;
   flex-shrink: 0;
   padding-right: var(--space-2);
 }

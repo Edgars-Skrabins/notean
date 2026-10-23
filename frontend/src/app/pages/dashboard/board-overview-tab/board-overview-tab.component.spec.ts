@@ -79,6 +79,6 @@ describe('BoardOverviewTabComponent', () => {
     component.handleOpenTicket(overview.recentTickets[1]);
 
     expect(router.navigate).toHaveBeenCalledWith([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 9, AppRoutes.KANBAN, AppRoutes.TICKETS, 1]);
-    expect(router.navigate).toHaveBeenCalledWith([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 9, AppRoutes.BACKLOG, AppRoutes.TICKETS, 3]);
+    expect(router.navigate).toHaveBeenCalledWith([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 9, AppRoutes.LIST, AppRoutes.TICKETS, 3]);
   });
 });

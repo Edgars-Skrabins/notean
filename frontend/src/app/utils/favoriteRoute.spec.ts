@@ -41,6 +41,6 @@ describe('favoriteRoute', () => {
 
   it('routes a backlog ticket to its popup over the backlog tab', () => {
     expect(favoriteRoute(buildFavorite({favoritableType: 'Ticket', favoritableId: 13, boardId: 5, inBacklog: true})))
-      .toEqual([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 5, AppRoutes.BACKLOG, AppRoutes.TICKETS, 13]);
+      .toEqual([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 5, AppRoutes.LIST, AppRoutes.TICKETS, 13]);
   });
 });

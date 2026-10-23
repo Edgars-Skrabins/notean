@@ -1,0 +1,17 @@
+<div class="ticketSelectionBar">
+  <span class="ticketSelectionBar__count">{{ PHRASES.SELECTED_COUNT | translate: {count: count} }}</span>
+
+  <app-menu-button [label]="PHRASES.SET_STATUS" [options]="statusOptions" [disabled]="busy" (picked)="handleSetStatus($event)"></app-menu-button>
+  <app-menu-button [label]="PHRASES.ASSIGN" [options]="memberOptions" [disabled]="busy" (picked)="handleAssign($event)"></app-menu-button>
+  <app-menu-button
+    [label]="PHRASES.UNASSIGN"
+    [options]="assignedOptions"
+    [disabled]="busy || !assignedOptions.length"
+    (picked)="handleUnassign($event)"
+  ></app-menu-button>
+
+  <div class="ticketSelectionBar__end">
+    <app-icon-button icon="trash" variant="danger" [size]="28" [disabled]="busy" [tooltip]="PHRASES.DELETE | translate" (pressed)="deleteSelected.emit()"></app-icon-button>
+    <app-icon-button icon="x" [size]="28" [tooltip]="PHRASES.CLEAR_SELECTION | translate" (pressed)="clearSelection.emit()"></app-icon-button>
+  </div>
+</div>

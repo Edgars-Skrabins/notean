@@ -87,7 +87,7 @@ describe('MyWorkComponent', () => {
     (fixture.nativeElement.querySelectorAll('.myWork__ticket')[1] as HTMLElement).click();
     (fixture.nativeElement.querySelector('.myWork__board') as HTMLElement).click();
 
-    expect(router.navigate).toHaveBeenCalledWith([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 5, AppRoutes.BACKLOG, AppRoutes.TICKETS, 2]);
+    expect(router.navigate).toHaveBeenCalledWith([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 5, AppRoutes.LIST, AppRoutes.TICKETS, 2]);
     expect(router.navigate).toHaveBeenCalledWith([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 5, AppRoutes.KANBAN]);
   });
 
