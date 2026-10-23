@@ -5,7 +5,8 @@
 .globalSearch__input {
   width: 100%;
   box-sizing: border-box;
-  padding: 9px 14px;
+  height: var(--control-height-sm);
+  padding: 0 14px;
   background: var(--color-input-bg);
   border: 1px solid var(--color-input-border);
   border-radius: var(--radius-sm);

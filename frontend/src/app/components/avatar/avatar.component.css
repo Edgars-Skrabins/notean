@@ -29,6 +29,12 @@
   font-size: var(--font-xs);
 }
 
+.avatar--size28 {
+  width: 28px;
+  height: 28px;
+  font-size: var(--font-xs);
+}
+
 .avatar--size32 {
   width: 32px;
   height: 32px;
