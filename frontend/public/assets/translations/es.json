@@ -214,6 +214,12 @@
   "TYPE_NAME_TO_CONFIRM": "Escribe {{name}} para confirmar",
   "PROJECT_DELETED": "Proyecto eliminado",
   "BACK_TO_PROJECTS": "Volver a proyectos",
+  "FEATURES": "Funciones",
+  "FEATURE_PAGES": "Páginas",
+  "FEATURE_DIAGRAMS": "Diagramas",
+  "FEATURE_BOARDS": "Tableros",
+  "FEATURES_UPDATED": "Funciones actualizadas",
+  "FEATURE_TURNED_OFF": "El propietario del equipo desactivó esta función",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Tu sesión ha caducado. Vuelve a iniciar sesión",
@@ -239,7 +245,8 @@
       "TEAM_CREATE_FAILED": "No se pudo crear el equipo",
       "TEAM_RENAME_FAILED": "No se pudo renombrar el equipo",
       "NICKNAME_TAKEN": "Este apodo ya está en uso en este equipo",
-      "NICKNAME_INVALID": "Este apodo no es válido"
+      "NICKNAME_INVALID": "Este apodo no es válido",
+      "FEATURE_DISABLED": "Esta función está desactivada para este equipo"
     },
     "PAGES": {
       "PAGE_NOT_FOUND": "Página no encontrada",

@@ -214,6 +214,12 @@
   "TYPE_NAME_TO_CONFIRM": "Saisissez {{name}} pour confirmer",
   "PROJECT_DELETED": "Projet supprimé",
   "BACK_TO_PROJECTS": "Retour aux projets",
+  "FEATURES": "Fonctionnalités",
+  "FEATURE_PAGES": "Pages",
+  "FEATURE_DIAGRAMS": "Diagrammes",
+  "FEATURE_BOARDS": "Tableaux",
+  "FEATURES_UPDATED": "Fonctionnalités mises à jour",
+  "FEATURE_TURNED_OFF": "Cette fonctionnalité a été désactivée par le propriétaire de l'équipe",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Votre session a expiré. Veuillez vous reconnecter",
@@ -239,7 +245,8 @@
       "TEAM_CREATE_FAILED": "Impossible de créer l'équipe",
       "TEAM_RENAME_FAILED": "Impossible de renommer l'équipe",
       "NICKNAME_TAKEN": "Ce pseudo est déjà utilisé dans cette équipe",
-      "NICKNAME_INVALID": "Ce pseudo n'est pas valide"
+      "NICKNAME_INVALID": "Ce pseudo n'est pas valide",
+      "FEATURE_DISABLED": "Cette fonctionnalité est désactivée pour cette équipe"
     },
     "PAGES": {
       "PAGE_NOT_FOUND": "Page introuvable",

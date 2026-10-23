@@ -214,6 +214,12 @@
   "TYPE_NAME_TO_CONFIRM": "Vahvista kirjoittamalla {{name}}",
   "PROJECT_DELETED": "Projekti poistettu",
   "BACK_TO_PROJECTS": "Takaisin projekteihin",
+  "FEATURES": "Ominaisuudet",
+  "FEATURE_PAGES": "Sivut",
+  "FEATURE_DIAGRAMS": "Kaaviot",
+  "FEATURE_BOARDS": "Taulut",
+  "FEATURES_UPDATED": "Ominaisuudet päivitetty",
+  "FEATURE_TURNED_OFF": "Tiimin omistaja poisti tämän ominaisuuden käytöstä",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Istuntosi on vanhentunut. Kirjaudu sisään uudelleen",
@@ -239,7 +245,8 @@
       "TEAM_CREATE_FAILED": "Tiimiä ei voitu luoda",
       "TEAM_RENAME_FAILED": "Tiimiä ei voitu nimetä uudelleen",
       "NICKNAME_TAKEN": "Tämä nimimerkki on jo käytössä tässä tiimissä",
-      "NICKNAME_INVALID": "Tämä nimimerkki ei kelpaa"
+      "NICKNAME_INVALID": "Tämä nimimerkki ei kelpaa",
+      "FEATURE_DISABLED": "Tämä ominaisuus on poistettu käytöstä tässä tiimissä"
     },
     "PAGES": {
       "PAGE_NOT_FOUND": "Sivua ei löytynyt",
