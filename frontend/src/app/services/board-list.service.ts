@@ -38,6 +38,11 @@ export class BoardListService {
   }
 
   async load() {
+    if (!this.teamService.isFeatureEnabled('boards')) {
+      this.boardsSubject.next([]);
+      return null;
+    }
+
     const teamCode = this.teamService.getCurrentTeamCode();
     const response = await this.boardService.listBoards(teamCode, this.projectFilterService.getSelectedProjectId());
     if (response.success) {

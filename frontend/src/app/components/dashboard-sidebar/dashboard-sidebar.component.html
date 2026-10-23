@@ -1,4 +1,4 @@
-<nav class="dashboardSidebar" [class.dashboardSidebar--collapsed]="collapsed">
+<nav class="dashboardSidebar" [class.dashboardSidebar--collapsed]="collapsed" *ngIf="teamService.features$ | async as features">
   <a class="dashboardSidebar__item" [routerLink]="AppRoutes.DASHBOARD_HOME" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="collapsed ? (PHRASES.HOME | translate) : ''" [attr.aria-label]="PHRASES.HOME | translate">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M3 12l9-9 9 9"></path>
@@ -12,17 +12,17 @@
     <span class="dashboardSidebar__label">{{ PHRASES.PROJECTS | translate }}</span>
   </a>
 
-  <a class="dashboardSidebar__item" [routerLink]="AppRoutes.DOCUMENT_PAGES" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="collapsed ? (PHRASES.DOCUMENT_PAGES | translate) : ''" [attr.aria-label]="PHRASES.DOCUMENT_PAGES | translate">
+  <a *ngIf="features.pages" class="dashboardSidebar__item" [routerLink]="AppRoutes.DOCUMENT_PAGES" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="collapsed ? (PHRASES.DOCUMENT_PAGES | translate) : ''" [attr.aria-label]="PHRASES.DOCUMENT_PAGES | translate">
     <app-icon name="page" class="dashboardSidebar__icon"></app-icon>
     <span class="dashboardSidebar__label">{{ PHRASES.DOCUMENT_PAGES | translate }}</span>
   </a>
 
-  <a class="dashboardSidebar__item" [routerLink]="AppRoutes.DIAGRAMS" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="collapsed ? (PHRASES.DIAGRAMS | translate) : ''" [attr.aria-label]="PHRASES.DIAGRAMS | translate">
+  <a *ngIf="features.diagrams" class="dashboardSidebar__item" [routerLink]="AppRoutes.DIAGRAMS" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="collapsed ? (PHRASES.DIAGRAMS | translate) : ''" [attr.aria-label]="PHRASES.DIAGRAMS | translate">
     <app-icon name="diagram" class="dashboardSidebar__icon"></app-icon>
     <span class="dashboardSidebar__label">{{ PHRASES.DIAGRAMS | translate }}</span>
   </a>
 
-  <app-sidebar-boards [collapsed]="collapsed"></app-sidebar-boards>
+  <app-sidebar-boards *ngIf="features.boards" [collapsed]="collapsed"></app-sidebar-boards>
 
   <app-favorites-list *ngIf="!collapsed && (settingsService.settings$ | async)?.showFavoritesInSidebar"></app-favorites-list>
 

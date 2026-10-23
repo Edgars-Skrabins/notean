@@ -1,6 +1,8 @@
 require "test_helper"
 
 class TeamsControllerTest < ActionDispatch::IntegrationTest
+  include ActionCable::TestHelper
+
   setup do
     @team = Team.create!(name: "Engineering", password: "supersecret")
     @user = User.create!(email: "alice@example.com", password: "supersecret")
@@ -171,5 +173,41 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal 10, JSON.parse(response.body)["members"].length
     assert_equal one, ten
+  end
+
+  test "update_features lets the owner turn features off and on" do
+    patch "/teams/#{@team.code}/features", params: { team: { boards_enabled: false, pages_enabled: false } }, headers: @headers, as: :json
+
+    assert_response :success
+    team = JSON.parse(response.body)["team"]
+    assert_equal [ false, true, false ], team.values_at("pages_enabled", "diagrams_enabled", "boards_enabled")
+    assert_not @team.reload.feature_enabled?(:boards)
+
+    patch "/teams/#{@team.code}/features", params: { team: { boards_enabled: true } }, headers: @headers, as: :json
+
+    assert @team.reload.feature_enabled?(:boards)
+    assert_not @team.feature_enabled?(:pages)
+  end
+
+  test "update_features broadcasts the updated team on the team channel" do
+    assert_broadcasts(TeamChannel.stream_name(@team), 1) do
+      patch "/teams/#{@team.code}/features", params: { team: { diagrams_enabled: false } }, headers: @headers, as: :json
+    end
+
+    assert_broadcast_on(TeamChannel.stream_name(@team), { type: "features_changed", team: JSON.parse(response.body)["team"] })
+  end
+
+  test "update_features returns FORBIDDEN for admins and regular members" do
+    admin = create_member(@team, "Ada")
+    admin.memberships.find_by(team: @team).update!(role: "admin")
+    bob = create_member(@team, "Bob")
+
+    [ admin, bob ].each do |user|
+      patch "/teams/#{@team.code}/features", params: { team: { boards_enabled: false } }, headers: { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: user.id)}" }, as: :json
+
+      assert_response :forbidden
+      assert_equal "FORBIDDEN", JSON.parse(response.body)["code"]
+    end
+    assert @team.reload.feature_enabled?(:boards)
   end
 end

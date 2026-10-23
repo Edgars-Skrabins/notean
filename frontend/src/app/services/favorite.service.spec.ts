@@ -7,7 +7,9 @@ import {ToastService} from "@services/toast.service";
 import {ProjectFilterService} from "@services/project-filter.service";
 import {ToastType} from "@models/toast.model";
 import {Favorite} from "@models/favorite.model";
+import {TeamFeatures} from "@models/team.model";
 import {PHRASES} from "@config/phrases";
+import {testTeam} from "../testing/teamFixtures";
 
 function rawFavorite(overrides: Record<string, unknown> = {}) {
   return {
@@ -50,6 +52,7 @@ describe('FavoriteService', () => {
   let service: FavoriteService;
   let toastService: jasmine.SpyObj<ToastService>;
   let selectedProject: BehaviorSubject<number | null>;
+  let features: BehaviorSubject<TeamFeatures>;
 
   async function loadWith(favorites: ReturnType<typeof rawFavorite>[]) {
     const get = spyOn(axiosInstance, 'get').and.returnValue(Promise.resolve({data: {favorites}}));
@@ -64,8 +67,10 @@ describe('FavoriteService', () => {
   }
 
   beforeEach(() => {
-    const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeam']);
-    teamService.getCurrentTeam.and.returnValue({id: 1, name: 'Team A', code: 'aaa'});
+    features = new BehaviorSubject<TeamFeatures>({pages: true, diagrams: true, boards: true});
+    const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeam', 'isFeatureEnabled'], {features$: features});
+    teamService.isFeatureEnabled.and.callFake((feature) => features.value[feature]);
+    teamService.getCurrentTeam.and.returnValue(testTeam({id: 1, name: 'Team A', code: 'aaa'}));
     toastService = jasmine.createSpyObj('ToastService', ['show']);
     selectedProject = new BehaviorSubject<number | null>(null);
     const projectFilterService = {
@@ -199,6 +204,23 @@ describe('FavoriteService', () => {
     expect((await firstValueFrom(service.homeFavorites$)).map((favorite) => favorite.id)).toEqual([1]);
     expect((await firstValueFrom(service.sidebarFavorites$)).map((favorite) => favorite.id)).toEqual([1]);
     expect(service.isFavorited('Page', 11)).toBeTrue();
+  });
+
+  it('leaves out favorites of turned-off features, tickets following boards', async () => {
+    await loadWith([
+      rawFavorite({id: 1, favoritable_type: 'Page', favoritable_id: 10, home_position: 0, sidebar_position: 0}),
+      rawFavorite({id: 2, favoritable_type: 'Board', favoritable_id: 11, home_position: 1, sidebar_position: 1}),
+      rawFavorite({id: 3, favoritable_type: 'Ticket', favoritable_id: 12, home_position: 2, sidebar_position: 2}),
+    ]);
+
+    features.next({pages: true, diagrams: true, boards: false});
+
+    expect((await firstValueFrom(service.homeFavorites$)).map((favorite) => favorite.id)).toEqual([1]);
+    expect((await firstValueFrom(service.sidebarFavorites$)).map((favorite) => favorite.id)).toEqual([1]);
+
+    features.next({pages: true, diagrams: true, boards: true});
+
+    expect((await firstValueFrom(service.homeFavorites$)).map((favorite) => favorite.id)).toEqual([1, 2, 3]);
   });
 
   it('maps a move inside a filtered list onto the full order', async () => {

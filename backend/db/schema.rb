@@ -197,6 +197,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_23_130000) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "pages_enabled", default: true, null: false
+    t.boolean "diagrams_enabled", default: true, null: false
+    t.boolean "boards_enabled", default: true, null: false
     t.index ["code"], name: "index_teams_on_code", unique: true
   end
 

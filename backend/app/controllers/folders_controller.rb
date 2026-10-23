@@ -1,10 +1,14 @@
 class FoldersController < ApplicationController
+  include FeatureGated
+
   DELETE_MODES = %w[cascade promote].freeze
+  ITEM_TYPE_FEATURES = { "Page" => :pages, "Diagram" => :diagrams }.freeze
 
   before_action :authenticate_user!
   before_action :set_team
   before_action :authorize_team_member!
   before_action :set_folder, only: [ :update, :destroy ]
+  before_action :require_item_type_feature!
 
   def index
     folders = @team.folders.includes(creator: User::AVATAR_PRELOAD).where(item_type: index_item_type_param).to_a
@@ -66,6 +70,11 @@ class FoldersController < ApplicationController
     @folder = @team.folders.find_by(id: params[:id])
 
     render_error(ErrorCodes::Folders::FOLDER_NOT_FOUND, :not_found) if @folder.nil?
+  end
+
+  def require_item_type_feature!
+    feature = ITEM_TYPE_FEATURES[@folder&.item_type || params[:item_type] || params.dig(:folder, :item_type)]
+    require_feature!(feature) if feature
   end
 
   def folder_error_code(fallback)

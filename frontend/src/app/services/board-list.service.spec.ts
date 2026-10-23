@@ -39,8 +39,9 @@ describe('BoardListService', () => {
     localStorage.clear();
     boardService = jasmine.createSpyObj<BoardService>('BoardService', ['listBoards']);
     boardService.listBoards.and.returnValue(Promise.resolve({success: true, boards: [board(1, '2026-01-01'), board(2, '2026-01-02')]}));
-    teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeamCode']);
+    teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeamCode', 'isFeatureEnabled']);
     teamService.getCurrentTeamCode.and.returnValue('abc');
+    teamService.isFeatureEnabled.and.returnValue(true);
     projectFilter = projectFilterStub();
   });
 
@@ -54,6 +55,18 @@ describe('BoardListService', () => {
 
     expect(boardService.listBoards).toHaveBeenCalledWith('abc', null);
     expect(ids(service)).toEqual([1, 2]);
+  });
+
+  it('does not load and empties the list when boards are turned off', async () => {
+    const service = new BoardListService(boardService, teamService, projectFilter.service);
+    await service.load();
+    teamService.isFeatureEnabled.and.callFake((feature) => feature !== 'boards');
+    boardService.listBoards.calls.reset();
+
+    await service.load();
+
+    expect(boardService.listBoards).not.toHaveBeenCalled();
+    expect(ids(service)).toEqual([]);
   });
 
   it('saves the order per team after a move', async () => {

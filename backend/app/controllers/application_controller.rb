@@ -14,6 +14,10 @@ class ApplicationController < ActionController::API
     params.require(:team).permit(:name)
   end
 
+  def update_team_features_params
+    params.require(:team).permit(:pages_enabled, :diagrams_enabled, :boards_enabled)
+  end
+
   def update_membership_params
     params.require(:membership).permit(:nickname)
   end

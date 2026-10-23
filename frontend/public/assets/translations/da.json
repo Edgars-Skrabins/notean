@@ -243,6 +243,12 @@
   "TYPE_NAME_TO_CONFIRM": "Skriv {{name}} for at bekræfte",
   "PROJECT_DELETED": "Projekt slettet",
   "BACK_TO_PROJECTS": "Tilbage til projekter",
+  "FEATURES": "Funktioner",
+  "FEATURE_PAGES": "Sider",
+  "FEATURE_DIAGRAMS": "Diagrammer",
+  "FEATURE_BOARDS": "Tavler",
+  "FEATURES_UPDATED": "Funktioner opdateret",
+  "FEATURE_TURNED_OFF": "Teamets ejer har slået denne funktion fra",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Din session er udløbet. Log ind igen",
@@ -268,7 +274,8 @@
       "TEAM_CREATE_FAILED": "Teamet kunne ikke oprettes",
       "TEAM_RENAME_FAILED": "Teamet kunne ikke omdøbes",
       "NICKNAME_TAKEN": "Dette kaldenavn er allerede i brug i teamet",
-      "NICKNAME_INVALID": "Dette kaldenavn er ikke gyldigt"
+      "NICKNAME_INVALID": "Dette kaldenavn er ikke gyldigt",
+      "FEATURE_DISABLED": "Denne funktion er slået fra for dette team"
     },
     "PAGES": {
       "PAGE_NOT_FOUND": "Siden blev ikke fundet",

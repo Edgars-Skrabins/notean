@@ -8,6 +8,7 @@ import {TeamService} from "@services/team.service";
 import {ToastService} from "@services/toast.service";
 import {ProjectFilterService} from "@services/project-filter.service";
 import {ToastType} from "@models/toast.model";
+import {TeamFeature, TeamFeatures} from "@models/team.model";
 import {
   DeleteFavoriteResponse,
   FavoritableType,
@@ -46,6 +47,17 @@ export function mapFavorite(raw: RawFavorite): Favorite {
   };
 }
 
+const FAVORITABLE_FEATURES: Record<FavoritableType, TeamFeature> = {
+  Page: 'pages',
+  Diagram: 'diagrams',
+  Board: 'boards',
+  Ticket: 'boards',
+};
+
+function inEnabledFeatures(favorites: Favorite[], features: TeamFeatures): Favorite[] {
+  return favorites.filter((favorite) => features[FAVORITABLE_FEATURES[favorite.favoritableType]]);
+}
+
 function inProject(favorites: Favorite[], projectId: number | null): Favorite[] {
   return projectId === null ? favorites : favorites.filter((favorite) => favorite.projectId === projectId);
 }
@@ -72,9 +84,11 @@ export class FavoriteService {
     private toastService: ToastService,
     private projectFilterService: ProjectFilterService
   ) {
-    const selected$ = combineLatest([this.favorites$, this.projectFilterService.selectedProjectId$]);
-    this.homeFavorites$ = selected$.pipe(map(([favorites, projectId]) => sortBySurface(inProject(favorites, projectId), 'home')));
-    this.sidebarFavorites$ = selected$.pipe(map(([favorites, projectId]) => sortBySurface(inProject(favorites, projectId), 'sidebar')));
+    const selected$ = combineLatest([this.favorites$, this.projectFilterService.selectedProjectId$, this.teamService.features$]).pipe(
+      map(([favorites, projectId, features]) => inEnabledFeatures(inProject(favorites, projectId), features)),
+    );
+    this.homeFavorites$ = selected$.pipe(map((favorites) => sortBySurface(favorites, 'home')));
+    this.sidebarFavorites$ = selected$.pipe(map((favorites) => sortBySurface(favorites, 'sidebar')));
   }
 
   async load(): Promise<ListFavoritesResponse> {
@@ -163,7 +177,8 @@ export class FavoriteService {
 
     const previous = this.favoritesSubject.value;
     const ordered = sortBySurface(previous, surface);
-    const visible = inProject(ordered, this.projectFilterService.getSelectedProjectId());
+    const visible = inProject(ordered, this.projectFilterService.getSelectedProjectId())
+      .filter((favorite) => this.teamService.isFeatureEnabled(FAVORITABLE_FEATURES[favorite.favoritableType]));
     const fromIndex = ordered.findIndex((favorite) => favorite.id === favoriteId);
     const target = visible[index];
     const toIndex = target ? ordered.indexOf(target) : -1;

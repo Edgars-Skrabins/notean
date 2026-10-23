@@ -75,4 +75,14 @@ class TicketAssigneesControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
     assert_equal "TICKET_NOT_FOUND", JSON.parse(response.body)["code"]
   end
+
+  test "returns FEATURE_DISABLED when boards are turned off" do
+    @team.update!(boards_enabled: false)
+
+    post assignees_url, params: { assignee: { user_id: @bob.id } }, headers: @headers, as: :json
+
+    assert_response :forbidden
+    assert_equal({ "code" => "FEATURE_DISABLED" }, JSON.parse(response.body))
+    assert_empty @ticket.ticket_assignees
+  end
 end

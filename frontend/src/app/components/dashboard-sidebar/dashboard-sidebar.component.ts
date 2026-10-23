@@ -4,6 +4,7 @@ import {RouterLink, RouterLinkActive} from '@angular/router';
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {SettingsService} from "@services/settings.service";
+import {TeamService} from "@services/team.service";
 import {FavoritesListComponent} from "@components/favorites-list/favorites-list.component";
 import {SidebarBoardsComponent} from "@components/sidebar-boards/sidebar-boards.component";
 import {IconComponent} from "@components/icon/icon.component";
@@ -33,7 +34,7 @@ export class DashboardSidebarComponent {
 
   collapsed = false;
 
-  constructor(protected settingsService: SettingsService) {
+  constructor(protected settingsService: SettingsService, protected teamService: TeamService) {
   }
 
   toggleCollapsed() {

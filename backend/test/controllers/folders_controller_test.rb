@@ -85,4 +85,38 @@ class FoldersControllerTest < ActionDispatch::IntegrationTest
     assert_equal 10, JSON.parse(response.body)["folders"].length
     assert_equal one, ten
   end
+
+  test "returns FEATURE_DISABLED for folders of a disabled item type" do
+    page_folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Notes")
+    @team.update!(pages_enabled: false)
+
+    get "/teams/#{@team.code}/folders?item_type=Page", headers: @headers
+    assert_response :forbidden
+    assert_equal({ "code" => "FEATURE_DISABLED" }, JSON.parse(response.body))
+
+    post "/teams/#{@team.code}/folders", params: { folder: { title: "New", item_type: "Page" } }, headers: @headers, as: :json
+    assert_response :forbidden
+
+    patch "/teams/#{@team.code}/folders/#{page_folder.id}", params: { folder: { title: "Renamed" } }, headers: @headers, as: :json
+    assert_response :forbidden
+    assert_equal "Notes", page_folder.reload.title
+
+    delete "/teams/#{@team.code}/folders/#{page_folder.id}?mode=cascade", headers: @headers
+    assert_response :forbidden
+    assert Folder.exists?(page_folder.id)
+  end
+
+  test "keeps folders of an enabled item type working when another type is disabled" do
+    diagram_folder = Folder.create!(team: @team, creator: @user, item_type: "Diagram", title: "Flows")
+    @team.update!(pages_enabled: false)
+
+    get "/teams/#{@team.code}/folders?item_type=Diagram", headers: @headers
+    assert_response :success
+
+    patch "/teams/#{@team.code}/folders/#{diagram_folder.id}", params: { folder: { title: "Renamed" } }, headers: @headers, as: :json
+    assert_response :success
+
+    post "/teams/#{@team.code}/folders", params: { folder: { title: "New", item_type: "Diagram" } }, headers: @headers, as: :json
+    assert_response :created
+  end
 end

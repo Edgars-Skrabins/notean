@@ -1,5 +1,6 @@
 class FavoritesController < ApplicationController
   SURFACE_COLUMNS = { "home" => :home_position, "sidebar" => :sidebar_position }.freeze
+  TYPE_FEATURES = { "Page" => :pages, "Diagram" => :diagrams, "Board" => :boards, "Ticket" => :boards }.freeze
 
   before_action :authenticate_user!
   before_action :set_team
@@ -10,7 +11,7 @@ class FavoritesController < ApplicationController
     project_id = params[:project_id]
     return render_error(ErrorCodes::Projects::PROJECT_NOT_FOUND, :not_found) if project_id.present? && !project_access.project_visible?(project_id)
 
-    favorites = user_favorites.includes(:favoritable).order(:home_position).to_a
+    favorites = user_favorites.where(favoritable_type: enabled_favoritable_types).includes(:favoritable).order(:home_position).to_a
     tickets = favorites.map(&:favoritable).grep(Ticket)
     ActiveRecord::Associations::Preloader.new(records: tickets, associations: :board).call
     favorites = favorites.select { |favorite| project_access.in_selection?(favorite.favoritable, project_id) }
@@ -83,6 +84,10 @@ class FavoritesController < ApplicationController
 
   def user_favorites
     current_user.favorites.where(team: @team)
+  end
+
+  def enabled_favoritable_types
+    TYPE_FEATURES.select { |_type, feature| @team.feature_enabled?(feature) }.keys
   end
 
   def find_favoritable(favoritable_type, favoritable_id)

@@ -5,12 +5,15 @@ import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
+import {ToastService} from "@services/toast.service";
 import {teamRoleLabel} from "@utils/teamRoleLabel";
-import {TeamMember} from "@models/team.model";
+import {TeamFeature, TeamFeatures, TeamMember} from "@models/team.model";
+import {ToastType} from "@models/toast.model";
 import {AppRoutes} from "../../app/app-routes.enum";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {TeamCodeDisplayComponent} from "@components/team-code-display/team-code-display.component";
 import {AvatarComponent} from "@components/avatar/avatar.component";
+import {CheckboxComponent} from "@components/checkbox/checkbox.component";
 import {errorPhrase} from "@utils/errorPhrase";
 
 @Component({
@@ -23,7 +26,8 @@ import {errorPhrase} from "@utils/errorPhrase";
     TranslateModule,
     ConfirmDialogComponent,
     TeamCodeDisplayComponent,
-    AvatarComponent
+    AvatarComponent,
+    CheckboxComponent
   ],
   templateUrl: './manage-team.component.html',
   styleUrl: './manage-team.component.css'
@@ -31,6 +35,11 @@ import {errorPhrase} from "@utils/errorPhrase";
 export class ManageTeamComponent implements OnInit {
   protected readonly PHRASES = PHRASES;
   protected readonly teamRoleLabel = teamRoleLabel;
+  protected readonly featureOptions: { feature: TeamFeature; label: string }[] = [
+    {feature: 'pages', label: PHRASES.FEATURE_PAGES},
+    {feature: 'diagrams', label: PHRASES.FEATURE_DIAGRAMS},
+    {feature: 'boards', label: PHRASES.FEATURE_BOARDS},
+  ];
 
   teamName: string;
   members: TeamMember[] = [];
@@ -38,20 +47,27 @@ export class ManageTeamComponent implements OnInit {
   alertMessage = '';
   renameStatusMessage = '';
   showDeleteConfirm = false;
+  features: TeamFeatures;
 
   protected teamCode: string;
 
   constructor(
     private navigationService: NavigationService,
     private teamService: TeamService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private toastService: ToastService
   ) {
     const team = this.teamService.getCurrentTeam()!;
     this.teamCode = team.code;
     this.teamName = team.name;
+    this.features = {
+      pages: this.teamService.isFeatureEnabled('pages'),
+      diagrams: this.teamService.isFeatureEnabled('diagrams'),
+      boards: this.teamService.isFeatureEnabled('boards'),
+    };
   }
 
-  get showDeleteTeam(): boolean {
+  get isOwner(): boolean {
     return this.teamService.getCurrentRole() === 'owner';
   }
 
@@ -78,6 +94,21 @@ export class ManageTeamComponent implements OnInit {
 
         this.alertMessage = '';
         this.renameStatusMessage = this.translateService.instant(PHRASES.TEAM_NAME_UPDATED);
+      });
+  }
+
+  handleFeatureChange(feature: TeamFeature, enabled: boolean) {
+    this.features = {...this.features, [feature]: enabled};
+
+    return this.teamService.updateFeatures(this.teamCode, {[feature]: enabled})
+      .then((response) => {
+        if (!response.success) {
+          this.features = {...this.features, [feature]: !enabled};
+          this.toastService.show({type: ToastType.ERROR, message: errorPhrase(response.code)});
+          return;
+        }
+
+        this.toastService.show({type: ToastType.SUCCESS, message: PHRASES.FEATURES_UPDATED});
       });
   }
 

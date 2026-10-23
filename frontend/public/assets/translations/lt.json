@@ -243,6 +243,12 @@
   "TYPE_NAME_TO_CONFIRM": "Norėdami patvirtinti, įveskite {{name}}",
   "PROJECT_DELETED": "Projektas ištrintas",
   "BACK_TO_PROJECTS": "Atgal į projektus",
+  "FEATURES": "Funkcijos",
+  "FEATURE_PAGES": "Puslapiai",
+  "FEATURE_DIAGRAMS": "Diagramos",
+  "FEATURE_BOARDS": "Lentos",
+  "FEATURES_UPDATED": "Funkcijos atnaujintos",
+  "FEATURE_TURNED_OFF": "Komandos savininkas išjungė šią funkciją",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Jūsų sesija baigėsi. Prisijunkite iš naujo",
@@ -268,7 +274,8 @@
       "TEAM_CREATE_FAILED": "Nepavyko sukurti komandos",
       "TEAM_RENAME_FAILED": "Nepavyko pervadinti komandos",
       "NICKNAME_TAKEN": "Šis slapyvardis šioje komandoje jau užimtas",
-      "NICKNAME_INVALID": "Šis slapyvardis netinkamas"
+      "NICKNAME_INVALID": "Šis slapyvardis netinkamas",
+      "FEATURE_DISABLED": "Ši funkcija šiai komandai išjungta"
     },
     "PAGES": {
       "PAGE_NOT_FOUND": "Puslapis nerastas",

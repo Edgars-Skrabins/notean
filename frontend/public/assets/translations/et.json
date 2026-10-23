@@ -243,6 +243,12 @@
   "TYPE_NAME_TO_CONFIRM": "Kinnitamiseks sisesta {{name}}",
   "PROJECT_DELETED": "Projekt kustutatud",
   "BACK_TO_PROJECTS": "Tagasi projektide juurde",
+  "FEATURES": "Funktsioonid",
+  "FEATURE_PAGES": "Lehed",
+  "FEATURE_DIAGRAMS": "Diagrammid",
+  "FEATURE_BOARDS": "Tahvlid",
+  "FEATURES_UPDATED": "Funktsioonid uuendatud",
+  "FEATURE_TURNED_OFF": "Meeskonna omanik lülitas selle funktsiooni välja",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Sinu seanss on aegunud. Palun logi uuesti sisse",
@@ -268,7 +274,8 @@
       "TEAM_CREATE_FAILED": "Meeskonda ei õnnestunud luua",
       "TEAM_RENAME_FAILED": "Meeskonda ei õnnestunud ümber nimetada",
       "NICKNAME_TAKEN": "See hüüdnimi on selles meeskonnas juba kasutusel",
-      "NICKNAME_INVALID": "See hüüdnimi ei sobi"
+      "NICKNAME_INVALID": "See hüüdnimi ei sobi",
+      "FEATURE_DISABLED": "See funktsioon on selle meeskonna jaoks välja lülitatud"
     },
     "PAGES": {
       "PAGE_NOT_FOUND": "Lehte ei leitud",

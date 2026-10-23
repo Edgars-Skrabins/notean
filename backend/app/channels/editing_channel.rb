@@ -3,10 +3,14 @@ class EditingChannel < ApplicationCable::Channel
     raise NotImplementedError
   end
 
+  def self.feature
+    raise NotImplementedError
+  end
+
   def subscribed
     item = self.class.status_class.item_class.find_by(id: item_id)
 
-    if item && current_user.memberships.exists?(team_id: item.team_id) && ProjectAccess.new(current_user, item.team).visible?(item)
+    if item && item.team.feature_enabled?(self.class.feature) && current_user.memberships.exists?(team_id: item.team_id) && ProjectAccess.new(current_user, item.team).visible?(item)
       stream_from self.class.status_class.stream_name(item.id)
     else
       reject

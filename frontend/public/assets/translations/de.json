@@ -243,6 +243,12 @@
   "TYPE_NAME_TO_CONFIRM": "Gib {{name}} zur Bestätigung ein",
   "PROJECT_DELETED": "Projekt gelöscht",
   "BACK_TO_PROJECTS": "Zurück zu den Projekten",
+  "FEATURES": "Funktionen",
+  "FEATURE_PAGES": "Seiten",
+  "FEATURE_DIAGRAMS": "Diagramme",
+  "FEATURE_BOARDS": "Boards",
+  "FEATURES_UPDATED": "Funktionen aktualisiert",
+  "FEATURE_TURNED_OFF": "Diese Funktion wurde vom Teaminhaber deaktiviert",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an",
@@ -268,7 +274,8 @@
       "TEAM_CREATE_FAILED": "Das Team konnte nicht erstellt werden",
       "TEAM_RENAME_FAILED": "Das Team konnte nicht umbenannt werden",
       "NICKNAME_TAKEN": "Dieser Spitzname ist in diesem Team bereits vergeben",
-      "NICKNAME_INVALID": "Dieser Spitzname ist ungültig"
+      "NICKNAME_INVALID": "Dieser Spitzname ist ungültig",
+      "FEATURE_DISABLED": "Diese Funktion ist für dieses Team deaktiviert"
     },
     "PAGES": {
       "PAGE_NOT_FOUND": "Seite nicht gefunden",

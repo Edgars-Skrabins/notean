@@ -239,4 +239,25 @@ class SearchControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal one, ten
   end
+
+  test "leaves out the sections of disabled features, tickets following boards" do
+    page("Rocket page")
+    ticket("Rocket ticket")
+    @team.update!(boards_enabled: false)
+
+    body = search("rocket")
+
+    assert_response :success
+    assert_equal %w[project page diagram], body["sections"].map { |item| item["type"] }
+    assert_equal [ "Rocket page" ], titles(body, "page")
+  end
+
+  test "returns FEATURE_DISABLED when paging through a disabled type" do
+    @team.update!(diagrams_enabled: false)
+
+    body = search("rocket", type: "diagram", offset: 5)
+
+    assert_response :forbidden
+    assert_equal({ "code" => "FEATURE_DISABLED" }, body)
+  end
 end
