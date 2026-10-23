@@ -3,6 +3,7 @@ import {AsyncPipe, NgIf} from '@angular/common';
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {SettingsService} from "@services/settings.service";
+import {TeamService} from "@services/team.service";
 import {FavoritesGridComponent} from "@components/favorites-grid/favorites-grid.component";
 import {MyWorkComponent} from "@components/my-work/my-work.component";
 
@@ -22,6 +23,6 @@ import {MyWorkComponent} from "@components/my-work/my-work.component";
 export class HomeComponent {
   protected readonly PHRASES = PHRASES;
 
-  constructor(protected settingsService: SettingsService) {
+  constructor(protected settingsService: SettingsService, protected teamService: TeamService) {
   }
 }
