@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {AsyncPipe, DatePipe, NgFor, NgIf} from '@angular/common';
 import {CdkScrollable} from '@angular/cdk/scrolling';
@@ -13,6 +13,7 @@ import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.
 import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
 import {ProjectSelectComponent} from "@components/project-select/project-select.component";
 import {ProjectFilterService} from "@services/project-filter.service";
+import {EscapeService} from "@services/escape.service";
 
 @Component({
   selector: 'app-item-detail-layout',
@@ -35,7 +36,7 @@ import {ProjectFilterService} from "@services/project-filter.service";
   templateUrl: './item-detail-layout.component.html',
   styleUrl: './item-detail-layout.component.css'
 })
-export class ItemDetailLayoutComponent {
+export class ItemDetailLayoutComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
 
   @Input() item: FolderedItemDetail | null = null;
@@ -66,8 +67,22 @@ export class ItemDetailLayoutComponent {
   @Output() discardConfirmed = new EventEmitter<void>();
   @Output() discardCancelled = new EventEmitter<void>();
   @Output() draftProjectChange = new EventEmitter<number | null>();
+  @Output() escapePressed = new EventEmitter<void>();
 
-  constructor(protected projectFilterService: ProjectFilterService) {
+  private unregisterEscape = () => {};
+
+  constructor(
+    protected projectFilterService: ProjectFilterService,
+    private escapeService: EscapeService
+  ) {
+  }
+
+  ngOnInit() {
+    this.unregisterEscape = this.escapeService.push(() => this.escapePressed.emit());
+  }
+
+  ngOnDestroy() {
+    this.unregisterEscape();
   }
 
   get selectedProjectId(): number | null {

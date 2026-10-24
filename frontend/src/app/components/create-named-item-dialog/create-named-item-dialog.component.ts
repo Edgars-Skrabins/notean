@@ -1,8 +1,9 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ButtonComponent} from '@components/button/button.component';
+import {EscapeService} from '@services/escape.service';
 
 @Component({
   selector: 'app-create-named-item-dialog',
@@ -15,7 +16,7 @@ import {ButtonComponent} from '@components/button/button.component';
   templateUrl: './create-named-item-dialog.component.html',
   styleUrl: './create-named-item-dialog.component.css'
 })
-export class CreateNamedItemDialogComponent implements OnInit {
+export class CreateNamedItemDialogComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
 
   @Input({required: true}) dialogTitle!: string;
@@ -25,8 +26,18 @@ export class CreateNamedItemDialogComponent implements OnInit {
 
   itemTitle = '';
 
+  private unregisterEscape = () => {};
+
+  constructor(private escapeService: EscapeService) {
+  }
+
   ngOnInit() {
+    this.unregisterEscape = this.escapeService.push(() => this.handleCancel());
     this.itemTitle = this.defaultValue;
+  }
+
+  ngOnDestroy() {
+    this.unregisterEscape();
   }
 
   handleConfirm() {

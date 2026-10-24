@@ -33,6 +33,11 @@ export class RichTextEditorComponent implements AfterViewInit, OnChanges, OnDest
       extensions: [StarterKit],
       content: this.content,
       editable: this.editable,
+      editorProps: {
+        handleDOMEvents: {
+          keydown: (_view, event) => event.key === 'Escape',
+        },
+      },
       onUpdate: ({editor}) => {
         this.contentChange.emit(editor.getHTML());
       },

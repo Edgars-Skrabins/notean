@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
@@ -25,6 +25,7 @@ import {DropdownComponent} from "@components/dropdown/dropdown.component";
 import {DropdownOption} from "@models/dropdown.model";
 import {errorPhrase} from "@utils/errorPhrase";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
+import {EscapeService} from "@services/escape.service";
 
 @Component({
   selector: 'app-ticket-detail',
@@ -45,7 +46,7 @@ import {BoardPageStateService} from "../board-page/board-page-state.service";
   templateUrl: './ticket-detail.component.html',
   styleUrl: './ticket-detail.component.css'
 })
-export class TicketDetailComponent implements OnInit {
+export class TicketDetailComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
 
   ticket: TicketDetail | null = null;
@@ -61,6 +62,8 @@ export class TicketDetailComponent implements OnInit {
 
   private ticketId = 0;
 
+  private unregisterEscape = () => {};
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -70,7 +73,8 @@ export class TicketDetailComponent implements OnInit {
     private toastService: ToastService,
     private teamService: TeamService,
     private projectService: ProjectService,
-    authService: AuthService
+    authService: AuthService,
+    private escapeService: EscapeService
   ) {
     this.currentUserId = authService.getCurrentUser()?.id ?? 0;
   }
@@ -91,9 +95,14 @@ export class TicketDetailComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.unregisterEscape = this.escapeService.push(() => this.handleGoBack());
     this.ticketId = Number(this.route.snapshot.paramMap.get('ticketId'));
     this.loadTicket();
     this.loadAssignableMembers();
+  }
+
+  ngOnDestroy() {
+    this.unregisterEscape();
   }
 
   handleAddAssignee(userId: number) {
@@ -182,9 +191,10 @@ export class TicketDetailComponent implements OnInit {
       });
   }
 
-  cancelTitleEdit() {
-    if (this.ticket) {
+  cancelTitleEdit(event: Event) {
+    if (this.ticket && this.titleDraft !== this.ticket.title) {
       this.titleDraft = this.ticket.title;
+      event.preventDefault();
     }
   }
 
@@ -210,9 +220,10 @@ export class TicketDetailComponent implements OnInit {
       });
   }
 
-  cancelDescriptionEdit() {
-    if (this.ticket) {
+  cancelDescriptionEdit(event: Event) {
+    if (this.ticket && this.descriptionDraft !== this.ticket.description) {
       this.descriptionDraft = this.ticket.description;
+      event.preventDefault();
     }
   }
 

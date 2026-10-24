@@ -22,7 +22,7 @@
   (overlayOutsideClick)="handleOutsideClick($event)"
   (detach)="close()"
 >
-  <div class="priorityColorPicker__panel" (keydown.escape)="close()">
+  <div class="priorityColorPicker__panel" (keydown.escape)="close(); $event.preventDefault()">
     <button
       *ngFor="let option of COLORS"
       type="button"

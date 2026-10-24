@@ -118,6 +118,8 @@
   "CONFIRM_DISCARD_NEW_PAGE": "Diese neue Seite verwerfen?",
   "CONFIRM_DISCARD_NEW_DIAGRAM": "Dieses neue Diagramm verwerfen?",
   "CONFIRM_LEAVE_UNSAVED_CHANGES": "Du hast ungespeicherte Änderungen. Ohne Speichern verlassen?",
+  "DISCARD": "Verwerfen",
+  "CONFIRM_DISCARD_CHANGES": "Ungespeicherte Änderungen verwerfen?",
   "PROFILE_UPDATED": "Profilinformationen aktualisiert",
   "NICKNAME_TOO_SHORT": "Der Spitzname muss mindestens 3 Zeichen lang sein",
   "NICKNAME_TOO_LONG": "Der Spitzname darf höchstens 30 Zeichen lang sein",

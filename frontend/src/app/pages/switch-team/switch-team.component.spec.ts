@@ -2,6 +2,7 @@ import {SwitchTeamComponent} from "./switch-team.component";
 import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
 import {testTeam} from "../../testing/teamFixtures";
+import {escapeServiceStub} from "../../testing/escapeServiceStub";
 
 describe('SwitchTeamComponent.isActive', () => {
   let component: SwitchTeamComponent;
@@ -9,7 +10,7 @@ describe('SwitchTeamComponent.isActive', () => {
 
   beforeEach(() => {
     teamService = jasmine.createSpyObj('TeamService', ['getCurrentTeam']);
-    component = new SwitchTeamComponent({} as NavigationService, teamService);
+    component = new SwitchTeamComponent({} as NavigationService, teamService, escapeServiceStub().service);
   });
 
   it('returns false when the team code does not match the current team', () => {

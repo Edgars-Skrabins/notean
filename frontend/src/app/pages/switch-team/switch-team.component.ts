@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {NgFor, NgIf} from '@angular/common';
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
@@ -8,6 +8,7 @@ import {teamRoleLabel} from "@utils/teamRoleLabel";
 import {TeamWithRole} from "@models/team.model";
 import {AppRoutes} from "../../app/app-routes.enum";
 import {errorPhrase} from "@utils/errorPhrase";
+import {EscapeService} from "@services/escape.service";
 
 @Component({
   selector: 'app-switch-team',
@@ -20,7 +21,7 @@ import {errorPhrase} from "@utils/errorPhrase";
   templateUrl: './switch-team.component.html',
   styleUrl: './switch-team.component.css'
 })
-export class SwitchTeamComponent implements OnInit {
+export class SwitchTeamComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
   protected readonly teamRoleLabel = teamRoleLabel;
 
@@ -28,17 +29,25 @@ export class SwitchTeamComponent implements OnInit {
   isLoading = true;
   alertMessage = '';
 
+  private unregisterEscape = () => {};
+
   constructor(
     private navigationService: NavigationService,
-    private teamService: TeamService
+    private teamService: TeamService,
+    private escapeService: EscapeService
   ) {
   }
 
   ngOnInit() {
+    this.unregisterEscape = this.escapeService.push(() => this.handleGoBack());
     this.teamService.fetchMyTeams().then((teams) => {
       this.isLoading = false;
       this.teams = teams;
     });
+  }
+
+  ngOnDestroy() {
+    this.unregisterEscape();
   }
 
   isActive(team: TeamWithRole): boolean {

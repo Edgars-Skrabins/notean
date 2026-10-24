@@ -225,6 +225,8 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
       }
     });
 
+    graph.bindKey('esc', (event) => this.handleClearSelection(event));
+
     graph.on('cell:added', ({cell}) => {
       this.colorCell(cell);
       this.handleGraphChange();
@@ -299,6 +301,14 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
     if (selected.length) {
       this.graph.removeCells(selected);
     }
+  }
+
+  handleClearSelection(event: KeyboardEvent) {
+    if (!this.graph || this.editingLabel || !this.graph.getSelectedCells().length) {
+      return;
+    }
+    event.preventDefault();
+    this.graph.cleanSelection();
   }
 
   handleZoomToFit() {

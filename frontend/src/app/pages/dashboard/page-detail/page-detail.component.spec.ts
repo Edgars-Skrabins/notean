@@ -30,16 +30,16 @@ function createdPage(): FolderedItemDetail {
   };
 }
 
-describe('PageDetailComponent in create mode', () => {
+describe('PageDetailComponent', () => {
   let component: PageDetailComponent;
   let pageService: jasmine.SpyObj<PageService>;
   let editingService: jasmine.SpyObj<PageEditingService>;
   let navigationService: jasmine.SpyObj<NavigationService>;
   let projectFilter: ProjectFilterStub;
 
-  function createComponent(queryParams: Record<string, string> = {}) {
+  function createComponent(queryParams: Record<string, string> = {}, params: Record<string, string> = {}) {
     const route = {
-      paramMap: of(convertToParamMap({})),
+      paramMap: of(convertToParamMap(params)),
       snapshot: {queryParamMap: convertToParamMap(queryParams)},
     } as unknown as ActivatedRoute;
     const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeamCode']);
@@ -151,5 +151,80 @@ describe('PageDetailComponent in create mode', () => {
     component.handleCancel();
 
     expect(component.showDiscardConfirm).toBeTrue();
+  });
+
+  describe('on Escape', () => {
+    function openPage() {
+      pageService.get.and.returnValue(Promise.resolve({success: true, item: createdPage()}));
+      createComponent({}, {id: '9'});
+      tick();
+    }
+
+    it('closes the popup in view mode', fakeAsync(() => {
+      openPage();
+
+      component.handleEscape();
+
+      expect(navigationService.navigate).toHaveBeenCalledOnceWith(AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES);
+    }));
+
+    it('returns to view mode when editing without changes', fakeAsync(() => {
+      openPage();
+      component.handleEdit();
+
+      component.handleEscape();
+
+      expect(component.mode).toBe('view');
+      expect(component.showDiscardConfirm).toBeFalse();
+      expect(editingService.stopEditing).toHaveBeenCalled();
+      expect(navigationService.navigate).not.toHaveBeenCalled();
+    }));
+
+    it('asks before discarding edits, and keeps editing when the question is cancelled', fakeAsync(() => {
+      openPage();
+      component.handleEdit();
+      component.handleContentChange('<p>Changed</p>');
+
+      component.handleEscape();
+      expect(component.mode).toBe('edit');
+      expect(component.showDiscardConfirm).toBeTrue();
+
+      component.handleCancelDiscard();
+      expect(component.mode).toBe('edit');
+      expect(component.draftContent).toBe('<p>Changed</p>');
+    }));
+
+    it('discards edits and stays in the popup in view mode when confirmed', fakeAsync(() => {
+      openPage();
+      component.handleEdit();
+      component.draftTitle = 'Renamed';
+
+      component.handleEscape();
+      component.handleConfirmDiscard();
+
+      expect(component.mode).toBe('view');
+      expect(component.showDiscardConfirm).toBeFalse();
+      expect(component.item?.title).toBe('Plan');
+      expect(editingService.stopEditing).toHaveBeenCalled();
+      expect(navigationService.navigate).not.toHaveBeenCalled();
+    }));
+
+    it('closes an untouched draft in create mode', () => {
+      createComponent();
+
+      component.handleEscape();
+
+      expect(navigationService.navigate).toHaveBeenCalledOnceWith(AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES);
+    });
+
+    it('asks before discarding a changed draft in create mode', () => {
+      createComponent();
+      component.draftTitle = 'Plan';
+
+      component.handleEscape();
+
+      expect(component.showDiscardConfirm).toBeTrue();
+      expect(navigationService.navigate).not.toHaveBeenCalled();
+    });
   });
 });

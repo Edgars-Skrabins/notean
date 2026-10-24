@@ -1,9 +1,10 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {NgFor} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ButtonComponent} from '@components/button/button.component';
+import {EscapeService} from '@services/escape.service';
 
 export interface MoveTargetColumn {
   id: number;
@@ -22,7 +23,7 @@ export interface MoveTargetColumn {
   templateUrl: './move-to-board-dialog.component.html',
   styleUrl: './move-to-board-dialog.component.css'
 })
-export class MoveToBoardDialogComponent implements OnInit {
+export class MoveToBoardDialogComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
 
   @Input({required: true}) columns: MoveTargetColumn[] = [];
@@ -31,8 +32,18 @@ export class MoveToBoardDialogComponent implements OnInit {
 
   selectedColumnId: number | null = null;
 
+  private unregisterEscape = () => {};
+
+  constructor(private escapeService: EscapeService) {
+  }
+
   ngOnInit() {
+    this.unregisterEscape = this.escapeService.push(() => this.handleCancel());
     this.selectedColumnId = this.columns[0]?.id ?? null;
+  }
+
+  ngOnDestroy() {
+    this.unregisterEscape();
   }
 
   handleMove() {

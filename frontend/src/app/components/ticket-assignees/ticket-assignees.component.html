@@ -41,7 +41,7 @@
   (attach)="focusSearch(overlay)"
   (detach)="closePicker()"
 >
-  <div class="ticketAssignees__dropdown" (keydown.escape)="closePicker()">
+  <div class="ticketAssignees__dropdown" (keydown.escape)="closePicker(); $event.preventDefault()">
     <input
       type="text"
       class="ticketAssignees__search"

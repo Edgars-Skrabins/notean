@@ -88,8 +88,8 @@
 
   <app-confirm-dialog
     *ngIf="showDiscardConfirm"
-    [message]="discardConfirmMessage | translate"
-    [confirmLabel]="PHRASES.LEAVE"
+    [message]="(mode === 'edit' ? PHRASES.CONFIRM_DISCARD_CHANGES : discardConfirmMessage) | translate"
+    [confirmLabel]="mode === 'edit' ? PHRASES.DISCARD : PHRASES.LEAVE"
     (confirmed)="discardConfirmed.emit()"
     (cancelled)="discardCancelled.emit()"
   ></app-confirm-dialog>

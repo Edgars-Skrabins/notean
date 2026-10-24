@@ -89,7 +89,7 @@
           [(ngModel)]="newTicketTitle"
           [placeholder]="PHRASES.TICKET_TITLE_PLACEHOLDER | translate"
           (keydown.enter)="handleCreate()"
-          (keydown.escape)="handleCloseCreate()"
+          (keydown.escape)="handleCloseCreate(); $event.preventDefault()"
           (blur)="handleCloseCreate()"
           autofocus
         />

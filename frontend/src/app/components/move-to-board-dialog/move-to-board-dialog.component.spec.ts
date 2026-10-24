@@ -1,10 +1,13 @@
 import {MoveToBoardDialogComponent} from './move-to-board-dialog.component';
+import {escapeServiceStub, EscapeServiceStub} from '../../testing/escapeServiceStub';
 
 describe('MoveToBoardDialogComponent', () => {
   let component: MoveToBoardDialogComponent;
+  let escape: EscapeServiceStub;
 
   beforeEach(() => {
-    component = new MoveToBoardDialogComponent();
+    escape = escapeServiceStub();
+    component = new MoveToBoardDialogComponent(escape.service);
     component.columns = [{id: 3, title: 'To Do'}, {id: 4, title: 'Doing'}];
     component.ngOnInit();
   });
@@ -26,6 +29,14 @@ describe('MoveToBoardDialogComponent', () => {
     const cancelled = spyOn(component.cancelled, 'emit');
 
     component.handleCancel();
+
+    expect(cancelled).toHaveBeenCalled();
+  });
+
+  it('emits cancelled on Escape', () => {
+    const cancelled = spyOn(component.cancelled, 'emit');
+
+    escape.press();
 
     expect(cancelled).toHaveBeenCalled();
   });

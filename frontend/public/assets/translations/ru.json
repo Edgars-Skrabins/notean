@@ -118,6 +118,8 @@
   "CONFIRM_DISCARD_NEW_PAGE": "Отменить создание этой страницы?",
   "CONFIRM_DISCARD_NEW_DIAGRAM": "Отменить создание этой диаграммы?",
   "CONFIRM_LEAVE_UNSAVED_CHANGES": "У вас есть несохранённые изменения. Уйти без сохранения?",
+  "DISCARD": "Отменить",
+  "CONFIRM_DISCARD_CHANGES": "Отменить несохранённые изменения?",
   "PROFILE_UPDATED": "Данные профиля обновлены",
   "NICKNAME_TOO_SHORT": "Никнейм должен содержать не менее 3 символов",
   "NICKNAME_TOO_LONG": "Никнейм может содержать не более 30 символов",
