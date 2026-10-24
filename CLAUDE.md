@@ -81,6 +81,7 @@ Run frontend commands from `frontend/` and backend commands from `backend/`.
 - **Rich text**: Tiptap (core, pm, starter-kit)
 - **Diagrams**: AntV X6 with the selection, snapline and keyboard plugins
 - **Drag and drop and popups**: Angular CDK (drag-drop, overlay)
+- **Theme fonts**: self-hosted `@fontsource/*` packages (Geist, Inter, Manrope, Plus Jakarta Sans, JetBrains Mono, IBM Plex Sans, Newsreader, DM Sans), included per weight in `angular.json` `styles`
 - **Tests**: Karma + Jasmine
 
 ### Structure
@@ -93,10 +94,11 @@ src/app/
 ├── services/     API access and app state, all providedIn: 'root'
 ├── models/       TypeScript interfaces and response union types
 ├── guards/       functional route guards
-├── config/       axios instance, i18n config, language options, overlay positions, PHRASES, errorCodes/
+├── config/       axios instance, i18n config, language options, overlay positions, PHRASES, themes.ts, errorCodes/
 ├── testing/      shared spec fixtures (e.g. boardFixtures.ts)
-└── utils/        small pure helpers
+└── utils/        small pure helpers (themeDom.ts applies and reads themes)
 public/assets/translations/   one <code>.json per language (en, lv, et, lt, ru, sv, fi, de, da, fr, es)
+src/themes/                   modes.css plus one CSS file per theme
 src/environments/             environment.ts (apiUrl)
 ```
 
@@ -122,7 +124,7 @@ src/environments/             environment.ts (apiUrl)
 - Pages and diagrams share `FolderedItemService`, `EditingService`, `FolderedListPageComponent`, `FolderedItemDetailComponent` and `ItemDetailLayoutComponent`; the page and diagram classes only configure them. "New page" and "New diagram" open the detail popup in create mode at `…/new` (`?folder=<id>` for a folder's "+"); nothing is saved until Create, which sends title, content, project and folder in one request and returns to the list.
 - Session state lives in services backed by `localStorage`: `AuthService` stores `authToken` and `authUser`, and `TeamService` stores `currentTeam`, `currentTeamRole` and `currentNickname`.
 - Board and ticket URLs are built with `boardRoute` / `ticketRoute` from `@utils/ticketRoute`.
-- `SessionService` loads `GET /users/me` (user, settings, avatar, last-active team) on startup and after login and register, and hands the parts to `SettingsService.set`, `AvatarService.set` and `TeamService.applyActiveTeam`. Its `clear()` resets all three on logout and 401. The other services don't load on their own.
+- `SessionService` loads `GET /users/me` (user, settings, avatar, last-active team) on startup and after login and register, and hands the parts to `SettingsService.set`, `ThemeService.apply`, `AvatarService.set` and `TeamService.applyActiveTeam`. Its `clear()` resets settings, avatar and team on logout and 401, but keeps the theme. The other services don't load on their own.
 - List screens load once and apply each mutation's response locally instead of reloading; Pages and Diagrams search filters loaded items in the browser.
 - Boards open at `/dashboard/boards/:id/{overview|kanban|list}` (the old `backlog` URLs redirect to `list`). `BoardPageComponent` provides a component-scoped `BoardPageStateService` that loads the board once; the tabs and the ticket popup (a child route of the Kanban or List tab) read and update that shared board.
 - The List tab (`ListTabComponent` with `ListRowComponent` rows) shows every ticket grouped by status (Backlog, then each column), with client-side search, `TicketFilterComponent` and a `TicketSelectionBarComponent` for bulk actions through `TicketService.bulkUpdate` / `bulkDelete`. Board priorities are managed in the Overview tab's `PriorityListComponent` through `PriorityService`, chosen in the ticket popup's Priority dropdown, and shown as a `.priorityDot` (colours in the `--priority-*` variables) in List rows; `BoardPageStateService.setPriorities` / `priorityById` keep them in the shared board. The sidebar's board list and its personal order come from `BoardListService` (`localStorage`).
@@ -130,6 +132,14 @@ src/environments/             environment.ts (apiUrl)
 - The header's `GlobalSearchComponent` searches the whole team through `SearchService` (`GET /teams/:team_code/search`). It follows the project selector, opens with `/`, and shows its results in a CDK overlay panel grouped by type.
 - Realtime features open an ActionCable consumer at `ws://…/cable?token=<jwt>` from a dedicated service and subscribe to the matching backend channel.
 - Team feature flags (`pagesEnabled`, `diagramsEnabled`, `boardsEnabled` on `Team`, mapped by `mapTeam`) are read through `TeamService.features$` and `isFeatureEnabled`. `TeamChannelService`, connected from `DashboardComponent`, applies `features_changed` broadcasts, and the dashboard sends members on a just-disabled feature's screen to Home with a toast. A `FEATURE_DISABLED` 403 reloads the session (`setFeatureDisabledHandler`). Hide a disabled feature's UI with `features$`.
+
+#### Themes
+- Each user picks one of nine themes (`THEMES` in `config/themes.ts`) and a mode (`system`, `light` or `dark`) on the Settings page. Both are saved with the other settings and cached in `localStorage` (`theme`, `themeMode`) for first paint.
+- A theme is design tokens only. `data-theme` and `data-mode` on `<html>` select the tokens. `main.ts` applies the cached theme before bootstrap (the CSP forbids inline scripts), and `ThemeService` applies, previews and follows the OS in System mode, emitting `theme$`.
+- Every theme provides every token in `THEME_TOKENS` (`config/themes.spec.ts` checks this). `src/themes/modes.css` holds shared per-mode defaults. Each theme file has three attribute-only blocks: `[data-theme='<key>']` for fonts, radii, spacing and heights, then `[data-theme='<key>'][data-mode='dark']` and `[data-mode='light']` for colours. Font sizes and transitions stay global in `styles.css`.
+- Component CSS never hardcodes colours. Use the tokens, and write translucent shades as `color-mix(in srgb, var(--token) N%, transparent)` (`--color-tint` for hover and divider shades). Buttons, inputs and dropdown triggers use `--control-height`, and list rows use `--row-height`.
+- To add a theme: create its CSS file with the three blocks, add it to both `styles` arrays in `angular.json`, add its key to `THEMES` and to `User::THEMES` on the backend, and add its name to `PHRASES` and every translation file.
+- Code that paints outside CSS reads tokens with `themeToken()` and re-applies on `theme$` (the flowchart editor recolours cells, grid and gradient). Chart colours are `var(--color-chart-N)` from `chartColor()`, bound through `[style.fill]`.
 
 #### Path aliases
 Import with the tsconfig aliases instead of relative paths: `@components/*`, `@config/*`, `@pages/*`, `@models/*`, `@services/*`, `@utils/*`.
@@ -193,6 +203,7 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 
 #### Models
 - Creators are stored as `created_by_user_id` with a `creator` association to `User`.
+- Users carry their settings as columns, including `theme` (one of `User::THEMES`, default `purple_haze`) and `theme_mode` (`system`, `light` or `dark`, default `system`). `GET /users/me` and `PATCH /users/me/settings` return them, and an invalid value is a 422 `SETTINGS_UPDATE_FAILED`.
 - `Membership` joins users and teams. Its `role` enum is `user`, `admin` and `owner`, with exactly one owner per team.
 - Teams have `pages_enabled`, `diagrams_enabled` and `boards_enabled` flags (all on by default), checked with `Team#feature_enabled?`. Only the owner changes them (`PATCH /teams/:code/features`). Tickets, columns, priorities and assignees follow `boards`; folders follow their item type. Flags never delete data.
 - Tickets have any number of assignees through `ticket_assignees` (team members only, ordered by assignment time; assigning touches the ticket).
