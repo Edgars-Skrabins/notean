@@ -1,0 +1,85 @@
+[data-mode='dark'] {
+  --dashboard-background: var(--page-background);
+  --backdrop-blur: 0px;
+  --page-waves-display: none;
+
+  --color-page-wave-1: transparent;
+  --color-page-wave-2: transparent;
+  --color-page-wave-3: transparent;
+  --color-wave-1: transparent;
+  --color-wave-2: transparent;
+  --color-wave-3: transparent;
+
+  --color-success: #8ee6a8;
+  --color-success-bg: #17332a;
+  --color-info: #9dc4ff;
+  --color-info-bg: #1a2a4d;
+  --color-warning: #ffd88a;
+  --color-warning-bg: #3a2f17;
+  --color-error: #ff9d9d;
+  --color-error-bg: #3d1c2b;
+
+  --color-chart-1: #9c6bff;
+  --color-chart-2: #4fc3f7;
+  --color-chart-3: #81c784;
+  --color-chart-4: #ffb74d;
+  --color-chart-5: #f06292;
+  --color-chart-6: #4db6ac;
+  --color-chart-7: #ffd54f;
+  --color-chart-8: #a1887f;
+
+  --color-overlay: rgba(0, 0, 0, 0.55);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-button: none;
+  --shadow-button-hover: none;
+
+  --color-tint: #ffffff;
+  --color-card-glow: transparent;
+  --color-canvas-bg: rgba(0, 0, 0, 0.12);
+  --color-tooltip-bg: #0b0b0d;
+  --color-tooltip-text: #ffffff;
+  --shadow-tooltip: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+[data-mode='light'] {
+  --dashboard-background: var(--page-background);
+  --backdrop-blur: 0px;
+  --page-waves-display: none;
+
+  --color-page-wave-1: transparent;
+  --color-page-wave-2: transparent;
+  --color-page-wave-3: transparent;
+  --color-wave-1: transparent;
+  --color-wave-2: transparent;
+  --color-wave-3: transparent;
+
+  --color-success: #1e7a46;
+  --color-success-bg: #e3f4ea;
+  --color-info: #1f5fa8;
+  --color-info-bg: #e4eefa;
+  --color-warning: #8a5a00;
+  --color-warning-bg: #fbf0d9;
+  --color-error: #b42318;
+  --color-error-bg: #fdecea;
+
+  --color-chart-1: #7c4ddb;
+  --color-chart-2: #0288d1;
+  --color-chart-3: #388e3c;
+  --color-chart-4: #e08600;
+  --color-chart-5: #d81b60;
+  --color-chart-6: #00897b;
+  --color-chart-7: #c49000;
+  --color-chart-8: #795548;
+
+  --color-overlay: rgba(16, 24, 40, 0.35);
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow-button: none;
+  --shadow-button-hover: none;
+
+  --color-tint: #101828;
+  --color-card-glow: transparent;
+  --color-canvas-bg: rgba(16, 24, 40, 0.03);
+  --color-tooltip-bg: #1d2939;
+  --color-tooltip-text: #ffffff;
+  --shadow-tooltip: 0 4px 12px rgba(16, 24, 40, 0.18);
+}

@@ -1,0 +1,74 @@
+[data-theme='winter_forest'] {
+  --font-body: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-heading: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-ui: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  --font-heading-weight: 600;
+
+  --radius-sm: 8px;
+  --radius-md: 10px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  --control-height: 36px;
+  --control-height-sm: 28px;
+  --row-height: 36px;
+}
+
+[data-theme='winter_forest'][data-mode='dark'] {
+  --page-background: #11161d;
+  --header-background: #161c24;
+  --sidebar-background: #161c24;
+
+  --color-card-bg: #1d2530;
+  --color-card-bg-alt: #171e27;
+
+  --color-input-bg: #11161d;
+  --color-input-bg-focus: #1d2530;
+  --color-input-border: #2a3441;
+  --color-input-border-focus: #6fa3db;
+
+  --color-primary: #6fa3db;
+  --color-primary-light: #9cc3ec;
+  --color-primary-gradient: #6fa3db;
+  --color-on-primary: #0b1724;
+
+  --color-nav-active-bg: #1e2d40;
+  --color-nav-active-text: #9cc3ec;
+
+  --color-text-heading: #e3e8ef;
+  --color-text-muted: #97a3b2;
+  --color-text-faint: #8794a4;
+}
+
+[data-theme='winter_forest'][data-mode='light'] {
+  --page-background: #f3f5f8;
+  --header-background: #ffffff;
+  --sidebar-background: #ffffff;
+
+  --color-card-bg: #ffffff;
+  --color-card-bg-alt: #e9edf2;
+
+  --color-input-bg: #f3f5f8;
+  --color-input-bg-focus: #ffffff;
+  --color-input-border: #e2e6ec;
+  --color-input-border-focus: #2f6fb0;
+
+  --color-primary: #2f6fb0;
+  --color-primary-light: #4f8bc9;
+  --color-primary-gradient: #2f6fb0;
+  --color-on-primary: #ffffff;
+
+  --color-nav-active-bg: #eaf1f9;
+  --color-nav-active-text: #24588d;
+
+  --color-text-heading: #1b2330;
+  --color-text-muted: #4f5b6b;
+  --color-text-faint: #6a7586;
+}
