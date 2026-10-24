@@ -6,14 +6,14 @@
   border: none;
   border-radius: var(--radius-sm);
   padding: 0;
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--color-tint) 6%, transparent);
   color: var(--color-text-muted);
   cursor: pointer;
   transition: background var(--transition-fast), color var(--transition-fast);
 }
 
 .iconButton:hover:not(:disabled) {
-  background: rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--color-tint) 10%, transparent);
   color: var(--color-text-heading);
 }
 
@@ -23,8 +23,8 @@
 }
 
 .iconButton--danger:hover:not(:disabled) {
-  background: rgba(255, 157, 157, 0.12);
-  color: #ff9d9d;
+  background: color-mix(in srgb, var(--color-error) 12%, transparent);
+  color: var(--color-error);
 }
 
 .iconButton--size28 {

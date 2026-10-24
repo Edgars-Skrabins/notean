@@ -5,7 +5,7 @@
   min-height: 0;
   margin-top: var(--space-4);
   padding-top: var(--space-4);
-  border-top: 1px solid rgba(255, 255, 255, 0.14);
+  border-top: 1px solid color-mix(in srgb, var(--color-tint) 14%, transparent);
 }
 
 .favoritesList__title {
@@ -39,7 +39,7 @@
 }
 
 .favoritesList__row:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--color-tint) 6%, transparent);
   color: var(--color-text-heading);
 }
 

@@ -34,13 +34,13 @@
 }
 
 .richTextEditor__toolbarButton:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--color-tint) 8%, transparent);
   color: var(--color-text-heading);
 }
 
 .richTextEditor__toolbarButton--active {
   background: var(--color-primary-gradient);
-  color: #ffffff;
+  color: var(--color-on-primary);
 }
 
 .richTextEditor__host {

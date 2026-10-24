@@ -31,14 +31,14 @@
   padding: 0;
   border: none;
   border-radius: var(--radius-sm);
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--color-tint) 8%, transparent);
   color: var(--color-text-muted);
   cursor: pointer;
   transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
 }
 
 .teamCodeDisplay__copyButton:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: color-mix(in srgb, var(--color-tint) 14%, transparent);
   color: var(--color-text-heading);
 }
 
@@ -52,5 +52,5 @@
 }
 
 .teamCodeDisplay__copyButton--copied {
-  color: #7ee8a8;
+  color: var(--color-success);
 }

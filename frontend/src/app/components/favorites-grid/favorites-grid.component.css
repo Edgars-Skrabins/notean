@@ -30,7 +30,7 @@
 }
 
 .favoritesGrid__tile:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--color-tint) 8%, transparent);
   border-color: var(--color-input-border-focus);
 }
 

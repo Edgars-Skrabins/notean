@@ -10,7 +10,7 @@
 .deleteProjectDialogOverlay__backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(7, 4, 15, 0.6);
+  background: var(--color-overlay);
 }
 
 .deleteProjectDialog {
@@ -48,12 +48,14 @@
 }
 
 .deleteProjectDialog__input {
+  box-sizing: border-box;
+  min-height: var(--control-height);
   padding: 10px;
   background: var(--color-input-bg);
   border: 1px solid var(--color-input-border);
   border-radius: var(--radius-sm);
   color: var(--color-text-heading);
-  font-family: inherit;
+  font-family: var(--font-ui);
   outline: none;
 }
 

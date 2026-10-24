@@ -12,14 +12,14 @@
   border: none;
   border-radius: var(--radius-sm);
   color: var(--color-text-muted);
-  font-family: inherit;
+  font-family: var(--font-ui);
   font-size: var(--font-md);
   font-weight: 500;
   cursor: pointer;
 }
 
 .sidebarBoards__toggle:hover {
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--color-tint) 6%, transparent);
   color: var(--color-text-heading);
 }
 
@@ -69,7 +69,7 @@
 
 .sidebarBoards__row:hover,
 .sidebarBoards__row--active {
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--color-tint) 8%, transparent);
   color: var(--color-text-heading);
 }
 
@@ -90,7 +90,7 @@
   margin: 2px 0 0 var(--space-5);
   background: none;
   border: none;
-  font-family: inherit;
+  font-family: var(--font-ui);
   cursor: pointer;
 }
 

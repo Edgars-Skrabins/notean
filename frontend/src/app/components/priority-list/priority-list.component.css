@@ -36,7 +36,7 @@
   padding: 6px 8px;
   border-radius: var(--radius-sm);
   color: var(--color-text-heading);
-  font-family: inherit;
+  font-family: var(--font-ui);
   font-size: var(--font-md);
 }
 
@@ -70,7 +70,7 @@
   border: 1px dashed var(--color-input-border);
   border-radius: var(--radius-sm);
   color: var(--color-text-muted);
-  font-family: inherit;
+  font-family: var(--font-ui);
   font-size: var(--font-sm);
   cursor: pointer;
 }

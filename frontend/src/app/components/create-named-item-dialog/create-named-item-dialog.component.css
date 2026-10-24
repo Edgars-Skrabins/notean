@@ -14,7 +14,7 @@
 .createNamedItemDialogOverlay__backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(7, 4, 15, 0.6);
+  background: var(--color-overlay);
 }
 
 .createNamedItemDialog {
@@ -36,13 +36,14 @@
 }
 
 .createNamedItemDialog__input {
+  min-height: var(--control-height);
   background: var(--color-input-bg);
   border: 1px solid var(--color-input-border);
   border-radius: var(--radius-sm);
   padding: 10px;
   color: var(--color-text-heading);
   font-size: var(--font-md);
-  font-family: inherit;
+  font-family: var(--font-ui);
   outline: none;
   box-sizing: border-box;
   width: 100%;
@@ -56,7 +57,7 @@
 
 .createNamedItemDialog__input:focus {
   border-color: var(--color-input-border-focus);
-  box-shadow: 0 0 0 3px rgba(156, 107, 255, 0.18);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-input-border-focus) 18%, transparent);
   background: var(--color-input-bg-focus);
 }
 
