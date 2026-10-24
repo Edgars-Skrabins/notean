@@ -23,6 +23,26 @@ class UserTest < ActiveSupport::TestCase
     assert_includes @user.errors[:avatar_color], "is not included in the list"
   end
 
+  test "defaults to the purple haze theme in system mode" do
+    assert_equal "purple_haze", @user.theme
+    assert_equal "system", @user.theme_mode
+    assert @user.valid?
+  end
+
+  test "is invalid with an unknown theme" do
+    @user.theme = "neon"
+
+    assert_not @user.valid?
+    assert_includes @user.errors[:theme], "is not included in the list"
+  end
+
+  test "is invalid with an unknown theme mode" do
+    @user.theme_mode = "dim"
+
+    assert_not @user.valid?
+    assert_includes @user.errors[:theme_mode], "is not included in the list"
+  end
+
   test "accepts a PNG avatar image under 2 MB" do
     @user.avatar_image.attach(io: file_fixture("avatar.png").open, filename: "avatar.png", content_type: "image/png")
 

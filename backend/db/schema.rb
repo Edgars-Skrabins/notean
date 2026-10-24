@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_10_23_130000) do
+ActiveRecord::Schema[7.2].define(version: 2026_10_24_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -241,6 +241,8 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_23_130000) do
     t.boolean "show_favorites_in_sidebar", default: true, null: false
     t.string "avatar_color"
     t.boolean "show_my_work_on_home", default: true, null: false
+    t.string "theme", default: "purple_haze", null: false
+    t.string "theme_mode", default: "system", null: false
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 
