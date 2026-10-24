@@ -11,6 +11,11 @@ import {UserSettings} from "@models/settings.model";
 import {HasUnsavedChanges} from "@models/unsaved-changes.model";
 import {CheckboxComponent} from "@components/checkbox/checkbox.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
+import {ThemeModeSwitchComponent} from "@components/theme-mode-switch/theme-mode-switch.component";
+import {ThemePickerComponent} from "@components/theme-picker/theme-picker.component";
+import {ThemeService} from "@services/theme.service";
+import {ThemeKey, ThemeMode} from "@config/themes";
+import {ResolvedThemeMode} from "@utils/themeDom";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {EscapeService} from "@services/escape.service";
 
@@ -21,7 +26,9 @@ import {EscapeService} from "@services/escape.service";
     NgIf,
     TranslateModule,
     CheckboxComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    ThemeModeSwitchComponent,
+    ThemePickerComponent
   ],
   templateUrl: './settings.component.html',
   styleUrl: './settings.component.css'
@@ -33,9 +40,11 @@ export class SettingsComponent implements HasUnsavedChanges, OnInit, OnDestroy {
   settings: UserSettings;
   isSaving = false;
   isLeaveConfirmOpen = false;
+  resolvedMode: ResolvedThemeMode = 'dark';
 
   private resolveLeave: ((canLeave: boolean) => void) | null = null;
   private settingsSubscription: Subscription;
+  private themeSubscription: Subscription;
 
   private unregisterEscape = () => {};
 
@@ -43,7 +52,8 @@ export class SettingsComponent implements HasUnsavedChanges, OnInit, OnDestroy {
     private navigationService: NavigationService,
     private settingsService: SettingsService,
     private toastService: ToastService,
-    private escapeService: EscapeService
+    private escapeService: EscapeService,
+    private themeService: ThemeService
   ) {
     this.savedSettings = this.settingsService.getSettings();
     this.settings = {...this.savedSettings};
@@ -52,6 +62,9 @@ export class SettingsComponent implements HasUnsavedChanges, OnInit, OnDestroy {
         this.savedSettings = settings;
         this.settings = {...settings};
       }
+    });
+    this.themeSubscription = this.themeService.theme$.subscribe((active) => {
+      this.resolvedMode = active.resolvedMode;
     });
   }
 
@@ -67,10 +80,22 @@ export class SettingsComponent implements HasUnsavedChanges, OnInit, OnDestroy {
   ngOnDestroy() {
     this.unregisterEscape();
     this.settingsSubscription.unsubscribe();
+    this.themeSubscription.unsubscribe();
+    this.themeService.apply(this.savedSettings.theme, this.savedSettings.themeMode);
   }
 
   handleSettingChange(key: keyof UserSettings, checked: boolean) {
     this.settings = {...this.settings, [key]: checked};
+  }
+
+  handleThemeChange(theme: ThemeKey) {
+    this.settings = {...this.settings, theme};
+    this.themeService.preview(this.settings.theme, this.settings.themeMode);
+  }
+
+  handleModeChange(themeMode: ThemeMode) {
+    this.settings = {...this.settings, themeMode};
+    this.themeService.preview(this.settings.theme, this.settings.themeMode);
   }
 
   handleSave() {

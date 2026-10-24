@@ -5,11 +5,12 @@ import {AuthService} from "@services/auth.service";
 import {SettingsService} from "@services/settings.service";
 import {AvatarService} from "@services/avatar.service";
 import {TeamService} from "@services/team.service";
+import {ThemeService} from "@services/theme.service";
 import {testTeam, rawTestTeam} from "../testing/teamFixtures";
 
 const rawSession = {
   user: {id: 1, email: 'alice@example.com'},
-  settings: {show_favorites_on_home: false, show_favorites_in_sidebar: true, show_my_work_on_home: true},
+  settings: {show_favorites_on_home: false, show_favorites_in_sidebar: true, show_my_work_on_home: true, theme: 'terminal' as const, theme_mode: 'light' as const},
   avatar: {color: 'blue' as const, image_url: null},
   team: {team: rawTestTeam(testTeam({id: 2, name: 'Engineering', code: 'abc'})), role: 'owner' as const, nickname: 'Alice'},
 };
@@ -18,7 +19,7 @@ describe('mapSession', () => {
   it('maps settings, avatar and team and keeps user', () => {
     expect(mapSession(rawSession)).toEqual({
       user: {id: 1, email: 'alice@example.com'},
-      settings: {showFavoritesOnHome: false, showFavoritesInSidebar: true, showMyWorkOnHome: true},
+      settings: {showFavoritesOnHome: false, showFavoritesInSidebar: true, showMyWorkOnHome: true, theme: 'terminal', themeMode: 'light'},
       avatar: {color: 'blue', imageUrl: null},
       team: {team: testTeam({id: 2, name: 'Engineering', code: 'abc'}), role: 'owner', nickname: 'Alice'},
     });
@@ -30,9 +31,10 @@ describe('SessionService', () => {
   let settingsService: jasmine.SpyObj<SettingsService>;
   let avatarService: jasmine.SpyObj<AvatarService>;
   let teamService: jasmine.SpyObj<TeamService>;
+  let themeService: jasmine.SpyObj<ThemeService>;
 
   function create() {
-    return new SessionService(authService, settingsService, avatarService, teamService);
+    return new SessionService(authService, settingsService, avatarService, teamService, themeService);
   }
 
   beforeEach(() => {
@@ -41,6 +43,7 @@ describe('SessionService', () => {
     settingsService = jasmine.createSpyObj<SettingsService>('SettingsService', ['set', 'clear']);
     avatarService = jasmine.createSpyObj<AvatarService>('AvatarService', ['set', 'clear']);
     teamService = jasmine.createSpyObj<TeamService>('TeamService', ['applyActiveTeam', 'clearCurrentTeam']);
+    themeService = jasmine.createSpyObj<ThemeService>('ThemeService', ['apply', 'preview']);
   });
 
   it('loads on construction only when authenticated', () => {
@@ -60,7 +63,8 @@ describe('SessionService', () => {
     const response = await create().load();
 
     expect(response.success).toBeTrue();
-    expect(settingsService.set).toHaveBeenCalledWith({showFavoritesOnHome: false, showFavoritesInSidebar: true, showMyWorkOnHome: true});
+    expect(settingsService.set).toHaveBeenCalledWith({showFavoritesOnHome: false, showFavoritesInSidebar: true, showMyWorkOnHome: true, theme: 'terminal', themeMode: 'light'});
+    expect(themeService.apply).toHaveBeenCalledOnceWith('terminal', 'light');
     expect(avatarService.set).toHaveBeenCalledWith({color: 'blue', imageUrl: null});
     expect(teamService.applyActiveTeam).toHaveBeenCalledWith({team: testTeam(testTeam({id: 2, name: 'Engineering', code: 'abc'})), role: 'owner', nickname: 'Alice'});
   });
@@ -80,14 +84,17 @@ describe('SessionService', () => {
 
     expect(response).toEqual({success: false, code: 'NETWORK_ERROR'});
     expect(settingsService.set).not.toHaveBeenCalled();
+    expect(themeService.apply).not.toHaveBeenCalled();
     expect(teamService.applyActiveTeam).not.toHaveBeenCalled();
   });
 
-  it('clear resets settings, avatar and team', () => {
+  it('clear resets settings, avatar and team but keeps the theme', () => {
     create().clear();
 
     expect(settingsService.clear).toHaveBeenCalled();
     expect(avatarService.clear).toHaveBeenCalled();
     expect(teamService.clearCurrentTeam).toHaveBeenCalled();
+    expect(themeService.apply).not.toHaveBeenCalled();
+    expect(themeService.preview).not.toHaveBeenCalled();
   });
 });

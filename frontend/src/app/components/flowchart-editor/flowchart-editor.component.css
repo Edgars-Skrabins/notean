@@ -40,7 +40,7 @@
   width: 100%;
   height: 100%;
   min-height: 480px;
-  background: rgba(0, 0, 0, 0.12);
+  background: var(--color-canvas-bg);
   border: 1px solid var(--color-input-border);
   border-radius: var(--radius-md);
   overflow: hidden;
@@ -66,10 +66,10 @@
   padding: 4px 8px;
   color: var(--color-text-heading);
   font-size: var(--font-sm);
-  font-family: inherit;
+  font-family: var(--font-ui);
   text-align: center;
   outline: none;
-  box-shadow: 0 0 0 3px rgba(156, 107, 255, 0.18);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-input-border-focus) 18%, transparent);
 }
 
 .flowchartEditor__canvas .x6-port-body {
@@ -81,5 +81,5 @@
 }
 
 .flowchartEditor__canvas .x6-edge:hover path:nth-child(2) {
-  stroke: #9c6bff;
+  stroke: var(--color-primary-light);
 }

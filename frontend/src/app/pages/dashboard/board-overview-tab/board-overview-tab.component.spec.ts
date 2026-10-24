@@ -4,7 +4,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {BoardOverviewTabComponent} from "./board-overview-tab.component";
 import {BoardService} from "@services/board.service";
 import {BoardOverview} from "@models/board.model";
-import {CHART_COLORS} from "@config/chartColors";
+import {chartColor} from "@config/chartColors";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {createBoardState} from "../../../testing/boardFixtures";
 
@@ -59,8 +59,8 @@ describe('BoardOverviewTabComponent', () => {
     component.overview = overview;
 
     expect(component.columnSlices).toEqual([
-      {label: 'To Do', value: 4, color: CHART_COLORS[0]},
-      {label: 'Done', value: 0, color: CHART_COLORS[1]},
+      {label: 'To Do', value: 4, color: chartColor(0)},
+      {label: 'Done', value: 0, color: chartColor(1)},
     ]);
     expect(component.maxColumnCount).toBe(4);
   });
@@ -69,8 +69,8 @@ describe('BoardOverviewTabComponent', () => {
     component.overview = overview;
 
     expect(component.assigneeSlices).toEqual([
-      {label: 'alice', value: 3, color: CHART_COLORS[0]},
-      {label: 'UNASSIGNED', value: 2, color: CHART_COLORS[1]},
+      {label: 'alice', value: 3, color: chartColor(0)},
+      {label: 'UNASSIGNED', value: 2, color: chartColor(1)},
     ]);
   });
 

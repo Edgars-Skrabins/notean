@@ -13,7 +13,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     body = JSON.parse(response.body)
     assert_equal({ "id" => @user.id, "email" => "alice@example.com" }, body["user"])
-    assert_equal({ "show_favorites_on_home" => true, "show_favorites_in_sidebar" => true, "show_my_work_on_home" => true }, body["settings"])
+    assert_equal({ "show_favorites_on_home" => true, "show_favorites_in_sidebar" => true, "show_my_work_on_home" => true, "theme" => "purple_haze", "theme_mode" => "system" }, body["settings"])
     assert_equal({ "color" => @user.effective_avatar_color, "image_url" => nil }, body["avatar"])
     assert_nil body["team"]
   end
@@ -61,6 +61,45 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :unprocessable_entity
     assert_equal true, @user.reload.show_favorites_on_home
+  end
+
+  test "update_settings saves and returns the theme and mode" do
+    patch "/users/me/settings",
+      params: { settings: { theme: "graphite", theme_mode: "dark" } },
+      headers: @headers,
+      as: :json
+
+    assert_response :success
+    settings = JSON.parse(response.body)["settings"]
+    assert_equal "graphite", settings["theme"]
+    assert_equal "dark", settings["theme_mode"]
+    @user.reload
+    assert_equal "graphite", @user.theme
+    assert_equal "dark", @user.theme_mode
+  end
+
+  test "update_settings rejects an unknown theme with 422 and changes nothing" do
+    patch "/users/me/settings",
+      params: { settings: { theme: "neon", theme_mode: "dark" } },
+      headers: @headers,
+      as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal "SETTINGS_UPDATE_FAILED", JSON.parse(response.body)["code"]
+    @user.reload
+    assert_equal "purple_haze", @user.theme
+    assert_equal "system", @user.theme_mode
+  end
+
+  test "update_settings rejects an unknown theme mode with 422" do
+    patch "/users/me/settings",
+      params: { settings: { theme_mode: "dim" } },
+      headers: @headers,
+      as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal "SETTINGS_UPDATE_FAILED", JSON.parse(response.body)["code"]
+    assert_equal "system", @user.reload.theme_mode
   end
 
   test "update_settings returns 401 without a token" do

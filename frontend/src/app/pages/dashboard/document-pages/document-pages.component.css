@@ -6,6 +6,8 @@
 }
 
 .pagesView__search {
+  box-sizing: border-box;
+  min-height: var(--control-height);
   flex: 1;
   background: var(--color-input-bg);
   border: 1px solid var(--color-input-border);
@@ -13,7 +15,7 @@
   padding: 10px;
   color: var(--color-text-heading);
   font-size: var(--font-md);
-  font-family: inherit;
+  font-family: var(--font-ui);
   outline: none;
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
@@ -24,5 +26,5 @@
 
 .pagesView__search:focus {
   border-color: var(--color-input-border-focus);
-  box-shadow: 0 0 0 3px rgba(156, 107, 255, 0.18);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-input-border-focus) 18%, transparent);
 }

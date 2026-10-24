@@ -1,8 +1,8 @@
 <div class="pieChart" *ngIf="visibleSlices.length; else empty">
   <svg class="pieChart__svg" viewBox="0 0 100 100" role="img">
     <ng-container *ngFor="let arc of arcs">
-      <circle *ngIf="!arc.path" [attr.cx]="CENTER" [attr.cy]="CENTER" [attr.r]="RADIUS" [attr.fill]="arc.slice.color"></circle>
-      <path *ngIf="arc.path" [attr.d]="arc.path" [attr.fill]="arc.slice.color"></path>
+      <circle *ngIf="!arc.path" [attr.cx]="CENTER" [attr.cy]="CENTER" [attr.r]="RADIUS" [style.fill]="arc.slice.color"></circle>
+      <path *ngIf="arc.path" [attr.d]="arc.path" [style.fill]="arc.slice.color"></path>
     </ng-container>
   </svg>
 

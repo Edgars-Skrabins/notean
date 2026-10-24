@@ -51,5 +51,5 @@
 }
 
 .checkbox__input:focus-visible ~ .checkbox__circle {
-  box-shadow: 0 0 0 3px rgba(156, 107, 255, 0.18);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-input-border-focus) 18%, transparent);
 }

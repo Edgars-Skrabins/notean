@@ -32,18 +32,18 @@
   padding: 14px 18px;
   cursor: pointer;
   text-align: left;
-  font-family: inherit;
+  font-family: var(--font-ui);
   transition: background var(--transition-fast), border-color var(--transition-fast);
 }
 
 .switchTeam__row:hover {
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--color-tint) 8%, transparent);
   border-color: var(--color-input-border-focus);
 }
 
 .switchTeam__row--active {
   border-color: var(--color-primary-light);
-  background: rgba(156, 107, 255, 0.14);
+  background: color-mix(in srgb, var(--color-primary-light) 14%, transparent);
 }
 
 .switchTeam__rowName {

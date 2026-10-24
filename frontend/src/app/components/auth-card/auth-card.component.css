@@ -25,7 +25,7 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: radial-gradient(ellipse at top left, rgba(140, 100, 255, 0.18), transparent 55%);
+  background: radial-gradient(ellipse at top left, var(--color-card-glow), transparent 55%);
   pointer-events: none;
 }
 
@@ -59,6 +59,7 @@
 }
 
 .authCard__waves {
+  display: var(--page-waves-display);
   position: absolute;
   left: 0;
   right: 0;

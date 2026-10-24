@@ -10,7 +10,7 @@
 .projectSettingsDialogOverlay__backdrop {
   position: absolute;
   inset: 0;
-  background: rgba(7, 4, 15, 0.6);
+  background: var(--color-overlay);
 }
 
 .projectSettingsDialog {
@@ -48,7 +48,7 @@
 .projectSettingsDialog__danger {
   margin-top: var(--space-5);
   padding: var(--space-4);
-  border: 1px solid rgba(255, 157, 157, 0.35);
+  border: 1px solid color-mix(in srgb, var(--color-error) 35%, transparent);
   border-radius: var(--radius-md);
 }
 

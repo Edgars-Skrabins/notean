@@ -8,19 +8,24 @@ import {ToastType} from "@models/toast.model";
 import {UserSettings} from "@models/settings.model";
 import {PHRASES} from "@config/phrases";
 import {escapeServiceStub} from "../../../testing/escapeServiceStub";
+import {ActiveTheme, ThemeService} from "@services/theme.service";
 
 describe('SettingsComponent', () => {
   let component: SettingsComponent;
   let settings$: BehaviorSubject<UserSettings>;
+  let theme$: BehaviorSubject<ActiveTheme>;
   let settingsService: jasmine.SpyObj<SettingsService>;
   let toastService: jasmine.SpyObj<ToastService>;
+  let themeService: jasmine.SpyObj<ThemeService>;
 
   beforeEach(() => {
-    settings$ = new BehaviorSubject<UserSettings>({showFavoritesOnHome: true, showFavoritesInSidebar: false, showMyWorkOnHome: true});
+    settings$ = new BehaviorSubject<UserSettings>({showFavoritesOnHome: true, showFavoritesInSidebar: false, showMyWorkOnHome: true, theme: 'purple_haze', themeMode: 'system'});
+    theme$ = new BehaviorSubject<ActiveTheme>({theme: 'purple_haze', resolvedMode: 'dark'});
     settingsService = jasmine.createSpyObj<SettingsService>('SettingsService', ['getSettings', 'update'], {settings$});
     settingsService.getSettings.and.callFake(() => settings$.value);
     toastService = jasmine.createSpyObj('ToastService', ['show']);
-    component = new SettingsComponent({} as NavigationService, settingsService, toastService, escapeServiceStub().service);
+    themeService = jasmine.createSpyObj<ThemeService>('ThemeService', ['apply', 'preview'], {theme$});
+    component = new SettingsComponent({} as NavigationService, settingsService, toastService, escapeServiceStub().service, themeService);
   });
 
   afterEach(() => {
@@ -28,12 +33,12 @@ describe('SettingsComponent', () => {
   });
 
   it('starts from the saved settings with no unsaved changes', () => {
-    expect(component.settings).toEqual({showFavoritesOnHome: true, showFavoritesInSidebar: false, showMyWorkOnHome: true});
+    expect(component.settings).toEqual({showFavoritesOnHome: true, showFavoritesInSidebar: false, showMyWorkOnHome: true, theme: 'purple_haze', themeMode: 'system'});
     expect(component.hasUnsavedChanges).toBeFalse();
   });
 
   it('picks up settings that finish loading while nothing has changed', () => {
-    settings$.next({showFavoritesOnHome: false, showFavoritesInSidebar: false, showMyWorkOnHome: true});
+    settings$.next({showFavoritesOnHome: false, showFavoritesInSidebar: false, showMyWorkOnHome: true, theme: 'purple_haze', themeMode: 'system'});
 
     expect(component.settings.showFavoritesOnHome).toBeFalse();
     expect(component.hasUnsavedChanges).toBeFalse();
@@ -52,14 +57,14 @@ describe('SettingsComponent', () => {
   });
 
   it('saves the settings and shows a success toast', fakeAsync(() => {
-    settingsService.update.and.returnValue(Promise.resolve({success: true, settings: {showFavoritesOnHome: false, showFavoritesInSidebar: false, showMyWorkOnHome: true}}));
+    settingsService.update.and.returnValue(Promise.resolve({success: true, settings: {showFavoritesOnHome: false, showFavoritesInSidebar: false, showMyWorkOnHome: true, theme: 'purple_haze', themeMode: 'system'}}));
     component.handleSettingChange('showFavoritesOnHome', false);
 
     component.handleSave();
     expect(component.isSaving).toBeTrue();
     tick();
 
-    expect(settingsService.update).toHaveBeenCalledWith({showFavoritesOnHome: false, showFavoritesInSidebar: false, showMyWorkOnHome: true});
+    expect(settingsService.update).toHaveBeenCalledWith({showFavoritesOnHome: false, showFavoritesInSidebar: false, showMyWorkOnHome: true, theme: 'purple_haze', themeMode: 'system'});
     expect(component.hasUnsavedChanges).toBeFalse();
     expect(component.isSaving).toBeFalse();
     expect(toastService.show).toHaveBeenCalledWith({type: ToastType.SUCCESS, message: PHRASES.SETTINGS_SAVED});
@@ -101,6 +106,63 @@ describe('SettingsComponent', () => {
 
     expect(await result).toBeFalse();
   });
+
+  it('marks unsaved changes and previews when the theme changes', () => {
+    component.handleThemeChange('coffee');
+
+    expect(component.hasUnsavedChanges).toBeTrue();
+    expect(component.settings.theme).toBe('coffee');
+    expect(themeService.preview).toHaveBeenCalledOnceWith('coffee', 'system');
+  });
+
+  it('previews the current theme in the new mode when the mode changes', () => {
+    component.handleThemeChange('paper');
+
+    component.handleModeChange('light');
+
+    expect(component.hasUnsavedChanges).toBeTrue();
+    expect(themeService.preview).toHaveBeenCalledWith('paper', 'light');
+  });
+
+  it('follows the resolved mode of the active theme', () => {
+    theme$.next({theme: 'paper', resolvedMode: 'light'});
+
+    expect(component.resolvedMode).toBe('light');
+  });
+
+  it('saves the theme and mode with the other settings', fakeAsync(() => {
+    const saved: UserSettings = {showFavoritesOnHome: true, showFavoritesInSidebar: false, showMyWorkOnHome: true, theme: 'graphite', themeMode: 'dark'};
+    settingsService.update.and.returnValue(Promise.resolve({success: true, settings: saved}));
+    component.handleThemeChange('graphite');
+    component.handleModeChange('dark');
+
+    component.handleSave();
+    tick();
+
+    expect(settingsService.update).toHaveBeenCalledWith(saved);
+    expect(component.hasUnsavedChanges).toBeFalse();
+  }));
+
+  it('re-applies the saved theme when destroyed without saving', () => {
+    component.handleThemeChange('terminal');
+    component.handleModeChange('light');
+
+    component.ngOnDestroy();
+
+    expect(themeService.apply).toHaveBeenCalledWith('purple_haze', 'system');
+  });
+
+  it('keeps a saved theme when destroyed after saving', fakeAsync(() => {
+    settingsService.update.and.returnValue(Promise.resolve({success: true, settings: {showFavoritesOnHome: true, showFavoritesInSidebar: false, showMyWorkOnHome: true, theme: 'nature', themeMode: 'light'}}));
+    component.handleThemeChange('nature');
+    component.handleModeChange('light');
+    component.handleSave();
+    tick();
+
+    component.ngOnDestroy();
+
+    expect(themeService.apply).toHaveBeenCalledWith('nature', 'light');
+  }));
 
   it('has unsaved changes after turning My Work on Home off', () => {
     component.handleSettingChange('showMyWorkOnHome', false);

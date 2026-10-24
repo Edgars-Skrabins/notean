@@ -24,6 +24,7 @@
 }
 
 .pageBackdrop__waves {
+  display: var(--page-waves-display);
   position: absolute;
   left: 0;
   right: 0;

@@ -3,6 +3,8 @@ class User < ApplicationRecord
   AVATAR_IMAGE_TYPES = %w[image/png image/jpeg image/webp].freeze
   AVATAR_IMAGE_MAX_BYTES = 2.megabytes
   AVATAR_PRELOAD = { avatar_image_attachment: :blob }.freeze
+  THEMES = %w[purple_haze midnight_purple graphite coffee teal_ocean terminal paper winter_forest nature].freeze
+  THEME_MODES = %w[system light dark].freeze
 
   has_secure_password
 
@@ -18,6 +20,8 @@ class User < ApplicationRecord
   validates :show_favorites_on_home, inclusion: { in: [ true, false ] }
   validates :show_favorites_in_sidebar, inclusion: { in: [ true, false ] }
   validates :show_my_work_on_home, inclusion: { in: [ true, false ] }
+  validates :theme, inclusion: { in: THEMES }
+  validates :theme_mode, inclusion: { in: THEME_MODES }
   validates :avatar_color, inclusion: { in: AVATAR_COLORS }, allow_nil: true
   validate :avatar_image_is_allowed
 

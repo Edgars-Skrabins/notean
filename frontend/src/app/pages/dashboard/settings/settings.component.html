@@ -6,6 +6,25 @@
 <div class="settings">
   <h2 class="settings__title">{{ PHRASES.SETTINGS | translate }}</h2>
 
+  <section class="settings__appearance">
+    <h3 class="settings__sectionTitle">{{ PHRASES.APPEARANCE | translate }}</h3>
+    <div class="settings__field">
+      <span class="settings__label">{{ PHRASES.THEME_MODE | translate }}</span>
+      <app-theme-mode-switch
+        [mode]="settings.themeMode"
+        (modeChange)="handleModeChange($event)"
+      ></app-theme-mode-switch>
+    </div>
+    <div class="settings__field">
+      <span class="settings__label">{{ PHRASES.THEME | translate }}</span>
+      <app-theme-picker
+        [theme]="settings.theme"
+        [resolvedMode]="resolvedMode"
+        (themeChange)="handleThemeChange($event)"
+      ></app-theme-picker>
+    </div>
+  </section>
+
   <div class="settings__options">
     <app-checkbox
       [checked]="settings.showFavoritesOnHome"

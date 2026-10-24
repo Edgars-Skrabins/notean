@@ -1,0 +1,19 @@
+<div class="themePicker" role="group" [attr.aria-label]="PHRASES.THEME | translate">
+  <button
+    *ngFor="let option of themes"
+    type="button"
+    class="themePicker__card"
+    [class.themePicker__card--selected]="option.key === theme"
+    [attr.aria-pressed]="option.key === theme"
+    (click)="select(option.key)"
+  >
+    <span class="themePicker__preview" [attr.data-theme]="option.key" [attr.data-mode]="resolvedMode" aria-hidden="true">
+      <span class="themePicker__sidebar"></span>
+      <span class="themePicker__surface">
+        <span class="themePicker__sample">Aa</span>
+        <span class="themePicker__pill"></span>
+      </span>
+    </span>
+    <span class="themePicker__name">{{ option.phrase | translate }}</span>
+  </button>
+</div>

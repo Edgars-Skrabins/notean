@@ -43,7 +43,7 @@
   color: var(--color-text-heading);
   font-size: var(--font-xl);
   font-weight: 700;
-  font-family: inherit;
+  font-family: var(--font-heading);
   outline: none;
 }
 
@@ -79,6 +79,6 @@
 }
 
 .boardPage__tab--active {
-  color: var(--color-text-heading);
+  color: var(--color-nav-active-text);
   border-bottom-color: var(--color-primary-light);
 }

@@ -1,0 +1,10 @@
+<div class="themeModeSwitch" role="group" [attr.aria-label]="PHRASES.THEME_MODE | translate">
+  <button
+    *ngFor="let option of options"
+    type="button"
+    class="themeModeSwitch__option"
+    [class.themeModeSwitch__option--active]="option.mode === mode"
+    [attr.aria-pressed]="option.mode === mode"
+    (click)="select(option.mode)"
+  >{{ option.phrase | translate }}</button>
+</div>

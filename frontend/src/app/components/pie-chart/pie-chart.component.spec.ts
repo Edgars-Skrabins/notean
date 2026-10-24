@@ -43,6 +43,20 @@ describe('PieChartComponent', () => {
     expect(labels).toEqual(['To Do', 'Doing']);
   });
 
+  it('fills slices with theme chart tokens', () => {
+    const themed = document.createElement('div');
+    themed.setAttribute('data-theme', 'coffee');
+    themed.setAttribute('data-mode', 'light');
+    themed.appendChild(fixture.nativeElement);
+    document.body.appendChild(themed);
+
+    render([{label: 'To Do', value: 3, color: 'var(--color-chart-1)'}, {label: 'Doing', value: 1, color: 'var(--color-chart-2)'}]);
+
+    const paths = Array.from(fixture.nativeElement.querySelectorAll('path')) as SVGPathElement[];
+    expect(paths.map((path) => getComputedStyle(path).fill)).toEqual(['rgb(124, 77, 219)', 'rgb(2, 136, 209)']);
+    themed.remove();
+  });
+
   it('shows the empty text when every value is zero', () => {
     render([{label: 'To Do', value: 0, color: '#111'}]);
 

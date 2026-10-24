@@ -9,7 +9,7 @@
   flex-direction: column;
   height: 100%;
   overflow: hidden;
-  background: linear-gradient(165deg, var(--color-page-bg-start) 0%, var(--color-page-bg-end) 100%);
+  background: var(--dashboard-background);
 }
 
 .dashboardShell__backdrop {
@@ -21,6 +21,7 @@
 }
 
 .dashboardShell__waves {
+  display: var(--page-waves-display);
   position: absolute;
   left: 0;
   right: 0;

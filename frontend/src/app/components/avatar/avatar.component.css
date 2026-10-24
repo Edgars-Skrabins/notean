@@ -19,7 +19,7 @@
 }
 
 .avatar__letter--neutral {
-  background: rgba(255, 255, 255, 0.12);
+  background: color-mix(in srgb, var(--color-tint) 12%, transparent);
   color: var(--color-text-heading);
 }
 

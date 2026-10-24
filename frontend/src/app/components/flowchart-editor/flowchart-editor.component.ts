@@ -2,14 +2,39 @@ import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, On
 import {NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
-import {Graph, Node, Edge} from '@antv/x6';
+import {Graph, Node, Edge, Cell} from '@antv/x6';
 import {Selection} from '@antv/x6-plugin-selection';
 import {Snapline} from '@antv/x6-plugin-snapline';
 import {Keyboard} from '@antv/x6-plugin-keyboard';
+import {Subscription} from "rxjs";
 import {PHRASES} from "@config/phrases";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
+import {ThemeService} from "@services/theme.service";
+import {themeToken} from "@utils/themeDom";
 
 const GRADIENT_ID = 'flowchartNodeFill';
+
+interface FlowchartColors {
+  stroke: string;
+  portFill: string;
+  label: string;
+  connector: string;
+  grid: string;
+  gradientStart: string;
+  gradientEnd: string;
+}
+
+function readFlowchartColors(): FlowchartColors {
+  return {
+    stroke: themeToken('--color-primary-light'),
+    portFill: themeToken('--color-card-bg'),
+    label: themeToken('--color-on-primary'),
+    connector: themeToken('--color-text-muted'),
+    grid: themeToken('--color-input-border'),
+    gradientStart: themeToken('--color-primary'),
+    gradientEnd: themeToken('--color-primary-light'),
+  };
+}
 
 let shapesRegistered = false;
 
@@ -21,12 +46,10 @@ function registerShapes() {
 
   const bodyAttrs = {
     fill: `url(#${GRADIENT_ID})`,
-    stroke: '#9c6bff',
     strokeWidth: 1.5,
   };
 
   const textAttrs = {
-    fill: '#ffffff',
     fontSize: 13,
     fontWeight: 600,
     fontFamily: 'inherit',
@@ -81,9 +104,7 @@ const PORT_ATTRS = {
   circle: {
     r: 4,
     magnet: true,
-    stroke: '#9c6bff',
     strokeWidth: 1.5,
-    fill: '#1b1042',
   },
 };
 
@@ -140,20 +161,27 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
   private graph: Graph | null = null;
   private nextNodeOffset = 0;
   private lastEmittedContent: string | null = null;
+  private colors = readFlowchartColors();
+  private isRecoloring = false;
+  private themeSubscription: Subscription | null = null;
 
-  constructor(private translateService: TranslateService) {
+  constructor(
+    private translateService: TranslateService,
+    private themeService: ThemeService
+  ) {
   }
 
   ngAfterViewInit() {
     registerShapes();
 
+    const colors = this.colors;
     const graph = new Graph({
       container: this.canvasHost.nativeElement,
       autoResize: true,
       panning: true,
       mousewheel: {enabled: true, modifiers: ['ctrl', 'meta']},
       interacting: () => this.editable,
-      grid: {visible: true, type: 'dot', size: 16, args: {color: 'rgba(255,255,255,0.12)', thickness: 1}},
+      grid: {visible: true, type: 'dot', size: 16, args: {color: colors.grid, thickness: 1}},
       connecting: {
         router: 'orth',
         connector: {name: 'rounded', args: {radius: 8}},
@@ -168,7 +196,7 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
             shape: 'edge',
             attrs: {
               line: {
-                stroke: '#a9a3d1',
+                stroke: colors.connector,
                 strokeWidth: 2,
                 targetMarker: {name: 'block', width: 8, height: 6},
               },
@@ -199,7 +227,10 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
 
     graph.bindKey('esc', (event) => this.handleClearSelection(event));
 
-    graph.on('cell:added', () => this.handleGraphChange());
+    graph.on('cell:added', ({cell}) => {
+      this.colorCell(cell);
+      this.handleGraphChange();
+    });
     graph.on('cell:removed', () => this.handleGraphChange());
     graph.on('cell:changed', () => this.handleGraphChange());
 
@@ -220,6 +251,8 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
     });
 
     this.loadContent();
+
+    this.themeSubscription = this.themeService.theme$.subscribe(() => this.applyTheme());
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -234,6 +267,7 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
   }
 
   ngOnDestroy() {
+    this.themeSubscription?.unsubscribe();
     this.graph?.dispose();
     this.graph = null;
   }
@@ -364,11 +398,47 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
       }
     }
 
+    this.graph.getCells().forEach((cell) => this.colorCell(cell));
+
     this.isEmpty = this.graph.getCells().length === 0;
   }
 
-  private handleGraphChange() {
+  private applyTheme() {
     if (!this.graph) {
+      return;
+    }
+
+    this.colors = readFlowchartColors();
+    this.graph.getCells().forEach((cell) => this.colorCell(cell));
+    this.graph.drawGrid({type: 'dot', args: {color: this.colors.grid, thickness: 1}});
+    this.colorGradient();
+  }
+
+  private colorCell(cell: Cell) {
+    this.isRecoloring = true;
+
+    if (cell.isNode()) {
+      cell.setAttrs({body: {stroke: this.colors.stroke}, text: {fill: this.colors.label}});
+      cell.getPorts().forEach((port) => {
+        if (port.id) {
+          cell.setPortProp(port.id, 'attrs/circle', {stroke: this.colors.stroke, fill: this.colors.portFill});
+        }
+      });
+    } else if (cell.isEdge()) {
+      cell.setAttrs({line: {stroke: this.colors.connector}});
+    }
+
+    this.isRecoloring = false;
+  }
+
+  private colorGradient() {
+    const stops = this.canvasHost.nativeElement.querySelectorAll(`#${GRADIENT_ID} stop`);
+    stops[0]?.setAttribute('stop-color', this.colors.gradientStart);
+    stops[1]?.setAttribute('stop-color', this.colors.gradientEnd);
+  }
+
+  private handleGraphChange() {
+    if (!this.graph || this.isRecoloring) {
       return;
     }
     this.isEmpty = this.graph.getCells().length === 0;
@@ -395,11 +465,11 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
 
     const stop1 = document.createElementNS(svgNs, 'stop');
     stop1.setAttribute('offset', '0%');
-    stop1.setAttribute('stop-color', '#5a2fe6');
+    stop1.setAttribute('stop-color', this.colors.gradientStart);
 
     const stop2 = document.createElementNS(svgNs, 'stop');
     stop2.setAttribute('offset', '100%');
-    stop2.setAttribute('stop-color', '#9c6bff');
+    stop2.setAttribute('stop-color', this.colors.gradientEnd);
 
     gradient.appendChild(stop1);
     gradient.appendChild(stop2);

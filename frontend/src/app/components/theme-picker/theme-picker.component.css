@@ -1,0 +1,92 @@
+:host {
+  display: block;
+}
+
+.themePicker {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+@media (max-width: 480px) {
+  .themePicker {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.themePicker__card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-1);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--font-sm);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.themePicker__card:hover {
+  color: var(--color-text-heading);
+}
+
+.themePicker__card--selected {
+  border-color: var(--color-input-border-focus);
+  box-shadow: 0 0 0 1px var(--color-input-border-focus);
+  color: var(--color-text-heading);
+}
+
+.themePicker__card:focus-visible {
+  outline: 2px solid var(--color-input-border-focus);
+  outline-offset: 2px;
+}
+
+.themePicker__preview {
+  display: flex;
+  height: 72px;
+  overflow: hidden;
+  background: var(--page-background);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-sm);
+}
+
+.themePicker__sidebar {
+  width: 22%;
+  background: var(--sidebar-background);
+  border-right: 1px solid var(--color-input-border);
+}
+
+.themePicker__surface {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 10px;
+  padding: 6px 8px;
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-sm);
+}
+
+.themePicker__sample {
+  color: var(--color-text-heading);
+  font-family: var(--font-heading);
+  font-size: var(--font-lg);
+  font-weight: var(--font-heading-weight);
+  line-height: 1;
+}
+
+.themePicker__pill {
+  width: 60%;
+  height: 8px;
+  background: var(--color-primary);
+  border-radius: var(--radius-pill);
+}
+
+.themePicker__name {
+  padding: 0 var(--space-1) var(--space-1);
+}

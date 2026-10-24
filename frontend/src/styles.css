@@ -1,52 +1,5 @@
 :root {
-  --color-page-bg-start: #1b1042;
-  --color-page-bg-end: #07040f;
-
-  --color-card-bg: #241a52;
-  --color-card-bg-alt: #2d1f63;
-
-  --color-wave-1: rgba(107, 63, 214, 0.35);
-  --color-wave-2: rgba(88, 48, 181, 0.55);
-  --color-wave-3: rgba(58, 28, 133, 0.85);
-
-  --color-page-wave-1: rgba(60, 35, 120, 0.35);
-  --color-page-wave-2: rgba(40, 22, 85, 0.5);
-  --color-page-wave-3: rgba(20, 11, 46, 0.85);
-
-  --color-primary: #6d3ef0;
-  --color-primary-light: #9c6bff;
-  --color-primary-gradient: linear-gradient(90deg, #5a2fe6 0%, #9c6bff 100%);
-
-  --color-text-heading: #ffffff;
-  --color-text-muted: #a9a3d1;
-  --color-text-faint: #7d78a8;
-
-  --color-input-bg: rgba(255, 255, 255, 0.06);
-  --color-input-bg-focus: rgba(255, 255, 255, 0.08);
-  --color-input-border: rgba(255, 255, 255, 0.12);
-  --color-input-border-focus: var(--color-primary-light);
-
-  --color-success: #8ee6a8;
-  --color-success-bg: #17332a;
-  --color-info: #9dc4ff;
-  --color-info-bg: #1a2a4d;
-  --color-warning: #ffd88a;
-  --color-warning-bg: #3a2f17;
-  --color-error: #ff9d9d;
-  --color-error-bg: #3d1c2b;
-
-  --radius-sm: 8px;
-  --radius-md: 12px;
   --radius-pill: 999px;
-
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --space-7: 48px;
-  --space-8: 64px;
 
   --font-xs: 12px;
   --font-sm: 13px;
@@ -54,11 +7,6 @@
   --font-lg: 16px;
   --font-xl: 20px;
   --font-brand: 24px;
-
-  --control-height-sm: 28px;
-
-  --shadow-card: 0 30px 70px -15px rgba(109, 62, 240, 0.35), 0 18px 40px -20px rgba(0, 0, 0, 0.65);
-  --shadow-button: 0 10px 25px -8px rgba(109, 62, 240, 0.6);
 
   --transition-fast: 150ms ease;
   --transition-base: 250ms ease;
@@ -113,8 +61,25 @@
 body {
   min-height: 100vh;
   margin: 0;
-  background: radial-gradient(circle at 20% 20%, var(--color-page-bg-start) 0%, var(--color-page-bg-end) 100%);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  background: var(--page-background);
+  font-family: var(--font-body);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-ui);
 }
 
 .mainContainer {
@@ -176,10 +141,11 @@ body {
   padding: 10px;
   color: var(--color-text-heading);
   font-size: var(--font-md);
-  font-family: inherit;
+  font-family: var(--font-ui);
   outline: none;
   box-sizing: border-box;
   width: 100%;
+  min-height: var(--control-height);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
 }
 
@@ -189,24 +155,25 @@ body {
 
 .authField input:focus {
   border-color: var(--color-input-border-focus);
-  box-shadow: 0 0 0 3px rgba(156, 107, 255, 0.18);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-input-border-focus) 18%, transparent);
   background: var(--color-input-bg-focus);
 }
 
 .authButton {
   width: 100%;
+  min-height: var(--control-height);
   border: none;
   border-radius: var(--radius-sm);
   padding: 15px 24px;
   background: var(--color-primary-gradient);
-  color: #ffffff;
+  color: var(--color-on-primary);
   font-weight: 700;
   font-size: var(--font-sm);
   letter-spacing: 0.06em;
   text-transform: uppercase;
   cursor: pointer;
   box-shadow: var(--shadow-button);
-  font-family: inherit;
+  font-family: var(--font-ui);
   margin-top: var(--space-2);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
 }
@@ -214,7 +181,7 @@ body {
 .authButton:hover {
   transform: translateY(-1px);
   filter: brightness(1.08);
-  box-shadow: 0 14px 30px -10px rgba(109, 62, 240, 0.7);
+  box-shadow: var(--shadow-button-hover);
 }
 
 .authButton:active {
@@ -230,14 +197,15 @@ body {
 }
 
 .authButton--secondary {
-  background: rgba(255, 255, 255, 0.06);
+  color: var(--color-text-heading);
+  background: color-mix(in srgb, var(--color-tint) 6%, transparent);
   box-shadow: none;
   border: 1px solid var(--color-input-border);
 }
 
 .authButton--secondary:hover {
   filter: none;
-  background: rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--color-tint) 10%, transparent);
   box-shadow: none;
 }
 
@@ -250,7 +218,7 @@ body {
   color: var(--color-text-muted);
   font-size: var(--font-sm);
   font-weight: 500;
-  font-family: inherit;
+  font-family: var(--font-ui);
   cursor: pointer;
   padding: 4px 6px;
   border-radius: var(--radius-sm);
@@ -285,12 +253,12 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255, 255, 255, 0.06);
+  background: color-mix(in srgb, var(--color-tint) 6%, transparent);
   border: 1px solid var(--color-input-border);
   color: var(--color-text-muted);
   font-size: var(--font-sm);
   font-weight: 500;
-  font-family: inherit;
+  font-family: var(--font-ui);
   cursor: pointer;
   padding: 8px 16px 8px 12px;
   border-radius: var(--radius-sm);
@@ -299,7 +267,7 @@ body {
 
 .pageBackButton:hover {
   color: var(--color-text-heading);
-  background: rgba(255, 255, 255, 0.1);
+  background: color-mix(in srgb, var(--color-tint) 10%, transparent);
 }
 
 .pageBackButton__arrow {
