@@ -1,8 +1,10 @@
+import {SimpleChange} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {TranslateModule} from '@ngx-translate/core';
 import {Graph} from '@antv/x6';
 import {FlowchartEditorComponent} from './flowchart-editor.component';
 import {PHRASES} from '@config/phrases';
+import {ThemeService} from '@services/theme.service';
 
 function fireMouse(target: EventTarget, type: string, x: number, y: number) {
   target.dispatchEvent(new MouseEvent(type, {bubbles: true, cancelable: true, clientX: x, clientY: y, view: window}));
@@ -205,6 +207,72 @@ describe('FlowchartEditorComponent', () => {
 
       expect(portCircle).not.toBeNull();
       expect(portCircle!.style.visibility).toBe('');
+    });
+  });
+
+  describe('theme colours', () => {
+    const root = document.documentElement;
+    let savedTheme: string | null;
+    let savedMode: string | null;
+
+    function restore(name: string, value: string | null) {
+      if (value === null) {
+        root.removeAttribute(name);
+      } else {
+        root.setAttribute(name, value);
+      }
+    }
+
+    beforeEach(() => {
+      savedTheme = root.getAttribute('data-theme');
+      savedMode = root.getAttribute('data-mode');
+      TestBed.inject(ThemeService).preview('graphite', 'dark');
+    });
+
+    afterEach(() => {
+      restore('data-theme', savedTheme);
+      restore('data-mode', savedMode);
+    });
+
+    it('colours new nodes and edges from the active theme', () => {
+      component.handleAddShape('flow-process');
+      component.handleAddShape('flow-decision');
+      const [first, second] = getGraph().getNodes();
+      const edge = getGraph().addEdge({source: first, target: second});
+
+      expect(first.getAttrByPath('body/stroke')).toBe('#aeb6fa');
+      expect(first.getAttrByPath('text/fill')).toBe('#0f1012');
+      expect(edge.getAttrByPath('line/stroke')).toBe('#8b8f98');
+    });
+
+    it('recolours existing cells and the gradient live without emitting content', () => {
+      component.handleAddShape('flow-process');
+      const node = getGraph().getNodes()[0];
+      const emitted: string[] = [];
+      component.contentChange.subscribe((content) => emitted.push(content));
+
+      TestBed.inject(ThemeService).preview('paper', 'light');
+
+      expect(node.getAttrByPath('body/stroke')).toBe('#3a5a85');
+      expect(node.getAttrByPath('text/fill')).toBe('#ffffff');
+      const stops = fixture.nativeElement.querySelectorAll('#flowchartNodeFill stop');
+      expect(stops[0].getAttribute('stop-color')).toBe('#1f3a5f');
+      expect(stops[1].getAttribute('stop-color')).toBe('#3a5a85');
+      expect(emitted).toEqual([]);
+    });
+
+    it('recolours loaded content that carries old colours', () => {
+      component.handleAddShape('flow-process');
+      getGraph().getNodes()[0].setAttrs({body: {stroke: '#9c6bff'}, text: {fill: '#ffffff'}});
+      const content = JSON.stringify(getGraph().toJSON());
+      getGraph().clearCells();
+
+      component.content = content;
+      component.ngOnChanges({content: new SimpleChange('', content, false)});
+
+      const node = getGraph().getNodes()[0];
+      expect(node.getAttrByPath('body/stroke')).toBe('#aeb6fa');
+      expect(node.getAttrByPath('text/fill')).toBe('#0f1012');
     });
   });
 });
