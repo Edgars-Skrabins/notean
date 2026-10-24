@@ -1,63 +1,94 @@
 import {AxiosError} from "axios";
 import {DEFAULT_SETTINGS, mapSettings, SettingsService} from "./settings.service";
 import {axiosInstance} from "@config/axiosConfig";
+import {ThemeService} from "@services/theme.service";
+
+const rawSettings = {
+  show_favorites_on_home: true,
+  show_favorites_in_sidebar: false,
+  show_my_work_on_home: true,
+  theme: 'graphite' as const,
+  theme_mode: 'dark' as const,
+};
+
+const settings = {
+  showFavoritesOnHome: true,
+  showFavoritesInSidebar: false,
+  showMyWorkOnHome: true,
+  theme: 'graphite' as const,
+  themeMode: 'dark' as const,
+};
 
 describe('mapSettings', () => {
   it('maps snake_case fields to camelCase', () => {
-    expect(mapSettings({show_favorites_on_home: false, show_favorites_in_sidebar: true, show_my_work_on_home: true}))
-      .toEqual({showFavoritesOnHome: false, showFavoritesInSidebar: true, showMyWorkOnHome: true});
+    expect(mapSettings(rawSettings)).toEqual(settings);
   });
 });
 
 describe('SettingsService', () => {
-  it('defaults to showing favorites on home and in the sidebar', () => {
-    const service = new SettingsService();
+  let themeService: jasmine.SpyObj<ThemeService>;
 
-    expect(service.getSettings()).toEqual({showFavoritesOnHome: true, showFavoritesInSidebar: true, showMyWorkOnHome: true});
+  function create() {
+    return new SettingsService(themeService);
+  }
+
+  beforeEach(() => {
+    themeService = jasmine.createSpyObj<ThemeService>('ThemeService', ['apply']);
+  });
+
+  it('defaults to favorites and My Work on, with Purple haze in system mode', () => {
+    expect(create().getSettings()).toEqual({
+      showFavoritesOnHome: true,
+      showFavoritesInSidebar: true,
+      showMyWorkOnHome: true,
+      theme: 'purple_haze',
+      themeMode: 'system',
+    });
   });
 
   it('does not request anything on construction', () => {
     const get = spyOn(axiosInstance, 'get');
 
-    new SettingsService();
+    create();
 
     expect(get).not.toHaveBeenCalled();
   });
 
-  it('set stores the given settings', () => {
-    const service = new SettingsService();
+  it('set stores the given settings without applying the theme', () => {
+    const service = create();
 
-    service.set({showFavoritesOnHome: false, showFavoritesInSidebar: true, showMyWorkOnHome: true});
+    service.set(settings);
 
-    expect(service.getSettings()).toEqual({showFavoritesOnHome: false, showFavoritesInSidebar: true, showMyWorkOnHome: true});
+    expect(service.getSettings()).toEqual(settings);
+    expect(themeService.apply).not.toHaveBeenCalled();
   });
 
-  it('update sends snake_case values and stores the result', async () => {
-    const patch = spyOn(axiosInstance, 'patch').and.returnValue(Promise.resolve({
-      data: {settings: {show_favorites_on_home: true, show_favorites_in_sidebar: false, show_my_work_on_home: true}}
-    }));
-    const service = new SettingsService();
+  it('update sends snake_case values, stores the result and applies its theme', async () => {
+    const patch = spyOn(axiosInstance, 'patch').and.returnValue(Promise.resolve({data: {settings: rawSettings}}));
+    const service = create();
 
-    const response = await service.update({showFavoritesOnHome: true, showFavoritesInSidebar: false, showMyWorkOnHome: true});
+    const response = await service.update(settings);
 
-    expect(patch).toHaveBeenCalledWith('/users/me/settings', {settings: {show_favorites_on_home: true, show_favorites_in_sidebar: false, show_my_work_on_home: true}});
+    expect(patch).toHaveBeenCalledWith('/users/me/settings', {settings: rawSettings});
     expect(response.success).toBeTrue();
-    expect(service.getSettings()).toEqual({showFavoritesOnHome: true, showFavoritesInSidebar: false, showMyWorkOnHome: true});
+    expect(service.getSettings()).toEqual(settings);
+    expect(themeService.apply).toHaveBeenCalledOnceWith('graphite', 'dark');
   });
 
-  it('update keeps the previous settings on failure', async () => {
+  it('update keeps the previous settings and theme on failure', async () => {
     spyOn(axiosInstance, 'patch').and.returnValue(Promise.reject(new AxiosError('failed')));
-    const service = new SettingsService();
+    const service = create();
 
-    const response = await service.update({showFavoritesOnHome: false, showFavoritesInSidebar: false, showMyWorkOnHome: true});
+    const response = await service.update(settings);
 
     expect(response.success).toBeFalse();
     expect(service.getSettings()).toEqual(DEFAULT_SETTINGS);
+    expect(themeService.apply).not.toHaveBeenCalled();
   });
 
   it('clear resets to the defaults', () => {
-    const service = new SettingsService();
-    service.set({showFavoritesOnHome: false, showFavoritesInSidebar: false, showMyWorkOnHome: true});
+    const service = create();
+    service.set(settings);
 
     service.clear();
 

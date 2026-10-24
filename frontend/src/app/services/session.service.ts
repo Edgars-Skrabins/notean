@@ -5,6 +5,7 @@ import {AuthService} from "@services/auth.service";
 import {mapSettings, RawSettings, SettingsService} from "@services/settings.service";
 import {AvatarService, mapAvatar, RawAvatar} from "@services/avatar.service";
 import {mapActiveTeam, RawActiveTeam, TeamService} from "@services/team.service";
+import {ThemeService} from "@services/theme.service";
 import {AuthUser} from "@models/auth.model";
 import {SessionData, SessionResponse} from "@models/session.model";
 
@@ -34,7 +35,8 @@ export class SessionService {
     authService: AuthService,
     private settingsService: SettingsService,
     private avatarService: AvatarService,
-    private teamService: TeamService
+    private teamService: TeamService,
+    private themeService: ThemeService
   ) {
     if (authService.isAuthenticated()) {
       this.load();
@@ -47,6 +49,7 @@ export class SessionService {
       (data) => {
         const session = mapSession(data);
         this.settingsService.set(session.settings);
+        this.themeService.apply(session.settings.theme, session.settings.themeMode);
         this.avatarService.set(session.avatar);
         this.teamService.applyActiveTeam(session.team);
         return {success: true, session};

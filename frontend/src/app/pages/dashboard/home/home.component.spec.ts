@@ -15,7 +15,7 @@ describe('HomeComponent', () => {
   let features: BehaviorSubject<TeamFeatures>;
 
   function render(showFavoritesOnHome: boolean, showMyWorkOnHome: boolean) {
-    settings.next({showFavoritesOnHome, showFavoritesInSidebar: true, showMyWorkOnHome});
+    settings.next({showFavoritesOnHome, showFavoritesInSidebar: true, showMyWorkOnHome, theme: 'purple_haze', themeMode: 'system'});
     fixture.detectChanges();
   }
 
@@ -24,7 +24,7 @@ describe('HomeComponent', () => {
   }
 
   beforeEach(async () => {
-    settings = new BehaviorSubject<UserSettings>({showFavoritesOnHome: true, showFavoritesInSidebar: true, showMyWorkOnHome: true});
+    settings = new BehaviorSubject<UserSettings>({showFavoritesOnHome: true, showFavoritesInSidebar: true, showMyWorkOnHome: true, theme: 'purple_haze', themeMode: 'system'});
     features = new BehaviorSubject<TeamFeatures>({pages: true, diagrams: true, boards: true});
     await TestBed.configureTestingModule({
       imports: [HomeComponent, TranslateModule.forRoot()],
