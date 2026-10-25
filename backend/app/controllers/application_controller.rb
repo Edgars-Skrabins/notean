@@ -43,11 +43,11 @@ class ApplicationController < ActionController::API
   end
 
   def create_folder_params
-    params.require(:folder).permit(:title, :item_type, :parent_id)
+    params.require(:folder).permit(:title, :item_type, :parent_id, :project_id)
   end
 
   def update_folder_params
-    params.require(:folder).permit(:title, :parent_id)
+    params.require(:folder).permit(:title, :parent_id, :project_id)
   end
 
   def create_board_params
@@ -144,6 +144,36 @@ class ApplicationController < ActionController::API
 
     record.project_id = project_id.presence
     true
+  end
+
+  def visible_folder(folder_id)
+    project_access.scope(@team.folders).find_by(id: folder_id)
+  end
+
+  def place_in_folder(record, record_params, folder_key)
+    association = folder_key.to_s.delete_suffix("_id")
+
+    if record_params[folder_key].present?
+      folder = visible_folder(record_params[folder_key])
+      if folder.nil?
+        render_error(ErrorCodes::Folders::FOLDER_NOT_FOUND, :not_found)
+        return false
+      end
+
+      record.public_send("#{association}=", folder)
+      record.project_id = folder.project_id
+      return true
+    end
+
+    record.public_send("#{association}=", nil) if record_params.key?(folder_key)
+    return true unless record.new_record? || record_params.key?(:project_id)
+
+    if record.public_send(folder_key).present?
+      render_error(ErrorCodes::Projects::PROJECT_SET_BY_FOLDER, :unprocessable_entity)
+      return false
+    end
+
+    assign_project(record, record_params[:project_id])
   end
 
   def render_error(code, status)

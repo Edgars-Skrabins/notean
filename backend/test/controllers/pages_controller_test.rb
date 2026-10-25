@@ -142,7 +142,8 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
       post "/teams/#{@team.code}/pages", params: { page: { title: "Plan", folder_id: folder.id } }, headers: @headers, as: :json
     end
 
-    assert_response :unprocessable_entity
+    assert_response :not_found
+    assert_equal({ "code" => "FOLDER_NOT_FOUND" }, JSON.parse(response.body))
   end
 
   test "update rejects a folder from another team" do
@@ -151,8 +152,64 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
 
     patch "/teams/#{@team.code}/pages/#{@page.id}", params: { page: { folder_id: folder.id } }, headers: @headers, as: :json
 
-    assert_response :unprocessable_entity
-    assert_equal({ "code" => "PAGE_UPDATE_FAILED" }, JSON.parse(response.body))
+    assert_response :not_found
+    assert_equal({ "code" => "FOLDER_NOT_FOUND" }, JSON.parse(response.body))
     assert_nil @page.reload.folder_id
+  end
+
+  test "create in a folder takes the folder's project and ignores a sent project_id" do
+    project = Project.create!(team: @team, name: "Apollo", owner: @user, creator: @user)
+    other = Project.create!(team: @team, name: "Zeus", owner: @user, creator: @user)
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Root", project: project)
+
+    post "/teams/#{@team.code}/pages", params: { page: { title: "New", folder_id: folder.id, project_id: other.id } }, headers: @headers, as: :json
+
+    assert_response :created
+    assert_equal [ folder.id, project.id ], JSON.parse(response.body)["page"].values_at("folder_id", "project_id")
+  end
+
+  test "create in a folder the user can't see is not found" do
+    member = create_member(@team, "Bob")
+    secret = Project.create!(team: @team, name: "Secret", owner: @user, creator: @user)
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Plans", project: secret)
+    member_headers = { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: member.id)}" }
+
+    post "/teams/#{@team.code}/pages", params: { page: { title: "New", folder_id: folder.id } }, headers: member_headers, as: :json
+
+    assert_response :not_found
+    assert_equal "FOLDER_NOT_FOUND", JSON.parse(response.body)["code"]
+  end
+
+  test "moving into a folder adopts the folder's project" do
+    project = Project.create!(team: @team, name: "Apollo", owner: @user, creator: @user)
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Root", project: project)
+
+    patch "/teams/#{@team.code}/pages/#{@page.id}", params: { page: { folder_id: folder.id } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal [ folder.id, project.id ], [ @page.reload.folder_id, @page.project_id ]
+  end
+
+  test "changing the project while staying in a folder is rejected with PROJECT_SET_BY_FOLDER" do
+    project = Project.create!(team: @team, name: "Apollo", owner: @user, creator: @user)
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Root")
+    @page.update!(folder: folder)
+
+    patch "/teams/#{@team.code}/pages/#{@page.id}", params: { page: { project_id: project.id } }, headers: @headers, as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal "PROJECT_SET_BY_FOLDER", JSON.parse(response.body)["code"]
+    assert_nil @page.reload.project_id
+  end
+
+  test "moving out of a folder can set the project in the same request" do
+    project = Project.create!(team: @team, name: "Apollo", owner: @user, creator: @user)
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Root")
+    @page.update!(folder: folder)
+
+    patch "/teams/#{@team.code}/pages/#{@page.id}", params: { page: { folder_id: nil, project_id: project.id } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal [ nil, project.id ], [ @page.reload.folder_id, @page.project_id ]
   end
 end

@@ -75,21 +75,19 @@ class ProjectVisibilityTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "folders show only folders holding matching items, and empty folders only under All" do
-    mixed = Folder.create!(team: @team, creator: @owner, item_type: "Page", title: "Mixed")
-    secret_only = Folder.create!(team: @team, creator: @owner, item_type: "Page", title: "Secret only")
-    empty = Folder.create!(team: @team, creator: @owner, item_type: "Page", title: "Empty")
-    nested = Folder.create!(team: @team, creator: @owner, item_type: "Page", title: "Nested", parent: mixed)
-    item(:pages, "Secret page", project: @secret, folder: mixed)
+  test "folders follow their own project: hidden ones are absent, a selected project lists its folders including empty ones" do
+    Folder.create!(team: @team, creator: @owner, item_type: "Page", title: "Open")
+    game = Folder.create!(team: @team, creator: @owner, item_type: "Page", title: "Game", project: @game)
+    Folder.create!(team: @team, creator: @owner, item_type: "Page", title: "Game empty", project: @game)
+    nested = Folder.create!(team: @team, creator: @owner, item_type: "Page", title: "Nested", parent: game, project: @game)
+    Folder.create!(team: @team, creator: @owner, item_type: "Page", title: "Secret", project: @secret)
     item(:pages, "Game page", project: @game, folder: nested)
-    item(:pages, "Hidden", project: @secret, folder: secret_only)
 
     all = get_json("folders", params: { item_type: "Page" })["folders"].map { |folder| folder["title"] }
-    assert_equal [ "Empty", "Mixed", "Nested" ], all.sort
+    assert_equal [ "Game", "Game empty", "Nested", "Open" ], all.sort
 
-    game = get_json("folders", params: { item_type: "Page", project_id: @game.id })["folders"].map { |folder| folder["title"] }
-    assert_equal [ "Mixed", "Nested" ], game.sort
-    assert_not_includes game, empty.title
+    selected = get_json("folders", params: { item_type: "Page", project_id: @game.id })["folders"].map { |folder| folder["title"] }
+    assert_equal [ "Game", "Game empty", "Nested" ], selected.sort
   end
 
   test "assignees on a project board must be able to see it" do
