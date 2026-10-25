@@ -230,6 +230,9 @@
   "NEW_PROJECT": "Uusi projekti",
   "PROJECT": "Projekti",
   "NO_PROJECT": "Ei projektia",
+  "CHANGE_FOLDER_PROJECT": "Vaihda projekti",
+  "FOLDER_PROJECT_MOVE_NOTE": "Kaikki tämän kansion sisältö siirtyy valittuun projektiin.",
+  "PROJECT_SET_BY_FOLDER_HINT": "Kansio määrittää",
   "PROJECT_NAME": "Nimi",
   "PROJECT_DESCRIPTION": "Kuvaus",
   "PROJECT_OWNER": "Omistaja",
@@ -353,7 +356,8 @@
       "PROJECT_SAVE_FAILED": "Projektia ei voitu tallentaa",
       "PROJECT_NAME_MISMATCH": "Kirjoittamasi nimi ei vastaa projektin nimeä",
       "PROJECT_DELETE_MODE_INVALID": "Projektia ei voitu poistaa",
-      "PROJECT_INVALID": "Et voi siirtää kohteita tähän projektiin"
+      "PROJECT_INVALID": "Et voi siirtää kohteita tähän projektiin",
+      "PROJECT_SET_BY_FOLDER": "Projektin määrittää kansio, jossa se on."
     },
     "SEARCH": {
       "QUERY_TOO_SHORT": "Kirjoita vähintään 2 merkkiä hakeaksesi",

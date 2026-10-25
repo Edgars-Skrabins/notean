@@ -12,6 +12,7 @@ class Project < ApplicationRecord
   has_many :pages, dependent: :nullify
   has_many :diagrams, dependent: :nullify
   has_many :boards, dependent: :nullify
+  has_many :folders, dependent: :nullify
 
   validates :name, presence: true, uniqueness: { scope: :team_id, case_sensitive: false }
   validate :owner_is_team_member

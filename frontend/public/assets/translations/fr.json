@@ -230,6 +230,9 @@
   "NEW_PROJECT": "Nouveau projet",
   "PROJECT": "Projet",
   "NO_PROJECT": "Aucun projet",
+  "CHANGE_FOLDER_PROJECT": "Changer de projet",
+  "FOLDER_PROJECT_MOVE_NOTE": "Tout le contenu de ce dossier sera déplacé vers le projet choisi.",
+  "PROJECT_SET_BY_FOLDER_HINT": "Défini par le dossier",
   "PROJECT_NAME": "Nom",
   "PROJECT_DESCRIPTION": "Description",
   "PROJECT_OWNER": "Propriétaire",
@@ -353,7 +356,8 @@
       "PROJECT_SAVE_FAILED": "Impossible d'enregistrer le projet",
       "PROJECT_NAME_MISMATCH": "Le nom saisi ne correspond pas au nom du projet",
       "PROJECT_DELETE_MODE_INVALID": "Impossible de supprimer le projet",
-      "PROJECT_INVALID": "Vous ne pouvez pas déplacer d'éléments dans ce projet"
+      "PROJECT_INVALID": "Vous ne pouvez pas déplacer d'éléments dans ce projet",
+      "PROJECT_SET_BY_FOLDER": "Le projet est défini par le dossier qui le contient."
     },
     "SEARCH": {
       "QUERY_TOO_SHORT": "Saisissez au moins 2 caractères pour rechercher",

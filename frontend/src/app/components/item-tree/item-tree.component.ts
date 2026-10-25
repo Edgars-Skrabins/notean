@@ -15,12 +15,14 @@ export interface TreeFolder {
   id: number;
   title: string;
   parentId: number | null;
+  projectId: number | null;
 }
 
 export interface TreeItem {
   id: number;
   title: string;
   folderId: number | null;
+  projectId: number | null;
   meta: {
     creator: { nickname: string };
     updatedAt: string;
@@ -69,6 +71,7 @@ export class ItemTreeComponent implements OnChanges {
   @Input({required: true}) itemIcon!: IconName;
   @Input({required: true}) favoritableType!: 'Page' | 'Diagram';
   @Input({required: true}) deleteItemConfirmMessage!: string;
+  @Input() canChangeFolderProject = false;
 
   @Output() openItem = new EventEmitter<TreeItem>();
   @Output() createFolder = new EventEmitter<{ parentId: number | null }>();
@@ -79,6 +82,7 @@ export class ItemTreeComponent implements OnChanges {
   @Output() renameItem = new EventEmitter<{ itemId: number; title: string }>();
   @Output() moveItem = new EventEmitter<{ itemId: number; folderId: number | null }>();
   @Output() moveFolder = new EventEmitter<{ folderId: number; parentId: number | null }>();
+  @Output() changeFolderProject = new EventEmitter<{ folderId: number }>();
 
   rootFolders: BuiltFolder[] = [];
   rootItems: TreeItem[] = [];

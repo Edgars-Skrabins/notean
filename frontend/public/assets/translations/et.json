@@ -230,6 +230,9 @@
   "NEW_PROJECT": "Uus projekt",
   "PROJECT": "Projekt",
   "NO_PROJECT": "Projektita",
+  "CHANGE_FOLDER_PROJECT": "Muuda projekti",
+  "FOLDER_PROJECT_MOVE_NOTE": "Kõik selles kaustas liigub valitud projekti.",
+  "PROJECT_SET_BY_FOLDER_HINT": "Määrab kaust",
   "PROJECT_NAME": "Nimi",
   "PROJECT_DESCRIPTION": "Kirjeldus",
   "PROJECT_OWNER": "Omanik",
@@ -353,7 +356,8 @@
       "PROJECT_SAVE_FAILED": "Projekti ei õnnestunud salvestada",
       "PROJECT_NAME_MISMATCH": "Sisestatud nimi ei vasta projekti nimele",
       "PROJECT_DELETE_MODE_INVALID": "Projekti ei õnnestunud kustutada",
-      "PROJECT_INVALID": "Sa ei saa sellesse projekti üksusi teisaldada"
+      "PROJECT_INVALID": "Sa ei saa sellesse projekti üksusi teisaldada",
+      "PROJECT_SET_BY_FOLDER": "Projekti määrab kaust, milles see asub."
     },
     "SEARCH": {
       "QUERY_TOO_SHORT": "Otsimiseks sisesta vähemalt 2 märki",

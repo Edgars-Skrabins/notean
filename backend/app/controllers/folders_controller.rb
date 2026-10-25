@@ -11,24 +11,17 @@ class FoldersController < ApplicationController
   before_action :require_item_type_feature!
 
   def index
-    folders = @team.folders.includes(creator: User::AVATAR_PRELOAD).where(item_type: index_item_type_param).to_a
-    items = index_item_type_param == "Page" ? @team.pages : @team.diagrams
-    matching_items = project_filtered(items)
-    return if matching_items.nil?
+    folders = project_filtered(@team.folders.includes(creator: User::AVATAR_PRELOAD).where(item_type: index_item_type_param))
+    return if folders.nil?
 
-    visible_ids = FolderVisibility.new(
-      folders,
-      item_folder_ids: items.where.not(folder_id: nil).pluck(:folder_id),
-      matching_folder_ids: matching_items.where.not(folder_id: nil).pluck(:folder_id),
-      include_empty: params[:project_id].blank?
-    ).visible_ids
-
-    render json: { folders: folders.select { |folder| visible_ids.include?(folder.id) }.map { |folder| folder_json(folder) } }
+    render json: { folders: folders.map { |folder| folder_json(folder) } }
   end
 
   def create
-    @folder = @team.folders.new(create_folder_params)
+    @folder = @team.folders.new(create_folder_params.except(:parent_id, :project_id))
     @folder.created_by_user_id = current_user.id
+    return render_project_set_by_folder if project_with_parent?(create_folder_params)
+    return unless place_in_folder(@folder, create_folder_params, :parent_id)
 
     if @folder.save
       render json: { folder: folder_json(@folder) }, status: :created
@@ -39,9 +32,18 @@ class FoldersController < ApplicationController
 
   def update
     @folder.title = update_folder_params[:title] if update_folder_params[:title].present?
-    @folder.parent_id = update_folder_params[:parent_id] if update_folder_params.key?(:parent_id)
+    return render_project_set_by_folder if project_with_parent?(update_folder_params)
+    return unless place_in_folder(@folder, update_folder_params, :parent_id)
 
-    if @folder.save
+    project_changed = @folder.project_id_changed?
+    saved = Folder.transaction do
+      raise ActiveRecord::Rollback unless @folder.save
+
+      FolderProject.apply(@folder, @folder.project_id) if project_changed
+      true
+    end
+
+    if saved
       render json: { folder: folder_json(@folder) }
     else
       render_error(folder_error_code(ErrorCodes::Folders::FOLDER_UPDATE_FAILED), :unprocessable_entity)
@@ -67,9 +69,17 @@ class FoldersController < ApplicationController
   private
 
   def set_folder
-    @folder = @team.folders.find_by(id: params[:id])
+    @folder = project_access.scope(@team.folders).find_by(id: params[:id])
 
     render_error(ErrorCodes::Folders::FOLDER_NOT_FOUND, :not_found) if @folder.nil?
+  end
+
+  def project_with_parent?(folder_params)
+    folder_params[:parent_id].present? && folder_params.key?(:project_id)
+  end
+
+  def render_project_set_by_folder
+    render_error(ErrorCodes::Projects::PROJECT_SET_BY_FOLDER, :unprocessable_entity)
   end
 
   def require_item_type_feature!
@@ -96,6 +106,7 @@ class FoldersController < ApplicationController
       id: folder.id,
       title: folder.title,
       parent_id: folder.parent_id,
+      project_id: folder.project_id,
       creator: member_json(folder.creator),
       created_at: folder.created_at,
       updated_at: folder.updated_at

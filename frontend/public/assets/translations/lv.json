@@ -230,6 +230,9 @@
   "NEW_PROJECT": "Jauns projekts",
   "PROJECT": "Projekts",
   "NO_PROJECT": "Bez projekta",
+  "CHANGE_FOLDER_PROJECT": "Mainīt projektu",
+  "FOLDER_PROJECT_MOVE_NOTE": "Viss šajā mapē tiks pārvietots uz izvēlēto projektu.",
+  "PROJECT_SET_BY_FOLDER_HINT": "Nosaka mape",
   "PROJECT_NAME": "Nosaukums",
   "PROJECT_DESCRIPTION": "Apraksts",
   "PROJECT_OWNER": "Īpašnieks",
@@ -353,7 +356,8 @@
       "PROJECT_SAVE_FAILED": "Neizdevās saglabāt projektu",
       "PROJECT_NAME_MISMATCH": "Ierakstītais nosaukums neatbilst projekta nosaukumam",
       "PROJECT_DELETE_MODE_INVALID": "Neizdevās dzēst projektu",
-      "PROJECT_INVALID": "Šajā projektā nevar pārvietot vienumus"
+      "PROJECT_INVALID": "Šajā projektā nevar pārvietot vienumus",
+      "PROJECT_SET_BY_FOLDER": "Projektu nosaka mape, kurā tas atrodas."
     },
     "SEARCH": {
       "QUERY_TOO_SHORT": "Ievadiet vismaz 2 rakstzīmes, lai meklētu",

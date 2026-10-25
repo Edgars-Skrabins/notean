@@ -1,0 +1,20 @@
+<div class="folderProjectDialogOverlay">
+  <div class="folderProjectDialogOverlay__backdrop" (click)="handleCancel()"></div>
+
+  <div class="folderProjectDialog">
+    <h3 class="folderProjectDialog__title">{{ PHRASES.CHANGE_FOLDER_PROJECT | translate }}: '{{ folderTitle }}'</h3>
+
+    <app-project-select
+      class="folderProjectDialog__select"
+      [projectId]="selectedProjectId"
+      (projectChange)="selectedProjectId = $event"
+    ></app-project-select>
+
+    <p class="folderProjectDialog__note">{{ PHRASES.FOLDER_PROJECT_MOVE_NOTE | translate }}</p>
+
+    <div class="folderProjectDialog__actions">
+      <app-button variant="ghost" (pressed)="handleCancel()">{{ PHRASES.CANCEL | translate }}</app-button>
+      <app-button variant="primary" (pressed)="handleConfirm()">{{ PHRASES.SAVE | translate }}</app-button>
+    </div>
+  </div>
+</div>

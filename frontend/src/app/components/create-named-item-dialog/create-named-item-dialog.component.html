@@ -12,6 +12,13 @@
       autofocus
     />
 
+    <app-project-select
+      *ngIf="showProjectSelect && (projectFilterService.hasProjects$ | async)"
+      class="createNamedItemDialog__project"
+      [projectId]="selectedProjectId"
+      (projectChange)="selectedProjectId = $event"
+    ></app-project-select>
+
     <div class="createNamedItemDialog__actions">
       <app-button variant="ghost" (pressed)="handleCancel()">{{ PHRASES.CANCEL | translate }}</app-button>
       <app-button variant="primary" (pressed)="handleConfirm()">{{ PHRASES.CREATE | translate }}</app-button>

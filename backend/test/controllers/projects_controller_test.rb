@@ -134,6 +134,30 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_nil page.reload.project_id
   end
 
+  test "delete with keep makes the project's folders team-wide and keeps the tree" do
+    root = Folder.create!(team: @team, creator: @owner, item_type: "Page", title: "Root", project: @game)
+    child = Folder.create!(team: @team, creator: @owner, item_type: "Page", title: "Child", parent: root, project: @game)
+    page = Page.create!(team: @team, creator: @owner, title: "Notes", content: "", folder: child, project: @game)
+
+    delete projects_url(@game), params: { project: { mode: "keep", confirm_name: "Game" } }, headers: headers_for(@owner), as: :json
+
+    assert_response :no_content
+    assert_equal [ nil, nil ], [ root.reload.project_id, child.reload.project_id ]
+    assert_equal [ root.id, child.id, nil ], [ child.parent_id, page.reload.folder_id, page.project_id ]
+  end
+
+  test "delete with delete_items also removes the project's folders" do
+    root = Folder.create!(team: @team, creator: @owner, item_type: "Page", title: "Root", project: @game)
+    child = Folder.create!(team: @team, creator: @owner, item_type: "Page", title: "Child", parent: root, project: @game)
+    Page.create!(team: @team, creator: @owner, title: "Notes", content: "", folder: child, project: @game)
+    open_folder = Folder.create!(team: @team, creator: @owner, item_type: "Page", title: "Open")
+
+    delete projects_url(@game), params: { project: { mode: "delete_items", confirm_name: "Game" } }, headers: headers_for(@owner), as: :json
+
+    assert_response :no_content
+    assert_equal [ open_folder.id ], Folder.pluck(:id)
+  end
+
   test "delete with delete_items removes items, tickets and favorites" do
     page = Page.create!(team: @team, creator: @owner, title: "Notes", content: "", project: @game)
     board = Board.create!(team: @team, creator: @owner, title: "Game board", project: @game)

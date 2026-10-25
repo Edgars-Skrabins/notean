@@ -36,7 +36,10 @@ class ProjectsController < ApplicationController
     return render_error(ErrorCodes::Projects::PROJECT_NAME_MISMATCH, :unprocessable_entity) unless destroy_project_params[:confirm_name] == @project.name
 
     Project.transaction do
-      [ @project.pages, @project.diagrams, @project.boards ].each(&:destroy_all) if mode == "delete_items"
+      if mode == "delete_items"
+        [ @project.pages, @project.diagrams, @project.boards ].each(&:destroy_all)
+        @project.folders.where(parent_id: nil).destroy_all
+      end
       @project.destroy!
     end
 

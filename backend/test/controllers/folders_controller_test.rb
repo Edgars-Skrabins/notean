@@ -119,4 +119,115 @@ class FoldersControllerTest < ActionDispatch::IntegrationTest
     post "/teams/#{@team.code}/folders", params: { folder: { title: "New", item_type: "Diagram" } }, headers: @headers, as: :json
     assert_response :created
   end
+
+  test "folders of a project the user can't see are not found on update and delete" do
+    member = create_member(@team, "Bob")
+    secret = Project.create!(team: @team, name: "Secret", owner: @user, creator: @user)
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Plans", project: secret)
+    page = Page.create!(team: @team, creator: @user, title: "Budget", content: "", folder: folder, project: secret)
+
+    patch "/teams/#{@team.code}/folders/#{folder.id}", params: { folder: { title: "Mine" } }, headers: headers_for(member), as: :json
+    assert_response :not_found
+
+    delete "/teams/#{@team.code}/folders/#{folder.id}?mode=cascade", headers: headers_for(member)
+    assert_response :not_found
+    assert Folder.exists?(folder.id)
+    assert Page.exists?(page.id)
+  end
+
+  test "a subfolder can't be created inside a folder the user can't see" do
+    member = create_member(@team, "Bob")
+    secret = Project.create!(team: @team, name: "Secret", owner: @user, creator: @user)
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Plans", project: secret)
+
+    post "/teams/#{@team.code}/folders", params: { folder: { title: "Sneaky", item_type: "Page", parent_id: folder.id } }, headers: headers_for(member), as: :json
+
+    assert_response :not_found
+    assert_equal "FOLDER_NOT_FOUND", JSON.parse(response.body)["code"]
+  end
+
+  test "create sets a top-level folder's project and gives subfolders their parent's project" do
+    project = Project.create!(team: @team, name: "Apollo", owner: @user, creator: @user)
+
+    post "/teams/#{@team.code}/folders", params: { folder: { title: "Root", item_type: "Page", project_id: project.id } }, headers: @headers, as: :json
+    assert_response :created
+    root = JSON.parse(response.body)["folder"]
+    assert_equal project.id, root["project_id"]
+
+    post "/teams/#{@team.code}/folders", params: { folder: { title: "Child", item_type: "Page", parent_id: root["id"] } }, headers: @headers, as: :json
+    assert_response :created
+    assert_equal project.id, JSON.parse(response.body)["folder"]["project_id"]
+  end
+
+  test "sending project_id for a subfolder is rejected with PROJECT_SET_BY_FOLDER" do
+    project = Project.create!(team: @team, name: "Apollo", owner: @user, creator: @user)
+    root = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Root")
+    child = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Child", parent: root)
+
+    post "/teams/#{@team.code}/folders", params: { folder: { title: "New", item_type: "Page", parent_id: root.id, project_id: project.id } }, headers: @headers, as: :json
+    assert_response :unprocessable_entity
+    assert_equal "PROJECT_SET_BY_FOLDER", JSON.parse(response.body)["code"]
+
+    patch "/teams/#{@team.code}/folders/#{child.id}", params: { folder: { project_id: project.id } }, headers: @headers, as: :json
+    assert_response :unprocessable_entity
+    assert_equal "PROJECT_SET_BY_FOLDER", JSON.parse(response.body)["code"]
+    assert_nil child.reload.project_id
+  end
+
+  test "changing a top-level folder's project moves its whole subtree" do
+    project = Project.create!(team: @team, name: "Apollo", owner: @user, creator: @user)
+    root = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Root")
+    child = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Child", parent: root)
+    page = Page.create!(team: @team, creator: @user, title: "Notes", content: "", folder: child)
+
+    patch "/teams/#{@team.code}/folders/#{root.id}", params: { folder: { project_id: project.id } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal project.id, JSON.parse(response.body)["folder"]["project_id"]
+    assert_equal project.id, child.reload.project_id
+    assert_equal project.id, page.reload.project_id
+  end
+
+  test "changing a folder's project to one the user can't see is rejected" do
+    member = create_member(@team, "Bob")
+    secret = Project.create!(team: @team, name: "Secret", owner: @user, creator: @user)
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Open")
+
+    patch "/teams/#{@team.code}/folders/#{folder.id}", params: { folder: { project_id: secret.id } }, headers: headers_for(member), as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal "PROJECT_INVALID", JSON.parse(response.body)["code"]
+    assert_nil folder.reload.project_id
+  end
+
+  test "moving a folder under a folder of another project gives the moved subtree that project" do
+    project = Project.create!(team: @team, name: "Apollo", owner: @user, creator: @user)
+    target = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Target", project: project)
+    moved = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Moved")
+    inner = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Inner", parent: moved)
+    page = Page.create!(team: @team, creator: @user, title: "Notes", content: "", folder: inner)
+
+    patch "/teams/#{@team.code}/folders/#{moved.id}", params: { folder: { parent_id: target.id } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal [ target.id, project.id ], [ moved.reload.parent_id, moved.project_id ]
+    assert_equal project.id, inner.reload.project_id
+    assert_equal project.id, page.reload.project_id
+  end
+
+  test "moving a folder to the top level keeps its project" do
+    project = Project.create!(team: @team, name: "Apollo", owner: @user, creator: @user)
+    root = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Root", project: project)
+    child = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Child", parent: root, project: project)
+
+    patch "/teams/#{@team.code}/folders/#{child.id}", params: { folder: { parent_id: nil } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_nil child.reload.parent_id
+    assert_equal project.id, child.project_id
+  end
+
+  def headers_for(user)
+    { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: user.id)}" }
+  end
 end

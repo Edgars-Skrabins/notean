@@ -52,6 +52,29 @@ class FolderTest < ActiveSupport::TestCase
     assert_includes root.errors[:parent_id], "can't be this folder or one of its own descendants"
   end
 
+  test "is invalid when its project differs from its parent's project" do
+    Membership.create!(user: @user, team: @team, role: "owner", nickname: "alice")
+    project = Project.create!(team: @team, name: "Apollo", owner: @user, creator: @user)
+    parent = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Root", project: project)
+    child = Folder.new(team: @team, creator: @user, item_type: "Page", title: "Child", parent: parent)
+
+    assert_not child.valid?
+    assert child.errors.of_kind?(:project_id, :project_set_by_folder)
+
+    child.project = project
+    assert child.valid?
+  end
+
+  test "is invalid when its project belongs to another team" do
+    other_team = Team.create!(name: "Marketing", password: "supersecret")
+    Membership.create!(user: @user, team: other_team, role: "owner", nickname: "alice")
+    project = Project.create!(team: other_team, name: "Apollo", owner: @user, creator: @user)
+    folder = Folder.new(team: @team, creator: @user, item_type: "Page", title: "Root", project: project)
+
+    assert_not folder.valid?
+    assert_includes folder.errors[:project], "must belong to the same team"
+  end
+
   test "parent and children associations reflect nesting" do
     root = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Root")
     child = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Child", parent: root)

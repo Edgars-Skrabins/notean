@@ -230,6 +230,9 @@
   "NEW_PROJECT": "Nyt projekt",
   "PROJECT": "Projekt",
   "NO_PROJECT": "Intet projekt",
+  "CHANGE_FOLDER_PROJECT": "Skift projekt",
+  "FOLDER_PROJECT_MOVE_NOTE": "Alt i denne mappe flyttes til det valgte projekt.",
+  "PROJECT_SET_BY_FOLDER_HINT": "Bestemt af mappen",
   "PROJECT_NAME": "Navn",
   "PROJECT_DESCRIPTION": "Beskrivelse",
   "PROJECT_OWNER": "Ejer",
@@ -353,7 +356,8 @@
       "PROJECT_SAVE_FAILED": "Projektet kunne ikke gemmes",
       "PROJECT_NAME_MISMATCH": "Det indtastede navn matcher ikke projektets navn",
       "PROJECT_DELETE_MODE_INVALID": "Projektet kunne ikke slettes",
-      "PROJECT_INVALID": "Du kan ikke flytte elementer til dette projekt"
+      "PROJECT_INVALID": "Du kan ikke flytte elementer til dette projekt",
+      "PROJECT_SET_BY_FOLDER": "Projektet bestemmes af den mappe, det ligger i."
     },
     "SEARCH": {
       "QUERY_TOO_SHORT": "Skriv mindst 2 tegn for at søge",

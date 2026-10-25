@@ -230,6 +230,9 @@
   "NEW_PROJECT": "New project",
   "PROJECT": "Project",
   "NO_PROJECT": "No project",
+  "CHANGE_FOLDER_PROJECT": "Change project",
+  "FOLDER_PROJECT_MOVE_NOTE": "Everything in this folder moves to the chosen project.",
+  "PROJECT_SET_BY_FOLDER_HINT": "Set by folder",
   "PROJECT_NAME": "Name",
   "PROJECT_DESCRIPTION": "Description",
   "PROJECT_OWNER": "Owner",
@@ -353,7 +356,8 @@
       "PROJECT_SAVE_FAILED": "Could not save project",
       "PROJECT_NAME_MISMATCH": "The name you typed doesn't match the project name",
       "PROJECT_DELETE_MODE_INVALID": "Could not delete project",
-      "PROJECT_INVALID": "You can't move items into this project"
+      "PROJECT_INVALID": "You can't move items into this project",
+      "PROJECT_SET_BY_FOLDER": "The project is set by the folder this is in."
     },
     "SEARCH": {
       "QUERY_TOO_SHORT": "Type at least 2 characters to search",

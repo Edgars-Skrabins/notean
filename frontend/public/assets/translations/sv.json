@@ -230,6 +230,9 @@
   "NEW_PROJECT": "Nytt projekt",
   "PROJECT": "Projekt",
   "NO_PROJECT": "Inget projekt",
+  "CHANGE_FOLDER_PROJECT": "Byt projekt",
+  "FOLDER_PROJECT_MOVE_NOTE": "Allt i den här mappen flyttas till det valda projektet.",
+  "PROJECT_SET_BY_FOLDER_HINT": "Styrs av mappen",
   "PROJECT_NAME": "Namn",
   "PROJECT_DESCRIPTION": "Beskrivning",
   "PROJECT_OWNER": "Ägare",
@@ -353,7 +356,8 @@
       "PROJECT_SAVE_FAILED": "Det gick inte att spara projektet",
       "PROJECT_NAME_MISMATCH": "Namnet du skrev matchar inte projektets namn",
       "PROJECT_DELETE_MODE_INVALID": "Det gick inte att ta bort projektet",
-      "PROJECT_INVALID": "Du kan inte flytta objekt till det här projektet"
+      "PROJECT_INVALID": "Du kan inte flytta objekt till det här projektet",
+      "PROJECT_SET_BY_FOLDER": "Projektet styrs av mappen som det ligger i."
     },
     "SEARCH": {
       "QUERY_TOO_SHORT": "Skriv minst 2 tecken för att söka",

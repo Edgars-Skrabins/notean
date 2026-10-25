@@ -9,6 +9,7 @@ function buildItem(overrides: Partial<TreeItem> = {}): TreeItem {
     id: 10,
     title: 'Notes',
     folderId: null,
+    projectId: null,
     meta: {creator: {nickname: 'Ann'}, updatedAt: '2026-10-01T10:00:00Z'},
     ...overrides,
   };
@@ -76,13 +77,34 @@ describe('ItemTreeComponent', () => {
   });
 
   it('toggles a folder from its row main and its row padding', () => {
-    render([{id: 1, title: 'Docs', parentId: null}], [buildItem({folderId: 1})]);
+    render([{id: 1, title: 'Docs', parentId: null, projectId: null}], [buildItem({folderId: 1})]);
 
     query<HTMLButtonElement>('.itemTree__row--folder .itemTree__rowMain').click();
     expect(component.isExpanded(1)).toBeTrue();
 
     query<HTMLElement>('.itemTree__row--folder').click();
     expect(component.isExpanded(1)).toBeFalse();
+  });
+
+  it('offers to change the project on top-level folders only', () => {
+    const requested: { folderId: number }[] = [];
+    component.changeFolderProject.subscribe((event) => requested.push(event));
+    fixture.componentRef.setInput('canChangeFolderProject', true);
+    render([{id: 1, title: 'Docs', parentId: null, projectId: null}, {id: 2, title: 'Inner', parentId: 1, projectId: null}], []);
+    query<HTMLButtonElement>('.itemTree__row--folder .itemTree__rowMain').click();
+    fixture.detectChanges();
+
+    const buttons = fixture.nativeElement.querySelectorAll(`[aria-label="${PHRASES.CHANGE_FOLDER_PROJECT}"]`);
+    expect(buttons.length).toBe(1);
+
+    (buttons[0] as HTMLButtonElement).click();
+    expect(requested).toEqual([{folderId: 1}]);
+  });
+
+  it('hides the change project button when it is not allowed', () => {
+    render([{id: 1, title: 'Docs', parentId: null, projectId: null}], []);
+
+    expect(query(`[aria-label="${PHRASES.CHANGE_FOLDER_PROJECT}"]`)).toBeNull();
   });
 
   describe('item rename', () => {

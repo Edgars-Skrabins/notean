@@ -63,6 +63,13 @@
           (pressed)="createItem.emit({ parentId: folder.id })"
         ></app-icon-button>
         <app-icon-button
+          *ngIf="canChangeFolderProject && folder.parentId === null"
+          icon="project"
+          [tooltip]="PHRASES.CHANGE_FOLDER_PROJECT | translate"
+          [size]="28"
+          (pressed)="changeFolderProject.emit({ folderId: folder.id })"
+        ></app-icon-button>
+        <app-icon-button
           icon="edit"
           [tooltip]="PHRASES.RENAME_FOLDER | translate"
           [size]="28"

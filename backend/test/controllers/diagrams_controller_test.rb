@@ -89,6 +89,63 @@ class DiagramsControllerTest < ActionDispatch::IntegrationTest
       post "/teams/#{@team.code}/diagrams", params: { diagram: { title: "Flow", folder_id: folder.id } }, headers: @headers, as: :json
     end
 
+    assert_response :not_found
+    assert_equal({ "code" => "FOLDER_NOT_FOUND" }, JSON.parse(response.body))
+  end
+
+  test "create in a folder takes the folder's project and ignores a sent project_id" do
+    project = Project.create!(team: @team, name: "Apollo", owner: @user, creator: @user)
+    other = Project.create!(team: @team, name: "Zeus", owner: @user, creator: @user)
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Diagram", title: "Root", project: project)
+
+    post "/teams/#{@team.code}/diagrams", params: { diagram: { title: "New", folder_id: folder.id, project_id: other.id } }, headers: @headers, as: :json
+
+    assert_response :created
+    assert_equal [ folder.id, project.id ], JSON.parse(response.body)["diagram"].values_at("folder_id", "project_id")
+  end
+
+  test "create in a folder the user can't see is not found" do
+    member = create_member(@team, "Bob")
+    secret = Project.create!(team: @team, name: "Secret", owner: @user, creator: @user)
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Diagram", title: "Plans", project: secret)
+    member_headers = { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: member.id)}" }
+
+    post "/teams/#{@team.code}/diagrams", params: { diagram: { title: "New", folder_id: folder.id } }, headers: member_headers, as: :json
+
+    assert_response :not_found
+    assert_equal "FOLDER_NOT_FOUND", JSON.parse(response.body)["code"]
+  end
+
+  test "moving into a folder adopts the folder's project" do
+    project = Project.create!(team: @team, name: "Apollo", owner: @user, creator: @user)
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Diagram", title: "Root", project: project)
+
+    patch "/teams/#{@team.code}/diagrams/#{@diagram.id}", params: { diagram: { folder_id: folder.id } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal [ folder.id, project.id ], [ @diagram.reload.folder_id, @diagram.project_id ]
+  end
+
+  test "changing the project while staying in a folder is rejected with PROJECT_SET_BY_FOLDER" do
+    project = Project.create!(team: @team, name: "Apollo", owner: @user, creator: @user)
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Diagram", title: "Root")
+    @diagram.update!(folder: folder)
+
+    patch "/teams/#{@team.code}/diagrams/#{@diagram.id}", params: { diagram: { project_id: project.id } }, headers: @headers, as: :json
+
     assert_response :unprocessable_entity
+    assert_equal "PROJECT_SET_BY_FOLDER", JSON.parse(response.body)["code"]
+    assert_nil @diagram.reload.project_id
+  end
+
+  test "moving out of a folder can set the project in the same request" do
+    project = Project.create!(team: @team, name: "Apollo", owner: @user, creator: @user)
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Diagram", title: "Root")
+    @diagram.update!(folder: folder)
+
+    patch "/teams/#{@team.code}/diagrams/#{@diagram.id}", params: { diagram: { folder_id: nil, project_id: project.id } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal [ nil, project.id ], [ @diagram.reload.folder_id, @diagram.project_id ]
   end
 end

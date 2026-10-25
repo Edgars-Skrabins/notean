@@ -15,9 +15,9 @@ class DiagramsController < ApplicationController
   end
 
   def create
-    @diagram = @team.diagrams.new(created_by_user_id: current_user.id, content: create_diagram_params[:content].to_s, folder_id: create_diagram_params[:folder_id])
+    @diagram = @team.diagrams.new(created_by_user_id: current_user.id, content: create_diagram_params[:content].to_s)
     @diagram.title = title_or_default(create_diagram_params[:title])
-    return unless assign_project(@diagram, create_diagram_params[:project_id])
+    return unless place_in_folder(@diagram, create_diagram_params, :folder_id)
 
     if @diagram.save
       render json: { diagram: diagram_json(@diagram) }, status: :created
@@ -33,8 +33,7 @@ class DiagramsController < ApplicationController
   def update
     @diagram.title = update_diagram_params[:title] if update_diagram_params[:title].present?
     @diagram.content = update_diagram_params[:content] if update_diagram_params.key?(:content)
-    @diagram.folder_id = update_diagram_params[:folder_id] if update_diagram_params.key?(:folder_id)
-    return if update_diagram_params.key?(:project_id) && !assign_project(@diagram, update_diagram_params[:project_id])
+    return unless place_in_folder(@diagram, update_diagram_params, :folder_id)
 
     if @diagram.save
       @diagram.diagram_contributors.find_or_create_by!(user: current_user)

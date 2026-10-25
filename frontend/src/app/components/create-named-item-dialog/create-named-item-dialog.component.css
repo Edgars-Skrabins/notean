@@ -61,6 +61,11 @@
   background: var(--color-input-bg-focus);
 }
 
+.createNamedItemDialog__project {
+  display: block;
+  margin-bottom: var(--space-5);
+}
+
 .createNamedItemDialog__actions {
   display: flex;
   justify-content: flex-end;

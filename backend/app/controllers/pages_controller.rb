@@ -15,10 +15,10 @@ class PagesController < ApplicationController
   end
 
   def create
-    @page = @team.pages.new(created_by_user_id: current_user.id, folder_id: create_page_params[:folder_id])
+    @page = @team.pages.new(created_by_user_id: current_user.id)
     @page.title = title_or_default(create_page_params[:title])
     @page.content = Rails::Html::SafeListSanitizer.new.sanitize(create_page_params[:content].to_s)
-    return unless assign_project(@page, create_page_params[:project_id])
+    return unless place_in_folder(@page, create_page_params, :folder_id)
 
     if @page.save
       render json: { page: page_json(@page) }, status: :created
@@ -34,8 +34,7 @@ class PagesController < ApplicationController
   def update
     @page.title = update_page_params[:title] if update_page_params[:title].present?
     @page.content = Rails::Html::SafeListSanitizer.new.sanitize(update_page_params[:content].to_s) if update_page_params.key?(:content)
-    @page.folder_id = update_page_params[:folder_id] if update_page_params.key?(:folder_id)
-    return if update_page_params.key?(:project_id) && !assign_project(@page, update_page_params[:project_id])
+    return unless place_in_folder(@page, update_page_params, :folder_id)
 
     if @page.save
       @page.page_contributors.find_or_create_by!(user: current_user)
