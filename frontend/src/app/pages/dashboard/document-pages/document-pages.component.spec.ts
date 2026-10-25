@@ -11,7 +11,7 @@ import {projectFilterStub, ProjectFilterStub} from "../../../testing/projectFilt
 import {errorPhrase} from "@utils/errorPhrase";
 
 function folder(id: number, parentId: number | null, title = `Folder ${id}`): FolderSummary {
-  return {id, title, parentId, creator: {id: 1, nickname: 'alice'}, createdAt: '', updatedAt: ''};
+  return {id, title, parentId, projectId: null, creator: {id: 1, nickname: 'alice'}, createdAt: '', updatedAt: ''};
 }
 
 function page(id: number, folderId: number | null, title = `Page ${id}`): FolderedItemDetail {
@@ -41,7 +41,7 @@ describe('DocumentPagesComponent', () => {
     projectFilter = projectFilterStub();
     router = jasmine.createSpyObj<Router>('Router', ['navigate']);
     pageService = jasmine.createSpyObj<PageService>('PageService', ['list', 'moveToFolder', 'delete', 'create', 'rename']);
-    folderService = jasmine.createSpyObj<FolderService>('FolderService', ['listFolders', 'createFolder', 'renameFolder', 'moveFolder', 'deleteFolder']);
+    folderService = jasmine.createSpyObj<FolderService>('FolderService', ['listFolders', 'createFolder', 'renameFolder', 'moveFolder', 'deleteFolder', 'setFolderProject']);
     favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem', 'renameItem']);
     const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeamCode']);
     teamService.getCurrentTeamCode.and.returnValue('abc');
@@ -78,9 +78,10 @@ describe('DocumentPagesComponent', () => {
     folderService.createFolder.and.returnValue(Promise.resolve({success: true, folder: folder(4, null, 'New')}));
     component.handleCreateFolder(null);
 
-    component.handleCreateFolderConfirmed({title: 'New'});
+    component.handleCreateFolderConfirmed({title: 'New', projectId: 7});
     tick();
 
+    expect(folderService.createFolder).toHaveBeenCalledWith('abc', 'Page', 'New', null, 7);
     expect(component.folders.map((item) => item.id)).toEqual([1, 2, 3, 4]);
     expectNoReload();
   }));
@@ -96,6 +97,43 @@ describe('DocumentPagesComponent', () => {
     expect(component.folders.find((item) => item.id === 2)?.title).toBe('Renamed');
     expect(component.folders.find((item) => item.id === 3)?.parentId).toBeNull();
     expectNoReload();
+  }));
+
+  it('changing a folder project updates its subtree without reloading', fakeAsync(() => {
+    folderService.setFolderProject.and.returnValue(Promise.resolve({success: true, folder: {...folder(1, null), projectId: 7}}));
+
+    component.handleChangeFolderProject({folderId: 1});
+    component.handleFolderProjectConfirmed({projectId: 7});
+    tick();
+
+    expect(folderService.setFolderProject).toHaveBeenCalledWith('abc', 1, 7);
+    expect(component.folderPendingProjectChange).toBeNull();
+    expect(component.folders.map((item) => item.projectId)).toEqual([7, 7, 7]);
+    expect(component.items.map((item) => [item.id, item.projectId])).toEqual([[10, 7], [11, 7], [12, null]]);
+    expectNoReload();
+  }));
+
+  it('removes a folder subtree that moves out of the selected project', fakeAsync(() => {
+    projectFilter.selected.next(5);
+    tick();
+    folderService.setFolderProject.and.returnValue(Promise.resolve({success: true, folder: {...folder(2, 1), projectId: 7}}));
+
+    component.handleChangeFolderProject({folderId: 2});
+    component.handleFolderProjectConfirmed({projectId: 7});
+    tick();
+
+    expect(component.folders.map((item) => item.id)).toEqual([1]);
+    expect(component.items.map((item) => item.id)).toEqual([10, 12]);
+  }));
+
+  it('gives a moved folder subtree its new parent project', fakeAsync(() => {
+    folderService.moveFolder.and.returnValue(Promise.resolve({success: true, folder: {...folder(3, 1), projectId: 7}}));
+
+    component.handleMoveFolder({folderId: 3, parentId: 1});
+    tick();
+
+    expect(component.folders.find((item) => item.id === 3)?.projectId).toBe(7);
+    expect(component.items.find((item) => item.id === 11)?.projectId).toBe(7);
   }));
 
   it('moves and deletes pages without reloading', fakeAsync(() => {

@@ -230,6 +230,9 @@
   "NEW_PROJECT": "Naujas projektas",
   "PROJECT": "Projektas",
   "NO_PROJECT": "Be projekto",
+  "CHANGE_FOLDER_PROJECT": "Keisti projektą",
+  "FOLDER_PROJECT_MOVE_NOTE": "Viskas šiame aplanke bus perkelta į pasirinktą projektą.",
+  "PROJECT_SET_BY_FOLDER_HINT": "Nustato aplankas",
   "PROJECT_NAME": "Pavadinimas",
   "PROJECT_DESCRIPTION": "Aprašymas",
   "PROJECT_OWNER": "Savininkas",
@@ -353,7 +356,8 @@
       "PROJECT_SAVE_FAILED": "Nepavyko išsaugoti projekto",
       "PROJECT_NAME_MISMATCH": "Įvestas pavadinimas nesutampa su projekto pavadinimu",
       "PROJECT_DELETE_MODE_INVALID": "Nepavyko ištrinti projekto",
-      "PROJECT_INVALID": "Negalite perkelti elementų į šį projektą"
+      "PROJECT_INVALID": "Negalite perkelti elementų į šį projektą",
+      "PROJECT_SET_BY_FOLDER": "Projektą nustato aplankas, kuriame jis yra."
     },
     "SEARCH": {
       "QUERY_TOO_SHORT": "Paieškai įveskite bent 2 simbolius",

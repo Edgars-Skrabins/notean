@@ -6,7 +6,7 @@ import {FavoriteService} from "@services/favorite.service";
 import {FolderDeleteMode, FolderItemType, FolderSummary} from "@models/folder.model";
 import {TreeFolder, TreeItem} from "@components/item-tree/item-tree.component";
 import {errorPhrase} from "@utils/errorPhrase";
-import {itemIdsWithin, promoteFolderContents, removeFolderCascade} from "@utils/folderTree";
+import {itemIdsWithin, promoteFolderContents, removeFolderCascade, setFolderSubtreeProject} from "@utils/folderTree";
 import {Router} from "@angular/router";
 import {ErrorCode} from "@config/errorCodes";
 import {FolderedItemSummary} from "@models/foldered-item.model";
@@ -25,6 +25,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   isLoading = true;
   alertMessage = '';
   isCreateFolderDialogOpen = false;
+  folderPendingProjectChange: TreeFolder | null = null;
 
   protected readonly teamCode: string;
   private pendingCreateFolderParentId: number | null = null;
@@ -36,7 +37,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
     private teamService: TeamService,
     private favoriteService: FavoriteService,
     private router: Router,
-    private projectFilterService: ProjectFilterService
+    protected projectFilterService: ProjectFilterService
   ) {
     this.teamCode = this.teamService.getCurrentTeamCode();
   }
@@ -83,11 +84,19 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
     this.isCreateFolderDialogOpen = true;
   }
 
-  handleCreateFolderConfirmed(event: { title: string }) {
+  get isCreatingTopLevelFolder(): boolean {
+    return this.pendingCreateFolderParentId === null;
+  }
+
+  get defaultFolderProjectId(): number | null {
+    return this.projectFilterService.getSelectedProjectId();
+  }
+
+  handleCreateFolderConfirmed(event: { title: string; projectId: number | null }) {
     const parentId = this.pendingCreateFolderParentId;
     this.isCreateFolderDialogOpen = false;
 
-    this.folderService.createFolder(this.teamCode, this.itemType, event.title, parentId)
+    this.folderService.createFolder(this.teamCode, this.itemType, event.title, parentId, event.projectId)
       .then((response) => {
         if (!response.success) {
           this.alertMessage = errorPhrase(response.code);
@@ -101,6 +110,38 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
 
   handleCreateFolderCancelled() {
     this.isCreateFolderDialogOpen = false;
+  }
+
+  handleChangeFolderProject(event: { folderId: number }) {
+    this.folderPendingProjectChange = this.folders.find((folder) => folder.id === event.folderId) ?? null;
+  }
+
+  handleFolderProjectCancelled() {
+    this.folderPendingProjectChange = null;
+  }
+
+  handleFolderProjectConfirmed(event: { projectId: number | null }) {
+    const folder = this.folderPendingProjectChange;
+    this.folderPendingProjectChange = null;
+    if (!folder) {
+      return;
+    }
+
+    this.folderService.setFolderProject(this.teamCode, folder.id, event.projectId)
+      .then((response) => {
+        if (!response.success) {
+          this.alertMessage = errorPhrase(response.code);
+          return;
+        }
+
+        this.alertMessage = '';
+        const selectedProjectId = this.projectFilterService.getSelectedProjectId();
+        const updated = selectedProjectId !== null && selectedProjectId !== response.folder.projectId
+          ? removeFolderCascade(this.folders, this.items, folder.id)
+          : setFolderSubtreeProject(this.folders, this.items, folder.id, response.folder.projectId);
+        this.folders = updated.folders;
+        this.items = updated.items;
+      });
   }
 
   handleRenameFolder(event: { folderId: number; title: string }) {
@@ -126,6 +167,9 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
 
         this.alertMessage = '';
         this.replaceFolder(this.toTreeFolder(response.folder));
+        const updated = setFolderSubtreeProject(this.folders, this.items, response.folder.id, response.folder.projectId);
+        this.folders = updated.folders;
+        this.items = updated.items;
       });
   }
 
@@ -228,6 +272,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
       id: folder.id,
       title: folder.title,
       parentId: folder.parentId,
+      projectId: folder.projectId,
     };
   }
 
@@ -236,6 +281,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
       id: item.id,
       title: item.title,
       folderId: item.folderId,
+      projectId: item.projectId,
       meta: {
         creator: {nickname: item.creator.nickname},
         updatedAt: item.updatedAt,

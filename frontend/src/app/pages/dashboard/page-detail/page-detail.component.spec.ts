@@ -9,6 +9,7 @@ import {AuthService} from "@services/auth.service";
 import {NavigationService} from "@services/navigation.service";
 import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
+import {FolderService} from "@services/folder.service";
 import {FolderedItemDetail} from "@models/foldered-item.model";
 import {errorPhrase} from "@utils/errorPhrase";
 import {projectFilterStub, ProjectFilterStub} from "../../../testing/projectFilterStub";
@@ -36,6 +37,7 @@ describe('PageDetailComponent', () => {
   let editingService: jasmine.SpyObj<PageEditingService>;
   let navigationService: jasmine.SpyObj<NavigationService>;
   let projectFilter: ProjectFilterStub;
+  let folderService: jasmine.SpyObj<FolderService>;
 
   function createComponent(queryParams: Record<string, string> = {}, params: Record<string, string> = {}) {
     const route = {
@@ -55,6 +57,7 @@ describe('PageDetailComponent', () => {
       jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem', 'renameItem']),
       jasmine.createSpyObj<ToastService>('ToastService', ['show']),
       projectFilter.service,
+      folderService,
       {instant: (key: string) => key} as unknown as TranslateService,
     );
     component.ngOnInit();
@@ -65,6 +68,11 @@ describe('PageDetailComponent', () => {
     editingService = jasmine.createSpyObj<PageEditingService>('PageEditingService', ['connect', 'disconnect', 'startEditing', 'stopEditing']);
     navigationService = jasmine.createSpyObj<NavigationService>('NavigationService', ['navigate']);
     projectFilter = projectFilterStub(4);
+    folderService = jasmine.createSpyObj<FolderService>('FolderService', ['listFolders']);
+    folderService.listFolders.and.returnValue(Promise.resolve({
+      success: true,
+      folders: [{id: 3, title: 'Plans', parentId: null, projectId: 8, creator: {id: 1, nickname: 'alice'}, createdAt: '', updatedAt: ''}],
+    }));
   });
 
   it('makes no request and opens no editing channel until Create', () => {
@@ -80,6 +88,7 @@ describe('PageDetailComponent', () => {
   it('creates with the drafts and folder, then goes back to the list', fakeAsync(() => {
     pageService.create.and.returnValue(Promise.resolve({success: true, item: createdPage()}));
     createComponent({folder: '3'});
+    tick();
     component.draftTitle = 'Plan';
     component.handleContentChange('<p>Hi</p>');
 
@@ -87,9 +96,34 @@ describe('PageDetailComponent', () => {
     expect(component.isCreating).toBeTrue();
     tick();
 
-    expect(pageService.create).toHaveBeenCalledOnceWith('abc', {title: 'Plan', content: '<p>Hi</p>', projectId: 4, folderId: 3});
+    expect(pageService.create).toHaveBeenCalledOnceWith('abc', {title: 'Plan', content: '<p>Hi</p>', projectId: 8, folderId: 3});
     expect(navigationService.navigate).toHaveBeenCalledOnceWith(AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES);
     expect(component.isCreating).toBeFalse();
+  }));
+
+  it('takes the project of the folder it is created in and locks it', fakeAsync(() => {
+    createComponent({folder: '3'});
+    tick();
+
+    expect(folderService.listFolders).toHaveBeenCalledOnceWith('abc', 'Page');
+    expect(component.draftProjectId).toBe(8);
+    expect(component.isProjectSetByFolder).toBeTrue();
+    expect(component.hasCreateDraftChanges).toBeFalse();
+  }));
+
+  it('keeps the project editable when created at the top level', () => {
+    createComponent();
+
+    expect(folderService.listFolders).not.toHaveBeenCalled();
+    expect(component.isProjectSetByFolder).toBeFalse();
+  });
+
+  it('locks the project of an existing item that is in a folder', fakeAsync(() => {
+    pageService.get.and.returnValue(Promise.resolve({success: true, item: createdPage()}));
+    createComponent({}, {id: '9'});
+    tick();
+
+    expect(component.isProjectSetByFolder).toBeTrue();
   }));
 
   it('uses the untitled title when the title is empty', fakeAsync(() => {

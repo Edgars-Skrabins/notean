@@ -11,8 +11,10 @@ import {NavigationService} from "@services/navigation.service";
 import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
 import {ProjectFilterService} from "@services/project-filter.service";
+import {FolderService} from "@services/folder.service";
 import {ToastType} from "@models/toast.model";
 import {FavoritableType} from "@models/favorite.model";
+import {FolderItemType} from "@models/folder.model";
 import {FolderedItemDetail, FolderedItemEditingUser} from "@models/foldered-item.model";
 import {errorPhrase} from "@utils/errorPhrase";
 import {AppRoutes} from "../../app/app-routes.enum";
@@ -21,6 +23,7 @@ import {AppRoutes} from "../../app/app-routes.enum";
 export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
   protected abstract readonly favoriteType: FavoritableType;
+  protected abstract readonly itemType: FolderItemType;
   protected abstract readonly listRoute: AppRoutes;
   protected abstract readonly untitledItemPhrase: string;
 
@@ -51,9 +54,14 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
     private favoriteService: FavoriteService,
     private toastService: ToastService,
     private projectFilterService: ProjectFilterService,
+    private folderService: FolderService,
     private translateService: TranslateService
   ) {
     this.teamCode = teamService.getCurrentTeamCode();
+  }
+
+  get isProjectSetByFolder(): boolean {
+    return this.mode === 'create' ? this.folderId !== null : this.item?.folderId != null;
   }
 
   get otherEditorNickname(): string | null {
@@ -262,6 +270,23 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
     this.draftProjectId = this.projectFilterService.getSelectedProjectId();
     this.initialDraftProjectId = this.draftProjectId;
     this.folderId = folder !== null ? Number(folder) : null;
+
+    if (this.folderId !== null) {
+      this.loadFolderProject(this.folderId);
+    }
+  }
+
+  private loadFolderProject(folderId: number) {
+    this.folderService.listFolders(this.teamCode, this.itemType)
+      .then((response) => {
+        const folder = response.success ? response.folders.find((candidate) => candidate.id === folderId) : undefined;
+        if (!folder) {
+          return;
+        }
+
+        this.draftProjectId = folder.projectId;
+        this.initialDraftProjectId = folder.projectId;
+      });
   }
 
   private leaveEditMode() {

@@ -52,6 +52,7 @@ export class ItemDetailLayoutComponent implements OnInit, OnDestroy {
   @Input() showDeleteConfirm = false;
   @Input() showDiscardConfirm = false;
   @Input() draftProjectId: number | null = null;
+  @Input() projectSetByFolder = false;
   @Input() busy = false;
   @Input() fill = false;
   @Output() draftTitleChange = new EventEmitter<string>();
@@ -87,6 +88,11 @@ export class ItemDetailLayoutComponent implements OnInit, OnDestroy {
 
   get selectedProjectId(): number | null {
     return this.mode === 'create' ? this.draftProjectId : this.item?.projectId ?? null;
+  }
+
+  get selectedProjectName(): string | null {
+    const projectId = this.selectedProjectId;
+    return this.projectFilterService.getProjects().find((project) => project.id === projectId)?.name ?? null;
   }
 
   handleProjectSelected(projectId: number | null) {

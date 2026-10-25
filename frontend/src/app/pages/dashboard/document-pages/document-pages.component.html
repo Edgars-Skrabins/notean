@@ -28,7 +28,9 @@
     (deleteFolder)="handleDeleteFolder($event)"
     (deleteItem)="handleDeleteItem($event)"
     (moveItem)="handleMoveItem($event)"
+    [canChangeFolderProject]="(projectFilterService.hasProjects$ | async) ?? false"
     (moveFolder)="handleMoveFolder($event)"
+    (changeFolderProject)="handleChangeFolderProject($event)"
   ></app-item-tree>
 
   <p class="dashboardStub__body" *ngIf="!isLoading && isSearching && !displayItems.length">{{ PHRASES.NO_SEARCH_RESULTS | translate }}</p>
@@ -39,6 +41,16 @@
   *ngIf="isCreateFolderDialogOpen"
   [dialogTitle]="PHRASES.NEW_FOLDER | translate"
   [defaultValue]="PHRASES.UNTITLED_FOLDER | translate"
+  [showProjectSelect]="isCreatingTopLevelFolder"
+  [projectId]="defaultFolderProjectId"
   (confirmed)="handleCreateFolderConfirmed($event)"
   (cancelled)="handleCreateFolderCancelled()"
 ></app-create-named-item-dialog>
+
+<app-folder-project-dialog
+  *ngIf="folderPendingProjectChange"
+  [folderTitle]="folderPendingProjectChange.title"
+  [projectId]="folderPendingProjectChange.projectId"
+  (confirmed)="handleFolderProjectConfirmed($event)"
+  (cancelled)="handleFolderProjectCancelled()"
+></app-folder-project-dialog>

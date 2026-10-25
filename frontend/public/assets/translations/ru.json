@@ -230,6 +230,9 @@
   "NEW_PROJECT": "Новый проект",
   "PROJECT": "Проект",
   "NO_PROJECT": "Без проекта",
+  "CHANGE_FOLDER_PROJECT": "Сменить проект",
+  "FOLDER_PROJECT_MOVE_NOTE": "Всё содержимое этой папки перейдёт в выбранный проект.",
+  "PROJECT_SET_BY_FOLDER_HINT": "Задаётся папкой",
   "PROJECT_NAME": "Название",
   "PROJECT_DESCRIPTION": "Описание",
   "PROJECT_OWNER": "Владелец",
@@ -353,7 +356,8 @@
       "PROJECT_SAVE_FAILED": "Не удалось сохранить проект",
       "PROJECT_NAME_MISMATCH": "Введённое название не совпадает с названием проекта",
       "PROJECT_DELETE_MODE_INVALID": "Не удалось удалить проект",
-      "PROJECT_INVALID": "Нельзя переместить элементы в этот проект"
+      "PROJECT_INVALID": "Нельзя переместить элементы в этот проект",
+      "PROJECT_SET_BY_FOLDER": "Проект задаётся папкой, в которой находится элемент."
     },
     "SEARCH": {
       "QUERY_TOO_SHORT": "Введите не менее 2 символов для поиска",

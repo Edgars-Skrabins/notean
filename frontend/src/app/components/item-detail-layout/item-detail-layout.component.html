@@ -61,7 +61,13 @@
 
         <div *ngIf="projectFilterService.hasProjects$ | async">
           <h3 class="itemDetail__sidebarLabel">{{ PHRASES.PROJECT | translate }}</h3>
-          <app-project-select [projectId]="selectedProjectId" (projectChange)="handleProjectSelected($event)"></app-project-select>
+          <ng-container *ngIf="projectSetByFolder; else projectSelect">
+            <p class="itemDetail__sidebarValue">{{ selectedProjectName ?? (PHRASES.NO_PROJECT | translate) }}</p>
+            <p class="itemDetail__sidebarValue itemDetail__sidebarValue--muted">{{ PHRASES.PROJECT_SET_BY_FOLDER_HINT | translate }}</p>
+          </ng-container>
+          <ng-template #projectSelect>
+            <app-project-select [projectId]="selectedProjectId" (projectChange)="handleProjectSelected($event)"></app-project-select>
+          </ng-template>
         </div>
 
         <ng-container *ngIf="mode !== 'create' && item">

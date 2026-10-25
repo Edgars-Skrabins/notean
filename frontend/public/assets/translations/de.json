@@ -230,6 +230,9 @@
   "NEW_PROJECT": "Neues Projekt",
   "PROJECT": "Projekt",
   "NO_PROJECT": "Kein Projekt",
+  "CHANGE_FOLDER_PROJECT": "Projekt ändern",
+  "FOLDER_PROJECT_MOVE_NOTE": "Alles in diesem Ordner wird in das gewählte Projekt verschoben.",
+  "PROJECT_SET_BY_FOLDER_HINT": "Vom Ordner festgelegt",
   "PROJECT_NAME": "Name",
   "PROJECT_DESCRIPTION": "Beschreibung",
   "PROJECT_OWNER": "Eigentümer",
@@ -353,7 +356,8 @@
       "PROJECT_SAVE_FAILED": "Projekt konnte nicht gespeichert werden",
       "PROJECT_NAME_MISMATCH": "Der eingegebene Name stimmt nicht mit dem Projektnamen überein",
       "PROJECT_DELETE_MODE_INVALID": "Projekt konnte nicht gelöscht werden",
-      "PROJECT_INVALID": "Du kannst keine Elemente in dieses Projekt verschieben"
+      "PROJECT_INVALID": "Du kannst keine Elemente in dieses Projekt verschieben",
+      "PROJECT_SET_BY_FOLDER": "Das Projekt wird vom Ordner festgelegt, in dem sich das Element befindet."
     },
     "SEARCH": {
       "QUERY_TOO_SHORT": "Gib mindestens 2 Zeichen ein, um zu suchen",

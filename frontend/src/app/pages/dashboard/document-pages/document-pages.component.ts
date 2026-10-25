@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {NgIf} from '@angular/common';
+import {AsyncPipe, NgIf} from '@angular/common';
 import {Router} from '@angular/router';
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
@@ -14,6 +14,7 @@ import {AppRoutes} from "../../../app/app-routes.enum";
 import {ButtonComponent} from "@components/button/button.component";
 import {ItemTreeComponent} from "@components/item-tree/item-tree.component";
 import {CreateNamedItemDialogComponent} from "@components/create-named-item-dialog/create-named-item-dialog.component";
+import {FolderProjectDialogComponent} from "@components/folder-project-dialog/folder-project-dialog.component";
 import {FolderedListPageComponent} from "../foldered-list-page.base";
 
 @Component({
@@ -22,10 +23,12 @@ import {FolderedListPageComponent} from "../foldered-list-page.base";
   imports: [
     FormsModule,
     NgIf,
+    AsyncPipe,
     TranslateModule,
     ButtonComponent,
     ItemTreeComponent,
-    CreateNamedItemDialogComponent
+    CreateNamedItemDialogComponent,
+    FolderProjectDialogComponent
   ],
   templateUrl: './document-pages.component.html',
   styleUrl: './document-pages.component.css'

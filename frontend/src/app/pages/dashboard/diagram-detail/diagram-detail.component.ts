@@ -10,6 +10,7 @@ import {NavigationService} from "@services/navigation.service";
 import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
 import {ProjectFilterService} from "@services/project-filter.service";
+import {FolderService} from "@services/folder.service";
 import {PHRASES} from "@config/phrases";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {FlowchartEditorComponent} from "@components/flowchart-editor/flowchart-editor.component";
@@ -29,6 +30,7 @@ import {FolderedItemDetailComponent} from "../foldered-item-detail.base";
 })
 export class DiagramDetailComponent extends FolderedItemDetailComponent {
   protected readonly favoriteType = 'Diagram';
+  protected readonly itemType = 'Diagram';
   protected readonly listRoute = AppRoutes.DIAGRAMS;
   protected readonly untitledItemPhrase = PHRASES.UNTITLED_DIAGRAM;
 
@@ -42,8 +44,9 @@ export class DiagramDetailComponent extends FolderedItemDetailComponent {
     favoriteService: FavoriteService,
     toastService: ToastService,
     projectFilterService: ProjectFilterService,
+    folderService: FolderService,
     translateService: TranslateService
   ) {
-    super(route, diagramService, diagramEditingService, teamService, authService, navigationService, favoriteService, toastService, projectFilterService, translateService);
+    super(route, diagramService, diagramEditingService, teamService, authService, navigationService, favoriteService, toastService, projectFilterService, folderService, translateService);
   }
 }
