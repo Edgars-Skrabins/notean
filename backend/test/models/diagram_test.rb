@@ -38,4 +38,17 @@ class DiagramTest < ActiveSupport::TestCase
 
     assert_equal "kept", diagram.reload.search_text
   end
+
+  test "is invalid when its project differs from its folder's project" do
+    Membership.create!(user: @user, team: @team, role: "owner", nickname: "alice")
+    project = Project.create!(team: @team, name: "Apollo", owner: @user, creator: @user)
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Diagram", title: "Root", project: project)
+    diagram = Diagram.new(team: @team, creator: @user, title: "Notes", content: "", folder: folder)
+
+    assert_not diagram.valid?
+    assert diagram.errors.of_kind?(:project_id, :project_set_by_folder)
+
+    diagram.project = project
+    assert diagram.valid?
+  end
 end

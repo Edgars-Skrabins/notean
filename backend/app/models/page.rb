@@ -24,5 +24,6 @@ class Page < ApplicationRecord
     return if folder_id.nil?
 
     errors.add(:folder_id, :invalid) unless folder && folder.team_id == team_id && folder.item_type == self.class.name
+    errors.add(:project_id, :project_set_by_folder, message: "must match the folder's project") if folder && folder.project_id != project_id
   end
 end
