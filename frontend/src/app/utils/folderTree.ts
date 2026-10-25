@@ -58,3 +58,16 @@ export function promoteFolderContents<F extends FolderNode, I extends FolderedNo
     items: items.map((item) => item.folderId === folderId ? {...item, folderId: parentId} : item),
   };
 }
+
+export function setFolderSubtreeProject<F extends FolderNode & { projectId: number | null }, I extends FolderedNode & { projectId: number | null }>(
+  folders: F[],
+  items: I[],
+  folderId: number,
+  projectId: number | null,
+): { folders: F[]; items: I[] } {
+  const subtreeIds = new Set([folderId, ...descendantFolderIds(folders, folderId)]);
+  return {
+    folders: folders.map((folder) => subtreeIds.has(folder.id) ? {...folder, projectId} : folder),
+    items: items.map((item) => item.folderId !== null && subtreeIds.has(item.folderId) ? {...item, projectId} : item),
+  };
+}

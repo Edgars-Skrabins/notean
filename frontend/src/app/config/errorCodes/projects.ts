@@ -6,6 +6,7 @@ export const PROJECTS_ERROR_CODES = [
   'PROJECT_NAME_MISMATCH',
   'PROJECT_DELETE_MODE_INVALID',
   'PROJECT_INVALID',
+  'PROJECT_SET_BY_FOLDER',
 ] as const;
 
 export type ProjectsErrorCode = typeof PROJECTS_ERROR_CODES[number];

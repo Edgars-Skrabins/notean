@@ -22,6 +22,7 @@ interface RawFolderSummary {
   id: number;
   title: string;
   parent_id: number | null;
+  project_id: number | null;
   creator: RawFolderUser;
   created_at: string;
   updated_at: string;
@@ -39,6 +40,7 @@ export function mapFolderSummary(raw: RawFolderSummary): FolderSummary {
     id: raw.id,
     title: raw.title,
     parentId: raw.parent_id,
+    projectId: raw.project_id,
     creator: mapFolderUser(raw.creator),
     createdAt: raw.created_at,
     updatedAt: raw.updated_at,
@@ -60,9 +62,10 @@ export class FolderService {
     );
   }
 
-  async createFolder(teamCode: string, itemType: FolderItemType, title: string, parentId: number | null = null): Promise<FolderResponse> {
+  async createFolder(teamCode: string, itemType: FolderItemType, title: string, parentId: number | null = null, projectId: number | null = null): Promise<FolderResponse> {
+    const placement = parentId === null ? {project_id: projectId} : {parent_id: parentId};
     return apiRequest<FolderResponse>(
-      axiosInstance.post(this.foldersUrl(teamCode), {folder: {title, item_type: itemType, parent_id: parentId}}),
+      axiosInstance.post(this.foldersUrl(teamCode), {folder: {title, item_type: itemType, ...placement}}),
       (data) => ({success: true, folder: mapFolderSummary(data.folder)}),
     );
   }
@@ -75,6 +78,10 @@ export class FolderService {
     return this.updateFolder(teamCode, id, {parent_id: parentId});
   }
 
+  async setFolderProject(teamCode: string, id: number, projectId: number | null): Promise<FolderResponse> {
+    return this.updateFolder(teamCode, id, {project_id: projectId});
+  }
+
   async deleteFolder(teamCode: string, id: number, mode: FolderDeleteMode): Promise<DeleteFolderResponse> {
     return apiRequest<DeleteFolderResponse>(
       axiosInstance.delete(`${this.foldersUrl(teamCode)}/${id}`, {params: {mode}}),
@@ -82,7 +89,7 @@ export class FolderService {
     );
   }
 
-  private updateFolder(teamCode: string, id: number, changes: { title?: string; parent_id?: number | null }): Promise<FolderResponse> {
+  private updateFolder(teamCode: string, id: number, changes: { title?: string; parent_id?: number | null; project_id?: number | null }): Promise<FolderResponse> {
     return apiRequest<FolderResponse>(
       axiosInstance.patch(`${this.foldersUrl(teamCode)}/${id}`, {folder: changes}),
       (data) => ({success: true, folder: mapFolderSummary(data.folder)}),

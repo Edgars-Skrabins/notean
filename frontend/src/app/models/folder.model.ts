@@ -12,6 +12,7 @@ export interface FolderSummary {
   id: number;
   title: string;
   parentId: number | null;
+  projectId: number | null;
   creator: FolderUser;
   createdAt: string;
   updatedAt: string;
@@ -21,6 +22,6 @@ export type FolderDeleteMode = 'cascade' | 'promote';
 
 export type ListFoldersResponse = Result<{ folders: FolderSummary[] }, TeamAccessErrorCode | ProjectsErrorCode>;
 
-export type FolderResponse = Result<{ folder: FolderSummary }, TeamAccessErrorCode | FoldersErrorCode>;
+export type FolderResponse = Result<{ folder: FolderSummary }, TeamAccessErrorCode | FoldersErrorCode | ProjectsErrorCode>;
 
 export type DeleteFolderResponse = Result<object, TeamAccessErrorCode | FoldersErrorCode>;

@@ -1,4 +1,4 @@
-import {descendantFolderIds, itemIdsWithin, promoteFolderContents, removeFolderCascade} from "./folderTree";
+import {descendantFolderIds, itemIdsWithin, promoteFolderContents, removeFolderCascade, setFolderSubtreeProject} from "./folderTree";
 
 describe('folderTree', () => {
   const folders = [
@@ -46,5 +46,17 @@ describe('folderTree', () => {
 
     expect(result.folders.find((folder) => folder.id === 2)?.parentId).toBeNull();
     expect(result.items.find((item) => item.id === 10)?.folderId).toBeNull();
+  });
+
+  it('sets the project on a folder, its nested folders and their items only', () => {
+    const result = setFolderSubtreeProject(
+      folders.map((folder) => ({...folder, projectId: null})),
+      items.map((item) => ({...item, projectId: null})),
+      2,
+      7,
+    );
+
+    expect(result.folders.map((folder) => [folder.id, folder.projectId])).toEqual([[1, null], [2, 7], [3, 7], [4, null]]);
+    expect(result.items.map((item) => [item.id, item.projectId])).toEqual([[10, null], [11, 7], [12, null], [13, null]]);
   });
 });
