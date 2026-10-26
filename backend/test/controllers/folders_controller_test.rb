@@ -227,6 +227,16 @@ class FoldersControllerTest < ActionDispatch::IntegrationTest
     assert_equal project.id, child.project_id
   end
 
+
+  test "update returns TITLE_TOO_LONG for an over-limit title" do
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Runbooks")
+
+    patch "/teams/#{@team.code}/folders/#{folder.id}", params: { folder: { title: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1) } }, headers: @headers, as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal({ "code" => "TITLE_TOO_LONG" }, JSON.parse(response.body))
+  end
+
   def headers_for(user)
     { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: user.id)}" }
   end

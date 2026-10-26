@@ -83,7 +83,7 @@ class ProjectsController < ApplicationController
   end
 
   def render_project_error(project)
-    code = project.errors.of_kind?(:name, :taken) ? ErrorCodes::Projects::PROJECT_NAME_TAKEN : ErrorCodes::Projects::PROJECT_SAVE_FAILED
+    code = limit_error_code(project) || (project.errors.of_kind?(:name, :taken) ? ErrorCodes::Projects::PROJECT_NAME_TAKEN : ErrorCodes::Projects::PROJECT_SAVE_FAILED)
     render_error(code, :unprocessable_entity)
   end
 

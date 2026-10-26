@@ -210,4 +210,18 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     end
     assert @team.reload.feature_enabled?(:boards)
   end
+
+  test "create returns TITLE_TOO_LONG for an over-limit name" do
+    post "/teams", params: { team: { name: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1), password: "supersecret", nickname: "Ally" } }, headers: @headers, as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal "TITLE_TOO_LONG", JSON.parse(response.body)["code"]
+  end
+
+  test "rename returns TITLE_TOO_LONG for an over-limit name" do
+    patch "/teams/#{@team.code}", params: { team: { name: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1) } }, headers: @headers, as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal "TITLE_TOO_LONG", JSON.parse(response.body)["code"]
+  end
 end

@@ -31,7 +31,7 @@ class BoardsController < ApplicationController
 
       render json: { board: board_json(@board) }, status: :created
     else
-      render_error(ErrorCodes::Boards::BOARD_CREATE_FAILED, :unprocessable_entity)
+      render_error(limit_error_code(@board) || ErrorCodes::Boards::BOARD_CREATE_FAILED, :unprocessable_entity)
     end
   end
 
@@ -48,7 +48,7 @@ class BoardsController < ApplicationController
       ProjectAccessCleanup.for_board(@board) if project_changed
       render json: { board: board_json(@board) }
     else
-      render_error(ErrorCodes::Boards::BOARD_UPDATE_FAILED, :unprocessable_entity)
+      render_error(limit_error_code(@board) || ErrorCodes::Boards::BOARD_UPDATE_FAILED, :unprocessable_entity)
     end
   end
 

@@ -23,7 +23,7 @@ class PagesController < ApplicationController
     if @page.save
       render json: { page: page_json(@page) }, status: :created
     else
-      render_error(ErrorCodes::Pages::PAGE_CREATE_FAILED, :unprocessable_entity)
+      render_error(limit_error_code(@page) || ErrorCodes::Pages::PAGE_CREATE_FAILED, :unprocessable_entity)
     end
   end
 
@@ -41,7 +41,7 @@ class PagesController < ApplicationController
       PageEditingStatus.stop(@page.id, current_user)
       render json: { page: page_json(find_page(@page.id)) }
     else
-      render_error(ErrorCodes::Pages::PAGE_UPDATE_FAILED, :unprocessable_entity)
+      render_error(limit_error_code(@page) || ErrorCodes::Pages::PAGE_UPDATE_FAILED, :unprocessable_entity)
     end
   end
 
