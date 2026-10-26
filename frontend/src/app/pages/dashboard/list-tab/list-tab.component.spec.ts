@@ -15,7 +15,7 @@ import {ToastType} from "@models/toast.model";
 import {TicketSummary} from "@models/ticket.model";
 import {BoardUser} from "@models/board.model";
 import {PHRASES} from "@config/phrases";
-import {routes} from "../../../app/app.routes";
+import {dashboardRoutes} from "../../../app/dashboard.routes";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 import {createBoardState, fakeTicketList, ticketDetail, ticketSummary} from "../../../testing/boardFixtures";
@@ -395,8 +395,7 @@ describe('board tab routes', () => {
   }
 
   beforeEach(() => {
-    const dashboard = routes.find((route) => route.path === AppRoutes.DASHBOARD)!;
-    const board = dashboard.children!.find((route) => route.path === `${AppRoutes.BOARDS}/:id`)!;
+    const board = dashboardRoutes.find((route) => route.path === `${AppRoutes.BOARDS}/:id`)!;
     TestBed.configureTestingModule({
       providers: [provideRouter([{path: 'boards/:id', children: board.children!.map(stubbed)}])],
     });

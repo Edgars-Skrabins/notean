@@ -88,7 +88,7 @@ Run frontend commands from `frontend/` and backend commands from `backend/`.
 
 ```
 src/app/
-├── app/          root component, app.config.ts, app.routes.ts, app-routes.enum.ts
+├── app/          root component, app.config.ts, app.routes.ts, dashboard.routes.ts, app-routes.enum.ts
 ├── components/   reusable UI and feature widgets
 ├── pages/        routed screens; dashboard/ holds the child routes
 ├── services/     API access and app state, all providedIn: 'root'
@@ -105,6 +105,7 @@ src/environments/             environment.ts (apiUrl)
 #### App and routing
 - Route paths are defined in the `AppRoutes` enum in `app/app-routes.enum.ts` and wired in `app/app.routes.ts`. Use the enum, never string literals.
 - Auth and team flow pages are top-level routes. Feature screens are child routes of `dashboard`, a shell (`DashboardComponent` with header and sidebar).
+- The dashboard is lazy-loaded: `app.routes.ts` loads `DashboardComponent` with `loadComponent` and its child routes from `app/dashboard.routes.ts` (`dashboardRoutes`) with `loadChildren`, so the diagram and rich-text libraries stay out of the initial bundle. Add new dashboard screens to `dashboardRoutes`.
 - Guards are functional `CanActivateFn`s: `authGuard` (logged in), `teamGuard` (active team selected), `teamRoleGuard` (role is `admin` or `owner`), and `featureGuard(feature)` (the team has that feature on, otherwise redirects to Home) on the pages, diagrams and boards routes.
 
 #### Components
