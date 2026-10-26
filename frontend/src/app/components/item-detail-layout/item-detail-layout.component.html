@@ -100,4 +100,11 @@
     (confirmed)="discardConfirmed.emit()"
     (cancelled)="discardCancelled.emit()"
   ></app-confirm-dialog>
+
+  <app-edit-conflict-dialog
+    *ngIf="showEditConflict"
+    (loadLatest)="conflictLoadLatest.emit()"
+    (overwrite)="conflictOverwrite.emit()"
+    (cancelled)="conflictCancelled.emit()"
+  ></app-edit-conflict-dialog>
 </div>

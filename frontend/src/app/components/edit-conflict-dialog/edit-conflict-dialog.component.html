@@ -1,0 +1,12 @@
+<div class="editConflictDialogOverlay">
+  <div class="editConflictDialogOverlay__backdrop" (click)="handleCancel()"></div>
+
+  <div class="editConflictDialog">
+    <p class="editConflictDialog__message">{{ PHRASES.EDIT_CONFLICT_MESSAGE | translate }}</p>
+
+    <div class="editConflictDialog__actions">
+      <app-button variant="ghost" (pressed)="handleLoadLatest()">{{ PHRASES.EDIT_CONFLICT_LOAD_LATEST | translate }}</app-button>
+      <app-button variant="primary" (pressed)="handleOverwrite()">{{ PHRASES.EDIT_CONFLICT_OVERWRITE | translate }}</app-button>
+    </div>
+  </div>
+</div>

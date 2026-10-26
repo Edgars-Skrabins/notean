@@ -20,6 +20,7 @@ function page(id: number, folderId: number | null, title = `Page ${id}`): Folder
     title,
     folderId,
     projectId: null,
+    lockVersion: 0,
     creator: {id: 1, nickname: 'alice', avatar: {color: 'red', imageUrl: null}},
     createdAt: '',
     updatedAt: '',
@@ -156,10 +157,23 @@ describe('DocumentPagesComponent', () => {
     component.handleRenameItem({itemId: 12, title: 'Big ideas'});
     tick();
 
-    expect(pageService.rename).toHaveBeenCalledWith('abc', 12, 'Big ideas');
+    expect(pageService.rename).toHaveBeenCalledWith('abc', 12, 'Big ideas', 0);
     expect(component.items.find((item) => item.id === 12)?.title).toBe('Big ideas');
     expect(favoriteService.renameItem).toHaveBeenCalledWith('Page', 12, 'Big ideas');
     expect(component.alertMessage).toBe('');
+    expectNoReload();
+  }));
+
+  it('shows the latest page and the conflict error when a rename conflicts', fakeAsync(() => {
+    pageService.rename.and.returnValue(Promise.resolve({success: false, code: 'EDIT_CONFLICT', latest: {...page(12, null, 'Their title'), lockVersion: 4}}));
+
+    component.handleRenameItem({itemId: 12, title: 'Big ideas'});
+    tick();
+
+    const renamed = component.items.find((item) => item.id === 12);
+    expect([renamed?.title, renamed?.lockVersion]).toEqual(['Their title', 4]);
+    expect(favoriteService.renameItem).toHaveBeenCalledWith('Page', 12, 'Their title');
+    expect(component.alertMessage).toBe(errorPhrase('EDIT_CONFLICT'));
     expectNoReload();
   }));
 

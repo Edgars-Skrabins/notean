@@ -12,6 +12,7 @@
   [alertMessage]="alertMessage"
   [showDeleteConfirm]="showDeleteConfirm"
   [showDiscardConfirm]="showDiscardConfirm"
+  [showEditConflict]="editConflict !== null"
   [draftProjectId]="draftProjectId"
   [projectSetByFolder]="isProjectSetByFolder"
   [busy]="isCreating"
@@ -27,6 +28,9 @@
   (createRequested)="handleCreate()"
   (discardConfirmed)="handleConfirmDiscard()"
   (discardCancelled)="handleCancelDiscard()"
+  (conflictLoadLatest)="handleConflictLoadLatest()"
+  (conflictOverwrite)="handleConflictOverwrite()"
+  (conflictCancelled)="handleConflictCancel()"
   (draftProjectChange)="handleDraftProjectChange($event)"
 >
   <div class="pageDetail__content" *ngIf="mode === 'view' && item" [innerHTML]="item.content"></div>

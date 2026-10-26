@@ -31,6 +31,8 @@ class DiagramsController < ApplicationController
   end
 
   def update
+    return unless assign_lock_version(@diagram, update_diagram_params, :title, :content)
+
     @diagram.title = update_diagram_params[:title] if update_diagram_params[:title].present?
     @diagram.content = update_diagram_params[:content] if update_diagram_params.key?(:content)
     return unless place_in_folder(@diagram, update_diagram_params, :folder_id)
@@ -42,6 +44,8 @@ class DiagramsController < ApplicationController
     else
       render_error(limit_error_code(@diagram) || ErrorCodes::Diagrams::DIAGRAM_UPDATE_FAILED, :unprocessable_entity)
     end
+  rescue ActiveRecord::StaleObjectError
+    render_error(ErrorCodes::Common::EDIT_CONFLICT, :conflict, extra: { diagram: diagram_json(find_diagram(@diagram.id)) })
   end
 
   def destroy
@@ -67,6 +71,7 @@ class DiagramsController < ApplicationController
       title: diagram.title,
       folder_id: diagram.folder_id,
       project_id: diagram.project_id,
+      lock_version: diagram.lock_version,
       creator: member_json(diagram.creator),
       created_at: diagram.created_at,
       updated_at: diagram.updated_at
@@ -82,6 +87,7 @@ class DiagramsController < ApplicationController
       content: diagram.content,
       folder_id: diagram.folder_id,
       project_id: diagram.project_id,
+      lock_version: diagram.lock_version,
       creator: member_json(diagram.creator),
       contributors: diagram.contributors.map { |user| member_json(user) },
       created_at: diagram.created_at,

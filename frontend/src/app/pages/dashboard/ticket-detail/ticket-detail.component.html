@@ -79,4 +79,11 @@
     (confirmed)="handleConfirmDelete()"
     (cancelled)="handleCancelDelete()"
   ></app-confirm-dialog>
+
+  <app-edit-conflict-dialog
+    *ngIf="editConflict"
+    (loadLatest)="handleConflictLoadLatest()"
+    (overwrite)="handleConflictOverwrite()"
+    (cancelled)="handleConflictCancel()"
+  ></app-edit-conflict-dialog>
 </div>

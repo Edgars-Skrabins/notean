@@ -1,4 +1,4 @@
-import {Result} from "@models/result.model";
+import {EditConflict, Result} from "@models/result.model";
 import {ErrorCode, FoldersErrorCode, ProjectsErrorCode, TeamAccessErrorCode} from "@config/errorCodes";
 import {Avatar} from "@models/avatar.model";
 
@@ -18,6 +18,7 @@ export interface FolderedItemSummary {
   title: string;
   folderId: number | null;
   projectId: number | null;
+  lockVersion: number;
   creator: FolderedItemUser;
   createdAt: string;
   updatedAt: string;
@@ -39,10 +40,13 @@ export interface CreateFolderedItemParams {
 export interface SaveFolderedItemParams {
   title: string;
   content: string;
+  lockVersion: number;
 }
 
 export type ListFolderedItemsResponse = Result<{ items: FolderedItemSummary[] }, TeamAccessErrorCode | ProjectsErrorCode>;
 
 export type FolderedItemResponse<E extends ErrorCode> = Result<{ item: FolderedItemDetail }, TeamAccessErrorCode | ProjectsErrorCode | FoldersErrorCode | E>;
+
+export type SaveFolderedItemResponse<E extends ErrorCode> = FolderedItemResponse<E> | EditConflict<FolderedItemDetail>;
 
 export type DeleteFolderedItemResponse<E extends ErrorCode> = Result<object, TeamAccessErrorCode | E>;

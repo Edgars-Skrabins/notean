@@ -24,6 +24,7 @@ export interface TreeItem {
   title: string;
   folderId: number | null;
   projectId: number | null;
+  lockVersion: number;
   meta: {
     creator: { nickname: string };
     updatedAt: string;

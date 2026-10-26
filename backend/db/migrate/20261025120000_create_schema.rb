@@ -81,6 +81,7 @@ class CreateSchema < ActiveRecord::Migration[7.2]
       t.integer "folder_id"
       t.integer "project_id"
       t.text "search_text", default: "", null: false
+      t.integer "lock_version", default: 0, null: false
       t.index [ "created_by_user_id" ], name: "index_diagrams_on_created_by_user_id"
       t.index [ "folder_id" ], name: "index_diagrams_on_folder_id"
       t.index [ "project_id" ], name: "index_diagrams_on_project_id"
@@ -152,6 +153,7 @@ class CreateSchema < ActiveRecord::Migration[7.2]
       t.integer "folder_id"
       t.integer "project_id"
       t.text "search_text", default: "", null: false
+      t.integer "lock_version", default: 0, null: false
       t.index [ "created_by_user_id" ], name: "index_pages_on_created_by_user_id"
       t.index [ "folder_id" ], name: "index_pages_on_folder_id"
       t.index [ "project_id" ], name: "index_pages_on_project_id"
@@ -214,6 +216,7 @@ class CreateSchema < ActiveRecord::Migration[7.2]
       t.datetime "updated_at", null: false
       t.integer "board_id", null: false
       t.bigint "priority_id"
+      t.integer "lock_version", default: 0, null: false
       t.index [ "board_id", "column_id", "position" ], name: "index_tickets_on_board_id_and_column_id_and_position"
       t.index [ "board_id" ], name: "index_tickets_on_board_id"
       t.index [ "column_id" ], name: "index_tickets_on_column_id"

@@ -212,8 +212,21 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   }
 
   handleRenameItem(event: { itemId: number; title: string }) {
-    this.itemService.rename(this.teamCode, event.itemId, event.title)
+    const item = this.items.find((candidate) => candidate.id === event.itemId);
+    if (!item) {
+      return;
+    }
+
+    this.itemService.rename(this.teamCode, event.itemId, event.title, item.lockVersion)
       .then((response) => {
+        if ('latest' in response) {
+          this.alertMessage = errorPhrase(response.code);
+          const latest = this.toTreeItem(response.latest);
+          this.items = this.items.map((candidate) => candidate.id === latest.id ? latest : candidate);
+          this.favoriteService.renameItem(this.itemType, latest.id, latest.title);
+          return;
+        }
+
         if (!response.success) {
           this.alertMessage = errorPhrase(response.code);
           return;
@@ -282,6 +295,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
       title: item.title,
       folderId: item.folderId,
       projectId: item.projectId,
+      lockVersion: item.lockVersion,
       meta: {
         creator: {nickname: item.creator.nickname},
         updatedAt: item.updatedAt,

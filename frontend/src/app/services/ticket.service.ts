@@ -1,8 +1,8 @@
 import {AxiosResponse} from "axios";
 import {Injectable} from '@angular/core';
 import {axiosInstance} from "@config/axiosConfig";
-import {apiRequest} from "@utils/apiRequest";
-import {BulkTicketAction, BulkTicketsResponse, TicketDetail, TicketResponse, DeleteTicketResponse} from "@models/ticket.model";
+import {apiRequest, versionedRequest} from "@utils/apiRequest";
+import {BulkTicketAction, BulkTicketsResponse, TicketDetail, TicketResponse, DeleteTicketResponse, UpdateTicketResponse} from "@models/ticket.model";
 import {mapBoardUser, mapTicketSummary, RawBoardUser, RawTicketSummary} from "@services/board.service";
 import {teamPath} from "@utils/teamPath";
 
@@ -33,9 +33,18 @@ export class TicketService {
     return this.requestTicket(axiosInstance.get(this.ticketsUrl(teamCode, boardId, id)));
   }
 
-  async updateTicket(teamCode: string, boardId: number, id: number, changes: { title?: string; description?: string; priorityId?: number | null }): Promise<TicketResponse> {
-    const {priorityId, ...rest} = changes;
-    return this.patchTicket(teamCode, boardId, id, priorityId === undefined ? rest : {...rest, priority_id: priorityId});
+  async updateTicket(teamCode: string, boardId: number, id: number, changes: { title?: string; description?: string; priorityId?: number | null; lockVersion?: number }): Promise<UpdateTicketResponse> {
+    const {priorityId, lockVersion, ...rest} = changes;
+    const ticket = {
+      ...rest,
+      ...(priorityId === undefined ? {} : {priority_id: priorityId}),
+      ...(lockVersion === undefined ? {} : {lock_version: lockVersion}),
+    };
+    return versionedRequest<TicketResponse, TicketDetail>(
+      axiosInstance.patch(this.ticketsUrl(teamCode, boardId, id), {ticket}),
+      (data) => ({success: true, ticket: mapTicketDetail(data.ticket)}),
+      (data) => mapTicketDetail(data.ticket),
+    );
   }
 
   async moveTicket(teamCode: string, boardId: number, id: number, move: { columnId: number; position?: number }): Promise<TicketResponse> {

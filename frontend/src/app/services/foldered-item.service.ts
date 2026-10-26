@@ -1,7 +1,7 @@
 import {AxiosResponse} from "axios";
 import {axiosInstance} from "@config/axiosConfig";
 import {ErrorCode} from "@config/errorCodes";
-import {apiRequest} from "@utils/apiRequest";
+import {apiRequest, versionedRequest} from "@utils/apiRequest";
 import {teamPath} from "@utils/teamPath";
 import {projectQuery} from "@utils/projectQuery";
 import {mapAvatar, RawAvatar} from "@services/avatar.service";
@@ -14,7 +14,8 @@ import {
   FolderedItemSummary,
   FolderedItemUser,
   ListFolderedItemsResponse,
-  SaveFolderedItemParams
+  SaveFolderedItemParams,
+  SaveFolderedItemResponse
 } from "@models/foldered-item.model";
 
 interface RawFolderedItemUser {
@@ -33,6 +34,7 @@ interface RawFolderedItemSummary {
   title: string;
   folder_id: number | null;
   project_id: number | null;
+  lock_version: number;
   creator: RawFolderedItemUser;
   created_at: string;
   updated_at: string;
@@ -65,6 +67,7 @@ export function mapFolderedItemSummary(raw: RawFolderedItemSummary): FolderedIte
     title: raw.title,
     folderId: raw.folder_id,
     projectId: raw.project_id,
+    lockVersion: raw.lock_version,
     creator: mapFolderedItemUser(raw.creator),
     createdAt: raw.created_at,
     updatedAt: raw.updated_at,
@@ -105,12 +108,14 @@ export abstract class FolderedItemService<E extends ErrorCode> {
     return this.requestItem(axiosInstance.get(this.itemsUrl(teamCode, id)));
   }
 
-  async save(teamCode: string, id: number, params: SaveFolderedItemParams): Promise<FolderedItemResponse<E>> {
-    return this.requestItem(axiosInstance.patch(this.itemsUrl(teamCode, id), {[this.key]: params}));
+  async save(teamCode: string, id: number, params: SaveFolderedItemParams): Promise<SaveFolderedItemResponse<E>> {
+    return this.requestVersionedItem(axiosInstance.patch(this.itemsUrl(teamCode, id), {
+      [this.key]: {title: params.title, content: params.content, lock_version: params.lockVersion}
+    }));
   }
 
-  async rename(teamCode: string, id: number, title: string): Promise<FolderedItemResponse<E>> {
-    return this.requestItem(axiosInstance.patch(this.itemsUrl(teamCode, id), {[this.key]: {title}}));
+  async rename(teamCode: string, id: number, title: string, lockVersion: number): Promise<SaveFolderedItemResponse<E>> {
+    return this.requestVersionedItem(axiosInstance.patch(this.itemsUrl(teamCode, id), {[this.key]: {title, lock_version: lockVersion}}));
   }
 
   async moveToFolder(teamCode: string, id: number, folderId: number | null): Promise<FolderedItemResponse<E>> {
@@ -128,6 +133,14 @@ export abstract class FolderedItemService<E extends ErrorCode> {
     return apiRequest<FolderedItemResponse<E>>(
       request,
       (data) => ({success: true, item: mapFolderedItemDetail(data[this.key])}),
+    );
+  }
+
+  private requestVersionedItem(request: Promise<AxiosResponse>): Promise<SaveFolderedItemResponse<E>> {
+    return versionedRequest<FolderedItemResponse<E>, FolderedItemDetail>(
+      request,
+      (data) => ({success: true, item: mapFolderedItemDetail(data[this.key])}),
+      (data) => mapFolderedItemDetail(data[this.key]),
     );
   }
 

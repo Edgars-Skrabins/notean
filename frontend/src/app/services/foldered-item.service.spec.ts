@@ -27,6 +27,7 @@ describe('mapFolderedItemSummary', () => {
       title: 'My Page',
       folder_id: null,
       project_id: null,
+      lock_version: 3,
       creator: {id: 2, nickname: 'bob', avatar: {color: 'red', image_url: null}},
       created_at: '2024-01-01T00:00:00Z',
       updated_at: '2024-01-02T00:00:00Z',
@@ -37,6 +38,7 @@ describe('mapFolderedItemSummary', () => {
       title: 'My Page',
       folderId: null,
       projectId: null,
+      lockVersion: 3,
       creator: {id: 2, nickname: 'bob', avatar: {color: 'red', imageUrl: null}},
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-02T00:00:00Z',
@@ -50,6 +52,7 @@ describe('mapFolderedItemDetail', () => {
     title: 'My Page',
     folder_id: null,
     project_id: null,
+    lock_version: 3,
     creator: {id: 2, nickname: 'bob', avatar: {color: 'red' as const, image_url: null}},
     created_at: '2024-01-01T00:00:00Z',
     updated_at: '2024-01-02T00:00:00Z',
@@ -100,6 +103,7 @@ describe('FolderedItemService', () => {
     title: 'Flow',
     folder_id: null,
     project_id: null,
+    lock_version: 3,
     creator: {id: 2, nickname: 'bob', avatar: {color: 'red' as const, image_url: null}},
     created_at: '2024-01-01T00:00:00Z',
     updated_at: '2024-01-02T00:00:00Z',
@@ -123,21 +127,21 @@ describe('FolderedItemService', () => {
 
     await service.create('abc', {title: 'Notes', content: '<p>Hi</p>', projectId: 4, folderId: 3});
     await service.setProject('abc', 7, null);
-    await service.save('abc', 7, {title: 'Notes', content: '<p></p>'});
+    await service.save('abc', 7, {title: 'Notes', content: '<p></p>', lockVersion: 2});
     await service.moveToFolder('abc', 7, 3);
 
     expect(post).toHaveBeenCalledWith('/teams/abc/pages', {page: {title: 'Notes', content: '<p>Hi</p>', project_id: 4, folder_id: 3}});
     expect(patch).toHaveBeenCalledWith('/teams/abc/pages/7', {page: {project_id: null}});
-    expect(patch).toHaveBeenCalledWith('/teams/abc/pages/7', {page: {title: 'Notes', content: '<p></p>'}});
+    expect(patch).toHaveBeenCalledWith('/teams/abc/pages/7', {page: {title: 'Notes', content: '<p></p>', lock_version: 2}});
     expect(patch).toHaveBeenCalledWith('/teams/abc/pages/7', {page: {folder_id: 3}});
   });
 
-  it('renames with only the title in the item key', async () => {
+  it('renames with only the title and version in the item key', async () => {
     const patch = spyOn(axiosInstance, 'patch').and.returnValue(Promise.resolve({data: {diagram: rawItem}}));
 
-    const response = await new DiagramService().rename('abc', 7, 'Renamed');
+    const response = await new DiagramService().rename('abc', 7, 'Renamed', 3);
 
-    expect(patch).toHaveBeenCalledOnceWith('/teams/abc/diagrams/7', {diagram: {title: 'Renamed'}});
+    expect(patch).toHaveBeenCalledOnceWith('/teams/abc/diagrams/7', {diagram: {title: 'Renamed', lock_version: 3}});
     expect(response.success && response.item.id).toBe(7);
   });
 
@@ -147,5 +151,25 @@ describe('FolderedItemService', () => {
     spyOn(axiosInstance, 'get').and.returnValue(Promise.reject(error));
 
     expect(await new PageService().get('abc', 99)).toEqual({success: false, code: 'PAGE_NOT_FOUND'});
+  });
+
+  it('returns the mapped latest item when a save conflicts', async () => {
+    const error = new AxiosError('Request failed');
+    error.response = {data: {code: 'EDIT_CONFLICT', page: {...rawItem, title: 'Theirs', lock_version: 4}}, status: 409, statusText: '', headers: {}, config: {} as never};
+    spyOn(axiosInstance, 'patch').and.returnValue(Promise.reject(error));
+
+    const response = await new PageService().save('abc', 7, {title: 'Mine', content: '', lockVersion: 3});
+
+    expect(response.success).toBeFalse();
+    expect('latest' in response && [response.latest.title, response.latest.lockVersion]).toEqual(['Theirs', 4]);
+  });
+
+  it('returns other save failures without a latest item', async () => {
+    const error = new AxiosError('Request failed');
+    error.response = {data: {code: 'LOCK_VERSION_REQUIRED'}, status: 422, statusText: '', headers: {}, config: {} as never};
+    spyOn(axiosInstance, 'patch').and.returnValue(Promise.reject(error));
+
+    expect(await new PageService().save('abc', 7, {title: 'Mine', content: '', lockVersion: 3}))
+      .toEqual({success: false, code: 'LOCK_VERSION_REQUIRED'});
   });
 });
