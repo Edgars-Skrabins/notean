@@ -1,7 +1,7 @@
 import {BoardService} from "@services/board.service";
 import {TeamService} from "@services/team.service";
 import {BoardDetail} from "@models/board.model";
-import {TicketDetail, TicketSummary} from "@models/ticket.model";
+import {ListTicketsParams, ListTicketsResponse, TicketDetail, TicketSummary} from "@models/ticket.model";
 import {BoardPageStateService} from "@pages/dashboard/board-page/board-page-state.service";
 
 export const TEST_TEAM_CODE = 'abc';
@@ -37,6 +37,13 @@ export function boardDetail(): BoardDetail {
       {id: 20, name: 'Low', color: 'blue', position: 0, ticketCount: 0},
       {id: 21, name: 'High', color: 'orange', position: 1, ticketCount: 0},
     ],
+  };
+}
+
+export function fakeTicketList(state: BoardPageStateService) {
+  return (_teamCode: string, _boardId: number, params: ListTicketsParams): Promise<ListTicketsResponse> => {
+    const group = state.ticketsByStatus().find((item) => (item.status.columnId ?? 'backlog') === params.status);
+    return Promise.resolve({success: true, tickets: (group?.tickets ?? []).map((ticket) => ({...ticket})), hasMore: false});
   };
 }
 

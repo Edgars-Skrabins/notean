@@ -35,6 +35,11 @@ export interface TicketFilters {
   columnIds: Set<number | null>;
 }
 
+export interface TicketChange {
+  upserted: TicketSummary[];
+  removedIds: number[];
+}
+
 export interface ListTicketsParams {
   status: number | 'backlog';
   search?: string;
