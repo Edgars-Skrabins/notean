@@ -19,6 +19,7 @@ import {ToastType} from "@models/toast.model";
 import {errorPhrase} from "@utils/errorPhrase";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "./board-page-state.service";
+import {BoardChannelService} from "@services/board-channel.service";
 
 @Component({
   selector: 'app-board-page',
@@ -35,7 +36,7 @@ import {BoardPageStateService} from "./board-page-state.service";
     FavoriteStarComponent,
     ProjectSelectComponent
   ],
-  providers: [BoardPageStateService],
+  providers: [BoardPageStateService, BoardChannelService],
   templateUrl: './board-page.component.html',
   styleUrl: './board-page.component.css'
 })
@@ -58,7 +59,8 @@ export class BoardPageComponent implements OnInit, OnDestroy {
     private boardListService: BoardListService,
     private favoriteService: FavoriteService,
     private navigationService: NavigationService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private boardChannelService: BoardChannelService
   ) {
   }
 
@@ -66,14 +68,19 @@ export class BoardPageComponent implements OnInit, OnDestroy {
     this.paramSubscription = this.route.paramMap.subscribe((params) => {
       this.isRenaming = false;
       this.alertMessage = '';
+      this.boardChannelService.disconnect();
       this.state.load(Number(params.get('id'))).then(() => {
         this.alertMessage = this.state.errorCode ? errorPhrase(this.state.errorCode) : '';
+        if (this.state.board) {
+          this.boardChannelService.connect(this.state.board.id);
+        }
       });
     });
   }
 
   ngOnDestroy() {
     this.paramSubscription?.unsubscribe();
+    this.boardChannelService.disconnect();
   }
 
   startRename() {
@@ -145,11 +152,13 @@ export class BoardPageComponent implements OnInit, OnDestroy {
   handleConfirmDelete() {
     this.showDeleteConfirm = false;
     const boardId = this.state.boardId;
+    this.boardChannelService.disconnect();
 
     this.boardService.deleteBoard(this.state.teamCode, boardId)
       .then((response) => {
         if (!response.success) {
           this.alertMessage = errorPhrase(response.code);
+          this.boardChannelService.connect(boardId);
           return;
         }
 

@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
 import {CdkScrollable} from '@angular/cdk/scrolling';
+import {Subscription} from 'rxjs';
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {TITLE_MAX_LENGTH, DESCRIPTION_MAX_LENGTH} from "@config/contentLimits";
@@ -64,9 +65,13 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   isMoveDialogOpen = false;
   members: TeamMember[] = [];
   isUpdatingAssignees = false;
+  isTitleFocused = false;
+  isDescriptionFocused = false;
   readonly currentUserId: number;
 
   private ticketId = 0;
+  private isDeleting = false;
+  private remoteChangesSubscription: Subscription | null = null;
 
   private unregisterEscape = () => {};
 
@@ -103,12 +108,68 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.unregisterEscape = this.escapeService.push(() => this.handleGoBack());
     this.ticketId = Number(this.route.snapshot.paramMap.get('ticketId'));
+    this.remoteChangesSubscription = this.state.remoteChanges$.subscribe((descriptions) => this.applyRemoteChange(descriptions));
     this.loadTicket();
     this.loadAssignableMembers();
   }
 
   ngOnDestroy() {
     this.unregisterEscape();
+    this.remoteChangesSubscription?.unsubscribe();
+  }
+
+  applyRemoteChange(descriptions: Map<number, string>) {
+    const ticket = this.ticket;
+    if (!ticket || this.isDeleting || !this.state.board) {
+      return;
+    }
+
+    const summary = this.state.findTicket(ticket.id);
+    if (!summary) {
+      this.handleGoBack();
+      this.toastService.show({type: ToastType.INFO, message: PHRASES.TICKET_WAS_DELETED});
+      return;
+    }
+
+    const description = descriptions.get(ticket.id) ?? ticket.description;
+    const keepTitleDraft = this.isTitleFocused && this.titleDraft !== ticket.title;
+    const keepDescriptionDraft = this.isDescriptionFocused && this.descriptionDraft !== ticket.description;
+
+    this.ticket = {
+      ...ticket,
+      title: summary.title,
+      position: summary.position,
+      columnId: summary.columnId,
+      priorityId: summary.priorityId,
+      assignees: summary.assignees,
+      updatedAt: summary.updatedAt,
+      lockVersion: keepTitleDraft || keepDescriptionDraft ? ticket.lockVersion : summary.lockVersion,
+      description,
+    };
+    if (!keepTitleDraft) {
+      this.titleDraft = summary.title;
+    }
+    if (!keepDescriptionDraft) {
+      this.descriptionDraft = description;
+    }
+  }
+
+  handleTitleFocus() {
+    this.isTitleFocused = true;
+  }
+
+  handleTitleBlur() {
+    this.isTitleFocused = false;
+    this.commitTitle();
+  }
+
+  handleDescriptionFocus() {
+    this.isDescriptionFocused = true;
+  }
+
+  handleDescriptionBlur() {
+    this.isDescriptionFocused = false;
+    this.commitDescription();
   }
 
   handleAddAssignee(userId: number) {
@@ -152,10 +213,12 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
 
   handleConfirmDelete() {
     this.showDeleteConfirm = false;
+    this.isDeleting = true;
 
     this.ticketService.deleteTicket(this.teamCode, this.boardId, this.ticketId)
       .then((response) => {
         if (!response.success) {
+          this.isDeleting = false;
           this.alertMessage = errorPhrase(response.code);
           return;
         }

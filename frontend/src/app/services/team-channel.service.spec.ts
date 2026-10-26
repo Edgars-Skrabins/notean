@@ -1,6 +1,8 @@
+import {Subscription} from '@rails/actioncable';
 import {TranslateService} from "@ngx-translate/core";
 import {TeamChannelService} from "./team-channel.service";
 import {AuthService} from "@services/auth.service";
+import {CableService} from "@services/cable.service";
 import {TeamService} from "@services/team.service";
 import {ToastService} from "@services/toast.service";
 import {NavigationService} from "@services/navigation.service";
@@ -10,6 +12,8 @@ import {AppRoutes} from "../app/app-routes.enum";
 import {rawTestTeam, testTeam} from "../testing/teamFixtures";
 
 describe('TeamChannelService', () => {
+  let subscription: jasmine.SpyObj<Subscription>;
+  let cableService: jasmine.SpyObj<CableService>;
   let authService: jasmine.SpyObj<AuthService>;
   let teamService: jasmine.SpyObj<TeamService>;
   let toastService: jasmine.SpyObj<ToastService>;
@@ -18,6 +22,9 @@ describe('TeamChannelService', () => {
   let service: TeamChannelService;
 
   beforeEach(() => {
+    subscription = jasmine.createSpyObj<Subscription>('Subscription', ['unsubscribe', 'perform']);
+    cableService = jasmine.createSpyObj<CableService>('CableService', ['subscribe', 'disconnect']);
+    cableService.subscribe.and.returnValue(subscription);
     authService = jasmine.createSpyObj<AuthService>('AuthService', ['getCurrentUser']);
     authService.getCurrentUser.and.returnValue({id: 7, email: 'alice@example.com'});
     teamService = jasmine.createSpyObj<TeamService>('TeamService', ['applyFeatures', 'getCurrentTeam', 'clearCurrentTeam']);
@@ -26,13 +33,22 @@ describe('TeamChannelService', () => {
     navigationService = jasmine.createSpyObj<NavigationService>('NavigationService', ['navigate']);
     translateService = jasmine.createSpyObj<TranslateService>('TranslateService', ['instant']);
     translateService.instant.and.callFake((key: string | string[], params?: object) => `${key} ${JSON.stringify(params)}`);
-    service = new TeamChannelService(authService, teamService, toastService, navigationService, translateService);
+    service = new TeamChannelService(cableService, authService, teamService, toastService, navigationService, translateService);
   });
 
   it('applies the mapped team from a features_changed message', () => {
     service.handleMessage({type: 'features_changed', team: rawTestTeam({boards_enabled: false})});
 
     expect(teamService.applyFeatures).toHaveBeenCalledOnceWith(testTeam({boardsEnabled: false}));
+  });
+
+  it('subscribes through the shared cable and disconnect only unsubscribes', () => {
+    service.connect('abc');
+    service.disconnect();
+
+    expect(cableService.subscribe).toHaveBeenCalledOnceWith({channel: 'TeamChannel', team_code: 'abc'}, jasmine.any(Object));
+    expect(subscription.unsubscribe).toHaveBeenCalled();
+    expect(cableService.disconnect).not.toHaveBeenCalled();
   });
 
   it('clears the team, toasts and goes to team selection when the current user is removed from the active team', () => {

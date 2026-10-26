@@ -6,6 +6,7 @@ import {SettingsService} from "@services/settings.service";
 import {AvatarService} from "@services/avatar.service";
 import {TeamService} from "@services/team.service";
 import {ThemeService} from "@services/theme.service";
+import {CableService} from "@services/cable.service";
 import {testTeam, rawTestTeam} from "../testing/teamFixtures";
 
 const rawSession = {
@@ -32,9 +33,10 @@ describe('SessionService', () => {
   let avatarService: jasmine.SpyObj<AvatarService>;
   let teamService: jasmine.SpyObj<TeamService>;
   let themeService: jasmine.SpyObj<ThemeService>;
+  let cableService: jasmine.SpyObj<CableService>;
 
   function create() {
-    return new SessionService(authService, settingsService, avatarService, teamService, themeService);
+    return new SessionService(authService, settingsService, avatarService, teamService, themeService, cableService);
   }
 
   beforeEach(() => {
@@ -44,6 +46,7 @@ describe('SessionService', () => {
     avatarService = jasmine.createSpyObj<AvatarService>('AvatarService', ['set', 'clear']);
     teamService = jasmine.createSpyObj<TeamService>('TeamService', ['applyActiveTeam', 'clearCurrentTeam']);
     themeService = jasmine.createSpyObj<ThemeService>('ThemeService', ['apply', 'preview']);
+    cableService = jasmine.createSpyObj<CableService>('CableService', ['disconnect']);
   });
 
   it('loads on construction only when authenticated', () => {
@@ -88,12 +91,13 @@ describe('SessionService', () => {
     expect(teamService.applyActiveTeam).not.toHaveBeenCalled();
   });
 
-  it('clear resets settings, avatar and team but keeps the theme', () => {
+  it('clear resets settings, avatar and team, closes the cable connection, but keeps the theme', () => {
     create().clear();
 
     expect(settingsService.clear).toHaveBeenCalled();
     expect(avatarService.clear).toHaveBeenCalled();
     expect(teamService.clearCurrentTeam).toHaveBeenCalled();
+    expect(cableService.disconnect).toHaveBeenCalled();
     expect(themeService.apply).not.toHaveBeenCalled();
     expect(themeService.preview).not.toHaveBeenCalled();
   });

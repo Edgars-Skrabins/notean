@@ -1,6 +1,7 @@
 require "test_helper"
 
 class PrioritiesControllerTest < ActionDispatch::IntegrationTest
+  include ActionCable::TestHelper
   setup do
     @team = Team.create!(name: "Engineering", password: "supersecret")
     @user = User.create!(email: "alice@example.com", password: "supersecret")
@@ -122,5 +123,40 @@ class PrioritiesControllerTest < ActionDispatch::IntegrationTest
       headers: { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: outsider.id)}" }, as: :json
 
     assert_response :forbidden
+  end
+
+  test "create broadcasts all of the board's priorities" do
+    post priorities_url, params: { priority: { name: "New priority", color: "grey" } }, headers: @headers, as: :json
+
+    assert_response :created
+    get "/teams/#{@team.code}/boards/#{@board.id}", headers: @headers
+    assert_broadcast_on(BoardChannel.stream_name(@board), type: "priorities_changed", priorities: JSON.parse(response.body)["board"]["priorities"])
+  end
+
+  test "update broadcasts the priorities it returns" do
+    patch priorities_url(priority_named("Low").id), params: { priority: { position: 0 } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_broadcast_on(BoardChannel.stream_name(@board), type: "priorities_changed", priorities: JSON.parse(response.body)["priorities"])
+  end
+
+  test "destroy broadcasts the priorities and the tickets it cleared" do
+    ticket = ticket_with(priority_named("Medium"))
+    ticket_with(priority_named("High"), "Other")
+
+    delete priorities_url(priority_named("Medium").id), headers: @headers
+
+    assert_response :success
+    message = board_broadcasts(@board).sole
+    assert_equal "priorities_changed", message["type"]
+    assert_equal JSON.parse(response.body)["priorities"], message["priorities"]
+    assert_equal [ [ ticket.id, nil ] ], message["tickets"].map { |item| [ item["id"], item["priority_id"] ] }
+  end
+
+  test "destroying an unused priority broadcasts no tickets" do
+    delete priorities_url(priority_named("Medium").id), headers: @headers
+
+    assert_response :success
+    assert_not board_broadcasts(@board).sole.key?("tickets")
   end
 end

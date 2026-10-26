@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
-import {createConsumer, Consumer, Subscription} from '@rails/actioncable';
+import {Subscription} from '@rails/actioncable';
 import {TranslateService} from "@ngx-translate/core";
-import {baseUrl} from "@config/axiosConfig";
 import {PHRASES} from "@config/phrases";
 import {AuthService} from "@services/auth.service";
+import {CableService} from "@services/cable.service";
 import {mapTeam, RawTeam, TeamService} from "@services/team.service";
 import {ToastService} from "@services/toast.service";
 import {NavigationService} from "@services/navigation.service";
@@ -20,13 +20,13 @@ type TeamChannelMessage =
   providedIn: 'root',
 })
 export class TeamChannelService {
-  private consumer: Consumer | null = null;
   private subscription: Subscription | null = null;
   private membersChangedSubject = new Subject<void>();
 
   readonly membersChanged$: Observable<void> = this.membersChangedSubject.asObservable();
 
   constructor(
+    private cableService: CableService,
     private authService: AuthService,
     private teamService: TeamService,
     private toastService: ToastService,
@@ -38,11 +38,7 @@ export class TeamChannelService {
   connect(teamCode: string) {
     this.disconnect();
 
-    const token = this.authService.getToken();
-    const cableUrl = baseUrl.replace(/^http/, 'ws') + `/cable?token=${token}`;
-
-    this.consumer = createConsumer(cableUrl);
-    this.subscription = this.consumer.subscriptions.create(
+    this.subscription = this.cableService.subscribe(
       {channel: 'TeamChannel', team_code: teamCode},
       {
         received: (data: TeamChannelMessage) => this.handleMessage(data),
@@ -62,9 +58,7 @@ export class TeamChannelService {
 
   disconnect() {
     this.subscription?.unsubscribe();
-    this.consumer?.disconnect();
     this.subscription = null;
-    this.consumer = null;
   }
 
   private handleMemberRemoved(userId: number, teamName: string, teamCode: string) {

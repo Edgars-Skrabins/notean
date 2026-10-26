@@ -1,6 +1,7 @@
 require "test_helper"
 
 class ColumnsControllerTest < ActionDispatch::IntegrationTest
+  include ActionCable::TestHelper
   setup do
     @team = Team.create!(name: "Engineering", password: "supersecret")
     @user = User.create!(email: "alice@example.com", password: "supersecret")
@@ -62,6 +63,27 @@ class ColumnsControllerTest < ActionDispatch::IntegrationTest
     assert_response :forbidden
     assert_equal({ "code" => "FEATURE_DISABLED" }, JSON.parse(response.body))
     assert_equal 0, @board.columns.count
+  end
+
+  test "create, rename and destroy broadcast the board's columns" do
+    todo = Column.create!(board: @board, title: "To Do", position: 0)
+    columns_url = "/teams/#{@team.code}/boards/#{@board.id}/columns"
+
+    post columns_url, params: { column: { title: "Doing" } }, headers: @headers, as: :json
+    doing_id = JSON.parse(response.body)["column"]["id"]
+    assert_broadcast_on(BoardChannel.stream_name(@board), type: "columns_changed", columns: [
+      { id: todo.id, title: "To Do", position: 0 },
+      { id: doing_id, title: "Doing", position: 1 }
+    ])
+
+    patch "#{columns_url}/#{todo.id}", params: { column: { title: "Next" } }, headers: @headers, as: :json
+    assert_broadcast_on(BoardChannel.stream_name(@board), type: "columns_changed", columns: [
+      { id: todo.id, title: "Next", position: 0 },
+      { id: doing_id, title: "Doing", position: 1 }
+    ])
+
+    delete "#{columns_url}/#{todo.id}", headers: @headers
+    assert_broadcast_on(BoardChannel.stream_name(@board), type: "columns_changed", columns: [ { id: doing_id, title: "Doing", position: 1 } ])
   end
 
   test "update returns TITLE_TOO_LONG for an over-limit title" do

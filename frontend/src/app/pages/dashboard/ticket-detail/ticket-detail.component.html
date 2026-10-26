@@ -29,7 +29,8 @@
           [placeholder]="PHRASES.TICKET_TITLE_PLACEHOLDER | translate"
           (keydown.enter)="commitTitle()"
           (keydown.escape)="cancelTitleEdit($event)"
-          (blur)="commitTitle()"
+          (focus)="handleTitleFocus()"
+          (blur)="handleTitleBlur()"
         />
 
         <textarea
@@ -38,7 +39,8 @@
           [maxlength]="DESCRIPTION_MAX_LENGTH"
           [placeholder]="PHRASES.TICKET_DESCRIPTION_PLACEHOLDER | translate"
           (keydown.escape)="cancelDescriptionEdit($event)"
-          (blur)="commitDescription()"
+          (focus)="handleDescriptionFocus()"
+          (blur)="handleDescriptionBlur()"
         ></textarea>
       </div>
 

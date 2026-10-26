@@ -379,6 +379,100 @@ describe('TicketDetailComponent editing', () => {
     expect(ticketService.updateTicket).toHaveBeenCalledWith('abc', 9, 0, {priorityId: null});
     expect(state.findTicket(1)?.priorityId).toBeNull();
   }));
+
+  it('applies a remote change to the fields that are not being edited', () => {
+    state.findTicket(1)!.title = 'Renamed elsewhere';
+    state.findTicket(1)!.priorityId = 21;
+
+    component.applyRemoteChange(new Map([[1, 'New details']]));
+
+    expect(component.ticket?.title).toBe('Renamed elsewhere');
+    expect(component.titleDraft).toBe('Renamed elsewhere');
+    expect(component.ticket?.priorityId).toBe(21);
+    expect(component.ticket?.description).toBe('New details');
+    expect(component.descriptionDraft).toBe('New details');
+  });
+
+  it('keeps a focused title draft but updates the saved title behind it', () => {
+    component.handleTitleFocus();
+    component.titleDraft = 'My draft';
+    state.findTicket(1)!.title = 'Renamed elsewhere';
+
+    component.applyRemoteChange(new Map());
+
+    expect(component.titleDraft).toBe('My draft');
+    expect(component.ticket?.title).toBe('Renamed elsewhere');
+  });
+
+  it('takes the remote version when no draft is kept, so the next save does not conflict', () => {
+    state.findTicket(1)!.lockVersion = 3;
+
+    component.applyRemoteChange(new Map());
+
+    expect(component.ticket?.lockVersion).toBe(3);
+  });
+
+  it('keeps its version while a draft is kept, so saving it goes through the conflict check', () => {
+    component.handleDescriptionFocus();
+    component.descriptionDraft = 'My notes';
+    state.findTicket(1)!.lockVersion = 3;
+
+    component.applyRemoteChange(new Map([[1, 'New details']]));
+
+    expect(component.ticket?.lockVersion).toBe(0);
+  });
+
+  it('keeps a description draft being edited', () => {
+    component.handleDescriptionFocus();
+    component.descriptionDraft = 'My notes';
+
+    component.applyRemoteChange(new Map([[1, 'New details']]));
+
+    expect(component.descriptionDraft).toBe('My notes');
+    expect(component.ticket?.description).toBe('New details');
+  });
+
+  it('keeps the description when the change carries none', () => {
+    component.applyRemoteChange(new Map());
+
+    expect(component.ticket?.description).toBe('Details');
+    expect(component.descriptionDraft).toBe('Details');
+  });
+
+  it('closes with a toast when the ticket is deleted elsewhere', () => {
+    component.ngOnInit();
+    state.removeTickets([1]);
+
+    state.remoteChanges$.next(new Map());
+
+    expect(router.navigate).toHaveBeenCalledOnceWith(['../..'], {relativeTo: route});
+    expect(toastService.show).toHaveBeenCalledOnceWith({type: ToastType.INFO, message: PHRASES.TICKET_WAS_DELETED});
+    component.ngOnDestroy();
+  });
+
+  it('does not report its own deletion as a remote one', fakeAsync(() => {
+    ticketService.deleteTicket.and.returnValue(Promise.resolve({success: true}));
+    component.ngOnInit();
+
+    component.handleConfirmDelete();
+    state.removeTickets([1]);
+    state.remoteChanges$.next(new Map());
+    flushMicrotasks();
+
+    expect(toastService.show).not.toHaveBeenCalled();
+    expect(router.navigate).toHaveBeenCalledOnceWith(['../..'], {relativeTo: route});
+    component.ngOnDestroy();
+  }));
+
+  it('stops following remote changes once closed', () => {
+    component.ngOnInit();
+    component.ngOnDestroy();
+    state.removeTickets([1]);
+
+    state.remoteChanges$.next(new Map());
+
+    expect(router.navigate).not.toHaveBeenCalled();
+  });
 });
 
 describe('TicketDetailComponent input limits', () => {
