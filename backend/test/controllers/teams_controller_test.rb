@@ -96,6 +96,12 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     assert_not Team.exists?(@team.id)
   end
 
+  test "GET /teams/:code no longer exists" do
+    get "/teams/#{@team.code}", headers: @headers
+
+    assert_response :not_found
+  end
+
   test "members returns each member's avatar" do
     @user.update!(avatar_color: "pink")
 

@@ -1,6 +1,6 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_team, only: [ :activate, :members, :show, :update_nickname, :update, :update_features, :destroy ]
+  before_action :set_team, only: [ :activate, :members, :update_nickname, :update, :update_features, :destroy ]
 
   def mine
     membership = active_membership(current_user)
@@ -32,10 +32,6 @@ class TeamsController < ApplicationController
     render json: {
       members: @team.memberships.includes(user: User::AVATAR_PRELOAD).map { |m| member_json(m.user).merge(role: m.role) }
     }
-  end
-
-  def show
-    render json: { team: team_json(@team) }
   end
 
   def create
