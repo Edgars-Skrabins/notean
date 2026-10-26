@@ -1,5 +1,5 @@
 import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
-import {Component} from "@angular/core";
+import {Component, ChangeDetectionStrategy} from "@angular/core";
 import {filter} from "rxjs";
 import {LanguageService} from "@services/language.service";
 import {AuthService} from "@services/auth.service";
@@ -15,6 +15,7 @@ import {ToastContainerComponent} from "@components/toast-container/toast-contain
     ToastContainerComponent,
   ],
   templateUrl: './app.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrls: ['./app.component.css']
 })
 

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
@@ -47,6 +47,7 @@ import {EscapeService} from "@services/escape.service";
     DropdownComponent
   ],
   templateUrl: './ticket-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './ticket-detail.component.css'
 })
 export class TicketDetailComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {AsyncPipe, NgIf} from '@angular/common';
 import {Router} from '@angular/router';
@@ -30,6 +30,7 @@ import {FolderedListPageComponent} from "../foldered-list-page.base";
     FolderProjectDialogComponent
   ],
   templateUrl: './diagrams.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './diagrams.component.css'
 })
 export class DiagramsComponent extends FolderedListPageComponent {

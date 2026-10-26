@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {AsyncPipe, NgIf} from '@angular/common';
 import {map, Observable} from 'rxjs';
 import {PHRASES} from '@config/phrases';
@@ -14,6 +14,7 @@ import {DropdownComponent} from '@components/dropdown/dropdown.component';
     DropdownComponent
   ],
   templateUrl: './project-selector.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './project-selector.component.css'
 })
 export class ProjectSelectorComponent {

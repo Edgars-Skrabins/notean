@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {NgIf} from "@angular/common";
 import {AppRoutes} from "../../app/app-routes.enum";
@@ -20,6 +20,7 @@ import {isPasswordLongEnough} from "@utils/passwordValidation";
     AuthCardComponent
   ],
   templateUrl: './register.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {

@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {AsyncPipe, NgIf} from '@angular/common';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 import {TranslateModule} from "@ngx-translate/core";
@@ -25,6 +25,7 @@ import {AppRoutes} from "../../app/app-routes.enum";
     TooltipDirective
   ],
   templateUrl: './dashboard-sidebar.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './dashboard-sidebar.component.css'
 })
 export class DashboardSidebarComponent {

@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {NgFor, NgIf} from '@angular/common';
 
 export interface PieSlice {
@@ -27,6 +27,7 @@ function pointAt(fraction: number): string {
     NgIf
   ],
   templateUrl: './pie-chart.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './pie-chart.component.css'
 })
 export class PieChartComponent {

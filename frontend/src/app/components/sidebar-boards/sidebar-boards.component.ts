@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {AsyncPipe, NgFor, NgIf} from '@angular/common';
 import {Router, RouterLink, RouterLinkActive} from '@angular/router';
 import {CdkDrag, CdkDragDrop, CdkDropList} from '@angular/cdk/drag-drop';
@@ -31,6 +31,7 @@ import {boardRoute} from "@utils/ticketRoute";
     TooltipDirective
   ],
   templateUrl: './sidebar-boards.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './sidebar-boards.component.css'
 })
 export class SidebarBoardsComponent implements OnInit {

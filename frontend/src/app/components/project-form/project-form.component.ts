@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgFor, NgIf} from '@angular/common';
 import {TranslateModule} from '@ngx-translate/core';
@@ -23,6 +23,7 @@ import {DropdownComponent} from '@components/dropdown/dropdown.component';
     DropdownComponent
   ],
   templateUrl: './project-form.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './project-form.component.css'
 })
 export class ProjectFormComponent {

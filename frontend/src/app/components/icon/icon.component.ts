@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {NgSwitch, NgSwitchCase} from '@angular/common';
 
 export type IconName =
@@ -16,6 +16,7 @@ export type IconName =
     NgSwitchCase
   ],
   templateUrl: './icon.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './icon.component.css'
 })
 export class IconComponent {

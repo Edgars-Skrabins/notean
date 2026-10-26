@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ProjectParams} from '@models/project.model';
@@ -15,6 +15,7 @@ import {EscapeService} from '@services/escape.service';
     ProjectFormComponent
   ],
   templateUrl: './new-project-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './new-project-dialog.component.css'
 })
 export class NewProjectDialogComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
 import {CdkScrollable} from '@angular/cdk/scrolling';
@@ -30,6 +30,7 @@ import {EscapeService} from "@services/escape.service";
     ItemDetailSidebarComponent
   ],
   templateUrl: './item-detail-layout.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './item-detail-layout.component.css'
 })
 export class ItemDetailLayoutComponent implements OnInit, OnDestroy {

@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Input, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {NgFor} from '@angular/common';
 import {OverlayModule} from '@angular/cdk/overlay';
 import {TranslateModule} from '@ngx-translate/core';
@@ -27,6 +27,7 @@ const COLOR_PHRASES: Record<PriorityColor, string> = {
     TooltipDirective
   ],
   templateUrl: './priority-color-picker.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './priority-color-picker.component.css'
 })
 export class PriorityColorPickerComponent {

@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
 import {NgFor, NgIf} from '@angular/common';
@@ -33,6 +33,7 @@ import {AppRoutes} from "../../../app/app-routes.enum";
     NewProjectDialogComponent
   ],
   templateUrl: './projects.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './projects.component.css'
 })
 export class ProjectsComponent implements OnInit, OnDestroy {

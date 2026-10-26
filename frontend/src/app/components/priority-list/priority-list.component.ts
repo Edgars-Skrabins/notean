@@ -1,4 +1,4 @@
-import {Component, ElementRef} from '@angular/core';
+import {Component, ElementRef, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgFor, NgIf} from '@angular/common';
 import {CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
@@ -33,6 +33,7 @@ import {BoardPageStateService} from '@pages/dashboard/board-page/board-page-stat
     TooltipDirective
   ],
   templateUrl: './priority-list.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './priority-list.component.css'
 })
 export class PriorityListComponent {

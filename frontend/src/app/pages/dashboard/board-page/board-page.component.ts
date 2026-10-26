@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
@@ -37,6 +37,7 @@ import {BoardChannelService} from "@services/board-channel.service";
   ],
   providers: [BoardPageStateService, BoardChannelService],
   templateUrl: './board-page.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './board-page.component.css'
 })
 export class BoardPageComponent implements OnInit, OnDestroy {

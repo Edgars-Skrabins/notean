@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {NgIf} from '@angular/common';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
@@ -10,6 +10,7 @@ import {PHRASES} from '@config/phrases';
     TranslateModule
   ],
   templateUrl: './team-code-display.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './team-code-display.component.css'
 })
 export class TeamCodeDisplayComponent {

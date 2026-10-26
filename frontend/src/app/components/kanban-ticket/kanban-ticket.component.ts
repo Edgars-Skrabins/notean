@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {TicketSummary} from '@models/ticket.model';
@@ -15,6 +15,7 @@ import {AvatarStackComponent} from '@components/avatar-stack/avatar-stack.compon
     AvatarStackComponent
   ],
   templateUrl: './kanban-ticket.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './kanban-ticket.component.css'
 })
 export class KanbanTicketComponent {

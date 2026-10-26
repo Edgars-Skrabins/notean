@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {AsyncPipe, NgFor, NgIf} from '@angular/common';
 import {Router} from '@angular/router';
 import {CdkDrag, CdkDragDrop, CdkDropList} from '@angular/cdk/drag-drop';
@@ -25,6 +25,7 @@ import {favoriteTypeLabel} from '@utils/favoriteTypeLabel';
     CdkDrag
   ],
   templateUrl: './favorites-grid.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './favorites-grid.component.css'
 })
 export class FavoritesGridComponent {

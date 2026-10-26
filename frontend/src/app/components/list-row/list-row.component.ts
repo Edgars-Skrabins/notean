@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {DatePipe, NgIf} from '@angular/common';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
@@ -21,6 +21,7 @@ import {CheckboxComponent} from '@components/checkbox/checkbox.component';
     CheckboxComponent
   ],
   templateUrl: './list-row.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './list-row.component.css'
 })
 export class ListRowComponent {

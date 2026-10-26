@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {NgForOf} from "@angular/common";
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
@@ -11,6 +11,7 @@ import {DEFAULT_THEME_MODE, ThemeMode} from "@config/themes";
     TranslateModule
   ],
   templateUrl: './theme-mode-switch.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './theme-mode-switch.component.css'
 })
 export class ThemeModeSwitchComponent {

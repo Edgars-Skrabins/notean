@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DatePipe, NgFor, NgIf} from '@angular/common';
 import {Subscription} from 'rxjs';
@@ -67,6 +67,7 @@ function newestFirst(items: ProjectItem[]): ProjectItem[] {
     ProjectSettingsDialogComponent
   ],
   templateUrl: './project-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './project-detail.component.css'
 })
 export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChanges {

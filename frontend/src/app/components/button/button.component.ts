@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {NgIf} from '@angular/common';
 import {IconComponent, IconName} from "@components/icon/icon.component";
 
@@ -9,6 +9,7 @@ import {IconComponent, IconName} from "@components/icon/icon.component";
     IconComponent
   ],
   templateUrl: './button.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './button.component.css'
 })
 export class ButtonComponent {

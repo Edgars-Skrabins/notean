@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {Subscription} from "rxjs";
 import {TranslateModule} from "@ngx-translate/core";
@@ -30,6 +30,7 @@ import {EscapeService} from "@services/escape.service";
     ThemePickerComponent
   ],
   templateUrl: './settings.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings.component.css'
 })
 export class SettingsComponent implements HasUnsavedChanges, OnInit, OnDestroy {

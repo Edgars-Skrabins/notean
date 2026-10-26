@@ -1,4 +1,4 @@
-import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild} from '@angular/core';
+import {Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {NgFor, NgIf} from '@angular/common';
 import {Router} from '@angular/router';
 import {TranslateModule} from '@ngx-translate/core';
@@ -38,6 +38,7 @@ type NavItem = { result: SearchResult; section?: undefined } | { section: Search
     IconComponent
   ],
   templateUrl: './global-search.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './global-search.component.css'
 })
 export class GlobalSearchComponent implements OnInit, OnDestroy {

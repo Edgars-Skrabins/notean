@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import {AsyncPipe, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {TranslateModule} from '@ngx-translate/core';
@@ -20,6 +20,7 @@ import {ProjectFilterService} from '@services/project-filter.service';
     ProjectSelectComponent
   ],
   templateUrl: './create-named-item-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './create-named-item-dialog.component.css'
 })
 export class CreateNamedItemDialogComponent implements OnInit, OnDestroy {

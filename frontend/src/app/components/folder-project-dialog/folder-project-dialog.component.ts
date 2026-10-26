@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ButtonComponent} from '@components/button/button.component';
@@ -13,6 +13,7 @@ import {EscapeService} from '@services/escape.service';
     ProjectSelectComponent
   ],
   templateUrl: './folder-project-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './folder-project-dialog.component.css'
 })
 export class FolderProjectDialogComponent implements OnInit, OnDestroy {

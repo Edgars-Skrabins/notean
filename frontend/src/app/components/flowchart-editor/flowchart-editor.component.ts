@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, ViewEncapsulation, ChangeDetectionStrategy} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
@@ -143,6 +143,7 @@ interface EditingLabel {
   ],
   templateUrl: './flowchart-editor.component.html',
   styleUrl: './flowchart-editor.component.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None
 })
 export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDestroy {

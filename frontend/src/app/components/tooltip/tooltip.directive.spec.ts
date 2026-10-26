@@ -1,9 +1,10 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/testing';
 import {TooltipDirective} from './tooltip.directive';
 
 @Component({
   imports: [TooltipDirective],
+  changeDetection: ChangeDetectionStrategy.Eager,
   template: '<button type="button" [appTooltip]="text">x</button>'
 })
 class HostComponent {

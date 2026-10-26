@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
 import {NgFor, NgIf} from '@angular/common';
 import {CdkDragDrop, CdkDropListGroup, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
@@ -33,6 +33,7 @@ import {BoardPageStateService} from "../board-page/board-page-state.service";
     CdkDropListGroup
   ],
   templateUrl: './kanban-tab.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './kanban-tab.component.css'
 })
 export class KanbanTabComponent {

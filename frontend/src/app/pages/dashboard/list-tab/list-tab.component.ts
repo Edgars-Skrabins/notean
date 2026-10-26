@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {NgFor, NgIf} from '@angular/common';
@@ -72,6 +72,7 @@ function byPosition(first: TicketSummary, second: TicketSummary): number {
     LoadMoreComponent
   ],
   templateUrl: './list-tab.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './list-tab.component.css'
 })
 export class ListTabComponent implements OnInit, OnDestroy {

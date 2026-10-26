@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {NgIf} from "@angular/common";
 import {TranslateModule} from "@ngx-translate/core";
@@ -21,6 +21,7 @@ import {errorPhrase} from "@utils/errorPhrase";
     AuthCardComponent
   ],
   templateUrl: './join-team.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './join-team.component.css'
 })
 export class JoinTeamComponent {

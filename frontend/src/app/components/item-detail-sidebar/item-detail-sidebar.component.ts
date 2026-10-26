@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {AsyncPipe, DatePipe, NgFor, NgIf} from '@angular/common';
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
@@ -11,6 +11,7 @@ import {ProjectFilterService} from "@services/project-filter.service";
   selector: 'app-item-detail-sidebar',
   imports: [NgIf, NgFor, AsyncPipe, DatePipe, TranslateModule, AvatarComponent, ProjectSelectComponent],
   templateUrl: './item-detail-sidebar.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './item-detail-sidebar.component.css'
 })
 export class ItemDetailSidebarComponent {

@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Input, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {NgFor, NgIf} from '@angular/common';
 import {OverlayModule} from '@angular/cdk/overlay';
 import {TranslateModule} from '@ngx-translate/core';
@@ -18,6 +18,7 @@ import {IconComponent} from '@components/icon/icon.component';
     IconComponent
   ],
   templateUrl: './menu-button.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './menu-button.component.css'
 })
 export class MenuButtonComponent {

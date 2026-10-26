@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {NgIf} from "@angular/common";
 import {TranslateModule} from "@ngx-translate/core";
@@ -24,6 +24,7 @@ import {errorPhrase} from "@utils/errorPhrase";
     TeamCodeDisplayComponent
   ],
   templateUrl: './create-team.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './create-team.component.css'
 })
 export class CreateTeamComponent {

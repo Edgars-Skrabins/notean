@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {AsyncPipe, NgIf} from '@angular/common';
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
@@ -17,6 +17,7 @@ import {MyWorkComponent} from "@components/my-work/my-work.component";
     MyWorkComponent
   ],
   templateUrl: './home.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './home.component.css'
 })
 export class HomeComponent {

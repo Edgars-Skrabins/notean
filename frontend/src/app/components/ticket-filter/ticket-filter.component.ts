@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Input, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {NgFor, NgIf} from '@angular/common';
 import {OverlayModule} from '@angular/cdk/overlay';
 import {TranslateModule} from '@ngx-translate/core';
@@ -18,6 +18,7 @@ import {CheckboxComponent} from '@components/checkbox/checkbox.component';
     CheckboxComponent
   ],
   templateUrl: './ticket-filter.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './ticket-filter.component.css'
 })
 export class TicketFilterComponent {

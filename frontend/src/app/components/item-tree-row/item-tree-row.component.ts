@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {TranslateModule} from '@ngx-translate/core';
@@ -11,6 +11,7 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
   selector: 'app-item-tree-row',
   imports: [NgIf, FormsModule, TranslateModule, IconComponent, IconButtonComponent],
   templateUrl: './item-tree-row.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './item-tree-row.component.css'
 })
 export class ItemTreeRowComponent {

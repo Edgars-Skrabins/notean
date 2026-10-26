@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {TranslateModule} from "@ngx-translate/core";
 import {NgIf} from "@angular/common";
 import {NavigationService} from "@services/navigation.service";
@@ -15,6 +15,7 @@ import {AuthCardComponent} from "@components/auth-card/auth-card.component";
     AuthCardComponent
   ],
   templateUrl: './team-selection.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './team-selection.component.css'
 })
 export class TeamSelectionComponent implements OnInit {

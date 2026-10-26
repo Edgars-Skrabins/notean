@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {Router} from '@angular/router';
 import {NgFor, NgIf} from '@angular/common';
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
@@ -23,6 +23,7 @@ import {BoardPageStateService} from "../board-page/board-page-state.service";
     PriorityListComponent
   ],
   templateUrl: './board-overview-tab.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './board-overview-tab.component.css'
 })
 export class BoardOverviewTabComponent implements OnInit {

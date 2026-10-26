@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {NgFor, NgIf} from "@angular/common";
 import {Subscription} from "rxjs";
@@ -36,6 +36,7 @@ import {EscapeService} from "@services/escape.service";
     ButtonComponent
   ],
   templateUrl: './profile.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements HasUnsavedChanges, OnInit, OnDestroy {

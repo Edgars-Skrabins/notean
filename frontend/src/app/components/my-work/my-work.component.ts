@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {skip, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {NgFor, NgIf} from '@angular/common';
@@ -20,6 +20,7 @@ import {boardRoute, ticketRoute} from '@utils/ticketRoute';
     AvatarStackComponent
   ],
   templateUrl: './my-work.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './my-work.component.css'
 })
 export class MyWorkComponent implements OnInit, OnDestroy {

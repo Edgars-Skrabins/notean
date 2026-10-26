@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {NgFor, NgIf} from '@angular/common';
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
@@ -24,6 +24,7 @@ import {TooltipDirective} from "@components/tooltip/tooltip.directive";
     TooltipDirective
   ],
   templateUrl: './switch-team.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './switch-team.component.css'
 })
 export class SwitchTeamComponent implements OnInit, OnDestroy {

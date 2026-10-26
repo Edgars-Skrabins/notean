@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {NgForOf} from "@angular/common";
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
@@ -12,6 +12,7 @@ import {ResolvedThemeMode} from "@utils/themeDom";
     TranslateModule
   ],
   templateUrl: './theme-picker.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './theme-picker.component.css'
 })
 export class ThemePickerComponent {

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {TicketStatus} from '@models/ticket.model';
@@ -16,6 +16,7 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
     IconButtonComponent
   ],
   templateUrl: './ticket-selection-bar.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './ticket-selection-bar.component.css'
 })
 export class TicketSelectionBarComponent {

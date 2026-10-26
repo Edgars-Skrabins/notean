@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Input, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgFor, NgIf} from '@angular/common';
 import {CdkConnectedOverlay, OverlayModule} from '@angular/cdk/overlay';
@@ -22,6 +22,7 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
     IconButtonComponent
   ],
   templateUrl: './ticket-assignees.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './ticket-assignees.component.css'
 })
 export class TicketAssigneesComponent {

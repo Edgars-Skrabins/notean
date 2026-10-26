@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {PHRASES} from '@config/phrases';
 import {LanguageService} from '@services/language.service';
 import {languageOptions} from '@config/languageOptions';
@@ -11,6 +11,7 @@ import {DropdownComponent} from '@components/dropdown/dropdown.component';
     DropdownComponent
   ],
   templateUrl: './language-switcher.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './language-switcher.component.css'
 })
 export class LanguageSwitcherComponent {

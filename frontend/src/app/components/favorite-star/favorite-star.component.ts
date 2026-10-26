@@ -1,4 +1,4 @@
-import {Component, HostBinding, Input} from '@angular/core';
+import {Component, HostBinding, Input, ChangeDetectionStrategy} from '@angular/core';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {FavoritableType} from '@models/favorite.model';
@@ -12,6 +12,7 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
     IconButtonComponent
   ],
   templateUrl: './favorite-star.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './favorite-star.component.css'
 })
 export class FavoriteStarComponent {

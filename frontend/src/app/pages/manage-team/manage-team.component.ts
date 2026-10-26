@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgFor, NgIf} from '@angular/common';
 import {Subscription} from 'rxjs';
@@ -59,6 +59,7 @@ const MEMBER_ACTION_TOASTS: Record<MemberAction, string> = {
     MenuButtonComponent
   ],
   templateUrl: './manage-team.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './manage-team.component.css'
 })
 export class ManageTeamComponent implements OnInit, OnDestroy {

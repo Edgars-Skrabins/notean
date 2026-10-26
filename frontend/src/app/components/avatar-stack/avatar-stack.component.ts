@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {NgFor, NgIf} from '@angular/common';
 import {BoardUser} from '@models/board.model';
 import {AvatarComponent} from '@components/avatar/avatar.component';
@@ -11,6 +11,7 @@ import {AvatarComponent} from '@components/avatar/avatar.component';
     AvatarComponent
   ],
   templateUrl: './avatar-stack.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './avatar-stack.component.css'
 })
 export class AvatarStackComponent {
