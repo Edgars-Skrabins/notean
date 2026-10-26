@@ -13,6 +13,22 @@ class PageTest < ActiveSupport::TestCase
     assert_includes page.errors[:title], "can't be blank"
   end
 
+  test "accepts a title at the length limit and rejects one over it" do
+    assert Page.new(team: @team, creator: @user, title: "a" * ContentLimits::TITLE_MAX_LENGTH, content: "").valid?
+
+    record = Page.new(team: @team, creator: @user, title: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1), content: "")
+    assert_not record.valid?
+    assert record.errors.of_kind?(:title, :too_long)
+  end
+
+  test "accepts content at the size limit and rejects one byte over it" do
+    assert Page.new(team: @team, creator: @user, title: "Notes", content: "a" * ContentLimits::CONTENT_MAX_BYTES).valid?
+
+    record = Page.new(team: @team, creator: @user, title: "Notes", content: "a" * (ContentLimits::CONTENT_MAX_BYTES + 1))
+    assert_not record.valid?
+    assert record.errors.of_kind?(:content, :too_large)
+  end
+
   test "is valid with a title" do
     page = Page.new(team: @team, creator: @user, title: "Notes", content: "")
 
