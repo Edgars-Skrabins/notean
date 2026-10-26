@@ -13,6 +13,7 @@
 ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+  enable_extension "pg_trgm"
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -59,6 +60,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "project_id"
+    t.index "lower((title)::text) gin_trgm_ops", name: "index_boards_on_lower_title_trgm", using: :gin
     t.index ["created_by_user_id"], name: "index_boards_on_created_by_user_id"
     t.index ["project_id"], name: "index_boards_on_project_id"
     t.index ["team_id"], name: "index_boards_on_team_id"
@@ -93,6 +95,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
     t.integer "project_id"
     t.text "search_text", default: "", null: false
     t.integer "lock_version", default: 0, null: false
+    t.index "lower((title)::text) gin_trgm_ops", name: "index_diagrams_on_lower_title_trgm", using: :gin
+    t.index "lower(search_text) gin_trgm_ops", name: "index_diagrams_on_lower_search_text_trgm", using: :gin
     t.index ["created_by_user_id"], name: "index_diagrams_on_created_by_user_id"
     t.index ["folder_id"], name: "index_diagrams_on_folder_id"
     t.index ["project_id"], name: "index_diagrams_on_project_id"
@@ -166,6 +170,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
     t.integer "project_id"
     t.text "search_text", default: "", null: false
     t.integer "lock_version", default: 0, null: false
+    t.index "lower((title)::text) gin_trgm_ops", name: "index_pages_on_lower_title_trgm", using: :gin
+    t.index "lower(search_text) gin_trgm_ops", name: "index_pages_on_lower_search_text_trgm", using: :gin
     t.index ["created_by_user_id"], name: "index_pages_on_created_by_user_id"
     t.index ["folder_id"], name: "index_pages_on_folder_id"
     t.index ["project_id"], name: "index_pages_on_project_id"
@@ -190,6 +196,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
     t.integer "created_by_user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index "lower((name)::text) gin_trgm_ops", name: "index_projects_on_lower_name_trgm", using: :gin
+    t.index "lower(description) gin_trgm_ops", name: "index_projects_on_lower_description_trgm", using: :gin
     t.index ["team_id", "name"], name: "index_projects_on_team_id_and_name", unique: true
     t.index ["team_id"], name: "index_projects_on_team_id"
   end
@@ -228,6 +236,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
     t.integer "board_id", null: false
     t.bigint "priority_id"
     t.integer "lock_version", default: 0, null: false
+    t.index "lower((title)::text) gin_trgm_ops", name: "index_tickets_on_lower_title_trgm", using: :gin
+    t.index "lower(description) gin_trgm_ops", name: "index_tickets_on_lower_description_trgm", using: :gin
     t.index ["board_id", "column_id", "position"], name: "index_tickets_on_board_id_and_column_id_and_position"
     t.index ["column_id"], name: "index_tickets_on_column_id"
     t.index ["created_by_user_id"], name: "index_tickets_on_created_by_user_id"
