@@ -132,7 +132,7 @@ src/environments/             environment.ts (apiUrl)
 - The header's `GlobalSearchComponent` searches the whole team through `SearchService` (`GET /teams/:team_code/search`). It follows the project selector, opens with `/`, and shows its results in a CDK overlay panel grouped by type.
 - Esc goes through `EscapeService`, a stack of layers with one `document` keydown listener. Dialogs, the item and ticket popups, and the Settings, Profile, Manage team, Switch team and project pages `push` a handler in `ngOnInit` (dialogs cancel, popups close, pages go back) and call the returned unregister function in `ngOnDestroy`; only the top one runs. An inner control that uses Esc (an inline rename, an open dropdown, a diagram selection) calls `event.preventDefault()`, and the service then does nothing. CDK connected overlays already do this. Specs that build components with `new` pass `escapeServiceStub()` from `testing/`.
 - Realtime features open an ActionCable consumer at `ws://…/cable?token=<jwt>` from a dedicated service and subscribe to the matching backend channel.
-- Team feature flags (`pagesEnabled`, `diagramsEnabled`, `boardsEnabled` on `Team`, mapped by `mapTeam`) are read through `TeamService.features$` and `isFeatureEnabled`. `TeamChannelService`, connected from `DashboardComponent`, applies `features_changed` broadcasts, and the dashboard sends members on a just-disabled feature's screen to Home with a toast. A `FEATURE_DISABLED` 403 reloads the session (`setFeatureDisabledHandler`). Hide a disabled feature's UI with `features$`.
+- Team feature flags (`pagesEnabled`, `diagramsEnabled`, `boardsEnabled` on `Team`, mapped by `mapTeam`) are read through `TeamService.features$` and `isFeatureEnabled`. `TeamChannelService`, connected from `DashboardComponent` (and from Manage team, which sits outside it), applies `features_changed` broadcasts, sends a member removed from the active team to team selection with a toast on `member_removed`, and emits `membersChanged$` (which Manage team reloads on) for `members_changed` and other members' removal, and the dashboard sends members on a just-disabled feature's screen to Home with a toast. A `FEATURE_DISABLED` 403 reloads the session (`setFeatureDisabledHandler`). Hide a disabled feature's UI with `features$`.
 
 #### Themes
 - Each user picks one of nine themes (`THEMES` in `config/themes.ts`) and a mode (`system`, `light` or `dark`) on the Settings page. Both are saved with the other settings and cached in `localStorage` (`theme`, `themeMode`) for first paint.
@@ -186,6 +186,7 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 - Auth endpoints live under `auth/`.
 - Team routes use the team `code` as the param, not the id. Team-owned resources are nested under `teams/:team_code`.
 - `GET /teams/:team_code/search` (`SearchController`) searches projects, pages, diagrams, boards and tickets the user can see. Without `type` it returns 5 results per section; with `type` and `offset` it returns the next 10 of one section.
+- `MembersController` handles `DELETE /teams/:code/members/:user_id` (owner, or admin on a `user`), `PATCH /teams/:code/members/:user_id/role` (owner, `user` ↔ `admin`), `POST /teams/:code/transfer_ownership` (owner; the old owner becomes `admin`) and `POST /teams/:code/leave` (anyone but the owner). Remove, role and transfer respond with the active members.
 - `PATCH` and `DELETE /teams/:team_code/boards/:board_id/tickets/bulk` (`TicketsController#bulk_update` / `#bulk_destroy`) take `{ bulk: { ticket_ids, ... } }` with exactly one of `column_id`, `to_backlog`, `add_assignee_id` or `remove_assignee_id` for the update. They are all-or-nothing: an id outside the board fails the whole request.
 - `POST`, `PATCH` and `DELETE /teams/:team_code/boards/:board_id/priorities` (`PrioritiesController`) manage a board's priorities; update and delete respond with all of the board's priorities. The board JSON includes `priorities` (with `ticket_count`, built by the `PriorityJson` concern) and tickets carry `priority_id`, which ticket update accepts.
 - ActionCable is mounted at `/cable`.
@@ -206,6 +207,7 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 - Creators are stored as `created_by_user_id` with a `creator` association to `User`.
 - Users carry their settings as columns, including `theme` (one of `User::THEMES`, default `purple_haze`) and `theme_mode` (`system`, `light` or `dark`, default `system`). `GET /users/me` and `PATCH /users/me/settings` return them, and an invalid value is a 422 `SETTINGS_UPDATE_FAILED`.
 - `Membership` joins users and teams. Its `role` enum is `user`, `admin` and `owner`, with exactly one owner per team.
+- Memberships are soft-removed with `removed_at` (`remove!` runs `MembershipRemoval`, which moves the person's projects to the team owner and drops their project memberships, ticket assignments, favorites and editing presence in the team). The default `memberships` associations on `User` and `Team` are active-only, so every membership check ignores former members; `all_memberships` includes them and is used for nicknames in content, rejoining (`restore!`) and team deletion. Removed rows still reserve their nickname.
 - Teams have `pages_enabled`, `diagrams_enabled` and `boards_enabled` flags (all on by default), checked with `Team#feature_enabled?`. Only the owner changes them (`PATCH /teams/:code/features`). Tickets, columns, priorities and assignees follow `boards`; folders follow their item type. Flags never delete data.
 - Tickets have any number of assignees through `ticket_assignees` (team members only, ordered by assignment time; assigning touches the ticket).
 - Pages, diagrams, boards and folders can belong to a project (`BelongsToProject` concern); tickets follow their board's project. Project items are private to the project's members plus the team owner and admins.
@@ -220,7 +222,7 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 #### Channels
 - `ApplicationCable::Connection` authenticates with the JWT passed as the `?token=` query param.
 - Editing channels only subscribe members of the item's team who can see the item's project, and only while the item's feature is on.
-- `TeamChannel` (`team_code` param, members only) streams `team:<id>` and carries `{ type: "features_changed", team }` broadcasts.
+- `TeamChannel` (`team_code` param, members only) streams `team:<id>` and carries `{ type: "features_changed", team }`, `{ type: "member_removed", user_id, team }` (remove and leave) and `{ type: "members_changed" }` (role change and transfer) broadcasts.
 
 #### Security
 - rack-attack throttles the auth and join-team endpoints. A throttled request gets a 429 with `{ code: "RATE_LIMITED" }`.
