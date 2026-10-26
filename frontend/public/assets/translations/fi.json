@@ -177,7 +177,7 @@
   "REMOVE_IMAGE": "Poista kuva",
   "AVATAR_COLOR": "Väri",
   "IMAGE_INVALID_TYPE": "Kuvan on oltava PNG-, JPEG- tai WebP-muodossa",
-  "IMAGE_TOO_LARGE": "Kuva saa olla enintään 2 Mt",
+  "IMAGE_TOO_LARGE": "Kuva saa olla enintään 256 kt",
   "AVATAR_UPDATE_FAILED": "Profiilikuvaa ei voitu päivittää",
   "COLOR_RED": "Punainen",
   "COLOR_ORANGE": "Oranssi",
@@ -332,7 +332,7 @@
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Asetuksia ei voitu tallentaa",
       "AVATAR_COLOR_INVALID": "Tätä väriä ei voi käyttää",
-      "AVATAR_IMAGE_INVALID": "Kuvan on oltava PNG-, JPEG- tai WebP-muodossa ja enintään 2 Mt",
+      "AVATAR_IMAGE_INVALID": "Kuvan on oltava PNG-, JPEG- tai WebP-muodossa ja enintään 256 kt",
       "OWNS_TEAMS": "Siirrä omistajuus tai poista nämä tiimit ensin: {{teams}}"
     },
     "TEAMS": {

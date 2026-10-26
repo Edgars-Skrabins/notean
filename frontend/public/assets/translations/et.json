@@ -177,7 +177,7 @@
   "REMOVE_IMAGE": "Eemalda pilt",
   "AVATAR_COLOR": "Värv",
   "IMAGE_INVALID_TYPE": "Pilt peab olema PNG-, JPEG- või WebP-vormingus",
-  "IMAGE_TOO_LARGE": "Pilt võib olla kuni 2 MB",
+  "IMAGE_TOO_LARGE": "Pilt võib olla kuni 256 kB",
   "AVATAR_UPDATE_FAILED": "Profiilipilti ei õnnestunud uuendada",
   "COLOR_RED": "Punane",
   "COLOR_ORANGE": "Oranž",
@@ -332,7 +332,7 @@
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Seadeid ei õnnestunud salvestada",
       "AVATAR_COLOR_INVALID": "Seda värvi ei saa kasutada",
-      "AVATAR_IMAGE_INVALID": "Pilt peab olema PNG-, JPEG- või WebP-vormingus ja kuni 2 MB",
+      "AVATAR_IMAGE_INVALID": "Pilt peab olema PNG-, JPEG- või WebP-vormingus ja kuni 256 kB",
       "OWNS_TEAMS": "Anna esmalt omandiõigus üle või kustuta need meeskonnad: {{teams}}"
     },
     "TEAMS": {

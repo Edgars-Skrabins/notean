@@ -43,4 +43,6 @@ export const AVATAR_COLORS: AvatarColorOption[] = [
 
 export const AVATAR_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/webp'];
 
-export const AVATAR_IMAGE_MAX_BYTES = 2 * 1024 * 1024;
+export const AVATAR_IMAGE_MAX_BYTES = 256 * 1024;
+
+export const AVATAR_IMAGE_SIZE = 128;

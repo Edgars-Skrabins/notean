@@ -146,8 +146,35 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     patch "/users/me/avatar", params: { avatar: { image: fixture_file_upload("avatar.png", "image/png") } }, headers: @headers
 
     assert_response :success
-    assert_match %r{\A/rails/active_storage/blobs/redirect/}, JSON.parse(response.body)["avatar"]["image_url"]
+    assert_match %r{\A/rails/active_storage/blobs/proxy/}, JSON.parse(response.body)["avatar"]["image_url"]
     assert @user.reload.avatar_image.attached?
+  end
+
+  test "avatar image url serves the image with long-lived public caching" do
+    patch "/users/me/avatar", params: { avatar: { image: fixture_file_upload("avatar.png", "image/png") } }, headers: @headers
+    image_url = JSON.parse(response.body)["avatar"]["image_url"]
+
+    get image_url
+
+    assert_response :success
+    assert_equal file_fixture("avatar.png").binread, response.body
+    assert_includes response.headers["Cache-Control"], "public"
+    assert_operator response.headers["Cache-Control"][/max-age=(\d+)/, 1].to_i, :>=, 1.year.to_i
+  end
+
+  test "update_avatar rejects an image over 256 kB with 422" do
+    large_png = Tempfile.new([ "large", ".png" ])
+    large_png.binmode
+    large_png.write(file_fixture("avatar.png").binread + ("\0" * 300.kilobytes))
+    large_png.rewind
+
+    patch "/users/me/avatar", params: { avatar: { image: Rack::Test::UploadedFile.new(large_png.path, "image/png") } }, headers: @headers
+
+    assert_response :unprocessable_entity
+    assert_equal "AVATAR_IMAGE_INVALID", JSON.parse(response.body)["code"]
+    assert_not @user.reload.avatar_image.attached?
+  ensure
+    large_png&.close!
   end
 
   test "update_avatar rejects an invalid image with 422 and keeps the old one" do

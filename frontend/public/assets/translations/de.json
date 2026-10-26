@@ -177,7 +177,7 @@
   "REMOVE_IMAGE": "Bild entfernen",
   "AVATAR_COLOR": "Farbe",
   "IMAGE_INVALID_TYPE": "Das Bild muss PNG, JPEG oder WebP sein",
-  "IMAGE_TOO_LARGE": "Das Bild darf höchstens 2 MB groß sein",
+  "IMAGE_TOO_LARGE": "Das Bild darf höchstens 256 kB groß sein",
   "AVATAR_UPDATE_FAILED": "Profilbild konnte nicht aktualisiert werden",
   "COLOR_RED": "Rot",
   "COLOR_ORANGE": "Orange",
@@ -332,7 +332,7 @@
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Einstellungen konnten nicht gespeichert werden",
       "AVATAR_COLOR_INVALID": "Diese Farbe kann nicht verwendet werden",
-      "AVATAR_IMAGE_INVALID": "Das Bild muss PNG, JPEG oder WebP und höchstens 2 MB groß sein",
+      "AVATAR_IMAGE_INVALID": "Das Bild muss PNG, JPEG oder WebP und höchstens 256 kB groß sein",
       "OWNS_TEAMS": "Übertrage zuerst die Inhaberschaft oder lösche diese Teams: {{teams}}"
     },
     "TEAMS": {
