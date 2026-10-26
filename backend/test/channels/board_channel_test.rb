@@ -25,6 +25,15 @@ class BoardChannelTest < ActionCable::Channel::TestCase
     assert subscription.rejected?
   end
 
+  test "a removed member is rejected" do
+    @user.all_memberships.first.update!(removed_at: Time.current)
+    stub_connection current_user: @user
+
+    subscribe board_id: @board.id
+
+    assert subscription.rejected?
+  end
+
   test "a missing board is rejected" do
     stub_connection current_user: @user
 
