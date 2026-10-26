@@ -102,6 +102,7 @@ src/environments/             environment.ts (apiUrl)
 - Route paths are defined in the `AppRoutes` enum in `app/app-routes.enum.ts` and wired in `app/app.routes.ts`. Use the enum, never string literals.
 - Auth and team flow pages are top-level routes. Feature screens are child routes of `dashboard`, a shell (`DashboardComponent` with header and sidebar).
 - The dashboard is lazy-loaded: `app.routes.ts` loads `DashboardComponent` with `loadComponent` and its child routes from `app/dashboard.routes.ts` (`dashboardRoutes`) with `loadChildren`, so the diagram and rich-text libraries stay out of the initial bundle. Add new dashboard screens to `dashboardRoutes`.
+- A URL that matches no route hits the last `app.routes.ts` entry, `{path: '**', redirectTo: unknownRouteRedirect}` (`guards/unknown-route.redirect.ts`), which sends the user to Login, Team selection or Dashboard Home depending on the session. The dashboard and board routes have no wildcard of their own; the router falls back to this one.
 - Guards are functional `CanActivateFn`s: `authGuard` (logged in), `teamGuard` (active team selected), `teamRoleGuard` (role is `admin` or `owner`), and `featureGuard(feature)` (the team has that feature on, otherwise redirects to Home) on the pages, diagrams and boards routes.
 
 #### Components
