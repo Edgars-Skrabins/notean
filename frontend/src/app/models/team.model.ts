@@ -60,3 +60,11 @@ export type DeleteTeamResponse = Result<object, TeamsErrorCode>;
 export type UpdateFeaturesResponse = Result<{ team: Team }, TeamsErrorCode>;
 
 export type UpdateNicknameResponse = Result<{ nickname: string }, TeamsErrorCode>;
+
+export type RemoveMemberResponse = Result<{ members: TeamMember[] }, TeamsErrorCode>;
+
+export type UpdateMemberRoleResponse = Result<{ members: TeamMember[] }, TeamsErrorCode>;
+
+export type TransferOwnershipResponse = Result<{ members: TeamMember[]; role: TeamRole }, TeamsErrorCode>;
+
+export type LeaveTeamResponse = Result<object, TeamsErrorCode>;
