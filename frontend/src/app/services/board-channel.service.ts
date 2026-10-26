@@ -5,6 +5,7 @@ import {ToastService} from "@services/toast.service";
 import {mapBoardColumn, mapTicketSummary, RawBoardColumn, RawTicketSummary} from "@services/board.service";
 import {mapBoardPriority, RawBoardPriority} from "@services/priority.service";
 import {ToastType} from "@models/toast.model";
+import {TicketShift} from "@models/ticket.model";
 import {PHRASES} from "@config/phrases";
 import {AppRoutes} from "../app/app-routes.enum";
 import {BoardPageStateService} from "@pages/dashboard/board-page/board-page-state.service";
@@ -13,7 +14,15 @@ interface RawRemoteTicket extends RawTicketSummary {
   description?: string;
 }
 
+interface RawTicketShift {
+  column_id: number | null;
+  from_position: number;
+  to_position: number | null;
+  delta: number;
+}
+
 export type BoardChannelMessage =
+  | { type: 'tickets_shifted'; shifts: RawTicketShift[] }
   | { type: 'tickets_upserted'; tickets: RawRemoteTicket[] }
   | { type: 'tickets_removed'; ticket_ids: number[] }
   | { type: 'columns_changed'; columns: RawBoardColumn[]; tickets?: RawTicketSummary[] }
@@ -21,6 +30,15 @@ export type BoardChannelMessage =
   | { type: 'board_updated'; board: { id: number; title: string; project_id: number | null } }
   | { type: 'board_deleted' }
   | { type: 'access_changed' };
+
+function mapTicketShift(shift: RawTicketShift): TicketShift {
+  return {
+    columnId: shift.column_id,
+    fromPosition: shift.from_position,
+    toPosition: shift.to_position,
+    delta: shift.delta,
+  };
+}
 
 @Injectable()
 export class BoardChannelService {
@@ -47,6 +65,9 @@ export class BoardChannelService {
 
   async handleMessage(message: BoardChannelMessage) {
     switch (message.type) {
+      case 'tickets_shifted':
+        this.state.applyShifts(message.shifts.map(mapTicketShift));
+        break;
       case 'tickets_upserted':
         this.applyTickets(message.tickets);
         break;

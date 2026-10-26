@@ -342,6 +342,14 @@ describe('ListTabComponent', () => {
       expect(visibleIds()).toEqual([[3, 8, 4]]);
     });
 
+    it('shifts the loaded tickets so a remote move lands in the right place', () => {
+      channel.handleMessage({type: 'tickets_shifted', shifts: [{column_id: null, from_position: 1, to_position: 4, delta: 1}]});
+      channel.handleMessage({type: 'tickets_upserted', tickets: [raw(9, null, 1)]});
+
+      expect(visibleIds()).toEqual([[3, 9, 4]]);
+      expect(component.groups[0].tickets.map((ticket) => ticket.position)).toEqual([0, 1, 2]);
+    });
+
     it('leaves out a ticket that lands past the loaded range', () => {
       channel.handleMessage({type: 'tickets_upserted', tickets: [raw(8, null, 5)]});
 

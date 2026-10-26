@@ -7,6 +7,10 @@ class BoardBroadcast
     broadcast(board, type: "tickets_removed", ticket_ids: ticket_ids)
   end
 
+  def self.tickets_shifted(board, shifts)
+    broadcast(board, type: "tickets_shifted", shifts: shifts)
+  end
+
   def self.columns_changed(board, columns, tickets: nil)
     broadcast(board, { type: "columns_changed", columns: columns, tickets: tickets }.compact)
   end

@@ -13,7 +13,7 @@ import {ToastService} from "@services/toast.service";
 import {TeamService} from "@services/team.service";
 import {ProjectService} from "@services/project.service";
 import {ToastType} from "@models/toast.model";
-import {BulkTicketAction, TicketChange, TicketFilters, TicketStatus, TicketSummary} from "@models/ticket.model";
+import {BulkTicketAction, TicketChange, TicketFilters, TicketShift, TicketStatus, TicketSummary} from "@models/ticket.model";
 import {BoardUser} from "@models/board.model";
 import {TeamMember} from "@models/team.model";
 import {ListRowComponent} from "@components/list-row/list-row.component";
@@ -27,6 +27,7 @@ import {TicketSelectionBarComponent} from "@components/ticket-selection-bar/tick
 import {LoadMoreComponent} from "@components/load-more/load-more.component";
 import {errorPhrase} from "@utils/errorPhrase";
 import {assignableMembers} from "@utils/assignableMembers";
+import {shiftedPosition} from "@utils/ticketShifts";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 
@@ -114,6 +115,7 @@ export class ListTabComponent implements OnInit, OnDestroy {
     this.reloadGroups();
     this.subscriptions = [
       this.state.ticketChanges$.subscribe((change) => this.applyTicketChange(change)),
+      this.state.ticketShifts$.subscribe((shifts) => this.applyShifts(shifts)),
       this.state.boardLoaded$.subscribe(() => this.reloadGroups()),
       this.searchTerms
         .pipe(map((query) => query.trim()), debounceTime(300), distinctUntilChanged())
@@ -472,6 +474,13 @@ export class ListTabComponent implements OnInit, OnDestroy {
       }
     });
     this.groupData.forEach((data) => data.tickets.sort(byPosition));
+  }
+
+  private applyShifts(shifts: TicketShift[]) {
+    this.groupData.forEach((data, columnId) => {
+      data.tickets.forEach((ticket) => ticket.position = shiftedPosition(ticket.position, columnId, shifts));
+      data.tickets.sort(byPosition);
+    });
   }
 
   private isInLoadedRange(data: GroupData, ticket: TicketSummary): boolean {

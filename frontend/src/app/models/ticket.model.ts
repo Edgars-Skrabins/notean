@@ -40,6 +40,13 @@ export interface TicketChange {
   removedIds: number[];
 }
 
+export interface TicketShift {
+  columnId: number | null;
+  fromPosition: number;
+  toPosition: number | null;
+  delta: number;
+}
+
 export interface ListTicketsParams {
   status: number | 'backlog';
   search?: string;

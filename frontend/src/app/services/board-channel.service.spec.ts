@@ -5,6 +5,7 @@ import {NavigationService} from "@services/navigation.service";
 import {ToastService} from "@services/toast.service";
 import {RawTicketSummary} from "@services/board.service";
 import {ToastType} from "@models/toast.model";
+import {TicketShift} from "@models/ticket.model";
 import {PHRASES} from "@config/phrases";
 import {AppRoutes} from "../app/app-routes.enum";
 import {BoardPageStateService} from "@pages/dashboard/board-page/board-page-state.service";
@@ -84,6 +85,31 @@ describe('BoardChannelService', () => {
     await service.handleMessage({type: 'tickets_removed', ticket_ids: [99]});
 
     expect(JSON.stringify(state.board)).toBe(before);
+  });
+
+  it('tickets_shifted shifts the loaded positions and the following upsert places the moved ticket', async () => {
+    const emitted: TicketShift[][] = [];
+    state.ticketShifts$.subscribe((shifts) => emitted.push(shifts));
+
+    await service.handleMessage({
+      type: 'tickets_shifted',
+      shifts: [
+        {column_id: null, from_position: 1, to_position: null, delta: -1},
+        {column_id: 10, from_position: 1, to_position: null, delta: 1},
+      ],
+    });
+    await service.handleMessage({type: 'tickets_upserted', tickets: [rawTicket(3, 10, 1)]});
+
+    const positions = (columnId: number | null) => state.ticketsByStatus()
+      .find((group) => group.status.columnId === columnId)!.tickets.map((ticket) => ticket.position);
+    expect(ids(10)).toEqual([1, 3, 2]);
+    expect(positions(10)).toEqual([0, 1, 2]);
+    expect(ids(null)).toEqual([4]);
+    expect(positions(null)).toEqual([0]);
+    expect(emitted).toEqual([[
+      {columnId: null, fromPosition: 1, toPosition: null, delta: -1},
+      {columnId: 10, fromPosition: 1, toPosition: null, delta: 1},
+    ]]);
   });
 
   it('tickets_removed removes the tickets', async () => {

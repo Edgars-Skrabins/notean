@@ -3,10 +3,11 @@ import {Subject} from 'rxjs';
 import {BoardService} from "@services/board.service";
 import {TeamService} from "@services/team.service";
 import {BoardColumn, BoardDetail, BoardSummary} from "@models/board.model";
-import {TicketChange, TicketStatus, TicketStatusGroup, TicketSummary} from "@models/ticket.model";
+import {TicketChange, TicketShift, TicketStatus, TicketStatusGroup, TicketSummary} from "@models/ticket.model";
 import {BoardPriority} from "@models/priority.model";
 import {ErrorCode} from "@config/errorCodes";
 import {PHRASES} from "@config/phrases";
+import {shiftedPosition} from "@utils/ticketShifts";
 
 @Injectable()
 export class BoardPageStateService {
@@ -16,6 +17,7 @@ export class BoardPageStateService {
 
   readonly remoteChanges$ = new Subject<Map<number, string>>();
   readonly ticketChanges$ = new Subject<TicketChange>();
+  readonly ticketShifts$ = new Subject<TicketShift[]>();
   readonly boardLoaded$ = new Subject<void>();
 
   readonly teamCode: string;
@@ -111,6 +113,19 @@ export class BoardPageStateService {
       .sort((first, second) => first.position - second.position)
       .forEach((ticket) => this.ticketList(ticket.columnId)?.push({...ticket}));
     this.ticketChanges$.next({upserted: tickets, removedIds: []});
+  }
+
+  applyShifts(shifts: TicketShift[]) {
+    if (!this.board) {
+      return;
+    }
+    this.ticketsByStatus().forEach((group) => {
+      group.tickets.forEach((ticket) => {
+        ticket.position = shiftedPosition(ticket.position, group.status.columnId, shifts);
+      });
+      group.tickets.sort((first, second) => first.position - second.position);
+    });
+    this.ticketShifts$.next(shifts);
   }
 
   removeTickets(ticketIds: number[]) {
