@@ -226,12 +226,12 @@ class TicketsController < ApplicationController
     now = Time.current
     rows = tickets.map { |ticket| { ticket_id: ticket.id, user_id: user.id, created_at: now, updated_at: now } }
     TicketAssignee.insert_all(rows, unique_by: [ :ticket_id, :user_id ])
-    @board.tickets.where(id: tickets.map(&:id)).touch_all
+    Ticket.refresh_updated_at(tickets.map(&:id))
   end
 
   def unassign_tickets(tickets, user_id)
     TicketAssignee.where(ticket_id: tickets.map(&:id), user_id: user_id).delete_all
-    @board.tickets.where(id: tickets.map(&:id)).touch_all
+    Ticket.refresh_updated_at(tickets.map(&:id))
   end
 
   def bulk_tickets_json

@@ -24,6 +24,10 @@ class Ticket < ApplicationRecord
   validate :column_belongs_to_board
   validate :priority_belongs_to_board
 
+  def self.refresh_updated_at(ticket_ids)
+    where(id: ticket_ids).update_all([ "updated_at = ?", Time.current ])
+  end
+
   private
 
   def column_belongs_to_board

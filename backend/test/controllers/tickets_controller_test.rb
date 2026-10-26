@@ -346,6 +346,26 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     assert_empty second.reload.assignees
   end
 
+  test "bulk assign and unassign keep the lock version and refresh updated_at" do
+    bob = create_member(@team, "Bob")
+    idea = ticket_in(nil, "Idea", 0)
+
+    travel_to 1.hour.from_now do
+      bulk_update(ticket_ids: [ idea.id ], add_assignee_id: bob.id)
+
+      assert_response :success
+      assert_equal [ 0, [ bob.id ] ], [ idea.reload.lock_version, idea.assignees.map(&:id) ]
+      assert_in_delta Time.current, idea.updated_at, 1.second
+
+      travel 1.hour
+      bulk_update(ticket_ids: [ idea.id ], remove_assignee_id: bob.id)
+
+      assert_response :success
+      assert_equal [ 0, [] ], [ idea.reload.lock_version, idea.assignees.map(&:id) ]
+      assert_in_delta Time.current, idea.updated_at, 1.second
+    end
+  end
+
   test "a ticket from another board fails the whole bulk request" do
     other_board = Board.create!(team: @team, creator: @user, title: "Other")
     foreign = Ticket.create!(board: other_board, team: @team, created_by_user_id: @user.id, title: "Foreign", position: 0)
