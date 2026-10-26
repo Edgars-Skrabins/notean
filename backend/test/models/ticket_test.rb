@@ -15,6 +15,22 @@ class TicketTest < ActiveSupport::TestCase
     assert_includes ticket.errors[:title], "can't be blank"
   end
 
+  test "accepts a title at the length limit and rejects one over it" do
+    assert Ticket.new(column: @column, team: @team, created_by_user_id: @user.id, title: "a" * ContentLimits::TITLE_MAX_LENGTH, position: 0).valid?
+
+    record = Ticket.new(column: @column, team: @team, created_by_user_id: @user.id, title: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1), position: 0)
+    assert_not record.valid?
+    assert record.errors.of_kind?(:title, :too_long)
+  end
+
+  test "accepts a description at the length limit and rejects one over it" do
+    assert Ticket.new(column: @column, team: @team, created_by_user_id: @user.id, title: "Fix bug", description: "a" * ContentLimits::DESCRIPTION_MAX_LENGTH, position: 0).valid?
+
+    record = Ticket.new(column: @column, team: @team, created_by_user_id: @user.id, title: "Fix bug", description: "a" * (ContentLimits::DESCRIPTION_MAX_LENGTH + 1), position: 0)
+    assert_not record.valid?
+    assert record.errors.of_kind?(:description, :too_long)
+  end
+
   test "is invalid without a position" do
     ticket = Ticket.new(column: @column, team: @team, created_by_user_id: @user.id, title: "Fix bug", position: nil)
 

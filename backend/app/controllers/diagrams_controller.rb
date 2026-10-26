@@ -22,7 +22,7 @@ class DiagramsController < ApplicationController
     if @diagram.save
       render json: { diagram: diagram_json(@diagram) }, status: :created
     else
-      render_error(ErrorCodes::Diagrams::DIAGRAM_CREATE_FAILED, :unprocessable_entity)
+      render_error(limit_error_code(@diagram) || ErrorCodes::Diagrams::DIAGRAM_CREATE_FAILED, :unprocessable_entity)
     end
   end
 
@@ -42,7 +42,7 @@ class DiagramsController < ApplicationController
       DiagramEditingStatus.stop(@diagram.id, current_user)
       render json: { diagram: diagram_json(find_diagram(@diagram.id)) }
     else
-      render_error(ErrorCodes::Diagrams::DIAGRAM_UPDATE_FAILED, :unprocessable_entity)
+      render_error(limit_error_code(@diagram) || ErrorCodes::Diagrams::DIAGRAM_UPDATE_FAILED, :unprocessable_entity)
     end
   rescue ActiveRecord::StaleObjectError
     render_error(ErrorCodes::Common::EDIT_CONFLICT, :conflict, extra: { diagram: diagram_json(find_diagram(@diagram.id)) })

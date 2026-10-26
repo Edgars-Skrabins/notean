@@ -6,6 +6,7 @@
     type="text"
     [ngModel]="params.name"
     (ngModelChange)="handleNameChange($event)"
+    [maxlength]="TITLE_MAX_LENGTH"
   />
   <p class="projectForm__value" *ngIf="readonly">{{ params.name }}</p>
   <p class="projectForm__error" *ngIf="nameError">{{ nameError | translate }}</p>
@@ -20,6 +21,7 @@
     rows="3"
     [ngModel]="params.description"
     (ngModelChange)="handleDescriptionChange($event)"
+    [maxlength]="DESCRIPTION_MAX_LENGTH"
   ></textarea>
   <p class="projectForm__value" *ngIf="readonly">{{ params.description || '—' }}</p>
 </div>

@@ -12,6 +12,7 @@
       <label class="authField__label" for="teamNameInput">{{ PHRASES.TEAM_NAME | translate }}</label>
       <input
         [(ngModel)]="teamName"
+        [maxlength]="TITLE_MAX_LENGTH"
         id="teamNameInput"
         type="text"
       />

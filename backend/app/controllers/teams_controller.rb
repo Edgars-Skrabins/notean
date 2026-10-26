@@ -1,6 +1,6 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_team, only: [ :activate, :members, :show, :update_nickname, :update, :update_features, :destroy ]
+  before_action :set_team, only: [ :activate, :members, :update_nickname, :update, :update_features, :destroy ]
 
   def mine
     membership = active_membership(current_user)
@@ -34,10 +34,6 @@ class TeamsController < ApplicationController
     }
   end
 
-  def show
-    render json: { team: team_json(@team) }
-  end
-
   def create
     @team = Team.new(create_team_params.except(:nickname))
     membership = nil
@@ -50,7 +46,7 @@ class TeamsController < ApplicationController
     end
 
     if membership.nil?
-      render_error(ErrorCodes::Teams::TEAM_CREATE_FAILED, :unprocessable_entity)
+      render_error(limit_error_code(@team) || ErrorCodes::Teams::TEAM_CREATE_FAILED, :unprocessable_entity)
     elsif membership.persisted?
       render json: { team: team_json(@team), role: "owner", nickname: membership.nickname }, status: :created
     else
@@ -75,7 +71,7 @@ class TeamsController < ApplicationController
     if @team.update(update_team_params)
       render json: { team: team_json(@team) }
     else
-      render_error(ErrorCodes::Teams::TEAM_RENAME_FAILED, :unprocessable_entity)
+      render_error(limit_error_code(@team) || ErrorCodes::Teams::TEAM_RENAME_FAILED, :unprocessable_entity)
     end
   end
 

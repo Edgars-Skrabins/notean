@@ -3,6 +3,7 @@ import {FormsModule} from '@angular/forms';
 import {NgFor, NgIf} from '@angular/common';
 import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
+import {TITLE_MAX_LENGTH} from "@config/contentLimits";
 import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
 import {ToastService} from "@services/toast.service";
@@ -35,6 +36,7 @@ import {EscapeService} from "@services/escape.service";
 })
 export class ManageTeamComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
+  protected readonly TITLE_MAX_LENGTH = TITLE_MAX_LENGTH;
   protected readonly teamRoleLabel = teamRoleLabel;
   protected readonly featureOptions: { feature: TeamFeature; label: string }[] = [
     {feature: 'pages', label: PHRASES.FEATURE_PAGES},

@@ -1,4 +1,6 @@
 class Team < ApplicationRecord
+  include ContentLimits
+
   FEATURES = %w[pages diagrams boards].freeze
 
   has_secure_password
@@ -12,7 +14,7 @@ class Team < ApplicationRecord
   has_many :favorites, dependent: :destroy
   has_many :projects, dependent: :destroy
 
-  validates :name, presence: true
+  validates :name, presence: true, length: { maximum: TITLE_MAX_LENGTH }
   validates :code, presence: true, uniqueness: true
 
   before_validation :generate_code, on: :create

@@ -8,6 +8,8 @@
   "PASSWORD": "Lösenord",
   "ENTER_EMAIL": "Ange e-post",
   "ENTER_PASSWORD": "lösenord",
+  "PASSWORD_HINT": "Minst 8 tecken",
+  "PASSWORD_TOO_SHORT": "Lösenordet måste vara minst 8 tecken",
   "LOGIN": "Logga in",
   "REGISTER": "Registrera dig",
   "TEAM_SELECTION_PROMPT": "Vad vill du göra?",
@@ -284,13 +286,17 @@
       "RATE_LIMITED": "För många försök. Vänta och försök igen",
       "EDIT_CONFLICT": "Någon sparade en nyare version medan du redigerade",
       "LOCK_VERSION_REQUIRED": "Ändringen kan inte sparas. Ladda om sidan och försök igen",
+      "TITLE_TOO_LONG": "Den här titeln är för lång",
+      "CONTENT_TOO_LARGE": "Det här innehållet är för stort för att sparas",
+      "DESCRIPTION_TOO_LONG": "Den här beskrivningen är för lång",
       "NETWORK_ERROR": "Nätverksfel. Kontrollera din anslutning och försök igen",
       "UNKNOWN_ERROR": "Något gick fel. Försök igen"
     },
     "AUTH": {
       "INVALID_CREDENTIALS": "Ogiltig e-post eller ogiltigt lösenord",
       "EMAIL_TAKEN": "Det finns redan ett konto med den här e-postadressen",
-      "REGISTRATION_FAILED": "Det gick inte att skapa kontot. Kontrollera din e-post och ditt lösenord"
+      "REGISTRATION_FAILED": "Det gick inte att skapa kontot. Kontrollera din e-post och ditt lösenord",
+      "PASSWORD_TOO_SHORT": "Lösenordet måste vara minst 8 tecken"
     },
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Det gick inte att spara inställningarna",

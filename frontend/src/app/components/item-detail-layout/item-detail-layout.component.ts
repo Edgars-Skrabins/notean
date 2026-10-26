@@ -4,6 +4,7 @@ import {AsyncPipe, DatePipe, NgFor, NgIf} from '@angular/common';
 import {CdkScrollable} from '@angular/cdk/scrolling';
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
+import {TITLE_MAX_LENGTH} from "@config/contentLimits";
 import {FolderedItemDetail} from "@models/foldered-item.model";
 import {FavoritableType} from "@models/favorite.model";
 import {AvatarComponent} from "@components/avatar/avatar.component";
@@ -40,6 +41,7 @@ import {EscapeService} from "@services/escape.service";
 })
 export class ItemDetailLayoutComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
+  protected readonly TITLE_MAX_LENGTH = TITLE_MAX_LENGTH;
 
   @Input() item: FolderedItemDetail | null = null;
   @Input({required: true}) favoriteType!: FavoritableType;

@@ -8,6 +8,8 @@
   "PASSWORD": "Contraseña",
   "ENTER_EMAIL": "Introduce tu correo",
   "ENTER_PASSWORD": "contraseña",
+  "PASSWORD_HINT": "Al menos 8 caracteres",
+  "PASSWORD_TOO_SHORT": "La contraseña debe tener al menos 8 caracteres",
   "LOGIN": "Iniciar sesión",
   "REGISTER": "Registrarse",
   "TEAM_SELECTION_PROMPT": "¿Qué te gustaría hacer?",
@@ -284,13 +286,17 @@
       "RATE_LIMITED": "Demasiados intentos. Espera e inténtalo de nuevo",
       "EDIT_CONFLICT": "Alguien guardó una versión más reciente mientras editabas",
       "LOCK_VERSION_REQUIRED": "No se puede guardar este cambio. Recarga la página e inténtalo de nuevo",
+      "TITLE_TOO_LONG": "Este título es demasiado largo",
+      "CONTENT_TOO_LARGE": "Este contenido es demasiado grande para guardarlo",
+      "DESCRIPTION_TOO_LONG": "Esta descripción es demasiado larga",
       "NETWORK_ERROR": "Error de red. Comprueba tu conexión e inténtalo de nuevo",
       "UNKNOWN_ERROR": "Algo salió mal. Inténtalo de nuevo"
     },
     "AUTH": {
       "INVALID_CREDENTIALS": "Correo o contraseña no válidos",
       "EMAIL_TAKEN": "Ya existe una cuenta con este correo",
-      "REGISTRATION_FAILED": "No se pudo crear la cuenta. Comprueba tu correo y tu contraseña"
+      "REGISTRATION_FAILED": "No se pudo crear la cuenta. Comprueba tu correo y tu contraseña",
+      "PASSWORD_TOO_SHORT": "La contraseña debe tener al menos 8 caracteres"
     },
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "No se pudieron guardar los ajustes",

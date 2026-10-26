@@ -9,6 +9,7 @@ import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {AuthCardComponent} from "@components/auth-card/auth-card.component";
 import {errorPhrase} from "@utils/errorPhrase";
+import {isPasswordLongEnough} from "@utils/passwordValidation";
 
 @Component({
   selector: 'app-register',
@@ -39,6 +40,10 @@ export class RegisterComponent {
 
   handleRegister() {
     if (this.isSubmitting) {
+      return;
+    }
+    if (!isPasswordLongEnough(this.password)) {
+      this.alertMessage = PHRASES.PASSWORD_TOO_SHORT;
       return;
     }
     this.isSubmitting = true;

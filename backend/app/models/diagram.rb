@@ -2,6 +2,7 @@ class Diagram < ApplicationRecord
   include TitleSearchable
   include BelongsToProject
   include TextSearchable
+  include ContentLimits
 
   text_searchable :title, :search_text
 
@@ -13,12 +14,17 @@ class Diagram < ApplicationRecord
   has_many :contributors, through: :diagram_contributors, source: :user
   has_many :favorites, as: :favoritable, dependent: :destroy
 
-  validates :title, presence: true
+  validates :title, presence: true, length: { maximum: TITLE_MAX_LENGTH }
   validate :folder_matches_item
+  validate :content_size
 
   before_save { self.search_text = SearchText.from_diagram(content) if content_changed? }
 
   private
+
+  def content_size
+    errors.add(:content, :too_large) if content && content.bytesize > CONTENT_MAX_BYTES
+  end
 
   def folder_matches_item
     return if folder_id.nil?

@@ -5,6 +5,24 @@ class UserTest < ActiveSupport::TestCase
     @user = User.create!(email: "alice@example.com", password: "supersecret")
   end
 
+  test "is invalid with a password shorter than 8 characters" do
+    user = User.new(email: "bob@example.com", password: "a" * 7)
+
+    assert_not user.valid?
+    assert user.errors.of_kind?(:password, :too_short)
+  end
+
+  test "is valid with an 8 character password" do
+    assert User.new(email: "bob@example.com", password: "a" * 8).valid?
+  end
+
+  test "stays valid when another attribute changes without a password" do
+    user = User.find(@user.id)
+    user.theme = "graphite"
+
+    assert user.valid?
+  end
+
   test "effective_avatar_color is derived from the id until a colour is chosen" do
     assert_nil @user.avatar_color
     assert_equal User::AVATAR_COLORS[@user.id % User::AVATAR_COLORS.length], @user.effective_avatar_color

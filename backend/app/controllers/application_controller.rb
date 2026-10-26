@@ -192,6 +192,16 @@ class ApplicationController < ActionController::API
     render json: { code: code }.merge(extra), status: status
   end
 
+  def limit_error_code(record)
+    if record.errors.of_kind?(:title, :too_long) || record.errors.of_kind?(:name, :too_long)
+      ErrorCodes::Common::TITLE_TOO_LONG
+    elsif record.errors.of_kind?(:content, :too_large)
+      ErrorCodes::Common::CONTENT_TOO_LARGE
+    elsif record.errors.of_kind?(:description, :too_long)
+      ErrorCodes::Common::DESCRIPTION_TOO_LONG
+    end
+  end
+
   def set_team
     @team = Team.find_by(code: team_code)
 

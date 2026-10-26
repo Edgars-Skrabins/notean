@@ -8,6 +8,8 @@
   "PASSWORD": "Parool",
   "ENTER_EMAIL": "Sisesta e-post",
   "ENTER_PASSWORD": "parool",
+  "PASSWORD_HINT": "Vähemalt 8 tähemärki",
+  "PASSWORD_TOO_SHORT": "Parool peab olema vähemalt 8 tähemärki pikk",
   "LOGIN": "Logi sisse",
   "REGISTER": "Registreeru",
   "TEAM_SELECTION_PROMPT": "Mida soovid teha?",
@@ -284,13 +286,17 @@
       "RATE_LIMITED": "Liiga palju katseid. Palun oota ja proovi uuesti",
       "EDIT_CONFLICT": "Keegi salvestas uuema versiooni, kui sa muutsid",
       "LOCK_VERSION_REQUIRED": "Seda muudatust ei saa salvestada. Laadi leht uuesti ja proovi uuesti",
+      "TITLE_TOO_LONG": "See pealkiri on liiga pikk",
+      "CONTENT_TOO_LARGE": "See sisu on salvestamiseks liiga suur",
+      "DESCRIPTION_TOO_LONG": "See kirjeldus on liiga pikk",
       "NETWORK_ERROR": "Võrguviga. Kontrolli ühendust ja proovi uuesti",
       "UNKNOWN_ERROR": "Midagi läks valesti. Palun proovi uuesti"
     },
     "AUTH": {
       "INVALID_CREDENTIALS": "Vale e-post või parool",
       "EMAIL_TAKEN": "Selle e-postiga konto on juba olemas",
-      "REGISTRATION_FAILED": "Kontot ei õnnestunud luua. Kontrolli oma e-posti ja parooli"
+      "REGISTRATION_FAILED": "Kontot ei õnnestunud luua. Kontrolli oma e-posti ja parooli",
+      "PASSWORD_TOO_SHORT": "Parool peab olema vähemalt 8 tähemärki pikk"
     },
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Seadeid ei õnnestunud salvestada",

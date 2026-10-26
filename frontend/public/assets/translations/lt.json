@@ -8,6 +8,8 @@
   "PASSWORD": "Slaptažodis",
   "ENTER_EMAIL": "Įveskite el. paštą",
   "ENTER_PASSWORD": "slaptažodis",
+  "PASSWORD_HINT": "Bent 8 simboliai",
+  "PASSWORD_TOO_SHORT": "Slaptažodį turi sudaryti bent 8 simboliai",
   "LOGIN": "Prisijungti",
   "REGISTER": "Registruotis",
   "TEAM_SELECTION_PROMPT": "Ką norėtumėte daryti?",
@@ -284,13 +286,17 @@
       "RATE_LIMITED": "Per daug bandymų. Palaukite ir bandykite dar kartą",
       "EDIT_CONFLICT": "Kažkas išsaugojo naujesnę versiją, kol redagavote",
       "LOCK_VERSION_REQUIRED": "Šio pakeitimo išsaugoti nepavyko. Įkelkite puslapį iš naujo ir bandykite dar kartą",
+      "TITLE_TOO_LONG": "Šis pavadinimas per ilgas",
+      "CONTENT_TOO_LARGE": "Šis turinys per didelis, kad būtų išsaugotas",
+      "DESCRIPTION_TOO_LONG": "Šis aprašymas per ilgas",
       "NETWORK_ERROR": "Tinklo klaida. Patikrinkite ryšį ir bandykite dar kartą",
       "UNKNOWN_ERROR": "Kažkas nepavyko. Bandykite dar kartą"
     },
     "AUTH": {
       "INVALID_CREDENTIALS": "Neteisingas el. paštas arba slaptažodis",
       "EMAIL_TAKEN": "Paskyra su šiuo el. paštu jau egzistuoja",
-      "REGISTRATION_FAILED": "Nepavyko sukurti paskyros. Patikrinkite el. paštą ir slaptažodį"
+      "REGISTRATION_FAILED": "Nepavyko sukurti paskyros. Patikrinkite el. paštą ir slaptažodį",
+      "PASSWORD_TOO_SHORT": "Slaptažodį turi sudaryti bent 8 simboliai"
     },
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Nepavyko išsaugoti nustatymų",

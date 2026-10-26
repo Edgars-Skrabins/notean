@@ -63,4 +63,13 @@ class ColumnsControllerTest < ActionDispatch::IntegrationTest
     assert_equal({ "code" => "FEATURE_DISABLED" }, JSON.parse(response.body))
     assert_equal 0, @board.columns.count
   end
+
+  test "update returns TITLE_TOO_LONG for an over-limit title" do
+    column = Column.create!(board: @board, title: "To Do", position: 0)
+
+    patch "/teams/#{@team.code}/boards/#{@board.id}/columns/#{column.id}", params: { column: { title: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1) } }, headers: @headers, as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal({ "code" => "TITLE_TOO_LONG" }, JSON.parse(response.body))
+  end
 end

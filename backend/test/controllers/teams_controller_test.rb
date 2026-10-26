@@ -96,6 +96,12 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
     assert_not Team.exists?(@team.id)
   end
 
+  test "GET /teams/:code no longer exists" do
+    get "/teams/#{@team.code}", headers: @headers
+
+    assert_response :not_found
+  end
+
   test "members returns each member's avatar" do
     @user.update!(avatar_color: "pink")
 
@@ -209,5 +215,19 @@ class TeamsControllerTest < ActionDispatch::IntegrationTest
       assert_equal "FORBIDDEN", JSON.parse(response.body)["code"]
     end
     assert @team.reload.feature_enabled?(:boards)
+  end
+
+  test "create returns TITLE_TOO_LONG for an over-limit name" do
+    post "/teams", params: { team: { name: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1), password: "supersecret", nickname: "Ally" } }, headers: @headers, as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal "TITLE_TOO_LONG", JSON.parse(response.body)["code"]
+  end
+
+  test "rename returns TITLE_TOO_LONG for an over-limit name" do
+    patch "/teams/#{@team.code}", params: { team: { name: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1) } }, headers: @headers, as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal "TITLE_TOO_LONG", JSON.parse(response.body)["code"]
   end
 end

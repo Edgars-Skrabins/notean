@@ -1,5 +1,6 @@
 class Project < ApplicationRecord
   include TextSearchable
+  include ContentLimits
 
   text_searchable :name, :description
 
@@ -14,7 +15,8 @@ class Project < ApplicationRecord
   has_many :boards, dependent: :nullify
   has_many :folders, dependent: :nullify
 
-  validates :name, presence: true, uniqueness: { scope: :team_id, case_sensitive: false }
+  validates :name, presence: true, length: { maximum: TITLE_MAX_LENGTH }, uniqueness: { scope: :team_id, case_sensitive: false }
+  validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }
   validate :owner_is_team_member
 
   after_save :ensure_owner_is_member

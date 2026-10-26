@@ -186,4 +186,18 @@ class DiagramsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal folder.id, @diagram.reload.folder_id
   end
+
+  test "create returns TITLE_TOO_LONG for an over-limit title" do
+    post "/teams/#{@team.code}/diagrams", params: { diagram: { title: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1) } }, headers: @headers, as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal({ "code" => "TITLE_TOO_LONG" }, JSON.parse(response.body))
+  end
+
+  test "update returns CONTENT_TOO_LARGE for over-limit content" do
+    patch "/teams/#{@team.code}/diagrams/#{@diagram.id}", params: { diagram: { content: "a" * (ContentLimits::CONTENT_MAX_BYTES + 1), lock_version: 0 } }, headers: @headers, as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal({ "code" => "CONTENT_TOO_LARGE" }, JSON.parse(response.body))
+  end
 end
