@@ -10,6 +10,7 @@ import {AvatarComponent} from "@components/avatar/avatar.component";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {ButtonComponent} from "@components/button/button.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
+import {EditConflictDialogComponent} from "@components/edit-conflict-dialog/edit-conflict-dialog.component";
 import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
 import {ProjectSelectComponent} from "@components/project-select/project-select.component";
 import {ProjectFilterService} from "@services/project-filter.service";
@@ -30,6 +31,7 @@ import {EscapeService} from "@services/escape.service";
     IconButtonComponent,
     ButtonComponent,
     ConfirmDialogComponent,
+    EditConflictDialogComponent,
     FavoriteStarComponent,
     ProjectSelectComponent
   ],
@@ -51,6 +53,7 @@ export class ItemDetailLayoutComponent implements OnInit, OnDestroy {
   @Input() alertMessage = '';
   @Input() showDeleteConfirm = false;
   @Input() showDiscardConfirm = false;
+  @Input() showEditConflict = false;
   @Input() draftProjectId: number | null = null;
   @Input() projectSetByFolder = false;
   @Input() busy = false;
@@ -67,6 +70,9 @@ export class ItemDetailLayoutComponent implements OnInit, OnDestroy {
   @Output() createRequested = new EventEmitter<void>();
   @Output() discardConfirmed = new EventEmitter<void>();
   @Output() discardCancelled = new EventEmitter<void>();
+  @Output() conflictLoadLatest = new EventEmitter<void>();
+  @Output() conflictOverwrite = new EventEmitter<void>();
+  @Output() conflictCancelled = new EventEmitter<void>();
   @Output() draftProjectChange = new EventEmitter<number | null>();
   @Output() escapePressed = new EventEmitter<void>();
 

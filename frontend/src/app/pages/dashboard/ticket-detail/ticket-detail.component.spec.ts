@@ -73,7 +73,7 @@ describe('TicketDetailComponent editing', () => {
     component.commitTitle();
     flushMicrotasks();
 
-    expect(ticketService.updateTicket).toHaveBeenCalledWith('abc', 9, 0, {title: 'Renamed'});
+    expect(ticketService.updateTicket).toHaveBeenCalledWith('abc', 9, 0, {title: 'Renamed', lockVersion: 0});
     expect(component.ticket?.title).toBe('Renamed');
     expect(component.titleDraft).toBe('Renamed');
     expect(favoriteService.renameItem).toHaveBeenCalledWith('Ticket', 1, 'Renamed');
@@ -131,7 +131,7 @@ describe('TicketDetailComponent editing', () => {
     component.commitDescription();
     flushMicrotasks();
 
-    expect(ticketService.updateTicket).toHaveBeenCalledWith('abc', 9, 0, {description: 'New details'});
+    expect(ticketService.updateTicket).toHaveBeenCalledWith('abc', 9, 0, {description: 'New details', lockVersion: 0});
     expect(component.ticket?.description).toBe('New details');
     expect(component.descriptionDraft).toBe('New details');
   }));
@@ -163,6 +163,81 @@ describe('TicketDetailComponent editing', () => {
     component.cancelDescriptionEdit(event);
 
     expect(event.defaultPrevented).toBeFalse();
+  });
+
+  describe('on an edit conflict', () => {
+    let latest: TicketDetail;
+
+    function saveDescriptionIntoConflict() {
+      latest = {...ticket, title: 'Their title', description: 'Their details', lockVersion: 2};
+      ticketService.updateTicket.and.returnValue(Promise.resolve({success: false, code: 'EDIT_CONFLICT', latest}));
+      component.descriptionDraft = 'My details';
+      component.commitDescription();
+      flushMicrotasks();
+    }
+
+    it('opens the dialog with the latest ticket and keeps the draft', fakeAsync(() => {
+      saveDescriptionIntoConflict();
+
+      expect(component.editConflict).toEqual({changes: {description: 'My details'}, latest});
+      expect(component.descriptionDraft).toBe('My details');
+      expect(component.alertMessage).toBe('');
+    }));
+
+    it('ignores blur commits and Esc reverts while the dialog is open', fakeAsync(() => {
+      saveDescriptionIntoConflict();
+      const event = new KeyboardEvent('keydown', {key: 'Escape', cancelable: true});
+
+      component.commitDescription();
+      component.cancelDescriptionEdit(event);
+
+      expect(ticketService.updateTicket).toHaveBeenCalledTimes(1);
+      expect(component.descriptionDraft).toBe('My details');
+      expect(event.defaultPrevented).toBeFalse();
+    }));
+
+    it('replaces the fields and the board ticket on Load latest', fakeAsync(() => {
+      saveDescriptionIntoConflict();
+
+      component.handleConflictLoadLatest();
+
+      expect(component.editConflict).toBeNull();
+      expect(component.ticket).toEqual(latest);
+      expect([component.titleDraft, component.descriptionDraft]).toEqual(['Their title', 'Their details']);
+      expect(state.findTicket(1)?.title).toBe('Their title');
+    }));
+
+    it('resends the same change with the latest version on Overwrite', fakeAsync(() => {
+      saveDescriptionIntoConflict();
+      ticketService.updateTicket.and.returnValue(Promise.resolve({success: true, ticket: {...latest, description: 'My details', lockVersion: 3}}));
+
+      component.handleConflictOverwrite();
+      flushMicrotasks();
+
+      expect(ticketService.updateTicket).toHaveBeenCalledWith('abc', 9, 0, {description: 'My details', lockVersion: 2});
+      expect(component.editConflict).toBeNull();
+      expect(component.ticket?.lockVersion).toBe(3);
+    }));
+
+    it('keeps the draft when the dialog is closed', fakeAsync(() => {
+      saveDescriptionIntoConflict();
+
+      component.handleConflictCancel();
+
+      expect(component.editConflict).toBeNull();
+      expect(component.descriptionDraft).toBe('My details');
+      expect(component.ticket?.description).toBe('Details');
+    }));
+
+    it('remembers a conflicting title change for Overwrite', fakeAsync(() => {
+      ticketService.updateTicket.and.returnValue(Promise.resolve({success: false, code: 'EDIT_CONFLICT', latest: {...ticket, lockVersion: 1}}));
+      component.titleDraft = 'Renamed';
+
+      component.commitTitle();
+      flushMicrotasks();
+
+      expect(component.editConflict?.changes).toEqual({title: 'Renamed'});
+    }));
   });
 
   it('loads the ticket from the route on init', fakeAsync(() => {

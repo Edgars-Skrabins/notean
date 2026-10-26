@@ -22,6 +22,7 @@ function createdPage(): FolderedItemDetail {
     title: 'Plan',
     folderId: 3,
     projectId: 4,
+    lockVersion: 0,
     creator: {id: 1, nickname: 'alice', avatar: {color: 'blue', imageUrl: null}},
     createdAt: '',
     updatedAt: '',
@@ -64,7 +65,7 @@ describe('PageDetailComponent', () => {
   }
 
   beforeEach(() => {
-    pageService = jasmine.createSpyObj<PageService>('PageService', ['get', 'create']);
+    pageService = jasmine.createSpyObj<PageService>('PageService', ['get', 'create', 'save', 'setProject']);
     editingService = jasmine.createSpyObj<PageEditingService>('PageEditingService', ['connect', 'disconnect', 'startEditing', 'stopEditing']);
     navigationService = jasmine.createSpyObj<NavigationService>('NavigationService', ['navigate']);
     projectFilter = projectFilterStub(4);
@@ -261,4 +262,75 @@ describe('PageDetailComponent', () => {
       expect(navigationService.navigate).not.toHaveBeenCalled();
     });
   });
+
+  describe('on an edit conflict', () => {
+    const latest = {...createdPage(), title: 'Their plan', content: '<p>Theirs</p>', lockVersion: 2};
+
+    function editAndSaveIntoConflict() {
+      pageService.get.and.returnValue(Promise.resolve({success: true, item: createdPage()}));
+      pageService.save.and.returnValue(Promise.resolve({success: false, code: 'EDIT_CONFLICT', latest}));
+      createComponent({}, {id: '9'});
+      tick();
+      component.handleEdit();
+      component.handleContentChange('<p>Mine</p>');
+      component.handleSave();
+      tick();
+    }
+
+    it('saves with the loaded version and opens the dialog with the latest item', fakeAsync(() => {
+      editAndSaveIntoConflict();
+
+      expect(pageService.save).toHaveBeenCalledOnceWith('abc', 9, {title: 'Plan', content: '<p>Mine</p>', lockVersion: 0});
+      expect(component.editConflict).toEqual(latest);
+      expect(component.mode).toBe('edit');
+    }));
+
+    it('shows the latest item and leaves edit mode on Load latest', fakeAsync(() => {
+      editAndSaveIntoConflict();
+
+      component.handleConflictLoadLatest();
+
+      expect(component.editConflict).toBeNull();
+      expect(component.item).toEqual(latest);
+      expect(component.mode).toBe('view');
+      expect(editingService.stopEditing).toHaveBeenCalled();
+    }));
+
+    it('resends the draft with the latest version on Overwrite', fakeAsync(() => {
+      editAndSaveIntoConflict();
+      const saved = {...createdPage(), content: '<p>Mine</p>', lockVersion: 3};
+      pageService.save.and.returnValue(Promise.resolve({success: true, item: saved}));
+
+      component.handleConflictOverwrite();
+      tick();
+
+      expect(pageService.save).toHaveBeenCalledWith('abc', 9, {title: 'Plan', content: '<p>Mine</p>', lockVersion: 2});
+      expect(component.editConflict).toBeNull();
+      expect(component.item).toEqual(saved);
+      expect(component.mode).toBe('view');
+    }));
+
+    it('keeps the draft in edit mode when the dialog is closed', fakeAsync(() => {
+      editAndSaveIntoConflict();
+
+      component.handleConflictCancel();
+
+      expect(component.editConflict).toBeNull();
+      expect(component.mode).toBe('edit');
+      expect(component.draftContent).toBe('<p>Mine</p>');
+      expect(component.item?.content).toBe('<p>Hi</p>');
+    }));
+  });
+
+  it('keeps the version from a project change for the next save', fakeAsync(() => {
+    pageService.get.and.returnValue(Promise.resolve({success: true, item: createdPage()}));
+    pageService.setProject.and.returnValue(Promise.resolve({success: true, item: {...createdPage(), projectId: 5, lockVersion: 1}}));
+    createComponent({}, {id: '9'});
+    tick();
+
+    component.handleProjectChange(5);
+    tick();
+
+    expect(component.item?.lockVersion).toBe(1);
+  }));
 });
