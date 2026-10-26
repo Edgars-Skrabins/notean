@@ -9,6 +9,7 @@ const baseRaw = {
   description: 'Details',
   board_id: 9,
   column_id: 3,
+  lock_version: 1,
   creator: {id: 4, nickname: 'bob', avatar: {color: 'red' as const, image_url: null}},
   assignees: [],
   created_at: '2024-01-01T00:00:00Z',
@@ -25,6 +26,7 @@ describe('mapTicketDetail', () => {
       boardId: 9,
       columnId: 3,
       priorityId: null,
+      lockVersion: 1,
       assignees: [],
       creator: {id: 4, nickname: 'bob', avatar: {color: 'red', imageUrl: null}},
       createdAt: '2024-01-01T00:00:00Z',
@@ -62,6 +64,24 @@ describe('TicketService', () => {
     expect(patch).toHaveBeenCalledWith(`${url}/1`, {ticket: {priority_id: null}});
     expect(patch).toHaveBeenCalledWith(`${url}/1`, {ticket: {title: 'Renamed'}});
     expect(response.success && response.ticket.priorityId).toBe(4);
+  });
+
+  it('sends the version with a title or description change', async () => {
+    const patch = spyOn(axiosInstance, 'patch').and.returnValue(Promise.resolve({data: {ticket: baseRaw}}));
+
+    await service.updateTicket('abc', 9, 1, {description: 'Steps', lockVersion: 1});
+
+    expect(patch).toHaveBeenCalledWith(`${url}/1`, {ticket: {description: 'Steps', lock_version: 1}});
+  });
+
+  it('returns the mapped latest ticket when an update conflicts', async () => {
+    const failure = new AxiosError('failed', undefined, undefined, undefined, {status: 409, data: {code: 'EDIT_CONFLICT', ticket: {...baseRaw, title: 'Theirs', lock_version: 2}}} as AxiosResponse);
+    spyOn(axiosInstance, 'patch').and.returnValue(Promise.reject(failure));
+
+    const response = await service.updateTicket('abc', 9, 1, {title: 'Mine', lockVersion: 1});
+
+    expect(response.success).toBeFalse();
+    expect('latest' in response && [response.latest.title, response.latest.lockVersion]).toEqual(['Theirs', 2]);
   });
 
   it('sends the move, backlog and reorder changes', async () => {

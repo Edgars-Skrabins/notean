@@ -10,6 +10,7 @@ function buildItem(overrides: Partial<TreeItem> = {}): TreeItem {
     title: 'Notes',
     folderId: null,
     projectId: null,
+    lockVersion: 0,
     meta: {creator: {nickname: 'Ann'}, updatedAt: '2026-10-01T10:00:00Z'},
     ...overrides,
   };

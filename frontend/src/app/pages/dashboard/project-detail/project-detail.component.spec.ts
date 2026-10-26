@@ -27,7 +27,7 @@ function projectDetail(overrides: Partial<ProjectDetail> = {}): ProjectDetail {
 }
 
 function item(id: number, title: string, updatedAt: string): FolderedItemSummary {
-  return {id, title, folderId: null, projectId: 5, creator: alice, createdAt: updatedAt, updatedAt};
+  return {id, title, folderId: null, projectId: 5, lockVersion: 0, creator: alice, createdAt: updatedAt, updatedAt};
 }
 
 function board(id: number, title: string, updatedAt: string): BoardSummary {
