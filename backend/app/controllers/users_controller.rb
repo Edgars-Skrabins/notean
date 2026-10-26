@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   before_action :authenticate_user!, only: [ :me, :destroy, :update_settings, :update_avatar, :update_password ]
 
   def create
-    if User.exists?(email: user_params[:email])
+    if User.exists?(email: user_params[:email].to_s.downcase)
       render_error(ErrorCodes::Auth::EMAIL_TAKEN, :conflict)
       return
     end
