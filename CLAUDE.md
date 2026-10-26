@@ -11,7 +11,7 @@ The frontend talks to the API at `http://127.0.0.1:3000` (`apiUrl` in `frontend/
 
 `backend/config/master.key` is committed on purpose for early dev convenience. It must be rotated and gitignored before any real deployment.
 
-The dev and test database URLs in `backend/config/database.yml` (user and password `notean`, matching `docker-compose.yml`) are committed for the same reason. Before deploying, an env file must provide `DATABASE_URL` with real credentials.
+The dev and test database URLs in `backend/config/database.yml` (user and password `notean`, matching `docker-compose.yml`) are committed for the same reason. Before deploying, an env file must provide `DATABASE_URL` with real credentials. `DATABASE_URL` overrides the development database and `TEST_DATABASE_URL` the test database, so parallel worktrees can each use their own.
 
 ## Repository layout
 
@@ -112,6 +112,7 @@ src/environments/             environment.ts (apiUrl)
 - Inputs and outputs use `@Input()` and `@Output()` with `EventEmitter`, not signals.
 - CSS class names follow a camelCase BEM style: `kanbanCard`, `itemTree__row`, `dashboardStub__title`.
 - Reuse the shared components in `components/` (buttons, icons, dialogs and so on) rather than building new ones.
+- Title and name inputs bind `[maxlength]="TITLE_MAX_LENGTH"` and description textareas `[maxlength]="DESCRIPTION_MAX_LENGTH"`, from `config/contentLimits.ts`, matching the backend's `ContentLimits`.
 - Icon-only controls get a styled tooltip with the `appTooltip` directive (`components/tooltip/`) plus an `aria-label`, never a native `title`. `app-icon-button` applies it from its `tooltip` input.
 
 #### Services and HTTP
@@ -204,6 +205,7 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 
 #### Models
 - Creators are stored as `created_by_user_id` with a `creator` association to `User`.
+- Size limits come from the `ContentLimits` concern: titles and names (pages, diagrams, boards, tickets, folders, columns, projects, teams) up to `TITLE_MAX_LENGTH` (200), page and diagram `content` up to `CONTENT_MAX_BYTES` (1 MB), and ticket and project descriptions up to `DESCRIPTION_MAX_LENGTH` (10,000). Controllers render `limit_error_code(record)` (`TITLE_TOO_LONG`, `CONTENT_TOO_LARGE` or `DESCRIPTION_TOO_LONG`) before their own `*_FAILED` code.
 - Users carry their settings as columns, including `theme` (one of `User::THEMES`, default `purple_haze`) and `theme_mode` (`system`, `light` or `dark`, default `system`). `GET /users/me` and `PATCH /users/me/settings` return them, and an invalid value is a 422 `SETTINGS_UPDATE_FAILED`.
 - `Membership` joins users and teams. Its `role` enum is `user`, `admin` and `owner`, with exactly one owner per team.
 - Teams have `pages_enabled`, `diagrams_enabled` and `boards_enabled` flags (all on by default), checked with `Team#feature_enabled?`. Only the owner changes them (`PATCH /teams/:code/features`). Tickets, columns, priorities and assignees follow `boards`; folders follow their item type. Flags never delete data.
