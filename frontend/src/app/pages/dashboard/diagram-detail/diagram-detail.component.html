@@ -34,17 +34,19 @@
   (conflictCancelled)="handleConflictCancel()"
   (draftProjectChange)="handleDraftProjectChange($event)"
 >
-  <app-flowchart-editor
-    class="diagramDetail__editor"
-    *ngIf="mode === 'view' && item"
-    [content]="item.content"
-    [editable]="false"
-  ></app-flowchart-editor>
-  <app-flowchart-editor
-    class="diagramDetail__editor"
-    *ngIf="mode === 'edit' || mode === 'create'"
-    [content]="draftContent"
-    [editable]="true"
-    (contentChange)="handleContentChange($event)"
-  ></app-flowchart-editor>
+  @defer {
+    <app-flowchart-editor
+      class="diagramDetail__editor"
+      *ngIf="mode === 'view' && item"
+      [content]="item.content"
+      [editable]="false"
+    ></app-flowchart-editor>
+    <app-flowchart-editor
+      class="diagramDetail__editor"
+      *ngIf="mode === 'edit' || mode === 'create'"
+      [content]="draftContent"
+      [editable]="true"
+      (contentChange)="handleContentChange($event)"
+    ></app-flowchart-editor>
+  }
 </app-item-detail-layout>

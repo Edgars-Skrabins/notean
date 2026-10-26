@@ -34,10 +34,12 @@
   (draftProjectChange)="handleDraftProjectChange($event)"
 >
   <div class="pageDetail__content" *ngIf="mode === 'view' && item" [innerHTML]="item.content"></div>
-  <app-rich-text-editor
-    *ngIf="mode === 'edit' || mode === 'create'"
-    [content]="draftContent"
-    [editable]="true"
-    (contentChange)="handleContentChange($event)"
-  ></app-rich-text-editor>
+  @defer {
+    <app-rich-text-editor
+      *ngIf="mode === 'edit' || mode === 'create'"
+      [content]="draftContent"
+      [editable]="true"
+      (contentChange)="handleContentChange($event)"
+    ></app-rich-text-editor>
+  }
 </app-item-detail-layout>
