@@ -39,6 +39,31 @@ class TicketAssigneeTest < ActiveSupport::TestCase
     end
   end
 
+  test "assigning through a stale ticket keeps its lock version and refreshes updated_at" do
+    Ticket.find(@ticket.id).update!(description: "Saved elsewhere")
+
+    travel_to 1.hour.from_now do
+      @ticket.ticket_assignees.create!(user: @user)
+
+      assert_equal 1, @ticket.reload.lock_version
+      assert_in_delta Time.current, @ticket.updated_at, 1.second
+    end
+  end
+
+  test "unassigning through a stale ticket keeps its lock version and refreshes updated_at" do
+    TicketAssignee.create!(ticket: @ticket, user: @user)
+    @ticket.reload
+    assignee = @ticket.ticket_assignees.find_by(user: @user)
+    Ticket.find(@ticket.id).update!(description: "Saved elsewhere")
+
+    travel_to 1.hour.from_now do
+      assignee.destroy!
+
+      assert_equal 1, @ticket.reload.lock_version
+      assert_in_delta Time.current, @ticket.updated_at, 1.second
+    end
+  end
+
   test "lists assignees in the order they were assigned" do
     bob = create_member(@team, "Bob")
     travel_to(2.minutes.ago) { TicketAssignee.create!(ticket: @ticket, user: bob) }

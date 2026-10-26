@@ -59,6 +59,32 @@ class TicketAssigneesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "ASSIGNEE_NOT_FOUND", JSON.parse(response.body)["code"]
   end
 
+  test "assigning and unassigning keep the lock version and refresh updated_at" do
+    travel_to 1.hour.from_now do
+      post assignees_url, params: { assignee: { user_id: @bob.id } }, headers: @headers, as: :json
+
+      assert_response :created
+      assert_equal 0, JSON.parse(response.body)["ticket"]["lock_version"]
+      assert_in_delta Time.current, @ticket.reload.updated_at, 1.second
+
+      travel 1.hour
+      delete "#{assignees_url}/#{@bob.id}", headers: @headers
+
+      assert_response :success
+      assert_equal 0, JSON.parse(response.body)["ticket"]["lock_version"]
+      assert_in_delta Time.current, @ticket.reload.updated_at, 1.second
+    end
+  end
+
+  test "a description save with the version from before an assign succeeds" do
+    post assignees_url, params: { assignee: { user_id: @bob.id } }, headers: @headers, as: :json
+
+    patch "/teams/#{@team.code}/boards/#{@board.id}/tickets/#{@ticket.id}", params: { ticket: { description: "Steps to reproduce", lock_version: 0 } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal [ "Steps to reproduce", [ @bob.id ] ], [ @ticket.reload.description, @ticket.assignees.map(&:id) ]
+  end
+
   test "a caller outside the team gets NOT_TEAM_MEMBER" do
     outsider = User.create!(email: "mallory@example.com", password: "supersecret")
 
