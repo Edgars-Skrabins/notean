@@ -279,6 +279,9 @@
       "UNAUTHORIZED": "Jūsu sesija ir beigusies. Lūdzu, piesakieties vēlreiz",
       "FORBIDDEN": "Jums nav atļaujas to darīt",
       "RATE_LIMITED": "Pārāk daudz mēģinājumu. Lūdzu, uzgaidiet un mēģiniet vēlreiz",
+      "TITLE_TOO_LONG": "Šis nosaukums ir pārāk garš",
+      "CONTENT_TOO_LARGE": "Šis saturs ir pārāk liels, lai to saglabātu",
+      "DESCRIPTION_TOO_LONG": "Šis apraksts ir pārāk garš",
       "NETWORK_ERROR": "Tīkla kļūda. Pārbaudiet savienojumu un mēģiniet vēlreiz",
       "UNKNOWN_ERROR": "Kaut kas nogāja greizi. Lūdzu, mēģiniet vēlreiz"
     },

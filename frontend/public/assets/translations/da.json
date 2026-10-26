@@ -279,6 +279,9 @@
       "UNAUTHORIZED": "Din session er udløbet. Log ind igen",
       "FORBIDDEN": "Du har ikke tilladelse til at gøre dette",
       "RATE_LIMITED": "For mange forsøg. Vent, og prøv igen",
+      "TITLE_TOO_LONG": "Denne titel er for lang",
+      "CONTENT_TOO_LARGE": "Dette indhold er for stort til at blive gemt",
+      "DESCRIPTION_TOO_LONG": "Denne beskrivelse er for lang",
       "NETWORK_ERROR": "Netværksfejl. Tjek din forbindelse, og prøv igen",
       "UNKNOWN_ERROR": "Noget gik galt. Prøv igen"
     },

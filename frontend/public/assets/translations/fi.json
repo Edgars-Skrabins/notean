@@ -279,6 +279,9 @@
       "UNAUTHORIZED": "Istuntosi on vanhentunut. Kirjaudu sisään uudelleen",
       "FORBIDDEN": "Sinulla ei ole oikeutta tehdä tätä",
       "RATE_LIMITED": "Liian monta yritystä. Odota hetki ja yritä uudelleen",
+      "TITLE_TOO_LONG": "Tämä otsikko on liian pitkä",
+      "CONTENT_TOO_LARGE": "Tämä sisältö on liian suuri tallennettavaksi",
+      "DESCRIPTION_TOO_LONG": "Tämä kuvaus on liian pitkä",
       "NETWORK_ERROR": "Verkkovirhe. Tarkista yhteytesi ja yritä uudelleen",
       "UNKNOWN_ERROR": "Jokin meni pieleen. Yritä uudelleen"
     },
