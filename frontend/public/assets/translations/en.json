@@ -39,6 +39,7 @@
   "LOGOUT": "Logout",
   "LANGUAGE": "Language",
   "SEARCH_PAGES": "Search pages by title",
+  "SEARCH_PROJECTS": "Search projects by name or description",
   "NEW_PAGE": "New page",
   "NEW_FOLDER": "New folder",
   "NO_PAGES_YET": "No pages yet — create one to get started.",

@@ -1,4 +1,4 @@
-import {fakeAsync, flushMicrotasks} from '@angular/core/testing';
+import {fakeAsync, flushMicrotasks, tick} from '@angular/core/testing';
 import {Router} from '@angular/router';
 import {ProjectsComponent} from './projects.component';
 import {ProjectService} from '@services/project.service';
@@ -6,7 +6,7 @@ import {TeamService} from '@services/team.service';
 import {AuthService} from '@services/auth.service';
 import {ToastService} from '@services/toast.service';
 import {ToastType} from '@models/toast.model';
-import {ProjectDetail} from '@models/project.model';
+import {ProjectDetail, ProjectSummary} from '@models/project.model';
 import {AppRoutes} from '../../../app/app-routes.enum';
 import {projectFilterStub, ProjectFilterStub} from '../../../testing/projectFilterStub';
 
@@ -22,7 +22,8 @@ describe('ProjectsComponent', () => {
 
   beforeEach(() => {
     router = jasmine.createSpyObj<Router>('Router', ['navigate']);
-    projectService = jasmine.createSpyObj<ProjectService>('ProjectService', ['createProject']);
+    projectService = jasmine.createSpyObj<ProjectService>('ProjectService', ['createProject', 'listProjects']);
+    projectService.listProjects.and.returnValue(Promise.resolve({success: true, projects: [], hasMore: false}));
     teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentRole', 'getCurrentTeamCode', 'fetchTeamMembers']);
     teamService.getCurrentTeamCode.and.returnValue('abc');
     teamService.fetchTeamMembers.and.returnValue(Promise.resolve([]));
@@ -32,6 +33,56 @@ describe('ProjectsComponent', () => {
     projectFilter = projectFilterStub();
     component = new ProjectsComponent(router, projectFilter.service, projectService, teamService, toastService, authService);
   });
+
+  function project(id: number): ProjectSummary {
+    return {id, name: `P${id}`} as ProjectSummary;
+  }
+
+  it('loads the first page of projects on init', fakeAsync(() => {
+    projectService.listProjects.and.returnValue(Promise.resolve({success: true, projects: [project(3)], hasMore: true}));
+
+    component.ngOnInit();
+    flushMicrotasks();
+
+    expect(projectService.listProjects).toHaveBeenCalledOnceWith('abc', {search: '', offset: 0});
+    expect(component.projects?.map((item) => item.id)).toEqual([3]);
+    expect(component.hasMore).toBeTrue();
+    component.ngOnDestroy();
+  }));
+
+  it('appends the next page on Load more', fakeAsync(() => {
+    projectService.listProjects.and.returnValue(Promise.resolve({success: true, projects: [project(1), project(2)], hasMore: true}));
+    component.ngOnInit();
+    flushMicrotasks();
+
+    projectService.listProjects.and.returnValue(Promise.resolve({success: true, projects: [project(3)], hasMore: false}));
+    component.handleLoadMore();
+    expect(component.isLoadingMore).toBeTrue();
+    flushMicrotasks();
+
+    expect(projectService.listProjects).toHaveBeenCalledWith('abc', {search: '', offset: 2});
+    expect(component.projects?.map((item) => item.id)).toEqual([1, 2, 3]);
+    expect(component.hasMore).toBeFalse();
+    expect(component.isLoadingMore).toBeFalse();
+    component.ngOnDestroy();
+  }));
+
+  it('searches the server once, 300 ms after typing stops, and starts over', fakeAsync(() => {
+    projectService.listProjects.and.returnValue(Promise.resolve({success: true, projects: [project(1), project(2)], hasMore: true}));
+    component.ngOnInit();
+    flushMicrotasks();
+
+    projectService.listProjects.and.returnValue(Promise.resolve({success: true, projects: [project(7)], hasMore: false}));
+    component.handleSearchChange('ga');
+    tick(299);
+    component.handleSearchChange(' game ');
+    tick(300);
+
+    expect(projectService.listProjects).toHaveBeenCalledTimes(2);
+    expect(projectService.listProjects).toHaveBeenCalledWith('abc', {search: 'game', offset: 0});
+    expect(component.projects?.map((item) => item.id)).toEqual([7]);
+    component.ngOnDestroy();
+  }));
 
   it('lets only team owners and admins create projects', () => {
     teamService.getCurrentRole.and.returnValue('admin');

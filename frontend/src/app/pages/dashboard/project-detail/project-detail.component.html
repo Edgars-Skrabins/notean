@@ -19,6 +19,7 @@
           [meta]="item.creator.nickname + ' · ' + (item.updatedAt | date)"
           (opened)="handleOpenItem(group, item)"
         ></app-project-item-row>
+        <app-load-more *ngIf="group.hasMore" [loading]="group.isLoading" (pressed)="handleLoadMore(group)"></app-load-more>
       </div>
 
       <p class="projectDetail__empty" *ngIf="itemsLoaded && !visibleGroups.length">{{ PHRASES.NO_PROJECT_ITEMS | translate }}</p>

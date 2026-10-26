@@ -5,6 +5,30 @@
   gap: var(--space-4);
 }
 
+.projects__search {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--control-height);
+  margin-top: var(--space-5);
+  padding: 10px;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-heading);
+  font-size: var(--font-md);
+  font-family: var(--font-ui);
+  outline: none;
+}
+
+.projects__search::placeholder {
+  color: var(--color-text-faint);
+}
+
+.projects__search:focus {
+  border-color: var(--color-input-border-focus);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-input-border-focus) 18%, transparent);
+}
+
 .projects__list {
   display: flex;
   flex-direction: column;

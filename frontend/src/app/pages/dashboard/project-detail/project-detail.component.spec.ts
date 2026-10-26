@@ -65,9 +65,9 @@ describe('ProjectDetailComponent', () => {
     features = new BehaviorSubject<TeamFeatures>({pages: true, diagrams: true, boards: true});
     projectService = jasmine.createSpyObj<ProjectService>('ProjectService', ['getProject', 'updateProject', 'deleteProject']);
     pageService = jasmine.createSpyObj<PageService>('PageService', ['list']);
-    pageService.list.and.returnValue(Promise.resolve({success: true, items: [item(1, 'Old page', '2026-10-01T10:00:00Z'), item(2, 'New page', '2026-10-20T10:00:00Z')]}));
+    pageService.list.and.returnValue(Promise.resolve({success: true, items: [item(1, 'Old page', '2026-10-01T10:00:00Z'), item(2, 'New page', '2026-10-20T10:00:00Z')], hasMore: false}));
     diagramService = jasmine.createSpyObj<DiagramService>('DiagramService', ['list']);
-    diagramService.list.and.returnValue(Promise.resolve({success: true, items: []}));
+    diagramService.list.and.returnValue(Promise.resolve({success: true, items: [], hasMore: false}));
     boardService = jasmine.createSpyObj<BoardService>('BoardService', ['listBoards']);
     boardService.listBoards.and.returnValue(Promise.resolve({success: true, boards: [board(9, 'Sprint', '2026-10-10T10:00:00Z')]}));
     teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeamCode', 'fetchTeamMembers', 'isFeatureEnabled'], {features$: features});
@@ -94,19 +94,34 @@ describe('ProjectDetailComponent', () => {
     }).compileComponents();
   });
 
-  it('groups the project items by type, newest updated first, hiding empty groups', async () => {
+  it('groups the project items by type in the order they load, hiding empty groups', async () => {
     await render();
 
-    expect(pageService.list).toHaveBeenCalledWith('abc', 5);
-    expect(diagramService.list).toHaveBeenCalledWith('abc', 5);
+    expect(pageService.list).toHaveBeenCalledWith('abc', {projectId: 5, offset: 0});
+    expect(diagramService.list).toHaveBeenCalledWith('abc', {projectId: 5, offset: 0});
     expect(boardService.listBoards).toHaveBeenCalledWith('abc', 5);
     expect(texts('.projectDetail__groupTitle')).toEqual([PHRASES.DOCUMENT_PAGES, PHRASES.BOARDS]);
-    expect(texts('.projectItemRow__title')).toEqual(['New page', 'Old page', 'Sprint']);
+    expect(texts('.projectItemRow__title')).toEqual(['Old page', 'New page', 'Sprint']);
     expect(texts('.projectDetail__empty')).toEqual([]);
+    expect(fixture.nativeElement.querySelector('.loadMore')).toBeNull();
+  });
+
+  it('loads more pages after the loaded ones', async () => {
+    pageService.list.and.returnValue(Promise.resolve({success: true, items: [item(1, 'Old page', '2026-10-01T10:00:00Z')], hasMore: true}));
+    await render();
+
+    pageService.list.and.returnValue(Promise.resolve({success: true, items: [item(3, 'Plan', '2026-10-02T10:00:00Z')], hasMore: false}));
+    (fixture.nativeElement.querySelector('.loadMore') as HTMLButtonElement).click();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(pageService.list).toHaveBeenCalledWith('abc', {projectId: 5, offset: 1});
+    expect(texts('.projectItemRow__title')).toEqual(['Old page', 'Plan', 'Sprint']);
+    expect(fixture.nativeElement.querySelector('.loadMore')).toBeNull();
   });
 
   it('shows the empty message when the project has no items', async () => {
-    pageService.list.and.returnValue(Promise.resolve({success: true, items: []}));
+    pageService.list.and.returnValue(Promise.resolve({success: true, items: [], hasMore: false}));
     boardService.listBoards.and.returnValue(Promise.resolve({success: true, boards: []}));
     await render();
 
@@ -154,7 +169,7 @@ describe('ProjectDetailComponent', () => {
   });
 
   it('opens pages and diagrams in their popup and boards on kanban', async () => {
-    diagramService.list.and.returnValue(Promise.resolve({success: true, items: [item(4, 'Flow', '2026-10-05T10:00:00Z')]}));
+    diagramService.list.and.returnValue(Promise.resolve({success: true, items: [item(4, 'Flow', '2026-10-05T10:00:00Z')], hasMore: false}));
     await render();
 
     const rows = fixture.nativeElement.querySelectorAll('.projectItemRow') as NodeListOf<HTMLElement>;
@@ -163,7 +178,7 @@ describe('ProjectDetailComponent', () => {
     rows[3].click();
 
     expect(router.navigate.calls.allArgs()).toEqual([
-      [[AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES, 2]],
+      [[AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES, 1]],
       [[AppRoutes.DASHBOARD, AppRoutes.DIAGRAMS, 4]],
       [[AppRoutes.DASHBOARD, AppRoutes.BOARDS, 9, AppRoutes.KANBAN]],
     ]);
