@@ -4,6 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {CdkDrag, CdkDragDrop, CdkDropList} from '@angular/cdk/drag-drop';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
+import {TITLE_MAX_LENGTH} from '@config/contentLimits';
 import {BoardColumn} from '@models/board.model';
 import {TicketSummary} from '@models/ticket.model';
 import {IconButtonComponent} from '@components/icon-button/icon-button.component';
@@ -29,6 +30,7 @@ import {KanbanTicketComponent} from '@components/kanban-ticket/kanban-ticket.com
 })
 export class KanbanColumnComponent {
   protected readonly PHRASES = PHRASES;
+  protected readonly TITLE_MAX_LENGTH = TITLE_MAX_LENGTH;
 
   @Input({required: true}) column!: BoardColumn;
   @Output() renameColumn = new EventEmitter<{ title: string }>();

@@ -34,6 +34,7 @@
           class="itemDetail__titleInput"
           [ngModel]="draftTitle"
           (ngModelChange)="draftTitleChange.emit($event)"
+          [maxlength]="TITLE_MAX_LENGTH"
           [placeholder]="titlePlaceholder | translate"
         />
         <ng-content></ng-content>

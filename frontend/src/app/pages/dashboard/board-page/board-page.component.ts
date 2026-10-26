@@ -5,6 +5,7 @@ import {NgIf} from '@angular/common';
 import {Subscription} from 'rxjs';
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
+import {TITLE_MAX_LENGTH} from "@config/contentLimits";
 import {BoardService} from "@services/board.service";
 import {BoardListService} from "@services/board-list.service";
 import {FavoriteService} from "@services/favorite.service";
@@ -40,6 +41,7 @@ import {BoardPageStateService} from "./board-page-state.service";
 })
 export class BoardPageComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
+  protected readonly TITLE_MAX_LENGTH = TITLE_MAX_LENGTH;
   protected readonly AppRoutes = AppRoutes;
 
   isRenaming = false;

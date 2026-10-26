@@ -1,5 +1,6 @@
-import {fakeAsync, flushMicrotasks} from '@angular/core/testing';
+import {fakeAsync, flushMicrotasks, TestBed} from '@angular/core/testing';
 import {ActivatedRoute, Router} from "@angular/router";
+import {TranslateModule} from "@ngx-translate/core";
 import {TicketDetailComponent} from "./ticket-detail.component";
 import {TicketService} from "@services/ticket.service";
 import {FavoriteService} from "@services/favorite.service";
@@ -11,6 +12,8 @@ import {ProjectDetail} from "@models/project.model";
 import {ToastType} from "@models/toast.model";
 import {TicketDetail} from "@models/ticket.model";
 import {PHRASES} from "@config/phrases";
+import {DESCRIPTION_MAX_LENGTH, TITLE_MAX_LENGTH} from "@config/contentLimits";
+import {EscapeService} from "@services/escape.service";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 import {createBoardState, ticketDetail} from "../../../testing/boardFixtures";
 import {escapeServiceStub, EscapeServiceStub} from "../../../testing/escapeServiceStub";
@@ -301,4 +304,42 @@ describe('TicketDetailComponent editing', () => {
     expect(ticketService.updateTicket).toHaveBeenCalledWith('abc', 9, 0, {priorityId: null});
     expect(state.findTicket(1)?.priorityId).toBeNull();
   }));
+});
+
+describe('TicketDetailComponent input limits', () => {
+  it('limits the title input and the description textarea to the content limits', async () => {
+    const ticketService = jasmine.createSpyObj<TicketService>('TicketService', ['getTicket']);
+    ticketService.getTicket.and.returnValue(Promise.resolve({success: true, ticket: ticketDetail(1, 10)}));
+    const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['fetchTeamMembers', 'getCurrentTeamCode']);
+    teamService.fetchTeamMembers.and.returnValue(Promise.resolve([]));
+    teamService.getCurrentTeamCode.and.returnValue('abc');
+    const authService = jasmine.createSpyObj<AuthService>('AuthService', ['getCurrentUser']);
+    authService.getCurrentUser.and.returnValue({id: 1, email: 'alice@example.com'});
+
+    await TestBed.configureTestingModule({
+      imports: [TicketDetailComponent, TranslateModule.forRoot()],
+      providers: [
+        {provide: ActivatedRoute, useValue: {snapshot: {paramMap: new Map([['ticketId', '1']])}}},
+        {provide: Router, useValue: jasmine.createSpyObj<Router>('Router', ['navigate'])},
+        {provide: BoardPageStateService, useValue: createBoardState()},
+        {provide: TicketService, useValue: ticketService},
+        {provide: FavoriteService, useValue: jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem', 'renameItem', 'isFavorited'])},
+        {provide: ToastService, useValue: jasmine.createSpyObj<ToastService>('ToastService', ['show'])},
+        {provide: TeamService, useValue: teamService},
+        {provide: ProjectService, useValue: jasmine.createSpyObj<ProjectService>('ProjectService', ['getProject'])},
+        {provide: AuthService, useValue: authService},
+        {provide: EscapeService, useValue: escapeServiceStub().service},
+      ],
+    }).compileComponents();
+
+    const fixture = TestBed.createComponent(TicketDetailComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    const title: HTMLInputElement = fixture.nativeElement.querySelector('.ticketDetail__titleInput');
+    const description: HTMLTextAreaElement = fixture.nativeElement.querySelector('.ticketDetail__descriptionInput');
+    expect(title.maxLength).toBe(TITLE_MAX_LENGTH);
+    expect(description.maxLength).toBe(DESCRIPTION_MAX_LENGTH);
+  });
 });

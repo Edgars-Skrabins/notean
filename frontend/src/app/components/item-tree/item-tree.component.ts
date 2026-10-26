@@ -4,6 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {CdkDrag, CdkDragEnd, CdkDragMove} from '@angular/cdk/drag-drop';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
+import {TITLE_MAX_LENGTH} from '@config/contentLimits';
 import {IconComponent, IconName} from '@components/icon/icon.component';
 import {IconButtonComponent} from '@components/icon-button/icon-button.component';
 import {DeleteFolderDialogComponent} from '@components/delete-folder-dialog/delete-folder-dialog.component';
@@ -64,6 +65,7 @@ type DropTarget =
 })
 export class ItemTreeComponent implements OnChanges {
   protected readonly PHRASES = PHRASES;
+  protected readonly TITLE_MAX_LENGTH = TITLE_MAX_LENGTH;
 
   @Input() folders: TreeFolder[] = [];
   @Input() items: TreeItem[] = [];

@@ -3,6 +3,7 @@ import {AsyncPipe, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
+import {TITLE_MAX_LENGTH} from '@config/contentLimits';
 import {ButtonComponent} from '@components/button/button.component';
 import {ProjectSelectComponent} from '@components/project-select/project-select.component';
 import {EscapeService} from '@services/escape.service';
@@ -24,6 +25,7 @@ import {ProjectFilterService} from '@services/project-filter.service';
 })
 export class CreateNamedItemDialogComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
+  protected readonly TITLE_MAX_LENGTH = TITLE_MAX_LENGTH;
 
   @Input({required: true}) dialogTitle!: string;
   @Input({required: true}) defaultValue!: string;

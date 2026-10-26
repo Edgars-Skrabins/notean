@@ -3,6 +3,7 @@ import {FormsModule} from '@angular/forms';
 import {NgFor, NgIf} from '@angular/common';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
+import {TITLE_MAX_LENGTH, DESCRIPTION_MAX_LENGTH} from '@config/contentLimits';
 import {ProjectParams} from '@models/project.model';
 import {TeamMember} from '@models/team.model';
 import {DropdownOption} from '@models/dropdown.model';
@@ -27,6 +28,8 @@ import {DropdownComponent} from '@components/dropdown/dropdown.component';
 })
 export class ProjectFormComponent {
   protected readonly PHRASES = PHRASES;
+  protected readonly TITLE_MAX_LENGTH = TITLE_MAX_LENGTH;
+  protected readonly DESCRIPTION_MAX_LENGTH = DESCRIPTION_MAX_LENGTH;
 
   @Input({required: true}) params!: ProjectParams;
   @Input({required: true}) members: TeamMember[] = [];
