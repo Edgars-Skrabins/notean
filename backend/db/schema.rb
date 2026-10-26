@@ -258,6 +258,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_25_120000) do
     t.boolean "show_my_work_on_home", default: true, null: false
     t.string "theme", default: "purple_haze", null: false
     t.string "theme_mode", default: "system", null: false
+    t.datetime "deleted_at"
     t.index ["email"], name: "index_users_on_email", unique: true
   end
 

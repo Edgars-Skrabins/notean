@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   patch "teams/:code/nickname" => "teams#update_nickname"
   patch "teams/:code/features" => "teams#update_features"
   get "users/me" => "users#me"
+  delete "users/me" => "users#destroy"
   patch "users/me/settings" => "users#update_settings"
   patch "users/me/avatar" => "users#update_avatar"
   patch "users/me/password" => "users#update_password"

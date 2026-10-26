@@ -295,7 +295,7 @@ class ApplicationController < ActionController::API
     token = header.split(" ").last if header
 
     payload = token ? JsonWebToken.decode(token) : {}
-    @current_session = UserSession.active.find_by(id: payload[:session_id]) if payload[:session_id] && payload[:purpose].nil?
+    @current_session = UserSession.active.where(user: User.active).find_by(id: payload[:session_id]) if payload[:session_id] && payload[:purpose].nil?
     @current_session&.touch_if_stale!
 
     @current_user = @current_session&.user

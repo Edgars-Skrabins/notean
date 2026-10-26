@@ -151,6 +151,9 @@
   "EDIT_CONFLICT_LOAD_LATEST": "Indlæs seneste",
   "EDIT_CONFLICT_OVERWRITE": "Overskriv",
   "PROFILE_UPDATED": "Profiloplysninger opdateret",
+  "DELETE_ACCOUNT": "Slet konto",
+  "CONFIRM_DELETE_ACCOUNT": "Slet din konto? Du bliver fjernet fra alle teams og kan ikke logge ind igen. Dit indhold bliver i dine teams.",
+  "ACCOUNT_DELETED": "Din konto er slettet",
   "NICKNAME_TOO_SHORT": "Kaldenavnet skal være mindst 3 tegn",
   "NICKNAME_TOO_LONG": "Kaldenavnet må højst være 30 tegn",
   "NICKNAME_INVALID_CHARACTERS": "Kaldenavnet må kun indeholde bogstaverne a–z",
@@ -327,7 +330,8 @@
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Indstillingerne kunne ikke gemmes",
       "AVATAR_COLOR_INVALID": "Denne farve kan ikke bruges",
-      "AVATAR_IMAGE_INVALID": "Billedet skal være PNG, JPEG eller WebP og højst 2 MB"
+      "AVATAR_IMAGE_INVALID": "Billedet skal være PNG, JPEG eller WebP og højst 2 MB",
+      "OWNS_TEAMS": "Overdrag ejerskabet eller slet disse teams først: {{teams}}"
     },
     "TEAMS": {
       "TEAM_NOT_FOUND": "Teamet blev ikke fundet",

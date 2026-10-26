@@ -1,4 +1,4 @@
-import {AxiosError} from "axios";
+import {AxiosError, AxiosResponse} from "axios";
 import {axiosInstance} from "@config/axiosConfig";
 import {AuthService} from "@services/auth.service";
 
@@ -47,6 +47,12 @@ describe('AuthService', () => {
     expect(remove).not.toHaveBeenCalled();
   });
 
+  function errorWith(data: object): AxiosError {
+    const error = new AxiosError('failed');
+    error.response = {status: 422, data} as AxiosResponse;
+    return error;
+  }
+
   it('changePassword sends both passwords and succeeds on 204', async () => {
     const patch = spyOn(axiosInstance, 'patch').and.returnValue(Promise.resolve({data: '', status: 204}));
     const service = new AuthService();
@@ -77,5 +83,39 @@ describe('AuthService', () => {
     const response = await service.changePassword('oldpassword', 'short');
 
     expect(response).toEqual({success: false, code: 'PASSWORD_TOO_SHORT'});
+  });
+
+  describe('deleteAccount', () => {
+    it('sends DELETE /users/me and succeeds on 204', async () => {
+      const remove = spyOn(axiosInstance, 'delete').and.returnValue(Promise.resolve({status: 204, data: ''}));
+
+      const response = await new AuthService().deleteAccount();
+
+      expect(remove).toHaveBeenCalledWith('/users/me');
+      expect(response).toEqual({success: true});
+    });
+
+    it('returns OWNS_TEAMS with the owned teams', async () => {
+      spyOn(axiosInstance, 'delete').and.returnValue(Promise.reject(errorWith({
+        code: 'OWNS_TEAMS',
+        teams: [{code: 'ABC123', name: 'Alpha'}, {code: 'XYZ789', name: 'Zeta'}],
+      })));
+
+      const response = await new AuthService().deleteAccount();
+
+      expect(response).toEqual({
+        success: false,
+        code: 'OWNS_TEAMS',
+        teams: [{code: 'ABC123', name: 'Alpha'}, {code: 'XYZ789', name: 'Zeta'}],
+      });
+    });
+
+    it('returns other error codes without teams', async () => {
+      spyOn(axiosInstance, 'delete').and.returnValue(Promise.reject(errorWith({code: 'UNAUTHORIZED'})));
+
+      const response = await new AuthService().deleteAccount();
+
+      expect(response).toEqual({success: false, code: 'UNAUTHORIZED'});
+    });
   });
 });

@@ -27,6 +27,15 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_nil body["team"]
   end
 
+  test "me rejects the token of a deleted user with 401" do
+    @user.anonymise!
+
+    get "/users/me", headers: @headers
+
+    assert_response :unauthorized
+    assert_equal "UNAUTHORIZED", JSON.parse(response.body)["code"]
+  end
+
   test "me returns the most recently active team with role and nickname" do
     older = Team.create!(name: "Older", password: "supersecret")
     newer = Team.create!(name: "Newer", password: "supersecret")
@@ -177,6 +186,57 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal false, JSON.parse(response.body)["settings"]["show_my_work_on_home"]
     assert_equal false, @user.reload.show_my_work_on_home
+  end
+
+  test "destroy anonymises the user and returns 204" do
+    team = Team.create!(name: "Engineering", password: "supersecret")
+    owner = create_member(team, "Owner")
+    owner.memberships.first.update!(role: "owner")
+    Membership.create!(user: @user, team: team, nickname: "Alice")
+
+    delete "/users/me", headers: @headers
+
+    assert_response :no_content
+    assert @user.reload.deleted?
+    assert_equal "deleted-#{@user.id}@deleted.invalid", @user.email
+    assert @user.all_memberships.first.removed?
+  end
+
+  test "destroy rejects a team owner with OWNS_TEAMS and the owned teams" do
+    owned = Team.create!(name: "Zeta", password: "supersecret")
+    other_owned = Team.create!(name: "Alpha", password: "supersecret")
+    joined = Team.create!(name: "Joined", password: "supersecret")
+    Membership.create!(user: @user, team: owned, role: "owner", nickname: "Alice")
+    Membership.create!(user: @user, team: other_owned, role: "owner", nickname: "Alice")
+    Membership.create!(user: @user, team: joined, role: "admin", nickname: "Alice")
+
+    delete "/users/me", headers: @headers
+
+    assert_response :unprocessable_entity
+    body = JSON.parse(response.body)
+    assert_equal "OWNS_TEAMS", body["code"]
+    assert_equal [ { "code" => other_owned.code, "name" => "Alpha" }, { "code" => owned.code, "name" => "Zeta" } ], body["teams"]
+    assert_not @user.reload.deleted?
+  end
+
+  test "destroy keeps the user's nickname on content they created" do
+    team = Team.create!(name: "Engineering", password: "supersecret")
+    owner = create_member(team, "Owner")
+    owner.memberships.first.update!(role: "owner")
+    Membership.create!(user: @user, team: team, nickname: "Alice")
+    page = Page.create!(team: team, creator: @user, title: "Notes", content: "")
+
+    delete "/users/me", headers: @headers
+    get "/teams/#{team.code}/pages/#{page.id}", headers: { "Authorization" => "Bearer #{session_token(owner)}" }
+
+    assert_response :success
+    assert_equal "Alice", JSON.parse(response.body)["page"]["creator"]["nickname"]
+  end
+
+  test "destroy requires authentication" do
+    delete "/users/me"
+
+    assert_response :unauthorized
   end
 
   test "update_password changes the password so only the new one logs in" do

@@ -151,6 +151,9 @@
   "EDIT_CONFLICT_LOAD_LATEST": "Charger la dernière",
   "EDIT_CONFLICT_OVERWRITE": "Écraser",
   "PROFILE_UPDATED": "Informations du profil mises à jour",
+  "DELETE_ACCOUNT": "Supprimer le compte",
+  "CONFIRM_DELETE_ACCOUNT": "Supprimer votre compte ? Vous serez retiré de toutes les équipes et ne pourrez plus vous connecter. Votre contenu reste dans vos équipes.",
+  "ACCOUNT_DELETED": "Votre compte a été supprimé",
   "NICKNAME_TOO_SHORT": "Le pseudo doit contenir au moins 3 caractères",
   "NICKNAME_TOO_LONG": "Le pseudo peut contenir au maximum 30 caractères",
   "NICKNAME_INVALID_CHARACTERS": "Le pseudo ne peut contenir que les lettres a–z",
@@ -327,7 +330,8 @@
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Impossible d'enregistrer les paramètres",
       "AVATAR_COLOR_INVALID": "Cette couleur ne peut pas être utilisée",
-      "AVATAR_IMAGE_INVALID": "L'image doit être au format PNG, JPEG ou WebP et ne pas dépasser 2 Mo"
+      "AVATAR_IMAGE_INVALID": "L'image doit être au format PNG, JPEG ou WebP et ne pas dépasser 2 Mo",
+      "OWNS_TEAMS": "Transférez la propriété ou supprimez d'abord ces équipes : {{teams}}"
     },
     "TEAMS": {
       "TEAM_NOT_FOUND": "Équipe introuvable",

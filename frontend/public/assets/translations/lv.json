@@ -151,6 +151,9 @@
   "EDIT_CONFLICT_LOAD_LATEST": "Ielādēt jaunāko",
   "EDIT_CONFLICT_OVERWRITE": "Pārrakstīt",
   "PROFILE_UPDATED": "Profila informācija atjaunināta",
+  "DELETE_ACCOUNT": "Dzēst kontu",
+  "CONFIRM_DELETE_ACCOUNT": "Dzēst savu kontu? Tevi izņems no visām komandām, un tu vairs nevarēsi pieteikties. Tavs saturs paliks komandās.",
+  "ACCOUNT_DELETED": "Tavs konts tika dzēsts",
   "NICKNAME_TOO_SHORT": "Segvārdam jābūt vismaz 3 rakstzīmes garam",
   "NICKNAME_TOO_LONG": "Segvārds var būt ne garāks par 30 rakstzīmēm",
   "NICKNAME_INVALID_CHARACTERS": "Segvārds var saturēt tikai burtus a–z",
@@ -327,7 +330,8 @@
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Neizdevās saglabāt iestatījumus",
       "AVATAR_COLOR_INVALID": "Šo krāsu nevar izmantot",
-      "AVATAR_IMAGE_INVALID": "Attēlam jābūt PNG, JPEG vai WebP formātā un ne lielākam par 2 MB"
+      "AVATAR_IMAGE_INVALID": "Attēlam jābūt PNG, JPEG vai WebP formātā un ne lielākam par 2 MB",
+      "OWNS_TEAMS": "Vispirms nodod īpašumtiesības vai dzēs šīs komandas: {{teams}}"
     },
     "TEAMS": {
       "TEAM_NOT_FOUND": "Komanda nav atrasta",

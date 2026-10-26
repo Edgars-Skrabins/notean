@@ -2,7 +2,7 @@ class SessionsController < ApplicationController
   before_action :authenticate_user!, only: [ :destroy, :cable_ticket ]
 
   def create
-    @user = User.find_by(email: user_params[:email]&.downcase)
+    @user = User.active.find_by(email: user_params[:email]&.downcase)
 
     if @user&.authenticate(user_params[:password])
       @user.user_sessions.where("last_used_at <= ?", UserSession::IDLE_EXPIRY.ago).delete_all

@@ -151,6 +151,9 @@
   "EDIT_CONFLICT_LOAD_LATEST": "Load latest",
   "EDIT_CONFLICT_OVERWRITE": "Overwrite",
   "PROFILE_UPDATED": "Updated profile information",
+  "DELETE_ACCOUNT": "Delete account",
+  "CONFIRM_DELETE_ACCOUNT": "Delete your account? You will be removed from all teams and can't log in again. Your content stays in your teams.",
+  "ACCOUNT_DELETED": "Your account was deleted",
   "NICKNAME_TOO_SHORT": "Nickname must be at least 3 characters",
   "NICKNAME_TOO_LONG": "Nickname can be at most 30 characters",
   "NICKNAME_INVALID_CHARACTERS": "Nickname can only contain letters a–z",
@@ -327,7 +330,8 @@
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Could not save settings",
       "AVATAR_COLOR_INVALID": "This colour can't be used",
-      "AVATAR_IMAGE_INVALID": "Image must be PNG, JPEG or WebP and 2 MB or smaller"
+      "AVATAR_IMAGE_INVALID": "Image must be PNG, JPEG or WebP and 2 MB or smaller",
+      "OWNS_TEAMS": "Transfer ownership or delete these teams first: {{teams}}"
     },
     "TEAMS": {
       "TEAM_NOT_FOUND": "Team not found",

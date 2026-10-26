@@ -151,6 +151,9 @@
   "EDIT_CONFLICT_LOAD_LATEST": "Cargar la última",
   "EDIT_CONFLICT_OVERWRITE": "Sobrescribir",
   "PROFILE_UPDATED": "Información del perfil actualizada",
+  "DELETE_ACCOUNT": "Eliminar cuenta",
+  "CONFIRM_DELETE_ACCOUNT": "¿Eliminar tu cuenta? Se te quitará de todos los equipos y no podrás volver a iniciar sesión. Tu contenido se queda en tus equipos.",
+  "ACCOUNT_DELETED": "Tu cuenta se ha eliminado",
   "NICKNAME_TOO_SHORT": "El apodo debe tener al menos 3 caracteres",
   "NICKNAME_TOO_LONG": "El apodo puede tener como máximo 30 caracteres",
   "NICKNAME_INVALID_CHARACTERS": "El apodo solo puede contener letras de la a a la z",
@@ -327,7 +330,8 @@
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "No se pudieron guardar los ajustes",
       "AVATAR_COLOR_INVALID": "Este color no se puede usar",
-      "AVATAR_IMAGE_INVALID": "La imagen debe ser PNG, JPEG o WebP y ocupar 2 MB o menos"
+      "AVATAR_IMAGE_INVALID": "La imagen debe ser PNG, JPEG o WebP y ocupar 2 MB o menos",
+      "OWNS_TEAMS": "Primero transfiere la propiedad o elimina estos equipos: {{teams}}"
     },
     "TEAMS": {
       "TEAM_NOT_FOUND": "Equipo no encontrado",

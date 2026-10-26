@@ -50,6 +50,12 @@ module ApplicationCable
       assert_reject_connection { connect params: { ticket: token } }
     end
 
+    test "rejects a ticket of a deleted user" do
+      @user.update!(deleted_at: Time.current)
+
+      assert_reject_connection { connect params: { ticket: ticket_for(@session) } }
+    end
+
     test "rejects a connection without a ticket" do
       assert_reject_connection { connect }
     end
