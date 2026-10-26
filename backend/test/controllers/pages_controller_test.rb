@@ -315,7 +315,7 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     bob = create_member(@team, "Bob")
     folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Hidden", project: secret)
 
-    get "/teams/#{@team.code}/pages", params: { folder_id: folder.id }, headers: { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: bob.id)}" }
+    get "/teams/#{@team.code}/pages", params: { folder_id: folder.id }, headers: { "Authorization" => "Bearer #{session_token(bob)}" }
 
     assert_response :not_found
     assert_equal({ "code" => "FOLDER_NOT_FOUND" }, JSON.parse(response.body))
@@ -349,7 +349,7 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal [ "In project" ], listed_titles(project_id: project.id, folder_id: "root")
 
-    get "/teams/#{@team.code}/pages", params: { folder_id: "root" }, headers: { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: bob.id)}" }
+    get "/teams/#{@team.code}/pages", params: { folder_id: "root" }, headers: { "Authorization" => "Bearer #{session_token(bob)}" }
     assert_equal [ "Notes" ], JSON.parse(response.body)["pages"].map { |page| page["title"] }
   end
 end

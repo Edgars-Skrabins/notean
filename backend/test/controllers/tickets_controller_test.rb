@@ -661,7 +661,7 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     bob = create_member(@team, "Bob")
     @board.update!(project: Project.create!(team: @team, name: "Secret", owner: @user, creator: @user))
 
-    get tickets_url, params: { status: "backlog" }, headers: { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: bob.id)}" }
+    get tickets_url, params: { status: "backlog" }, headers: { "Authorization" => "Bearer #{session_token(bob)}" }
     assert_response :not_found
     assert_equal({ "code" => "BOARD_NOT_FOUND" }, JSON.parse(response.body))
   end
