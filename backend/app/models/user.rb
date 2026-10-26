@@ -14,6 +14,7 @@ class User < ApplicationRecord
   has_many :teams, through: :memberships
   has_many :favorites, dependent: :destroy
   has_many :ticket_assignees, dependent: :destroy
+  has_many :user_sessions, dependent: :delete_all
   has_one_attached :avatar_image
 
   before_save { self.email = email.downcase }

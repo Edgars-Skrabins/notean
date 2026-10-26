@@ -6,7 +6,7 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     @user = User.create!(email: "alice@example.com", password: "supersecret", avatar_color: "blue")
     Membership.create!(user: @user, team: @team, role: "owner", nickname: "Alice")
     @page = Page.create!(team: @team, creator: @user, title: "Notes", content: "")
-    token = JsonWebToken.encode(user_id: @user.id)
+    token = session_token(@user)
     @headers = { "Authorization" => "Bearer #{token}" }
   end
 
@@ -46,7 +46,7 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
   test "returns NOT_TEAM_MEMBER for someone outside the team" do
     outsider = User.create!(email: "mallory@example.com", password: "supersecret")
 
-    get "/teams/#{@team.code}/pages", headers: { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: outsider.id)}" }
+    get "/teams/#{@team.code}/pages", headers: { "Authorization" => "Bearer #{session_token(outsider)}" }
 
     assert_response :forbidden
     assert_equal "NOT_TEAM_MEMBER", JSON.parse(response.body)["code"]
@@ -183,7 +183,7 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     member = create_member(@team, "Bob")
     secret = Project.create!(team: @team, name: "Secret", owner: @user, creator: @user)
     folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Plans", project: secret)
-    member_headers = { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: member.id)}" }
+    member_headers = { "Authorization" => "Bearer #{session_token(member)}" }
 
     post "/teams/#{@team.code}/pages", params: { page: { title: "New", folder_id: folder.id } }, headers: member_headers, as: :json
 

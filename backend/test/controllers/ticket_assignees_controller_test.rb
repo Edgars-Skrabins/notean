@@ -9,7 +9,7 @@ class TicketAssigneesControllerTest < ActionDispatch::IntegrationTest
     @bob = create_member(@team, "Bob")
     @board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
     @ticket = Ticket.create!(board: @board, team: @team, created_by_user_id: @user.id, title: "Fix bug", position: 0)
-    @headers = { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: @user.id)}" }
+    @headers = { "Authorization" => "Bearer #{session_token(@user)}" }
   end
 
   def assignees_url(ticket: @ticket, board: @board)
@@ -62,7 +62,7 @@ class TicketAssigneesControllerTest < ActionDispatch::IntegrationTest
   test "a caller outside the team gets NOT_TEAM_MEMBER" do
     outsider = User.create!(email: "mallory@example.com", password: "supersecret")
 
-    post assignees_url, params: { assignee: { user_id: @bob.id } }, headers: { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: outsider.id)}" }, as: :json
+    post assignees_url, params: { assignee: { user_id: @bob.id } }, headers: { "Authorization" => "Bearer #{session_token(outsider)}" }, as: :json
 
     assert_response :forbidden
     assert_equal "NOT_TEAM_MEMBER", JSON.parse(response.body)["code"]

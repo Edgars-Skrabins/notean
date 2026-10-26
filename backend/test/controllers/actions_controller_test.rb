@@ -6,7 +6,7 @@ class ActionsControllerTest < ActionDispatch::IntegrationTest
     owner = User.create!(email: "owner@example.com", password: "supersecret")
     Membership.create!(user: owner, team: @team, role: "owner", nickname: "Owner")
     @user = User.create!(email: "alice@example.com", password: "supersecret")
-    token = JsonWebToken.encode(user_id: @user.id)
+    token = session_token(@user)
     @headers = { "Authorization" => "Bearer #{token}" }
   end
 

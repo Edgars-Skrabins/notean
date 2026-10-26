@@ -10,8 +10,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      token = JsonWebToken.encode(user_id: @user.id)
-      render json: { user: @user.as_json(only: [ :id, :email ]), token: token }, status: :created
+      render json: { user: @user.as_json(only: [ :id, :email ]), token: start_session(@user) }, status: :created
     elsif @user.errors.of_kind?(:password, :too_short)
       render_error(ErrorCodes::Auth::PASSWORD_TOO_SHORT, :unprocessable_entity)
     else
@@ -37,6 +36,7 @@ class UsersController < ApplicationController
     end
 
     current_user.anonymise!
+    current_user.user_sessions.delete_all
     head :no_content
   end
 
@@ -77,6 +77,7 @@ class UsersController < ApplicationController
     new_password = update_password_params[:new_password].to_s
 
     if new_password.present? && current_user.update(password: new_password)
+      current_user.user_sessions.where.not(id: @current_session.id).delete_all
       head :no_content
     else
       render_error(ErrorCodes::Auth::PASSWORD_TOO_SHORT, :unprocessable_entity)

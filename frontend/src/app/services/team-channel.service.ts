@@ -1,10 +1,9 @@
 import {Injectable} from '@angular/core';
 import {Observable, Subject} from 'rxjs';
-import {Subscription} from '@rails/actioncable';
 import {TranslateService} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {AuthService} from "@services/auth.service";
-import {CableService} from "@services/cable.service";
+import {CableService, CableSubscription} from "@services/cable.service";
 import {mapTeam, RawTeam, TeamService} from "@services/team.service";
 import {ToastService} from "@services/toast.service";
 import {NavigationService} from "@services/navigation.service";
@@ -20,7 +19,7 @@ type TeamChannelMessage =
   providedIn: 'root',
 })
 export class TeamChannelService {
-  private subscription: Subscription | null = null;
+  private subscription: CableSubscription | null = null;
   private membersChangedSubject = new Subject<void>();
 
   readonly membersChanged$: Observable<void> = this.membersChangedSubject.asObservable();

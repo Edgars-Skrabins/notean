@@ -6,7 +6,7 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     @team = Team.create!(name: "Engineering", password: "supersecret")
     @user = User.create!(email: "alice@example.com", password: "supersecret")
     Membership.create!(user: @user, team: @team, role: "owner", nickname: "alice")
-    token = JsonWebToken.encode(user_id: @user.id)
+    token = session_token(@user)
     @headers = { "Authorization" => "Bearer #{token}" }
     @board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
     @board.columns.destroy_all
@@ -158,7 +158,7 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
 
   test "non-members cannot access a board's tickets" do
     outsider = User.create!(email: "mallory@example.com", password: "supersecret")
-    token = JsonWebToken.encode(user_id: outsider.id)
+    token = session_token(outsider)
 
     get "/teams/#{@team.code}/boards/#{@board.id}/tickets/1", headers: { "Authorization" => "Bearer #{token}" }
 

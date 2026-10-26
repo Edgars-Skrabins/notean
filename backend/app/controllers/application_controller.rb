@@ -232,6 +232,10 @@ class ApplicationController < ActionController::API
     render_error(ErrorCodes::Common::UNAUTHORIZED, :unauthorized) unless current_user
   end
 
+  def start_session(user)
+    JsonWebToken.encode(session_id: user.user_sessions.create!(last_used_at: Time.current).id)
+  end
+
   def active_membership(user)
     user.memberships.includes(:team).order(last_active_at: :desc).first
   end
@@ -290,7 +294,11 @@ class ApplicationController < ActionController::API
     header = request.headers["Authorization"]
     token = header.split(" ").last if header
 
-    @current_user = token && User.active.find_by(id: JsonWebToken.decode(token)[:user_id])
+    payload = token ? JsonWebToken.decode(token) : {}
+    @current_session = UserSession.active.where(user: User.active).find_by(id: payload[:session_id]) if payload[:session_id] && payload[:purpose].nil?
+    @current_session&.touch_if_stale!
+
+    @current_user = @current_session&.user
   rescue JWT::DecodeError
     @current_user = nil
   end

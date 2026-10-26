@@ -14,7 +14,7 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
   end
 
   def headers_for(user)
-    { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: user.id)}" }
+    { "Authorization" => "Bearer #{session_token(user)}" }
   end
 
   def projects_url(project = nil)

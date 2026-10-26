@@ -23,5 +23,5 @@ declare module '@rails/actioncable' {
     disconnect(): void;
   }
 
-  export function createConsumer(url?: string): Consumer;
+  export function createConsumer(url?: string | (() => string)): Consumer;
 }

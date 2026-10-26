@@ -20,6 +20,7 @@ import {toErrorCode, toErrorResult} from "@utils/httpError";
 export class AuthService {
   private loginUrl = '/auth/login';
   private registerUrl = '/auth/register';
+  private sessionUrl = '/auth/session';
   private meUrl = '/users/me';
   private passwordUrl = '/users/me/password';
   private tokenStorageKey = 'authToken';
@@ -82,6 +83,9 @@ export class AuthService {
   }
 
   logout() {
+    if (this.token) {
+      axiosInstance.delete(this.sessionUrl, {headers: {Authorization: `Bearer ${this.token}`}}).catch(() => undefined);
+    }
     this.token = null;
     this.user = null;
     setAuthToken(null);

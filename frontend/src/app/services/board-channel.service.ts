@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
-import {Subscription} from '@rails/actioncable';
-import {CableService} from "@services/cable.service";
+import {CableService, CableSubscription} from "@services/cable.service";
 import {NavigationService} from "@services/navigation.service";
 import {ToastService} from "@services/toast.service";
 import {mapBoardColumn, mapTicketSummary, RawBoardColumn, RawTicketSummary} from "@services/board.service";
@@ -25,7 +24,7 @@ export type BoardChannelMessage =
 
 @Injectable()
 export class BoardChannelService {
-  private subscription: Subscription | null = null;
+  private subscription: CableSubscription | null = null;
 
   constructor(
     private cableService: CableService,

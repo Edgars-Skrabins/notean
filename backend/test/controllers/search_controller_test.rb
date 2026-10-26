@@ -11,7 +11,7 @@ class SearchControllerTest < ActionDispatch::IntegrationTest
   end
 
   def headers_for(user)
-    { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: user.id)}" }
+    { "Authorization" => "Bearer #{session_token(user)}" }
   end
 
   def search(query, user: @user, **params)

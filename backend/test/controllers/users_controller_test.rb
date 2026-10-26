@@ -3,7 +3,7 @@ require "test_helper"
 class UsersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = User.create!(email: "alice@example.com", password: "supersecret")
-    token = JsonWebToken.encode(user_id: @user.id)
+    token = session_token(@user)
     @headers = { "Authorization" => "Bearer #{token}" }
   end
 
@@ -202,6 +202,38 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert @user.all_memberships.first.removed?
   end
 
+  test "destroy ends all of the user's sessions" do
+    other_headers = { "Authorization" => "Bearer #{session_token(@user)}" }
+    bob = User.create!(email: "bob@example.com", password: "supersecret")
+    bob_headers = { "Authorization" => "Bearer #{session_token(bob)}" }
+
+    delete "/users/me", headers: @headers
+
+    assert_equal 0, @user.user_sessions.count
+    get "/users/me", headers: other_headers
+    assert_response :unauthorized
+    get "/users/me", headers: bob_headers
+    assert_response :success
+  end
+
+  test "a session of a deleted user gets 401" do
+    @user.update!(deleted_at: Time.current)
+
+    get "/users/me", headers: @headers
+
+    assert_response :unauthorized
+  end
+
+  test "a blocked destroy keeps the user's sessions" do
+    team = Team.create!(name: "Zeta", password: "supersecret")
+    Membership.create!(user: @user, team: team, role: "owner", nickname: "Alice")
+
+    delete "/users/me", headers: @headers
+
+    get "/users/me", headers: @headers
+    assert_response :success
+  end
+
   test "destroy rejects a team owner with OWNS_TEAMS and the owned teams" do
     owned = Team.create!(name: "Zeta", password: "supersecret")
     other_owned = Team.create!(name: "Alpha", password: "supersecret")
@@ -227,7 +259,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     page = Page.create!(team: team, creator: @user, title: "Notes", content: "")
 
     delete "/users/me", headers: @headers
-    get "/teams/#{team.code}/pages/#{page.id}", headers: { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: owner.id)}" }
+    get "/teams/#{team.code}/pages/#{page.id}", headers: { "Authorization" => "Bearer #{session_token(owner)}" }
 
     assert_response :success
     assert_equal "Alice", JSON.parse(response.body)["page"]["creator"]["nickname"]
@@ -252,6 +284,36 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
     post "/auth/login", params: { user: { email: "alice@example.com", password: "supersecret" } }, as: :json
     assert_response :unauthorized
+  end
+
+  test "update_password ends the user's other sessions and keeps the current one" do
+    other_headers = { "Authorization" => "Bearer #{session_token(@user)}" }
+    bob = User.create!(email: "bob@example.com", password: "supersecret")
+    bob_headers = { "Authorization" => "Bearer #{session_token(bob)}" }
+
+    patch "/users/me/password",
+      params: { password: { current_password: "supersecret", new_password: "brandnewpass" } },
+      headers: @headers,
+      as: :json
+
+    get "/users/me", headers: @headers
+    assert_response :success
+    get "/users/me", headers: other_headers
+    assert_response :unauthorized
+    get "/users/me", headers: bob_headers
+    assert_response :success
+  end
+
+  test "a failed update_password keeps the user's other sessions" do
+    other_headers = { "Authorization" => "Bearer #{session_token(@user)}" }
+
+    patch "/users/me/password",
+      params: { password: { current_password: "wrongpassword", new_password: "brandnewpass" } },
+      headers: @headers,
+      as: :json
+
+    get "/users/me", headers: other_headers
+    assert_response :success
   end
 
   test "update_password rejects a wrong current password with 422 and keeps the old one" do
