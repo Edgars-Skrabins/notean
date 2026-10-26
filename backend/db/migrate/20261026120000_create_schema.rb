@@ -1,5 +1,6 @@
 class CreateSchema < ActiveRecord::Migration[8.1]
   def change
+    enable_extension "pg_trgm"
     enable_extension "plpgsql"
 
     create_table "active_storage_attachments" do |t|
@@ -50,6 +51,7 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.index [ "created_by_user_id" ], name: "index_boards_on_created_by_user_id"
       t.index [ "project_id" ], name: "index_boards_on_project_id"
       t.index [ "team_id" ], name: "index_boards_on_team_id"
+      t.index "lower((title)::text) gin_trgm_ops", using: :gin, name: "index_boards_on_lower_title_trgm"
     end
 
     create_table "columns" do |t|
@@ -85,6 +87,8 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.index [ "folder_id" ], name: "index_diagrams_on_folder_id"
       t.index [ "project_id" ], name: "index_diagrams_on_project_id"
       t.index [ "team_id" ], name: "index_diagrams_on_team_id"
+      t.index "lower((title)::text) gin_trgm_ops", using: :gin, name: "index_diagrams_on_lower_title_trgm"
+      t.index "lower(search_text) gin_trgm_ops", using: :gin, name: "index_diagrams_on_lower_search_text_trgm"
     end
 
     create_table "favorites" do |t|
@@ -158,6 +162,8 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.index [ "folder_id" ], name: "index_pages_on_folder_id"
       t.index [ "project_id" ], name: "index_pages_on_project_id"
       t.index [ "team_id" ], name: "index_pages_on_team_id"
+      t.index "lower((title)::text) gin_trgm_ops", using: :gin, name: "index_pages_on_lower_title_trgm"
+      t.index "lower(search_text) gin_trgm_ops", using: :gin, name: "index_pages_on_lower_search_text_trgm"
     end
 
     create_table "project_members" do |t|
@@ -180,6 +186,8 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.datetime "updated_at", null: false
       t.index [ "team_id", "name" ], name: "index_projects_on_team_id_and_name", unique: true
       t.index [ "team_id" ], name: "index_projects_on_team_id"
+      t.index "lower((name)::text) gin_trgm_ops", using: :gin, name: "index_projects_on_lower_name_trgm"
+      t.index "lower(description) gin_trgm_ops", using: :gin, name: "index_projects_on_lower_description_trgm"
     end
 
     create_table "teams" do |t|
@@ -221,6 +229,8 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.index [ "created_by_user_id" ], name: "index_tickets_on_created_by_user_id"
       t.index [ "priority_id" ], name: "index_tickets_on_priority_id"
       t.index [ "team_id" ], name: "index_tickets_on_team_id"
+      t.index "lower((title)::text) gin_trgm_ops", using: :gin, name: "index_tickets_on_lower_title_trgm"
+      t.index "lower(description) gin_trgm_ops", using: :gin, name: "index_tickets_on_lower_description_trgm"
     end
 
     create_table "user_sessions" do |t|
