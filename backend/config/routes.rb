@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   get "users/me" => "users#me"
   patch "users/me/settings" => "users#update_settings"
   patch "users/me/avatar" => "users#update_avatar"
+  patch "users/me/password" => "users#update_password"
   resources :teams, only: [ :create, :update, :destroy ], param: :code do
     resources :folders, only: [ :index, :create, :update, :destroy ]
     resources :pages, only: [ :index, :create, :show, :update, :destroy ]

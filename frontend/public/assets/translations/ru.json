@@ -10,6 +10,12 @@
   "ENTER_PASSWORD": "пароль",
   "PASSWORD_HINT": "Не менее 8 символов",
   "PASSWORD_TOO_SHORT": "Пароль должен содержать не менее 8 символов",
+  "CURRENT_PASSWORD": "Текущий пароль",
+  "NEW_PASSWORD": "Новый пароль",
+  "CONFIRM_NEW_PASSWORD": "Подтвердите новый пароль",
+  "CHANGE_PASSWORD": "Сменить пароль",
+  "PASSWORDS_DO_NOT_MATCH": "Пароли не совпадают",
+  "PASSWORD_CHANGED": "Пароль изменён",
   "LOGIN": "Войти",
   "REGISTER": "Зарегистрироваться",
   "TEAM_SELECTION_PROMPT": "Что вы хотите сделать?",
@@ -315,7 +321,8 @@
       "INVALID_CREDENTIALS": "Неверная эл. почта или пароль",
       "EMAIL_TAKEN": "Аккаунт с этой эл. почтой уже существует",
       "REGISTRATION_FAILED": "Не удалось создать аккаунт. Проверьте эл. почту и пароль",
-      "PASSWORD_TOO_SHORT": "Пароль должен содержать не менее 8 символов"
+      "PASSWORD_TOO_SHORT": "Пароль должен содержать не менее 8 символов",
+      "CURRENT_PASSWORD_INVALID": "Неверный текущий пароль"
     },
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Не удалось сохранить настройки",

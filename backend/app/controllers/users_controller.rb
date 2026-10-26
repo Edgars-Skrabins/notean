@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!, only: [ :me, :update_settings, :update_avatar ]
+  before_action :authenticate_user!, only: [ :me, :update_settings, :update_avatar, :update_password ]
 
   def create
     if User.exists?(email: user_params[:email])
@@ -52,6 +52,21 @@ class UsersController < ApplicationController
       render json: { avatar: avatar_json(current_user) }
     else
       render_error(ErrorCodes::Users::AVATAR_IMAGE_INVALID, :unprocessable_entity)
+    end
+  end
+
+  def update_password
+    unless current_user.authenticate(update_password_params[:current_password].to_s)
+      render_error(ErrorCodes::Auth::CURRENT_PASSWORD_INVALID, :unprocessable_entity)
+      return
+    end
+
+    new_password = update_password_params[:new_password].to_s
+
+    if new_password.present? && current_user.update(password: new_password)
+      head :no_content
+    else
+      render_error(ErrorCodes::Auth::PASSWORD_TOO_SHORT, :unprocessable_entity)
     end
   end
 

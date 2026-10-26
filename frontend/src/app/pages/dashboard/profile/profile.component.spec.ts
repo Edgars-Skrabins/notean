@@ -5,6 +5,7 @@ import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
 import {ToastService} from "@services/toast.service";
 import {AvatarService} from "@services/avatar.service";
+import {AuthService} from "@services/auth.service";
 import {ToastType} from "@models/toast.model";
 import {Avatar} from "@models/avatar.model";
 import {PHRASES} from "@config/phrases";
@@ -16,6 +17,7 @@ describe('ProfileComponent', () => {
   let toastService: jasmine.SpyObj<ToastService>;
   let avatarService: jasmine.SpyObj<AvatarService>;
   let avatarSubject: BehaviorSubject<Avatar | null>;
+  let authService: jasmine.SpyObj<AuthService>;
 
   function imageEvent(file: File): Event {
     const input = document.createElement('input');
@@ -33,7 +35,8 @@ describe('ProfileComponent', () => {
     avatarSubject = new BehaviorSubject<Avatar | null>({color: 'blue', imageUrl: null});
     avatarService = jasmine.createSpyObj<AvatarService>('AvatarService', ['getAvatar', 'update'], {avatar$: avatarSubject});
     avatarService.getAvatar.and.callFake(() => avatarSubject.value);
-    component = new ProfileComponent({} as NavigationService, teamService, toastService, avatarService, escapeServiceStub().service);
+    authService = jasmine.createSpyObj<AuthService>('AuthService', ['changePassword']);
+    component = new ProfileComponent({} as NavigationService, teamService, toastService, avatarService, escapeServiceStub().service, authService);
   });
 
   afterEach(() => {
@@ -247,5 +250,76 @@ describe('ProfileComponent', () => {
     component.confirmLeave();
 
     expect(component.isLeaveConfirmOpen).toBeTrue();
+  });
+
+  function fillPasswords(current: string, next: string, confirmation: string) {
+    component.currentPassword = current;
+    component.newPassword = next;
+    component.confirmNewPassword = confirmation;
+  }
+
+  it('can only change the password once all three fields are filled', () => {
+    expect(component.canChangePassword).toBeFalse();
+
+    fillPasswords('oldpassword', 'newpassword', '');
+    expect(component.canChangePassword).toBeFalse();
+
+    fillPasswords('oldpassword', 'newpassword', 'newpassword');
+    expect(component.canChangePassword).toBeTrue();
+  });
+
+  it('shows a mismatch error without sending a request', fakeAsync(() => {
+    fillPasswords('oldpassword', 'newpassword', 'otherpassword');
+
+    component.handleChangePassword();
+    tick();
+
+    expect(component.passwordError).toBe(PHRASES.PASSWORDS_DO_NOT_MATCH);
+    expect(authService.changePassword).not.toHaveBeenCalled();
+  }));
+
+  it('shows a too short error without sending a request', fakeAsync(() => {
+    fillPasswords('oldpassword', 'short', 'short');
+
+    component.handleChangePassword();
+    tick();
+
+    expect(component.passwordError).toBe(PHRASES.PASSWORD_TOO_SHORT);
+    expect(authService.changePassword).not.toHaveBeenCalled();
+  }));
+
+  it('clears the fields and toasts after changing the password', fakeAsync(() => {
+    authService.changePassword.and.returnValue(Promise.resolve({success: true}));
+    fillPasswords('oldpassword', 'newpassword', 'newpassword');
+
+    component.handleChangePassword();
+    tick();
+
+    expect(authService.changePassword).toHaveBeenCalledOnceWith('oldpassword', 'newpassword');
+    expect(component.currentPassword).toBe('');
+    expect(component.newPassword).toBe('');
+    expect(component.confirmNewPassword).toBe('');
+    expect(component.passwordError).toBeNull();
+    expect(component.isChangingPassword).toBeFalse();
+    expect(toastService.show).toHaveBeenCalledOnceWith({type: ToastType.SUCCESS, message: PHRASES.PASSWORD_CHANGED});
+  }));
+
+  it('shows the translated API error and keeps the fields', fakeAsync(() => {
+    authService.changePassword.and.returnValue(Promise.resolve({success: false, code: 'CURRENT_PASSWORD_INVALID'}));
+    fillPasswords('wrongpassword', 'newpassword', 'newpassword');
+
+    component.handleChangePassword();
+    tick();
+
+    expect(component.passwordError).toBe('ERRORS.AUTH.CURRENT_PASSWORD_INVALID');
+    expect(component.currentPassword).toBe('wrongpassword');
+    expect(toastService.show).not.toHaveBeenCalled();
+  }));
+
+  it('lets the user leave with typed passwords', () => {
+    fillPasswords('oldpassword', 'newpassword', 'newpassword');
+
+    expect(component.hasUnsavedChanges).toBeFalse();
+    expect(component.confirmLeave()).toBeTrue();
   });
 });
