@@ -1,6 +1,13 @@
 import {Injectable} from '@angular/core';
 import {axiosInstance, setAuthToken} from "@config/axiosConfig";
-import {AuthCredentials, AuthResponse, AuthResponseSuccess, AuthUser, RegisterCredentials} from "@models/auth.model";
+import {
+  AuthCredentials,
+  AuthResponse,
+  AuthResponseSuccess,
+  AuthUser,
+  ChangePasswordResponse,
+  RegisterCredentials,
+} from "@models/auth.model";
 import {apiRequest} from "@utils/apiRequest";
 
 @Injectable({
@@ -9,6 +16,7 @@ import {apiRequest} from "@utils/apiRequest";
 export class AuthService {
   private loginUrl = '/auth/login';
   private registerUrl = '/auth/register';
+  private passwordUrl = '/users/me/password';
   private tokenStorageKey = 'authToken';
   private userStorageKey = 'authUser';
 
@@ -50,6 +58,13 @@ export class AuthService {
         this.setSession(data as AuthResponseSuccess);
         return {success: true};
       },
+    );
+  }
+
+  async changePassword(currentPassword: string, newPassword: string): Promise<ChangePasswordResponse> {
+    return apiRequest<ChangePasswordResponse>(
+      axiosInstance.patch(this.passwordUrl, {password: {current_password: currentPassword, new_password: newPassword}}),
+      () => ({success: true}),
     );
   }
 
