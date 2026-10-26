@@ -1,7 +1,7 @@
 # Session hardening — Spec
 
 **Type:** feature
-**Status:** ready for implementation
+**Status:** in progress
 **Last updated:** 2026-10-26
 
 # Part 1 — Business logic and usage
@@ -81,6 +81,7 @@ No new dependencies. The `jwt` gem is still used to sign the session token and t
 5. **How does sliding renewal work?** The session row decides. The JWT has no `exp`, and `last_used_at` is touched at most hourly, so the frontend never refreshes tokens. Rejected: rotating short JWTs through a response header. (2026-10-26)
 6. **Cable auth?** A 1-minute cable ticket from `POST /auth/cable_ticket`, refreshed while connected. Rejected: keeping the login token in the URL. (2026-10-26)
 7. **Name of the new model?** `UserSession` (`user_sessions`), to avoid confusion with the frontend's `SessionService` and `SessionsController`. (2026-10-26, recorded while writing the spec; confirm during review)
+8. **How does `CableService.subscribe` wait for the ticket?** It stays synchronous and returns a `CableSubscription` handle (`perform`, `unsubscribe`). The real ActionCable subscription is created once the ticket arrives; `unsubscribe` before that cancels it, and `perform` before that is dropped, as ActionCable already does before the socket opens. The channel services only change their field type. Rejected: an async `subscribe` returning `Promise<Subscription>`, which spreads the waiting into every caller. (2026-10-26)
 
 # Part 3 — Implementation TODO
 
@@ -89,29 +90,29 @@ Read Part 1 and Part 2 before starting. Work through the tasks in order and tick
 Baseline before starting: run `bin/rails test` and `npm test` and note the counts.
 
 ### A. Data model
-- [ ] A1. Add the `user_sessions` table to the `create_schema` migration and rebuild the dev and test databases.
-- [ ] A2. Add the `UserSession` model and `User#user_sessions`. Model tests: `active` excludes sessions idle for 30 days; `touch_if_stale!` updates only after an hour.
+- [x] A1. Add the `user_sessions` table to the `create_schema` migration and rebuild the dev and test databases.
+- [x] A2. Add the `UserSession` model and `User#user_sessions`. Model tests: `active` excludes sessions idle for 30 days; `touch_if_stale!` updates only after an hour.
 
 ### B. Auth
-- [ ] B1. Login and register create sessions, return session tokens, and clean up expired sessions on login. Update `JsonWebToken` and `test/lib/json_web_token_test.rb`. Update the test helper or fixtures that build `Authorization` headers, so every controller test authenticates through a session (add a `user_sessions.yml` fixture or a helper that creates one).
-- [ ] B2. `current_user` resolves through an active session and touches it; cable-purpose tokens are rejected. Tests:
+- [x] B1. Login and register create sessions, return session tokens, and clean up expired sessions on login. Update `JsonWebToken` and `test/lib/json_web_token_test.rb`. Update the test helper or fixtures that build `Authorization` headers, so every controller test authenticates through a session (add a `user_sessions.yml` fixture or a helper that creates one).
+- [x] B2. `current_user` resolves through an active session and touches it; cable-purpose tokens are rejected. Tests:
   - A valid session works.
   - An idle 31-day session gets 401.
   - A deleted session row gets 401.
   - A cable ticket used as a bearer token gets 401.
-- [ ] B3. Add `DELETE /auth/session` and `POST /auth/cable_ticket` with routes. Tests: logout makes the same token get 401; a ticket is returned and expires after 1 minute (use `travel`).
-- [ ] B4. The cable connection accepts only valid tickets. Update `test/channels/application_cable` tests: a valid ticket connects; these are rejected:
+- [x] B3. Add `DELETE /auth/session` and `POST /auth/cable_ticket` with routes. Tests: logout makes the same token get 401; a ticket is returned and expires after 1 minute (use `travel`).
+- [x] B4. The cable connection accepts only valid tickets. Update `test/channels/application_cable` tests: a valid ticket connects; these are rejected:
   - An expired ticket.
   - A ticket for an ended session.
   - A login token passed as `?token=`.
-- [ ] B5. Revocation hooks in change password (other sessions deleted, current kept) and delete account (all deleted), if those specs are implemented. Add `ticket` to the filter parameters. Tests for each hook.
+- [x] B5. Revocation hooks in change password (other sessions deleted, current kept) and delete account (all deleted), if those specs are implemented. Add `ticket` to the filter parameters. Tests for each hook. (Neither change-password nor delete-account was on master on 2026-10-26, so only the filter parameter was added; whichever lands later adds its hook.)
 
 ### C. Frontend
-- [ ] C1. `AuthService.logout()` calls `DELETE /auth/session`. Spec test: it's called, and local state clears even if it fails.
-- [ ] C2. `CableService` fetches a ticket, uses a URL function and refreshes every 45 seconds while connected. Spec tests with fake timers: the URL uses `ticket=`, and the refresh happens and stops on disconnect.
+- [x] C1. `AuthService.logout()` calls `DELETE /auth/session`. Spec test: it's called, and local state clears even if it fails.
+- [x] C2. `CableService` fetches a ticket, uses a URL function and refreshes every 45 seconds while connected. Spec tests with fake timers: the URL uses `ticket=`, and the refresh happens and stops on disconnect.
 
 ### D. Docs
-- [ ] D1. Update the root `CLAUDE.md`:
+- [x] D1. Update the root `CLAUDE.md`:
   - `lib/json_web_token.rb` description: session tokens without expiry, plus cable tickets.
   - Auth: sessions table, 30-day sliding expiry, logout endpoint.
   - Channels: the connection authenticates with `?ticket=`.

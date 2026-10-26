@@ -117,7 +117,7 @@ src/environments/             environment.ts (apiUrl)
 
 #### Services and HTTP
 - All HTTP goes through `axiosInstance` from `@config/axiosConfig`, not Angular's `HttpClient`. `HttpClient` is only used to load translation files.
-- `setAuthToken` sets the Bearer header, and a 401 response triggers the handler registered via `setUnauthorizedHandler`.
+- `setAuthToken` sets the Bearer header, and a 401 response triggers the handler registered via `setUnauthorizedHandler`. `AuthService.logout()` also ends the server session (`DELETE /auth/session`, failures ignored).
 - The API base URL comes from `environment.apiUrl` in `src/environments/`.
 - Services convert the API's snake_case JSON into camelCase models using `map*` functions, such as `mapFolderedItemSummary` in `foldered-item.service.ts`.
 - Service methods return `Result<T, E>` from `@models/result.model`: `{ success: true, ...payload }` or `{ success: false, code }`, where `code` is one of the error codes the request can return. Wrap requests in `apiRequest` from `@utils/apiRequest`, which maps the success data and turns failures into a code via `toErrorResult`.
@@ -133,7 +133,7 @@ src/environments/             environment.ts (apiUrl)
 - The header's project selector is backed by `ProjectFilterService`, which stores the choice per team (`selectedProject:<team>`, falling back to All). Lists, the sidebar boards, Favorites and My Work follow it; pass its value to the API with `projectQuery` from `@utils/projectQuery`, and new items default to the selected project.
 - The header's `GlobalSearchComponent` searches the whole team through `SearchService` (`GET /teams/:team_code/search`). It follows the project selector, opens with `/`, and shows its results in a CDK overlay panel grouped by type.
 - Esc goes through `EscapeService`, a stack of layers with one `document` keydown listener. Dialogs, the item and ticket popups, and the Settings, Profile, Manage team, Switch team and project pages `push` a handler in `ngOnInit` (dialogs cancel, popups close, pages go back) and call the returned unregister function in `ngOnDestroy`; only the top one runs. An inner control that uses Esc (an inline rename, an open dropdown, a diagram selection) calls `event.preventDefault()`, and the service then does nothing. CDK connected overlays already do this. Specs that build components with `new` pass `escapeServiceStub()` from `testing/`.
-- Realtime goes through `CableService`, which owns the app's single ActionCable consumer at `ws://…/cable?token=<jwt>` (created on first use). Feature services subscribe with `CableService.subscribe(params, callbacks)` and only unsubscribe their own subscription on `disconnect()`; `SessionService.clear()` calls `CableService.disconnect()` on logout and 401.
+- Realtime goes through `CableService`, which owns the app's single ActionCable consumer at `ws://…/cable?ticket=<ticket>` (created on first use, after fetching a cable ticket from `POST /auth/cable_ticket`; never the login token). It refreshes the ticket every 45 seconds while connected, so ActionCable's reconnects always find a valid one. Feature services subscribe with `CableService.subscribe(params, callbacks)`, which returns a `CableSubscription` handle right away and subscribes once the ticket arrives, and only unsubscribe their own subscription on `disconnect()`; `SessionService.clear()` calls `CableService.disconnect()` on logout and 401.
 - Boards update live: `BoardChannelService`, provided by `BoardPageComponent` next to `BoardPageStateService`, subscribes to `BoardChannel` once the board loads and applies each message to the shared board (`applyTickets` plus a re-sort by position, `removeTickets`, `setColumns`, `setPriorities`, `setBoardMeta`). `board_deleted`, or an `access_changed` reload that returns `BOARD_NOT_FOUND`, sends the user Home with a toast. `BoardPageStateService.remoteChanges$` tells the ticket popup about remote changes (with any ticket descriptions); the popup refreshes fields that aren't being edited, takes the remote `lockVersion` unless a typed draft is kept (so saving that draft goes through the conflict check), and closes with a toast when its ticket disappears.
 - Team feature flags (`pagesEnabled`, `diagramsEnabled`, `boardsEnabled` on `Team`, mapped by `mapTeam`) are read through `TeamService.features$` and `isFeatureEnabled`. `TeamChannelService`, connected from `DashboardComponent` (and from Manage team, which sits outside it), applies `features_changed` broadcasts, sends a member removed from the active team to team selection with a toast on `member_removed`, and emits `membersChanged$` (which Manage team reloads on) for `members_changed` and other members' removal, and the dashboard sends members on a just-disabled feature's screen to Home with a toast. A `FEATURE_DISABLED` 403 reloads the session (`setFeatureDisabledHandler`). Hide a disabled feature's UI with `features$`.
 
@@ -180,13 +180,13 @@ app/
 config/
 ├── routes.rb
 └── initializers/  cors.rb, rack_attack.rb
-lib/json_web_token.rb   JWT encode/decode (HS256, 24h expiry, signed with secret_key_base)
+lib/json_web_token.rb   JWT encode/decode (HS256, signed with secret_key_base): session tokens without expiry, 1-minute cable tickets
 db/schema.rb
 test/              controllers/, models/, channels/, lib/, fixtures/
 ```
 
 #### Routes
-- Auth endpoints live under `auth/`.
+- Auth endpoints live under `auth/`: `register`, `login`, `DELETE auth/session` (logout) and `POST auth/cable_ticket`.
 - Team routes use the team `code` as the param, not the id. Team-owned resources are nested under `teams/:team_code`.
 - `GET /teams/:team_code/search` (`SearchController`) searches projects, pages, diagrams, boards and tickets the user can see. Without `type` it returns 5 results per section; with `type` and `offset` it returns the next 10 of one section.
 - `MembersController` handles `DELETE /teams/:code/members/:user_id` (owner, or admin on a `user`), `PATCH /teams/:code/members/:user_id/role` (owner, `user` ↔ `admin`), `POST /teams/:code/transfer_ownership` (owner; the old owner becomes `admin`) and `POST /teams/:code/leave` (anyone but the owner). Remove, role and transfer respond with the active members.
@@ -197,7 +197,7 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 #### Controllers
 - Everything inherits from `ActionController::API`.
 - Strong params are defined centrally as private methods in `ApplicationController` (`create_page_params`, `update_page_params` and so on). Add new ones there.
-- Auth: `before_action :authenticate_user!` reads `Authorization: Bearer <jwt>` through `current_user`.
+- Auth: `before_action :authenticate_user!` reads `Authorization: Bearer <jwt>` through `current_user`. The token carries only a `session_id`; `current_user` accepts it only if that `UserSession` is active (used in the last 30 days, `UserSession::IDLE_EXPIRY`), records use at most hourly (`touch_if_stale!`) and sets `@current_session`. Login and register create a session, login also deletes the user's expired ones, and logout destroys the current one. Tokens with a `purpose` (cable tickets) are rejected.
 - Team scoping follows a `before_action` chain: `set_team` (found by `params[:team_code]`), then `authorize_team_member!`, then `set_<resource>` scoped through `@team`. `set_team`, `authorize_team_member!`, `member_json`, `team_json` and `title_or_default` are shared in `ApplicationController`.
 - Role checks use `require_team_role!(team, :admin, :owner)`, which returns nil after rendering 403.
 - Feature flags: controllers of a switchable feature include `FeatureGated` and add `before_action -> { require_feature!(:boards) }` after `authorize_team_member!`, which renders 403 `FEATURE_DISABLED` when the team has it off. Aggregating endpoints (favorites, My Work, search) leave disabled types out instead of erroring.
@@ -225,7 +225,7 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 - List and detail endpoints preload what their JSON uses (e.g. `includes(creator: User::AVATAR_PRELOAD)`) so query counts don't grow with the number of items.
 
 #### Channels
-- `ApplicationCable::Connection` authenticates with the JWT passed as the `?token=` query param.
+- `ApplicationCable::Connection` authenticates with a cable ticket passed as the `?ticket=` query param (`purpose: "cable"`, 1-minute expiry, active session). `?token=` is not accepted.
 - Editing channels only subscribe members of the item's team who can see the item's project, and only while the item's feature is on.
 - `TeamChannel` (`team_code` param, members only) streams `team:<id>` and carries `{ type: "features_changed", team }`, `{ type: "member_removed", user_id, team }` (remove and leave) and `{ type: "members_changed" }` (role change and transfer) broadcasts.
 - `BoardChannel` (`board_id` param) only subscribes members of the board's team who can see its project, while boards are on, and streams `board:<id>`. Board-scoped controllers broadcast through `BoardBroadcast` on a separate line after their render: `tickets_upserted` (changed tickets plus reindexed siblings; tickets changed by create, update or an assignee action also carry `description`), `tickets_removed`, `columns_changed`, `priorities_changed` (plus the tickets a delete cleared), `board_updated`, `board_deleted` and `access_changed` (the board's project changed). Payloads reuse the controllers' JSON helpers.
@@ -237,3 +237,4 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 #### Tests
 - Minitest with `fixtures :all` and parallel workers.
 - Endpoints that render lists have a query-count test: `query_count { get ... }` (from `test_helper.rb`) with 1 and with 10 items must be equal.
+- Requests authenticate with `session_token(user)` (from `test_helper.rb`), which creates a `UserSession` and returns its token.
