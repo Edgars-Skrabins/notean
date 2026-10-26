@@ -15,6 +15,12 @@
   font-weight: 700;
 }
 
+.profile__sectionTitle {
+  margin: var(--space-6) 0 var(--space-4);
+  font-size: var(--font-lg);
+  font-weight: 700;
+}
+
 .profile__avatar {
   display: flex;
   align-items: center;

@@ -19,3 +19,5 @@ export interface AuthResponseSuccess {
 }
 
 export type AuthResponse = Result<object, AuthErrorCode>;
+
+export type ChangePasswordResponse = Result<object, AuthErrorCode>;
