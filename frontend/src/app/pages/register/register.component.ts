@@ -1,11 +1,11 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {NgIf} from "@angular/common";
 import {AppRoutes} from "../../app/app-routes.enum";
 import {NavigationService} from "@services/navigation.service";
 import {AuthService} from "@services/auth.service";
 import {SessionService} from "@services/session.service";
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {AuthCardComponent} from "@components/auth-card/auth-card.component";
 import {errorPhrase} from "@utils/errorPhrase";
@@ -13,14 +13,14 @@ import {isPasswordLongEnough} from "@utils/passwordValidation";
 
 @Component({
   selector: 'app-register',
-  standalone: true,
   imports: [
     FormsModule,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
     AuthCardComponent
   ],
   templateUrl: './register.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './register.component.css'
 })
 export class RegisterComponent {

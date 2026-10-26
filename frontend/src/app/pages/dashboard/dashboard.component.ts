@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {Router, RouterOutlet} from '@angular/router';
 import {Subscription} from 'rxjs';
 import {DashboardHeaderComponent} from "@components/dashboard-header/dashboard-header.component";
@@ -17,13 +17,13 @@ import {AppRoutes} from "../../app/app-routes.enum";
 
 @Component({
   selector: 'app-dashboard',
-  standalone: true,
   imports: [
     RouterOutlet,
     DashboardHeaderComponent,
     DashboardSidebarComponent
   ],
   templateUrl: './dashboard.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit, OnDestroy {

@@ -394,7 +394,7 @@ describe('ListTabComponent', () => {
 });
 
 describe('board tab routes', () => {
-  @Component({standalone: true, template: ''})
+  @Component({template: ''})
   class StubComponent {
   }
 

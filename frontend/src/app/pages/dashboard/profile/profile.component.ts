@@ -1,8 +1,8 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {NgFor, NgIf} from "@angular/common";
 import {Subscription} from "rxjs";
-import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {AVATAR_COLORS, AVATAR_IMAGE_MAX_BYTES, AVATAR_IMAGE_TYPES, AvatarColor} from "@config/avatarColors";
 import {NavigationService} from "@services/navigation.service";
@@ -26,17 +26,17 @@ import {EscapeService} from "@services/escape.service";
 
 @Component({
   selector: 'app-profile',
-  standalone: true,
   imports: [
     FormsModule,
     NgIf,
     NgFor,
-    TranslateModule,
+    TranslatePipe,
     ConfirmDialogComponent,
     AvatarComponent,
     ButtonComponent
   ],
   templateUrl: './profile.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements HasUnsavedChanges, OnInit, OnDestroy {

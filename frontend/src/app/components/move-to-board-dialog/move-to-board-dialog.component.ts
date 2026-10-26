@@ -1,7 +1,7 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import {NgFor} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ButtonComponent} from '@components/button/button.component';
 import {EscapeService} from '@services/escape.service';
@@ -13,14 +13,14 @@ export interface MoveTargetColumn {
 
 @Component({
   selector: 'app-move-to-board-dialog',
-  standalone: true,
   imports: [
     NgFor,
     FormsModule,
-    TranslateModule,
+    TranslatePipe,
     ButtonComponent
   ],
   templateUrl: './move-to-board-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './move-to-board-dialog.component.css'
 })
 export class MoveToBoardDialogComponent implements OnInit, OnDestroy {

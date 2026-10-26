@@ -1,8 +1,8 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {AsyncPipe, NgFor, NgIf} from '@angular/common';
 import {Router} from '@angular/router';
 import {CdkDrag, CdkDragDrop, CdkDropList} from '@angular/cdk/drag-drop';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {Favorite} from '@models/favorite.model';
 import {FavoriteService} from '@services/favorite.service';
@@ -14,18 +14,18 @@ import {favoriteTypeLabel} from '@utils/favoriteTypeLabel';
 
 @Component({
   selector: 'app-favorites-grid',
-  standalone: true,
   imports: [
     AsyncPipe,
     NgFor,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
     IconComponent,
     FavoriteStarComponent,
     CdkDropList,
     CdkDrag
   ],
   templateUrl: './favorites-grid.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './favorites-grid.component.css'
 })
 export class FavoritesGridComponent {

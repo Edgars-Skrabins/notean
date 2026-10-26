@@ -1,7 +1,7 @@
-import {Component, ElementRef, EventEmitter, Input, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {NgFor, NgIf} from '@angular/common';
 import {OverlayModule} from '@angular/cdk/overlay';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {DROPDOWN_POSITIONS} from '@config/overlayPositions';
 import {DropdownOption} from '@models/dropdown.model';
 import {IconComponent} from '@components/icon/icon.component';
@@ -10,15 +10,15 @@ let nextDropdownId = 0;
 
 @Component({
   selector: 'app-dropdown',
-  standalone: true,
   imports: [
     NgFor,
     NgIf,
     OverlayModule,
-    TranslateModule,
+    TranslatePipe,
     IconComponent
   ],
   templateUrl: './dropdown.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './dropdown.component.css'
 })
 export class DropdownComponent {

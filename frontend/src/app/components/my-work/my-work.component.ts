@@ -1,8 +1,8 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {skip, Subscription} from 'rxjs';
 import {Router} from '@angular/router';
 import {NgFor, NgIf} from '@angular/common';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {MyWorkService, groupMyWork} from '@services/my-work.service';
 import {TeamService} from '@services/team.service';
@@ -13,14 +13,14 @@ import {boardRoute, ticketRoute} from '@utils/ticketRoute';
 
 @Component({
   selector: 'app-my-work',
-  standalone: true,
   imports: [
     NgFor,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
     AvatarStackComponent
   ],
   templateUrl: './my-work.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './my-work.component.css'
 })
 export class MyWorkComponent implements OnInit, OnDestroy {

@@ -1,15 +1,15 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {IconComponent, IconName} from "@components/icon/icon.component";
 import {TooltipDirective} from "@components/tooltip/tooltip.directive";
 
 @Component({
   selector: 'app-icon-button',
-  standalone: true,
   imports: [
     IconComponent,
     TooltipDirective
   ],
   templateUrl: './icon-button.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './icon-button.component.css'
 })
 export class IconButtonComponent {

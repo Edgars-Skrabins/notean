@@ -1,12 +1,13 @@
 import {TestBed} from '@angular/core/testing';
-import {TranslateModule} from '@ngx-translate/core';
+import {provideTranslateService} from '@ngx-translate/core';
 import {ThemePickerComponent} from './theme-picker.component';
 import {ThemeKey} from "@config/themes";
 
 describe('ThemePickerComponent', () => {
   async function render() {
     await TestBed.configureTestingModule({
-      imports: [ThemePickerComponent, TranslateModule.forRoot()],
+      imports: [ThemePickerComponent],
+      providers: [provideTranslateService()],
     }).compileComponents();
     const fixture = TestBed.createComponent(ThemePickerComponent);
     fixture.componentRef.setInput('theme', 'coffee');

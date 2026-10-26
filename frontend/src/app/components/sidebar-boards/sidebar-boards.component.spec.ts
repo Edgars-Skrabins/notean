@@ -1,7 +1,7 @@
 import {fakeAsync, flushMicrotasks, TestBed} from '@angular/core/testing';
 import {provideRouter, Router} from "@angular/router";
 import {BehaviorSubject} from "rxjs";
-import {TranslateModule} from "@ngx-translate/core";
+import {provideTranslateService} from "@ngx-translate/core";
 import {CdkDragDrop} from "@angular/cdk/drag-drop";
 import {SidebarBoardsComponent} from "./sidebar-boards.component";
 import {BoardService} from "@services/board.service";
@@ -65,8 +65,9 @@ describe('SidebarBoardsComponent create row', () => {
   function render(boards: BoardSummary[]) {
     const boardListService = {boards$: new BehaviorSubject(boards), isOpen: true, load: () => Promise.resolve()};
     TestBed.configureTestingModule({
-      imports: [SidebarBoardsComponent, TranslateModule.forRoot()],
+      imports: [SidebarBoardsComponent],
       providers: [
+        provideTranslateService(),
         provideRouter([]),
         {provide: BoardListService, useValue: boardListService},
         {provide: BoardService, useValue: {}},

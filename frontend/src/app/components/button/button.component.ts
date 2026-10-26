@@ -1,15 +1,15 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {NgIf} from '@angular/common';
 import {IconComponent, IconName} from "@components/icon/icon.component";
 
 @Component({
   selector: 'app-button',
-  standalone: true,
   imports: [
     NgIf,
     IconComponent
   ],
   templateUrl: './button.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './button.component.css'
 })
 export class ButtonComponent {

@@ -1,7 +1,7 @@
-import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output, ChangeDetectionStrategy} from '@angular/core';
 import {DatePipe, NgFor, NgIf, NgTemplateOutlet} from '@angular/common';
 import {CdkDrag, CdkDragEnd, CdkDragMove} from '@angular/cdk/drag-drop';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {IconName} from '@components/icon/icon.component';
 import {IconButtonComponent} from '@components/icon-button/icon-button.component';
@@ -55,13 +55,12 @@ type DropTarget =
 
 @Component({
   selector: 'app-item-tree',
-  standalone: true,
   imports: [
     NgFor,
     NgIf,
     NgTemplateOutlet,
     DatePipe,
-    TranslateModule,
+    TranslatePipe,
     IconButtonComponent,
     DeleteFolderDialogComponent,
     ConfirmDialogComponent,
@@ -71,6 +70,7 @@ type DropTarget =
     CdkDrag
   ],
   templateUrl: './item-tree.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './item-tree.component.css'
 })
 export class ItemTreeComponent implements OnChanges {

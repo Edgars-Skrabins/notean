@@ -11,7 +11,7 @@ describe('LanguageService', () => {
 
   beforeEach(() => {
     localStorage.clear();
-    translateService = jasmine.createSpyObj<TranslateService>('TranslateService', ['use', 'setDefaultLang']);
+    translateService = jasmine.createSpyObj<TranslateService>('TranslateService', ['use', 'setFallbackLang', 'getCurrentLang']);
     service = new LanguageService(translateService);
   });
 
@@ -41,6 +41,20 @@ describe('LanguageService', () => {
     service.initLanguage();
 
     expect(translateService.use).toHaveBeenCalledWith('en');
+  });
+
+  it('sets English as the fallback language', () => {
+    service.initLanguage();
+
+    expect(translateService.setFallbackLang).toHaveBeenCalledWith('en');
+  });
+
+  it('returns the current language, or English before one is set', () => {
+    translateService.getCurrentLang.and.returnValue(null);
+    expect(service.getCurrentLanguage()).toBe('en');
+
+    translateService.getCurrentLang.and.returnValue('lv');
+    expect(service.getCurrentLanguage()).toBe('lv');
   });
 
   it('stores and switches to a new language', () => {

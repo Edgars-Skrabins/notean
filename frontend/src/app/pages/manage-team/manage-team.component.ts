@@ -1,8 +1,8 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgFor, NgIf} from '@angular/common';
 import {Subscription} from 'rxjs';
-import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {TITLE_MAX_LENGTH} from "@config/contentLimits";
 import {NavigationService} from "@services/navigation.service";
@@ -47,12 +47,11 @@ const MEMBER_ACTION_TOASTS: Record<MemberAction, string> = {
 
 @Component({
   selector: 'app-manage-team',
-  standalone: true,
   imports: [
     FormsModule,
     NgFor,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
     ConfirmDialogComponent,
     TeamCodeDisplayComponent,
     AvatarComponent,
@@ -60,6 +59,7 @@ const MEMBER_ACTION_TOASTS: Record<MemberAction, string> = {
     MenuButtonComponent
   ],
   templateUrl: './manage-team.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './manage-team.component.css'
 })
 export class ManageTeamComponent implements OnInit, OnDestroy {

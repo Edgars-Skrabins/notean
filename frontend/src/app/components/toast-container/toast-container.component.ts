@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {AsyncPipe, NgFor} from '@angular/common';
 import {ToastService} from '@services/toast.service';
 import {Toast} from '@models/toast.model';
@@ -6,13 +6,13 @@ import {ToastComponent} from '@components/toast/toast.component';
 
 @Component({
   selector: 'app-toast-container',
-  standalone: true,
   imports: [
     AsyncPipe,
     NgFor,
     ToastComponent
   ],
   templateUrl: './toast-container.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './toast-container.component.css'
 })
 export class ToastContainerComponent {
