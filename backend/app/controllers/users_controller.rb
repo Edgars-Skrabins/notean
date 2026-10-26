@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :authenticate_user!, only: [ :me, :update_settings, :update_avatar ]
+  before_action :authenticate_user!, only: [ :me, :destroy, :update_settings, :update_avatar ]
 
   def create
     if User.exists?(email: user_params[:email])
@@ -26,6 +26,18 @@ class UsersController < ApplicationController
       avatar: avatar_json(current_user),
       team: active_team_json(current_user)
     }
+  end
+
+  def destroy
+    owned_teams = Team.where(id: current_user.memberships.owner.select(:team_id)).order(:name)
+
+    if owned_teams.any?
+      render_error(ErrorCodes::Users::OWNS_TEAMS, :unprocessable_entity, extra: { teams: owned_teams.map { |team| { code: team.code, name: team.name } } })
+      return
+    end
+
+    current_user.anonymise!
+    head :no_content
   end
 
   def update_settings
