@@ -33,7 +33,9 @@ Rails.application.routes.draw do
     resources :favorites, only: [ :index, :create, :update, :destroy ]
     get :my_work, to: "my_work#index"
     get :search, to: "search#index"
-    resources :projects, only: [ :index, :create, :show, :update, :destroy ]
+    resources :projects, only: [ :index, :create, :show, :update, :destroy ] do
+      get :options, on: :collection
+    end
   end
 
   post "actions/jointeam" => "actions#join_team"

@@ -34,6 +34,43 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ 2, false ], body["projects"].first.values_at("member_count", "can_manage")
   end
 
+  test "index orders by name case-insensitively and pages by 50" do
+    @secret.update!(name: "alpha")
+    53.times { |index| Project.create!(team: @team, name: format("P%02d", index), owner: @owner, creator: @owner) }
+
+    get projects_url, headers: headers_for(@owner)
+    assert_equal [ "alpha", "Game", "P00" ], body["projects"].first(3).map { |project| project["name"] }
+    assert_equal 50, body["projects"].length
+    assert body["has_more"]
+
+    get projects_url, params: { offset: 50 }, headers: headers_for(@owner)
+    assert_equal [ "P48", "P49", "P50", "P51", "P52" ], body["projects"].map { |project| project["name"] }
+    assert_not body["has_more"]
+  end
+
+  test "index searches names and descriptions" do
+    @secret.update!(description: "Launch plan for the game studio")
+    Project.create!(team: @team, name: "Marketing", owner: @owner, creator: @owner)
+
+    get projects_url, params: { search: "GAME" }, headers: headers_for(@admin)
+    assert_equal [ "Game", "Secret" ], body["projects"].map { |project| project["name"] }
+
+    get projects_url, params: { search: "game" }, headers: headers_for(@member)
+    assert_equal [ "Game" ], body["projects"].map { |project| project["name"] }
+  end
+
+  test "options lists every visible project with only id and name" do
+    55.times { |index| Project.create!(team: @team, name: format("P%02d", index), owner: @owner, creator: @owner) }
+
+    get "#{projects_url}/options", headers: headers_for(@admin)
+    assert_response :success
+    assert_equal 57, body["projects"].length
+    assert_equal({ "id" => @game.id, "name" => "Game" }, body["projects"].first)
+
+    get "#{projects_url}/options", headers: headers_for(@member)
+    assert_equal [ { "id" => @game.id, "name" => "Game" } ], body["projects"]
+  end
+
   test "an admin creates a project with an owner and members" do
     post projects_url, params: { project: { name: "Website", description: "Marketing", owner_user_id: @member.id, member_ids: [ @admin.id ] } }, headers: headers_for(@admin), as: :json
 
