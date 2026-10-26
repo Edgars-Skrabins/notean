@@ -177,7 +177,7 @@
   "REMOVE_IMAGE": "Pašalinti paveikslėlį",
   "AVATAR_COLOR": "Spalva",
   "IMAGE_INVALID_TYPE": "Paveikslėlis turi būti PNG, JPEG arba WebP formato",
-  "IMAGE_TOO_LARGE": "Paveikslėlis turi būti ne didesnis nei 2 MB",
+  "IMAGE_TOO_LARGE": "Paveikslėlis turi būti ne didesnis nei 256 kB",
   "AVATAR_UPDATE_FAILED": "Nepavyko atnaujinti profilio paveikslėlio",
   "COLOR_RED": "Raudona",
   "COLOR_ORANGE": "Oranžinė",
@@ -332,7 +332,7 @@
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Nepavyko išsaugoti nustatymų",
       "AVATAR_COLOR_INVALID": "Šios spalvos naudoti negalima",
-      "AVATAR_IMAGE_INVALID": "Paveikslėlis turi būti PNG, JPEG arba WebP formato ir ne didesnis nei 2 MB",
+      "AVATAR_IMAGE_INVALID": "Paveikslėlis turi būti PNG, JPEG arba WebP formato ir ne didesnis nei 256 kB",
       "OWNS_TEAMS": "Pirmiausia perduokite nuosavybę arba ištrinkite šias komandas: {{teams}}"
     },
     "TEAMS": {

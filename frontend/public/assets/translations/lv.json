@@ -177,7 +177,7 @@
   "REMOVE_IMAGE": "Noņemt attēlu",
   "AVATAR_COLOR": "Krāsa",
   "IMAGE_INVALID_TYPE": "Attēlam jābūt PNG, JPEG vai WebP formātā",
-  "IMAGE_TOO_LARGE": "Attēls nedrīkst būt lielāks par 2 MB",
+  "IMAGE_TOO_LARGE": "Attēls nedrīkst būt lielāks par 256 kB",
   "AVATAR_UPDATE_FAILED": "Neizdevās atjaunināt profila attēlu",
   "COLOR_RED": "Sarkana",
   "COLOR_ORANGE": "Oranža",
@@ -332,7 +332,7 @@
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Neizdevās saglabāt iestatījumus",
       "AVATAR_COLOR_INVALID": "Šo krāsu nevar izmantot",
-      "AVATAR_IMAGE_INVALID": "Attēlam jābūt PNG, JPEG vai WebP formātā un ne lielākam par 2 MB",
+      "AVATAR_IMAGE_INVALID": "Attēlam jābūt PNG, JPEG vai WebP formātā un ne lielākam par 256 kB",
       "OWNS_TEAMS": "Vispirms nodod īpašumtiesības vai dzēs šīs komandas: {{teams}}"
     },
     "TEAMS": {

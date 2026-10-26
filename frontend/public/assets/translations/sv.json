@@ -177,7 +177,7 @@
   "REMOVE_IMAGE": "Ta bort bild",
   "AVATAR_COLOR": "Färg",
   "IMAGE_INVALID_TYPE": "Bilden måste vara PNG, JPEG eller WebP",
-  "IMAGE_TOO_LARGE": "Bilden får vara högst 2 MB",
+  "IMAGE_TOO_LARGE": "Bilden får vara högst 256 kB",
   "AVATAR_UPDATE_FAILED": "Det gick inte att uppdatera profilbilden",
   "COLOR_RED": "Röd",
   "COLOR_ORANGE": "Orange",
@@ -332,7 +332,7 @@
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Det gick inte att spara inställningarna",
       "AVATAR_COLOR_INVALID": "Den här färgen kan inte användas",
-      "AVATAR_IMAGE_INVALID": "Bilden måste vara PNG, JPEG eller WebP och högst 2 MB",
+      "AVATAR_IMAGE_INVALID": "Bilden måste vara PNG, JPEG eller WebP och högst 256 kB",
       "OWNS_TEAMS": "Överför ägarskapet eller radera dessa team först: {{teams}}"
     },
     "TEAMS": {
