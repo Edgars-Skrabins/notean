@@ -20,7 +20,7 @@ notean/
 ├── CLAUDE.md
 ├── README.md
 ├── docker-compose.yml   PostgreSQL for development and tests
-├── .claude/      Claude Code config (launch.json, skills/)
+├── .claude/      Claude Code config (launch.json)
 ├── specs/        feature specs for the whole app
 ├── frontend/     Angular app
 └── backend/      Rails API
@@ -34,16 +34,12 @@ Run frontend commands from `frontend/` and backend commands from `backend/`.
 - `specs/shared/` is committed. New specs go here.
 - `specs/personal/` is gitignored. Only put something here when explicitly asked to.
 - Before implementing a feature, read its spec if one exists.
-- Specs are implemented with the project's `implement-notean-spec` skill (`.claude/skills/`), which follows the global `implement-spec` and adds Notean's branch, worktree and pull request rules.
+- Specs are implemented with the global `implement-spec` skill, on their own branch and worktree.
 
 ## Branches and worktrees
 
-- Sessions start in the main checkout on `master`. Several sessions share it, so never switch branches there and never change app code there. Questions, research and spec writing happen in the main checkout.
-- Every spec is implemented on its own branch, created from an up-to-date `origin/master`, and worked on in a local worktree for that branch in `.claude/worktrees/<spec-name>`, so several agents can work in parallel. The `implement-notean-spec` skill creates both and moves the session into the worktree.
-- Commits and pushes go to the spec's branch. The worktree stays local; only the branch is on GitHub.
-- Finished work reaches `master` through a pull request from the branch, merged only once it is approved. Never commit to `master` directly, except new or updated specs and Claude config.
-- Branch names are `feature/<spec-name>` for features and `fix/<spec-name>` for bug fixes, where `<spec-name>` is the spec's filename without `.spec.md` (e.g. `specs/shared/diagram-inspect.spec.md` → `feature/diagram-inspect`, `specs/shared/popup-clipping-fix.spec.md` → `fix/popup-clipping-fix`).
-- Once the work is pushed and its pull request is open, remove its worktree with `git worktree remove .claude/worktrees/<spec-name>`. The work lives on in the branch; if the pull request needs changes, the `implement-notean-spec` skill adds a fresh worktree for the existing branch.
+- Spec work follows the global branch, worktree and pull request workflow. The default branch is `master`.
+- A new worktree needs `npm install` in `frontend/`, since `node_modules` isn't shared between worktrees.
 
 ## Commands
 
