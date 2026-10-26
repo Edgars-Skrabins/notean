@@ -83,6 +83,41 @@ describe('CableService', () => {
     expect(urls[0]()).toBe(cableUrl('second'));
   });
 
+  it('pauses refreshing while the tab is hidden and fetches a fresh ticket when it is visible again', async () => {
+    const visibility = spyOnProperty(document, 'visibilityState').and.returnValue('visible');
+    service.subscribe({channel: 'TeamChannel', team_code: 'abc'}, {});
+    await flush();
+
+    visibility.and.returnValue('hidden');
+    document.dispatchEvent(new Event('visibilitychange'));
+    jasmine.clock().tick(CABLE_TICKET_REFRESH_MS * 3);
+    await flush();
+    expect(post).toHaveBeenCalledTimes(1);
+
+    visibility.and.returnValue('visible');
+    document.dispatchEvent(new Event('visibilitychange'));
+    await flush();
+    expect(post).toHaveBeenCalledTimes(2);
+    expect(urls[0]()).toBe(cableUrl('second'));
+
+    jasmine.clock().tick(CABLE_TICKET_REFRESH_MS);
+    await flush();
+    expect(post).toHaveBeenCalledTimes(3);
+  });
+
+  it('stops listening for visibility changes on disconnect', async () => {
+    const visibility = spyOnProperty(document, 'visibilityState').and.returnValue('hidden');
+    service.subscribe({channel: 'TeamChannel', team_code: 'abc'}, {});
+    await flush();
+
+    service.disconnect();
+    visibility.and.returnValue('visible');
+    document.dispatchEvent(new Event('visibilitychange'));
+    await flush();
+
+    expect(post).toHaveBeenCalledTimes(1);
+  });
+
   it('stops refreshing on disconnect', async () => {
     service.subscribe({channel: 'TeamChannel', team_code: 'abc'}, {});
     await flush();

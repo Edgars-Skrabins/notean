@@ -22,6 +22,7 @@ export class CableService {
   private consumer: Promise<Consumer | null> | null = null;
   private ticket: string | null = null;
   private refreshTimer: ReturnType<typeof setInterval> | null = null;
+  private visibilityListener: (() => void) | null = null;
   private generation = 0;
 
   subscribe(params: Record<string, unknown>, callbacks: CableCallbacks): CableSubscription {
@@ -74,7 +75,7 @@ export class CableService {
     }
 
     this.ticket = ticket;
-    this.refreshTimer = setInterval(() => this.refreshTicket(generation), CABLE_TICKET_REFRESH_MS);
+    this.startRefreshing(generation);
     return this.createConsumer(() => baseUrl.replace(/^http/, 'ws') + `/cable?ticket=${this.ticket}`);
   }
 
@@ -93,7 +94,35 @@ export class CableService {
     return result.success ? result.ticket : null;
   }
 
+  private startRefreshing(generation: number) {
+    this.visibilityListener = () => {
+      if (document.visibilityState === 'hidden') {
+        this.stopTimer();
+      } else if (!this.refreshTimer) {
+        this.refreshTicket(generation);
+        this.startTimer(generation);
+      }
+    };
+    document.addEventListener('visibilitychange', this.visibilityListener);
+
+    if (document.visibilityState !== 'hidden') {
+      this.startTimer(generation);
+    }
+  }
+
+  private startTimer(generation: number) {
+    this.refreshTimer = setInterval(() => this.refreshTicket(generation), CABLE_TICKET_REFRESH_MS);
+  }
+
   private stopRefreshing() {
+    this.stopTimer();
+    if (this.visibilityListener) {
+      document.removeEventListener('visibilitychange', this.visibilityListener);
+      this.visibilityListener = null;
+    }
+  }
+
+  private stopTimer() {
     if (this.refreshTimer) {
       clearInterval(this.refreshTimer);
       this.refreshTimer = null;
