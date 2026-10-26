@@ -26,7 +26,7 @@ class TicketsController < ApplicationController
     if @ticket.save
       render json: { ticket: ticket_json(@ticket) }, status: :created
     else
-      render_error(ErrorCodes::Tickets::TICKET_CREATE_FAILED, :unprocessable_entity)
+      render_error(limit_error_code(@ticket) || ErrorCodes::Tickets::TICKET_CREATE_FAILED, :unprocessable_entity)
     end
   end
 
@@ -58,7 +58,7 @@ class TicketsController < ApplicationController
     if @ticket.save
       render json: { ticket: ticket_json(@ticket) }
     else
-      render_error(ErrorCodes::Tickets::TICKET_UPDATE_FAILED, :unprocessable_entity)
+      render_error(limit_error_code(@ticket) || ErrorCodes::Tickets::TICKET_UPDATE_FAILED, :unprocessable_entity)
     end
   end
 

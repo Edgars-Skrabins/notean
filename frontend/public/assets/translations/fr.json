@@ -281,6 +281,9 @@
       "UNAUTHORIZED": "Votre session a expiré. Veuillez vous reconnecter",
       "FORBIDDEN": "Vous n'avez pas l'autorisation de faire cela",
       "RATE_LIMITED": "Trop de tentatives. Veuillez patienter et réessayer",
+      "TITLE_TOO_LONG": "Ce titre est trop long",
+      "CONTENT_TOO_LARGE": "Ce contenu est trop volumineux pour être enregistré",
+      "DESCRIPTION_TOO_LONG": "Cette description est trop longue",
       "NETWORK_ERROR": "Erreur réseau. Vérifiez votre connexion et réessayez",
       "UNKNOWN_ERROR": "Une erreur s'est produite. Veuillez réessayer"
     },

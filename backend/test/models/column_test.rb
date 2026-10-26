@@ -14,6 +14,14 @@ class ColumnTest < ActiveSupport::TestCase
     assert_includes column.errors[:title], "can't be blank"
   end
 
+  test "accepts a title at the length limit and rejects one over it" do
+    assert Column.new(board: @board, title: "a" * ContentLimits::TITLE_MAX_LENGTH, position: 0).valid?
+
+    record = Column.new(board: @board, title: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1), position: 0)
+    assert_not record.valid?
+    assert record.errors.of_kind?(:title, :too_long)
+  end
+
   test "is invalid without a position" do
     column = Column.new(board: @board, title: "To Do", position: nil)
 

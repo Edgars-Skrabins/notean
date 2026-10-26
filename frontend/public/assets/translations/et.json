@@ -281,6 +281,9 @@
       "UNAUTHORIZED": "Sinu seanss on aegunud. Palun logi uuesti sisse",
       "FORBIDDEN": "Sul pole selleks õigust",
       "RATE_LIMITED": "Liiga palju katseid. Palun oota ja proovi uuesti",
+      "TITLE_TOO_LONG": "See pealkiri on liiga pikk",
+      "CONTENT_TOO_LARGE": "See sisu on salvestamiseks liiga suur",
+      "DESCRIPTION_TOO_LONG": "See kirjeldus on liiga pikk",
       "NETWORK_ERROR": "Võrguviga. Kontrolli ühendust ja proovi uuesti",
       "UNKNOWN_ERROR": "Midagi läks valesti. Palun proovi uuesti"
     },

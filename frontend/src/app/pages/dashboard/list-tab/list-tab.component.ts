@@ -5,6 +5,7 @@ import {NgFor, NgIf} from '@angular/common';
 import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
+import {TITLE_MAX_LENGTH} from "@config/contentLimits";
 import {TicketService} from "@services/ticket.service";
 import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
@@ -58,6 +59,7 @@ interface ListGroup {
 })
 export class ListTabComponent implements OnInit {
   protected readonly PHRASES = PHRASES;
+  protected readonly TITLE_MAX_LENGTH = TITLE_MAX_LENGTH;
 
   alertMessage = '';
   isCreating = false;

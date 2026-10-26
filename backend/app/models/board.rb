@@ -2,6 +2,7 @@ class Board < ApplicationRecord
   include TitleSearchable
   include BelongsToProject
   include TextSearchable
+  include ContentLimits
 
   text_searchable :title
 
@@ -15,7 +16,7 @@ class Board < ApplicationRecord
   has_many :priorities, -> { order(:position) }, class_name: "BoardPriority", dependent: :destroy
   has_many :favorites, as: :favoritable, dependent: :destroy
 
-  validates :title, presence: true
+  validates :title, presence: true, length: { maximum: TITLE_MAX_LENGTH }
 
   after_create :create_default_priorities
 

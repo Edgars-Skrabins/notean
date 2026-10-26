@@ -64,7 +64,7 @@ describe('PageDetailComponent', () => {
   }
 
   beforeEach(() => {
-    pageService = jasmine.createSpyObj<PageService>('PageService', ['get', 'create']);
+    pageService = jasmine.createSpyObj<PageService>('PageService', ['get', 'create', 'save']);
     editingService = jasmine.createSpyObj<PageEditingService>('PageEditingService', ['connect', 'disconnect', 'startEditing', 'stopEditing']);
     navigationService = jasmine.createSpyObj<NavigationService>('NavigationService', ['navigate']);
     projectFilter = projectFilterStub(4);
@@ -148,6 +148,23 @@ describe('PageDetailComponent', () => {
     expect(component.alertMessage).toBe(errorPhrase('PAGE_CREATE_FAILED'));
     expect(component.draftTitle).toBe('Plan');
     expect(component.isCreating).toBeFalse();
+  }));
+
+  it('stays in edit mode with the draft when the content is too large to save', fakeAsync(() => {
+    pageService.get.and.returnValue(Promise.resolve({success: true, item: createdPage()}));
+    pageService.save.and.returnValue(Promise.resolve({success: false, code: 'CONTENT_TOO_LARGE'}));
+    createComponent({}, {id: '9'});
+    tick();
+    component.handleEdit();
+    component.handleContentChange('<p>Huge</p>');
+
+    component.handleSave();
+    tick();
+
+    expect(component.alertMessage).toBe('ERRORS.COMMON.CONTENT_TOO_LARGE');
+    expect(component.mode).toBe('edit');
+    expect(component.draftContent).toBe('<p>Huge</p>');
+    expect(editingService.stopEditing).not.toHaveBeenCalled();
   }));
 
   it('closes an untouched draft right away', () => {

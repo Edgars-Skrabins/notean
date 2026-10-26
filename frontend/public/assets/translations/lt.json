@@ -281,6 +281,9 @@
       "UNAUTHORIZED": "Jūsų sesija baigėsi. Prisijunkite iš naujo",
       "FORBIDDEN": "Neturite leidimo tai daryti",
       "RATE_LIMITED": "Per daug bandymų. Palaukite ir bandykite dar kartą",
+      "TITLE_TOO_LONG": "Šis pavadinimas per ilgas",
+      "CONTENT_TOO_LARGE": "Šis turinys per didelis, kad būtų išsaugotas",
+      "DESCRIPTION_TOO_LONG": "Šis aprašymas per ilgas",
       "NETWORK_ERROR": "Tinklo klaida. Patikrinkite ryšį ir bandykite dar kartą",
       "UNKNOWN_ERROR": "Kažkas nepavyko. Bandykite dar kartą"
     },

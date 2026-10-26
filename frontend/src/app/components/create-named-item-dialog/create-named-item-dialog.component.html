@@ -8,6 +8,7 @@
       type="text"
       class="createNamedItemDialog__input"
       [(ngModel)]="itemTitle"
+      [maxlength]="TITLE_MAX_LENGTH"
       [placeholder]="defaultValue"
       autofocus
     />

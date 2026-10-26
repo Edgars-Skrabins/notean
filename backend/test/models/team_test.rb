@@ -13,6 +13,14 @@ class TeamTest < ActiveSupport::TestCase
     assert_includes team.errors[:name], "can't be blank"
   end
 
+  test "accepts a name at the length limit and rejects one over it" do
+    assert build_team(name: "a" * ContentLimits::TITLE_MAX_LENGTH).valid?
+
+    record = build_team(name: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1))
+    assert_not record.valid?
+    assert record.errors.of_kind?(:name, :too_long)
+  end
+
   test "is invalid without a code" do
     team = build_team
     team.save!

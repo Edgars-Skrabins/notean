@@ -13,6 +13,14 @@ class BoardTest < ActiveSupport::TestCase
     assert_includes board.errors[:title], "can't be blank"
   end
 
+  test "accepts a title at the length limit and rejects one over it" do
+    assert Board.new(team: @team, creator: @user, title: "a" * ContentLimits::TITLE_MAX_LENGTH).valid?
+
+    record = Board.new(team: @team, creator: @user, title: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1))
+    assert_not record.valid?
+    assert record.errors.of_kind?(:title, :too_long)
+  end
+
   test "is valid with a title" do
     assert Board.new(team: @team, creator: @user, title: "Sprint 12").valid?
   end

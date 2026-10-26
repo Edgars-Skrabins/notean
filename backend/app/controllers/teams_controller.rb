@@ -46,7 +46,7 @@ class TeamsController < ApplicationController
     end
 
     if membership.nil?
-      render_error(ErrorCodes::Teams::TEAM_CREATE_FAILED, :unprocessable_entity)
+      render_error(limit_error_code(@team) || ErrorCodes::Teams::TEAM_CREATE_FAILED, :unprocessable_entity)
     elsif membership.persisted?
       render json: { team: team_json(@team), role: "owner", nickname: membership.nickname }, status: :created
     else
@@ -71,7 +71,7 @@ class TeamsController < ApplicationController
     if @team.update(update_team_params)
       render json: { team: team_json(@team) }
     else
-      render_error(ErrorCodes::Teams::TEAM_RENAME_FAILED, :unprocessable_entity)
+      render_error(limit_error_code(@team) || ErrorCodes::Teams::TEAM_RENAME_FAILED, :unprocessable_entity)
     end
   end
 

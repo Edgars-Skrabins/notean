@@ -19,6 +19,22 @@ class ProjectTest < ActiveSupport::TestCase
     assert_includes duplicate.errors[:name], "has already been taken"
   end
 
+  test "accepts a name at the length limit and rejects one over it" do
+    assert Project.new(team: @team, name: "a" * ContentLimits::TITLE_MAX_LENGTH, owner: @owner, creator: @owner).valid?
+
+    record = Project.new(team: @team, name: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1), owner: @owner, creator: @owner)
+    assert_not record.valid?
+    assert record.errors.of_kind?(:name, :too_long)
+  end
+
+  test "accepts a description at the length limit and rejects one over it" do
+    assert Project.new(team: @team, name: "Game", description: "a" * ContentLimits::DESCRIPTION_MAX_LENGTH, owner: @owner, creator: @owner).valid?
+
+    record = Project.new(team: @team, name: "Game", description: "a" * (ContentLimits::DESCRIPTION_MAX_LENGTH + 1), owner: @owner, creator: @owner)
+    assert_not record.valid?
+    assert record.errors.of_kind?(:description, :too_long)
+  end
+
   test "the same name is allowed in another team" do
     project(name: "Game")
     other = Team.create!(name: "Other", password: "supersecret")

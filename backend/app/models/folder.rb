@@ -1,5 +1,6 @@
 class Folder < ApplicationRecord
   include BelongsToProject
+  include ContentLimits
 
   belongs_to :team
   belongs_to :creator, class_name: "User", foreign_key: :created_by_user_id
@@ -8,7 +9,7 @@ class Folder < ApplicationRecord
   has_many :pages, foreign_key: :folder_id, dependent: :destroy
   has_many :diagrams, foreign_key: :folder_id, dependent: :destroy
 
-  validates :title, presence: true
+  validates :title, presence: true, length: { maximum: TITLE_MAX_LENGTH }
   validates :item_type, inclusion: { in: %w[Page Diagram] }
   validate :parent_has_same_item_type
   validate :parent_is_not_self_or_descendant

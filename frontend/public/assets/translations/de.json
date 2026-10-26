@@ -281,6 +281,9 @@
       "UNAUTHORIZED": "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an",
       "FORBIDDEN": "Du hast keine Berechtigung dafür",
       "RATE_LIMITED": "Zu viele Versuche. Bitte warte und versuche es erneut",
+      "TITLE_TOO_LONG": "Dieser Titel ist zu lang",
+      "CONTENT_TOO_LARGE": "Dieser Inhalt ist zu groß zum Speichern",
+      "DESCRIPTION_TOO_LONG": "Diese Beschreibung ist zu lang",
       "NETWORK_ERROR": "Netzwerkfehler. Prüfe deine Verbindung und versuche es erneut",
       "UNKNOWN_ERROR": "Etwas ist schiefgelaufen. Bitte versuche es erneut"
     },
