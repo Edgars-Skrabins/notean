@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import {AsyncPipe, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {TITLE_MAX_LENGTH} from '@config/contentLimits';
 import {ButtonComponent} from '@components/button/button.component';
@@ -15,7 +15,7 @@ import {ProjectFilterService} from '@services/project-filter.service';
     AsyncPipe,
     NgIf,
     FormsModule,
-    TranslateModule,
+    TranslatePipe,
     ButtonComponent,
     ProjectSelectComponent
   ],

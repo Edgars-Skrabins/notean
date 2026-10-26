@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/co
 import {FormsModule} from "@angular/forms";
 import {NgFor, NgIf} from "@angular/common";
 import {Subscription} from "rxjs";
-import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {AVATAR_COLORS, AVATAR_IMAGE_MAX_BYTES, AVATAR_IMAGE_TYPES, AvatarColor} from "@config/avatarColors";
 import {NavigationService} from "@services/navigation.service";
@@ -30,7 +30,7 @@ import {EscapeService} from "@services/escape.service";
     FormsModule,
     NgIf,
     NgFor,
-    TranslateModule,
+    TranslatePipe,
     ConfirmDialogComponent,
     AvatarComponent,
     ButtonComponent

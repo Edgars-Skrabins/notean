@@ -1,5 +1,5 @@
 import {Component, ElementRef, ChangeDetectionStrategy} from '@angular/core';
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {AsyncPipe, NgIf} from "@angular/common";
 import {OverlayModule} from "@angular/cdk/overlay";
 import {PHRASES} from "@config/phrases";
@@ -19,7 +19,7 @@ import {AppRoutes} from "../../app/app-routes.enum";
 @Component({
   selector: 'app-dashboard-header',
   imports: [
-    TranslateModule,
+    TranslatePipe,
     NgIf,
     AsyncPipe,
     OverlayModule,

@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {DatePipe, NgIf} from '@angular/common';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {TicketSummary} from '@models/ticket.model';
 import {BoardPriority} from '@models/priority.model';
@@ -14,7 +14,7 @@ import {CheckboxComponent} from '@components/checkbox/checkbox.component';
   imports: [
     DatePipe,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
     IconButtonComponent,
     FavoriteStarComponent,
     AvatarStackComponent,

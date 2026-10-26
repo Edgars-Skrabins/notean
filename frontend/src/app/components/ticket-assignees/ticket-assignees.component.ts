@@ -2,7 +2,7 @@ import {Component, ElementRef, EventEmitter, Input, Output, ChangeDetectionStrat
 import {FormsModule} from '@angular/forms';
 import {NgFor, NgIf} from '@angular/common';
 import {CdkConnectedOverlay, OverlayModule} from '@angular/cdk/overlay';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {DROPDOWN_POSITIONS} from '@config/overlayPositions';
 import {BoardUser} from '@models/board.model';
@@ -17,7 +17,7 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
     NgFor,
     NgIf,
     OverlayModule,
-    TranslateModule,
+    TranslatePipe,
     AvatarComponent,
     IconButtonComponent
   ],

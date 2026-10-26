@@ -33,7 +33,7 @@ describe('BoardOverviewTabComponent', () => {
   beforeEach(() => {
     boardService = jasmine.createSpyObj<BoardService>('BoardService', ['getOverview']);
     router = jasmine.createSpyObj<Router>('Router', ['navigate']);
-    component = new BoardOverviewTabComponent(router, createBoardState(), boardService, {currentLang: 'en', instant: (key: string) => key} as unknown as TranslateService);
+    component = new BoardOverviewTabComponent(router, createBoardState(), boardService, {getCurrentLang: () => 'en', getFallbackLang: () => 'en', instant: (key: string) => key} as unknown as TranslateService);
   });
 
   it('loads the overview for the board', fakeAsync(() => {

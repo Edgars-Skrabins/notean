@@ -1,6 +1,6 @@
 import {ElementRef} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
-import {TranslateModule} from '@ngx-translate/core';
+import {provideTranslateService} from '@ngx-translate/core';
 import {DropdownComponent} from './dropdown.component';
 
 function key(name: string): KeyboardEvent {
@@ -114,7 +114,8 @@ describe('DropdownComponent', () => {
 describe('DropdownComponent prefix', () => {
   it('renders a prefix before the label only for options that have one', async () => {
     await TestBed.configureTestingModule({
-      imports: [DropdownComponent, TranslateModule.forRoot()],
+      imports: [DropdownComponent],
+      providers: [provideTranslateService()],
     }).compileComponents();
     const fixture = TestBed.createComponent(DropdownComponent);
     fixture.componentInstance.options = [{value: 'en', label: 'English', prefix: '🇬🇧'}, {value: 'plain', label: 'Plain'}];
@@ -136,7 +137,8 @@ describe('DropdownComponent prefix', () => {
 
   it('adds the compact trigger class only for size sm', async () => {
     await TestBed.configureTestingModule({
-      imports: [DropdownComponent, TranslateModule.forRoot()],
+      imports: [DropdownComponent],
+      providers: [provideTranslateService()],
     }).compileComponents();
     const fixture = TestBed.createComponent(DropdownComponent);
     fixture.componentInstance.options = [{value: 'en', label: 'English'}];

@@ -1,5 +1,5 @@
 import {Component, HostBinding, Input, ChangeDetectionStrategy} from '@angular/core';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {FavoritableType} from '@models/favorite.model';
 import {FavoriteService} from '@services/favorite.service';
@@ -8,7 +8,7 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
 @Component({
   selector: 'app-favorite-star',
   imports: [
-    TranslateModule,
+    TranslatePipe,
     IconButtonComponent
   ],
   templateUrl: './favorite-star.component.html',

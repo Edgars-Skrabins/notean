@@ -1,7 +1,7 @@
 import {Component, ElementRef, EventEmitter, Input, Output, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {TITLE_MAX_LENGTH} from '@config/contentLimits';
 import {IconComponent, IconName} from '@components/icon/icon.component';
@@ -9,7 +9,7 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
 
 @Component({
   selector: 'app-item-tree-row',
-  imports: [NgIf, FormsModule, TranslateModule, IconComponent, IconButtonComponent],
+  imports: [NgIf, FormsModule, TranslatePipe, IconComponent, IconButtonComponent],
   templateUrl: './item-tree-row.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './item-tree-row.component.css'

@@ -1,6 +1,6 @@
 import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {AsyncPipe, NgIf} from '@angular/common';
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {SettingsService} from "@services/settings.service";
 import {TeamService} from "@services/team.service";
@@ -12,7 +12,7 @@ import {MyWorkComponent} from "@components/my-work/my-work.component";
   imports: [
     AsyncPipe,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
     FavoritesGridComponent,
     MyWorkComponent
   ],

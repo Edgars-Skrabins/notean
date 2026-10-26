@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {TicketStatus} from '@models/ticket.model';
 import {BoardUser} from '@models/board.model';
@@ -11,7 +11,7 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
 @Component({
   selector: 'app-ticket-selection-bar',
   imports: [
-    TranslateModule,
+    TranslatePipe,
     MenuButtonComponent,
     IconButtonComponent
   ],

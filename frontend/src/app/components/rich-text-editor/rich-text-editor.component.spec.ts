@@ -1,5 +1,5 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {TranslateModule} from '@ngx-translate/core';
+import {provideTranslateService} from '@ngx-translate/core';
 import {RichTextEditorComponent} from './rich-text-editor.component';
 
 describe('RichTextEditorComponent', () => {
@@ -13,7 +13,8 @@ describe('RichTextEditorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RichTextEditorComponent, TranslateModule.forRoot()],
+      imports: [RichTextEditorComponent],
+      providers: [provideTranslateService()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RichTextEditorComponent);

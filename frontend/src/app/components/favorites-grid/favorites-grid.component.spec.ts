@@ -2,7 +2,7 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
 import {BehaviorSubject} from 'rxjs';
 import {CdkDragDrop} from '@angular/cdk/drag-drop';
-import {TranslateModule} from '@ngx-translate/core';
+import {provideTranslateService} from '@ngx-translate/core';
 import {FavoritesGridComponent} from './favorites-grid.component';
 import {FavoriteService} from '@services/favorite.service';
 import {Favorite} from '@models/favorite.model';
@@ -39,8 +39,9 @@ describe('FavoritesGridComponent', () => {
     router = jasmine.createSpyObj<Router>('Router', ['navigate']);
 
     await TestBed.configureTestingModule({
-      imports: [FavoritesGridComponent, TranslateModule.forRoot()],
+      imports: [FavoritesGridComponent],
       providers: [
+        provideTranslateService(),
         {provide: FavoriteService, useValue: favoriteService},
         {provide: Router, useValue: router},
       ],

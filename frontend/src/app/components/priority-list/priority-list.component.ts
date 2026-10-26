@@ -2,7 +2,7 @@ import {Component, ElementRef, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgFor, NgIf} from '@angular/common';
 import {CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
-import {TranslateModule, TranslateService} from '@ngx-translate/core';
+import {TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {PriorityService} from '@services/priority.service';
 import {ToastService} from '@services/toast.service';
@@ -25,7 +25,7 @@ import {BoardPageStateService} from '@pages/dashboard/board-page/board-page-stat
     CdkDropList,
     CdkDrag,
     CdkDragHandle,
-    TranslateModule,
+    TranslatePipe,
     IconComponent,
     IconButtonComponent,
     ConfirmDialogComponent,

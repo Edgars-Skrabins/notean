@@ -1,5 +1,5 @@
 import {TestBed} from '@angular/core/testing';
-import {TranslateModule} from '@ngx-translate/core';
+import {provideTranslateService} from '@ngx-translate/core';
 import {CreateNamedItemDialogComponent} from './create-named-item-dialog.component';
 import {EscapeService} from '@services/escape.service';
 import {ProjectFilterService} from '@services/project-filter.service';
@@ -10,8 +10,9 @@ import {projectFilterStub} from '../../testing/projectFilterStub';
 describe('CreateNamedItemDialogComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CreateNamedItemDialogComponent, TranslateModule.forRoot()],
+      imports: [CreateNamedItemDialogComponent],
       providers: [
+        provideTranslateService(),
         {provide: EscapeService, useValue: escapeServiceStub().service},
         {provide: ProjectFilterService, useValue: projectFilterStub().service},
       ],

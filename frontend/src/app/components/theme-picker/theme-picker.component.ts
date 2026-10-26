@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {NgForOf} from "@angular/common";
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {DEFAULT_THEME, ThemeKey, THEMES} from "@config/themes";
 import {ResolvedThemeMode} from "@utils/themeDom";
@@ -9,7 +9,7 @@ import {ResolvedThemeMode} from "@utils/themeDom";
   selector: 'app-theme-picker',
   imports: [
     NgForOf,
-    TranslateModule
+    TranslatePipe
   ],
   templateUrl: './theme-picker.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,

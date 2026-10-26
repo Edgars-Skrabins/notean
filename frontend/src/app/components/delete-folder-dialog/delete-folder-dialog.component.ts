@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ButtonComponent} from '@components/button/button.component';
 import {CheckboxComponent} from '@components/checkbox/checkbox.component';
@@ -9,7 +9,7 @@ import {EscapeService} from '@services/escape.service';
 @Component({
   selector: 'app-delete-folder-dialog',
   imports: [
-    TranslateModule,
+    TranslatePipe,
     ButtonComponent,
     CheckboxComponent
   ],

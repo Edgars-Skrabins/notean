@@ -5,7 +5,7 @@ import {AppRoutes} from "../../app/app-routes.enum";
 import {NavigationService} from "@services/navigation.service";
 import {AuthService} from "@services/auth.service";
 import {SessionService} from "@services/session.service";
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {AuthCardComponent} from "@components/auth-card/auth-card.component";
 import {errorPhrase} from "@utils/errorPhrase";
@@ -15,7 +15,7 @@ import {errorPhrase} from "@utils/errorPhrase";
   imports: [
     FormsModule,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
     AuthCardComponent
   ],
   templateUrl: './login.component.html',

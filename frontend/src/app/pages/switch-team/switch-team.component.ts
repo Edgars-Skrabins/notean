@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {NgFor, NgIf} from '@angular/common';
-import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
@@ -18,7 +18,7 @@ import {TooltipDirective} from "@components/tooltip/tooltip.directive";
   imports: [
     NgFor,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
     ButtonComponent,
     ConfirmDialogComponent,
     TooltipDirective

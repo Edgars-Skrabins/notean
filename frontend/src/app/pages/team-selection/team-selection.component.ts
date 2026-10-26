@@ -1,5 +1,5 @@
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {NgIf} from "@angular/common";
 import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
@@ -10,7 +10,7 @@ import {AuthCardComponent} from "@components/auth-card/auth-card.component";
 @Component({
   selector: 'app-team-selection',
   imports: [
-    TranslateModule,
+    TranslatePipe,
     NgIf,
     AuthCardComponent
   ],

@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy} from '
 import {ActivatedRoute, Router} from '@angular/router';
 import {DatePipe, NgFor, NgIf} from '@angular/common';
 import {Subscription} from 'rxjs';
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {ErrorCode} from "@config/errorCodes";
 import {ProjectService} from "@services/project.service";
@@ -59,7 +59,7 @@ function newestFirst(items: ProjectItem[]): ProjectItem[] {
     DatePipe,
     NgFor,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
     AvatarComponent,
     ButtonComponent,
     LoadMoreComponent,

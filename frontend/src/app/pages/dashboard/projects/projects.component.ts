@@ -3,7 +3,7 @@ import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
 import {NgFor, NgIf} from '@angular/common';
 import {debounceTime, distinctUntilChanged, map, Subject, Subscription} from 'rxjs';
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {ProjectFilterService} from "@services/project-filter.service";
 import {ProjectService} from "@services/project.service";
@@ -26,7 +26,7 @@ import {AppRoutes} from "../../../app/app-routes.enum";
     FormsModule,
     NgFor,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
     AvatarComponent,
     ButtonComponent,
     LoadMoreComponent,

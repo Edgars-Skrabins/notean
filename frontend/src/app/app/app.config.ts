@@ -1,23 +1,16 @@
-import {ApplicationConfig, importProvidersFrom, provideZoneChangeDetection} from '@angular/core';
+import {ApplicationConfig, provideZoneChangeDetection} from '@angular/core';
 import {provideRouter} from '@angular/router';
-import {HttpClient, provideHttpClient, withXhr} from "@angular/common/http";
-import {TranslateLoader, TranslateModule} from "@ngx-translate/core";
-import {TranslateHttpLoader} from '@ngx-translate/http-loader';
+import {provideHttpClient, withXhr} from "@angular/common/http";
+import {provideTranslateService} from "@ngx-translate/core";
+import {provideTranslateHttpLoader} from '@ngx-translate/http-loader';
 import {routes} from './app.routes';
-
-const httpLoaderFactory: (http: HttpClient) => TranslateHttpLoader = (http: HttpClient) =>
-  new TranslateHttpLoader(http, 'assets/translations/', '.json');
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({eventCoalescing: true}), provideRouter(routes),
     provideHttpClient(withXhr()),
-    importProvidersFrom([TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: httpLoaderFactory,
-        deps: [HttpClient],
-      },
-    })])
+    provideTranslateService({
+      loader: provideTranslateHttpLoader({prefix: 'assets/translations/', suffix: '.json'}),
+    })
   ],
 };

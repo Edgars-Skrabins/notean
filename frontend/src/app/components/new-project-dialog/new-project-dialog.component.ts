@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ProjectParams} from '@models/project.model';
 import {TeamMember} from '@models/team.model';
@@ -10,7 +10,7 @@ import {EscapeService} from '@services/escape.service';
 @Component({
   selector: 'app-new-project-dialog',
   imports: [
-    TranslateModule,
+    TranslatePipe,
     ButtonComponent,
     ProjectFormComponent
   ],

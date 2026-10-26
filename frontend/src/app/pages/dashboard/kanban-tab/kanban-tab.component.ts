@@ -2,7 +2,7 @@ import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
 import {NgFor, NgIf} from '@angular/common';
 import {CdkDragDrop, CdkDropListGroup, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {ColumnService} from "@services/column.service";
 import {TicketService} from "@services/ticket.service";
@@ -25,7 +25,7 @@ import {BoardPageStateService} from "../board-page/board-page-state.service";
     NgFor,
     NgIf,
     RouterOutlet,
-    TranslateModule,
+    TranslatePipe,
     ButtonComponent,
     KanbanColumnComponent,
     CreateNamedItemDialogComponent,

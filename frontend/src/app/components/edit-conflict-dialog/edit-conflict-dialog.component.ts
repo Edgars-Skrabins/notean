@@ -1,5 +1,5 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ButtonComponent} from '@components/button/button.component';
 import {EscapeService} from '@services/escape.service';
@@ -7,7 +7,7 @@ import {EscapeService} from '@services/escape.service';
 @Component({
   selector: 'app-edit-conflict-dialog',
   imports: [
-    TranslateModule,
+    TranslatePipe,
     ButtonComponent
   ],
   templateUrl: './edit-conflict-dialog.component.html',

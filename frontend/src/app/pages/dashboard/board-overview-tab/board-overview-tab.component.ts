@@ -1,9 +1,10 @@
 import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {Router} from '@angular/router';
 import {NgFor, NgIf} from '@angular/common';
-import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {chartColor} from "@config/chartColors";
+import {defaultLanguage} from "@config/translationConfig";
 import {BoardService} from "@services/board.service";
 import {BoardOverview, RecentTicket} from "@models/board.model";
 import {PieChartComponent, PieSlice} from "@components/pie-chart/pie-chart.component";
@@ -18,7 +19,7 @@ import {BoardPageStateService} from "../board-page/board-page-state.service";
   imports: [
     NgFor,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
     PieChartComponent,
     PriorityListComponent
   ],
@@ -72,7 +73,7 @@ export class BoardOverviewTabComponent implements OnInit {
   }
 
   updatedAgo(ticket: RecentTicket): string {
-    return relativeDate(ticket.updatedAt, this.translateService.currentLang ?? this.translateService.defaultLang);
+    return relativeDate(ticket.updatedAt, this.translateService.getCurrentLang() ?? this.translateService.getFallbackLang() ?? defaultLanguage);
   }
 
   handleOpenTicket(ticket: RecentTicket) {

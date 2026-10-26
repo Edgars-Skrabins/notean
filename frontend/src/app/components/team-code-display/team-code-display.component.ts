@@ -1,13 +1,13 @@
 import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {NgIf} from '@angular/common';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 
 @Component({
   selector: 'app-team-code-display',
   imports: [
     NgIf,
-    TranslateModule
+    TranslatePipe
   ],
   templateUrl: './team-code-display.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,

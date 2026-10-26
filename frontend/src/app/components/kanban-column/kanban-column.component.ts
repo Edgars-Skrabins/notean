@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@
 import {NgFor, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {CdkDrag, CdkDragDrop, CdkDropList} from '@angular/cdk/drag-drop';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {TITLE_MAX_LENGTH} from '@config/contentLimits';
 import {BoardColumn} from '@models/board.model';
@@ -17,7 +17,7 @@ import {KanbanTicketComponent} from '@components/kanban-ticket/kanban-ticket.com
     NgFor,
     NgIf,
     FormsModule,
-    TranslateModule,
+    TranslatePipe,
     IconButtonComponent,
     ButtonComponent,
     KanbanTicketComponent,

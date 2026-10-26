@@ -1,5 +1,5 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {TranslateModule} from '@ngx-translate/core';
+import {provideTranslateService} from '@ngx-translate/core';
 import {ListRowComponent} from './list-row.component';
 import {FavoriteService} from '@services/favorite.service';
 import {ticketSummary} from '../../testing/boardFixtures';
@@ -14,8 +14,8 @@ describe('ListRowComponent', () => {
     favoriteService.toggle.and.returnValue(Promise.resolve());
 
     await TestBed.configureTestingModule({
-      imports: [ListRowComponent, TranslateModule.forRoot()],
-      providers: [{provide: FavoriteService, useValue: favoriteService}],
+      imports: [ListRowComponent],
+      providers: [provideTranslateService(), {provide: FavoriteService, useValue: favoriteService}],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ListRowComponent);

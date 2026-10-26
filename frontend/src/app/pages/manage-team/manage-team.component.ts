@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/co
 import {FormsModule} from '@angular/forms';
 import {NgFor, NgIf} from '@angular/common';
 import {Subscription} from 'rxjs';
-import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {TITLE_MAX_LENGTH} from "@config/contentLimits";
 import {NavigationService} from "@services/navigation.service";
@@ -51,7 +51,7 @@ const MEMBER_ACTION_TOASTS: Record<MemberAction, string> = {
     FormsModule,
     NgFor,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
     ConfirmDialogComponent,
     TeamCodeDisplayComponent,
     AvatarComponent,

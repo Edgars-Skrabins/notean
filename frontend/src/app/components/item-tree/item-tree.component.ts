@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnChanges, Output, ChangeDetectionStrategy} from '@angular/core';
 import {DatePipe, NgFor, NgIf, NgTemplateOutlet} from '@angular/common';
 import {CdkDrag, CdkDragEnd, CdkDragMove} from '@angular/cdk/drag-drop';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {IconName} from '@components/icon/icon.component';
 import {IconButtonComponent} from '@components/icon-button/icon-button.component';
@@ -60,7 +60,7 @@ type DropTarget =
     NgIf,
     NgTemplateOutlet,
     DatePipe,
-    TranslateModule,
+    TranslatePipe,
     IconButtonComponent,
     DeleteFolderDialogComponent,
     ConfirmDialogComponent,

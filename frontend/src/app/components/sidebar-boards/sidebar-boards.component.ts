@@ -2,7 +2,7 @@ import {Component, Input, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {AsyncPipe, NgFor, NgIf} from '@angular/common';
 import {Router, RouterLink, RouterLinkActive} from '@angular/router';
 import {CdkDrag, CdkDragDrop, CdkDropList} from '@angular/cdk/drag-drop';
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {BoardService} from "@services/board.service";
 import {BoardListService} from "@services/board-list.service";
@@ -25,7 +25,7 @@ import {boardRoute} from "@utils/ticketRoute";
     RouterLinkActive,
     CdkDropList,
     CdkDrag,
-    TranslateModule,
+    TranslatePipe,
     IconComponent,
     CreateNamedItemDialogComponent,
     TooltipDirective

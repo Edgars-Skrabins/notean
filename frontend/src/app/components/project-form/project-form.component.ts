@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgFor, NgIf} from '@angular/common';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {TITLE_MAX_LENGTH, DESCRIPTION_MAX_LENGTH} from '@config/contentLimits';
 import {ProjectParams} from '@models/project.model';
@@ -17,7 +17,7 @@ import {DropdownComponent} from '@components/dropdown/dropdown.component';
     FormsModule,
     NgFor,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
     AvatarComponent,
     CheckboxComponent,
     DropdownComponent

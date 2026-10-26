@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetecti
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
 import {CdkScrollable} from '@angular/cdk/scrolling';
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {TITLE_MAX_LENGTH} from "@config/contentLimits";
 import {FolderedItemDetail} from "@models/foldered-item.model";
@@ -21,7 +21,7 @@ import {EscapeService} from "@services/escape.service";
     FormsModule,
     NgIf,
     CdkScrollable,
-    TranslateModule,
+    TranslatePipe,
     IconButtonComponent,
     ButtonComponent,
     ConfirmDialogComponent,

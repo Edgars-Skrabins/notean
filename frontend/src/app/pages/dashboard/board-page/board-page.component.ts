@@ -3,7 +3,7 @@ import {ActivatedRoute, RouterLink, RouterLinkActive, RouterOutlet} from '@angul
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
 import {Subscription} from 'rxjs';
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {TITLE_MAX_LENGTH} from "@config/contentLimits";
 import {BoardService} from "@services/board.service";
@@ -29,7 +29,7 @@ import {BoardChannelService} from "@services/board-channel.service";
     RouterLink,
     RouterLinkActive,
     RouterOutlet,
-    TranslateModule,
+    TranslatePipe,
     IconButtonComponent,
     ConfirmDialogComponent,
     FavoriteStarComponent,

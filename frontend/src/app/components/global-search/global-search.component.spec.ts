@@ -1,6 +1,6 @@
 import {ComponentFixture, fakeAsync, flushMicrotasks, TestBed, tick} from '@angular/core/testing';
 import {Router} from '@angular/router';
-import {TranslateModule} from '@ngx-translate/core';
+import {provideTranslateService} from '@ngx-translate/core';
 import {GlobalSearchComponent, SEARCH_DEBOUNCE_MS} from './global-search.component';
 import {SearchService} from '@services/search.service';
 import {TeamService} from '@services/team.service';
@@ -50,8 +50,9 @@ describe('GlobalSearchComponent', () => {
     teamService.getCurrentTeamCode.and.returnValue('abc');
 
     await TestBed.configureTestingModule({
-      imports: [GlobalSearchComponent, TranslateModule.forRoot()],
+      imports: [GlobalSearchComponent],
       providers: [
+        provideTranslateService(),
         {provide: SearchService, useValue: searchService},
         {provide: TeamService, useValue: teamService},
         {provide: Router, useValue: router},

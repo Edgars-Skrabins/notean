@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {DeleteProjectMode} from '@models/project.model';
 import {ButtonComponent} from '@components/button/button.component';
@@ -10,7 +10,7 @@ import {EscapeService} from '@services/escape.service';
   selector: 'app-delete-project-dialog',
   imports: [
     FormsModule,
-    TranslateModule,
+    TranslatePipe,
     ButtonComponent
   ],
   templateUrl: './delete-project-dialog.component.html',

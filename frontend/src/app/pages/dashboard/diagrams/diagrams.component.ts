@@ -2,7 +2,7 @@ import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {AsyncPipe, NgIf} from '@angular/common';
 import {Router} from '@angular/router';
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {DiagramService} from "@services/diagram.service";
 import {FolderService} from "@services/folder.service";
@@ -23,7 +23,7 @@ import {FolderedListPageComponent} from "../foldered-list-page.base";
     FormsModule,
     NgIf,
     AsyncPipe,
-    TranslateModule,
+    TranslatePipe,
     ButtonComponent,
     ItemTreeComponent,
     CreateNamedItemDialogComponent,

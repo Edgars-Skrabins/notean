@@ -4,7 +4,7 @@ import {FormsModule} from '@angular/forms';
 import {NgFor, NgIf} from '@angular/common';
 import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
 import {debounceTime, distinctUntilChanged, map, Subject, Subscription} from 'rxjs';
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {TITLE_MAX_LENGTH} from "@config/contentLimits";
 import {TicketService} from "@services/ticket.service";
@@ -58,7 +58,7 @@ function byPosition(first: TicketSummary, second: TicketSummary): number {
     NgFor,
     NgIf,
     RouterOutlet,
-    TranslateModule,
+    TranslatePipe,
     CdkDropList,
     CdkDrag,
     ListRowComponent,

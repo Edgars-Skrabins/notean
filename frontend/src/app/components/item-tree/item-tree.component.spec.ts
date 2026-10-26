@@ -1,5 +1,5 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {TranslateModule} from '@ngx-translate/core';
+import {provideTranslateService} from '@ngx-translate/core';
 import {ItemTreeComponent, TreeFolder, TreeItem} from './item-tree.component';
 import {FavoriteService} from '@services/favorite.service';
 import {PHRASES} from '@config/phrases';
@@ -27,8 +27,8 @@ describe('ItemTreeComponent', () => {
     favoriteService.toggle.and.returnValue(Promise.resolve());
 
     await TestBed.configureTestingModule({
-      imports: [ItemTreeComponent, TranslateModule.forRoot()],
-      providers: [{provide: FavoriteService, useValue: favoriteService}],
+      imports: [ItemTreeComponent],
+      providers: [provideTranslateService(), {provide: FavoriteService, useValue: favoriteService}],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ItemTreeComponent);

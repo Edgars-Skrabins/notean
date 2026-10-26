@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {Subscription} from "rxjs";
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {NavigationService} from "@services/navigation.service";
 import {SettingsService} from "@services/settings.service";
@@ -23,7 +23,7 @@ import {EscapeService} from "@services/escape.service";
   selector: 'app-settings',
   imports: [
     NgIf,
-    TranslateModule,
+    TranslatePipe,
     CheckboxComponent,
     ConfirmDialogComponent,
     ThemeModeSwitchComponent,

@@ -1,6 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {Router} from '@angular/router';
-import {TranslateModule} from '@ngx-translate/core';
+import {provideTranslateService} from '@ngx-translate/core';
 import {MyWorkComponent} from './my-work.component';
 import {MyWorkService} from '@services/my-work.service';
 import {TeamService} from '@services/team.service';
@@ -49,8 +49,9 @@ describe('MyWorkComponent', () => {
     teamService.getCurrentTeamCode.and.returnValue('abc');
 
     await TestBed.configureTestingModule({
-      imports: [MyWorkComponent, TranslateModule.forRoot()],
+      imports: [MyWorkComponent],
       providers: [
+        provideTranslateService(),
         {provide: MyWorkService, useValue: myWorkService},
         {provide: TeamService, useValue: teamService},
         {provide: Router, useValue: router},

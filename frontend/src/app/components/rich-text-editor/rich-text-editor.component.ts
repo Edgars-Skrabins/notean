@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, ViewEncapsulation, ChangeDetectionStrategy} from '@angular/core';
 import {NgIf} from "@angular/common";
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {Editor} from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
@@ -9,7 +9,7 @@ import StarterKit from '@tiptap/starter-kit';
   selector: 'app-rich-text-editor',
   imports: [
     NgIf,
-    TranslateModule
+    TranslatePipe
   ],
   templateUrl: './rich-text-editor.component.html',
   styleUrl: './rich-text-editor.component.css',
