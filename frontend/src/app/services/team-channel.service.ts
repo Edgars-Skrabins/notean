@@ -1,7 +1,6 @@
 import {Injectable} from '@angular/core';
-import {createConsumer, Consumer, Subscription} from '@rails/actioncable';
-import {baseUrl} from "@config/axiosConfig";
-import {AuthService} from "@services/auth.service";
+import {Subscription} from '@rails/actioncable';
+import {CableService} from "@services/cable.service";
 import {mapTeam, RawTeam, TeamService} from "@services/team.service";
 
 interface TeamChannelMessage {
@@ -13,20 +12,15 @@ interface TeamChannelMessage {
   providedIn: 'root',
 })
 export class TeamChannelService {
-  private consumer: Consumer | null = null;
   private subscription: Subscription | null = null;
 
-  constructor(private authService: AuthService, private teamService: TeamService) {
+  constructor(private cableService: CableService, private teamService: TeamService) {
   }
 
   connect(teamCode: string) {
     this.disconnect();
 
-    const token = this.authService.getToken();
-    const cableUrl = baseUrl.replace(/^http/, 'ws') + `/cable?token=${token}`;
-
-    this.consumer = createConsumer(cableUrl);
-    this.subscription = this.consumer.subscriptions.create(
+    this.subscription = this.cableService.subscribe(
       {channel: 'TeamChannel', team_code: teamCode},
       {
         received: (data: TeamChannelMessage) => this.handleMessage(data),
@@ -42,8 +36,6 @@ export class TeamChannelService {
 
   disconnect() {
     this.subscription?.unsubscribe();
-    this.consumer?.disconnect();
     this.subscription = null;
-    this.consumer = null;
   }
 }

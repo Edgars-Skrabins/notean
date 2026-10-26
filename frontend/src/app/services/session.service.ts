@@ -6,6 +6,7 @@ import {mapSettings, RawSettings, SettingsService} from "@services/settings.serv
 import {AvatarService, mapAvatar, RawAvatar} from "@services/avatar.service";
 import {mapActiveTeam, RawActiveTeam, TeamService} from "@services/team.service";
 import {ThemeService} from "@services/theme.service";
+import {CableService} from "@services/cable.service";
 import {AuthUser} from "@models/auth.model";
 import {SessionData, SessionResponse} from "@models/session.model";
 
@@ -36,7 +37,8 @@ export class SessionService {
     private settingsService: SettingsService,
     private avatarService: AvatarService,
     private teamService: TeamService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private cableService: CableService
   ) {
     if (authService.isAuthenticated()) {
       this.load();
@@ -61,5 +63,6 @@ export class SessionService {
     this.settingsService.clear();
     this.avatarService.clear();
     this.teamService.clearCurrentTeam();
+    this.cableService.disconnect();
   }
 }
