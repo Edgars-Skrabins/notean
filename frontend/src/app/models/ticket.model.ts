@@ -35,6 +35,20 @@ export interface TicketFilters {
   columnIds: Set<number | null>;
 }
 
+export interface TicketChange {
+  upserted: TicketSummary[];
+  removedIds: number[];
+}
+
+export interface ListTicketsParams {
+  status: number | 'backlog';
+  search?: string;
+  assigneeIds?: (number | 'none')[];
+  offset?: number;
+}
+
+export type ListTicketsResponse = Result<{ tickets: TicketSummary[], hasMore: boolean }, TeamAccessErrorCode | BoardsErrorCode | TicketsErrorCode>;
+
 export type TicketResponse = Result<{ ticket: TicketDetail }, TeamAccessErrorCode | BoardsErrorCode | TicketsErrorCode>;
 
 export type UpdateTicketResponse = TicketResponse | EditConflict<TicketDetail>;

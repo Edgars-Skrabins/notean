@@ -8,10 +8,14 @@ class PagesController < ApplicationController
   before_action :set_page, only: [ :show, :update, :destroy ]
 
   def index
-    pages = project_filtered(@team.pages.includes(creator: User::AVATAR_PRELOAD).search_title(params[:search]))
+    pages = project_filtered(@team.pages.includes(creator: User::AVATAR_PRELOAD))
     return if pages.nil?
 
-    render json: { pages: pages.map { |page| page_summary_json(page) } }
+    pages = in_listed_folder(pages)
+    return if pages.nil?
+
+    pages, has_more = paginate(pages.search_title(params[:search]).order(Arel.sql("LOWER(title)"), :id))
+    render json: { pages: pages.map { |page| page_summary_json(page) }, has_more: has_more }
   end
 
   def create

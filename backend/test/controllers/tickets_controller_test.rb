@@ -589,4 +589,101 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_equal({ "code" => "DESCRIPTION_TOO_LONG" }, JSON.parse(response.body))
   end
+
+  def list_tickets(params)
+    get tickets_url, params: params, headers: @headers
+    JSON.parse(response.body)
+  end
+
+  def listed_titles(params)
+    list_tickets(params)["tickets"].map { |ticket| ticket["title"] }
+  end
+
+  test "index lists the backlog or one column in position order" do
+    ticket_in(nil, "Second idea", 1)
+    ticket_in(nil, "First idea", 0)
+    ticket_in(@todo, "Task", 0)
+
+    assert_equal [ "First idea", "Second idea" ], listed_titles(status: "backlog")
+    assert_equal [ "Task" ], listed_titles(status: @todo.id)
+    assert_empty listed_titles(status: @doing.id)
+  end
+
+  test "index requires a status and a column of the board" do
+    get tickets_url, headers: @headers
+    assert_response :unprocessable_entity
+    assert_equal({ "code" => "TICKET_STATUS_REQUIRED" }, JSON.parse(response.body))
+
+    other_board = Board.create!(team: @team, creator: @user, title: "Other")
+    other_column = Column.create!(board: other_board, title: "Elsewhere", position: 5)
+    get tickets_url, params: { status: other_column.id }, headers: @headers
+    assert_response :not_found
+    assert_equal({ "code" => "COLUMN_NOT_FOUND" }, JSON.parse(response.body))
+  end
+
+  test "index searches titles and descriptions" do
+    ticket_in(nil, "Login bug", 0)
+    ticket_in(nil, "Signup", 1).update!(description: "Breaks the login form")
+    ticket_in(nil, "Unrelated", 2)
+
+    assert_equal [ "Login bug", "Signup" ], listed_titles(status: "backlog", search: "LOGIN")
+  end
+
+  test "index filters by assignee and by unassigned" do
+    bob = create_member(@team, "Bob")
+    carol = create_member(@team, "Carol")
+    for_bob = ticket_in(nil, "For Bob", 0)
+    for_carol = ticket_in(nil, "For Carol", 1)
+    ticket_in(nil, "Nobody", 2)
+    TicketAssignee.create!(ticket: for_bob, user: bob)
+    TicketAssignee.create!(ticket: for_bob, user: carol)
+    TicketAssignee.create!(ticket: for_carol, user: carol)
+
+    assert_equal [ "For Bob" ], listed_titles(status: "backlog", assignee_ids: [ bob.id ])
+    assert_equal [ "For Bob", "For Carol" ], listed_titles(status: "backlog", assignee_ids: [ bob.id, carol.id ])
+    assert_equal [ "Nobody" ], listed_titles(status: "backlog", assignee_ids: [ "none" ])
+    assert_equal [ "For Bob", "Nobody" ], listed_titles(status: "backlog", assignee_ids: [ "none", bob.id ])
+  end
+
+  test "index pages by 50 and flips has_more at the end" do
+    55.times { |index| ticket_in(nil, "Ticket #{index}", index) }
+
+    first = list_tickets(status: "backlog")
+    assert_equal 50, first["tickets"].length
+    assert first["has_more"]
+
+    rest = list_tickets(status: "backlog", offset: 50)
+    assert_equal (50..54).map { |index| "Ticket #{index}" }, rest["tickets"].map { |ticket| ticket["title"] }
+    assert_not rest["has_more"]
+  end
+
+  test "index hides boards of projects the user can't see" do
+    bob = create_member(@team, "Bob")
+    @board.update!(project: Project.create!(team: @team, name: "Secret", owner: @user, creator: @user))
+
+    get tickets_url, params: { status: "backlog" }, headers: { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: bob.id)}" }
+    assert_response :not_found
+    assert_equal({ "code" => "BOARD_NOT_FOUND" }, JSON.parse(response.body))
+  end
+
+  test "index returns FEATURE_DISABLED when boards are turned off" do
+    @team.update!(boards_enabled: false)
+
+    list_tickets(status: "backlog")
+    assert_response :forbidden
+    assert_equal({ "code" => "FEATURE_DISABLED" }, JSON.parse(response.body))
+  end
+
+  test "index runs the same number of queries for 1 and 10 tickets" do
+    attach_avatar(@user)
+    members = 3.times.map { |index| create_member(@team, nickname_for(index), with_avatar: index.zero?) }
+    TicketAssignee.create!(ticket: ticket_in(nil, "Ticket 0", 0), user: members.first)
+    one = query_count { get tickets_url, params: { status: "backlog" }, headers: @headers }
+
+    9.times { |index| TicketAssignee.create!(ticket: ticket_in(nil, "Ticket #{index + 1}", index + 1), user: members[index % 3]) }
+    ten = query_count { get tickets_url, params: { status: "backlog" }, headers: @headers }
+
+    assert_equal 10, JSON.parse(response.body)["tickets"].length
+    assert_equal one, ten
+  end
 end

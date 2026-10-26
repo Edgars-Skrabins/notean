@@ -2,7 +2,7 @@ import {AxiosResponse} from "axios";
 import {Injectable} from '@angular/core';
 import {axiosInstance} from "@config/axiosConfig";
 import {apiRequest, versionedRequest} from "@utils/apiRequest";
-import {BulkTicketAction, BulkTicketsResponse, TicketDetail, TicketResponse, DeleteTicketResponse, UpdateTicketResponse} from "@models/ticket.model";
+import {BulkTicketAction, BulkTicketsResponse, ListTicketsParams, ListTicketsResponse, TicketDetail, TicketResponse, DeleteTicketResponse, UpdateTicketResponse} from "@models/ticket.model";
 import {mapBoardUser, mapTicketSummary, RawBoardUser, RawTicketSummary} from "@services/board.service";
 import {teamPath} from "@utils/teamPath";
 
@@ -25,6 +25,14 @@ export function mapTicketDetail(raw: RawTicketDetail): TicketDetail {
   providedIn: 'root',
 })
 export class TicketService {
+  async list(teamCode: string, boardId: number, {status, search, assigneeIds, offset}: ListTicketsParams): Promise<ListTicketsResponse> {
+    const params = {status, search: search || undefined, assignee_ids: assigneeIds?.length ? assigneeIds : undefined, offset: offset || undefined};
+    return apiRequest<ListTicketsResponse>(
+      axiosInstance.get(this.ticketsUrl(teamCode, boardId), {params}),
+      (data) => ({success: true, tickets: data.tickets.map(mapTicketSummary), hasMore: data.has_more}),
+    );
+  }
+
   async createTicket(teamCode: string, boardId: number, title: string, columnId: number | null): Promise<TicketResponse> {
     return this.requestTicket(axiosInstance.post(this.ticketsUrl(teamCode, boardId), {ticket: {title, column_id: columnId}}));
   }

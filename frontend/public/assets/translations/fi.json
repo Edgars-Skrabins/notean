@@ -45,12 +45,14 @@
   "LOGOUT": "Kirjaudu ulos",
   "LANGUAGE": "Kieli",
   "SEARCH_PAGES": "Hae sivuja otsikon mukaan",
+  "SEARCH_PROJECTS": "Hae projekteja nimen tai kuvauksen mukaan",
   "NEW_PAGE": "Uusi sivu",
   "NEW_FOLDER": "Uusi kansio",
   "NO_PAGES_YET": "Ei vielä sivuja – luo sellainen aloittaaksesi.",
   "NO_SEARCH_RESULTS": "Tuloksia ei löytynyt.",
   "SEARCH_EVERYTHING": "Hae kaikkialta",
   "SEARCH_SHOW_MORE": "Näytä lisää",
+  "LOAD_MORE": "Lataa lisää",
   "SEARCH_IN_PROJECT": "Haetaan nyt projektista '{{project}}'",
   "SEARCH_INCLUDE_ALL_PROJECTS": "Sisällytä kaikki projektit",
   "SEARCH_FAILED": "Haku epäonnistui",
@@ -382,7 +384,8 @@
       "ASSIGNEE_NOT_TEAM_MEMBER": "Tämä henkilö ei ole tiimin jäsen",
       "ASSIGNEE_NOT_FOUND": "Tätä henkilöä ei ole määritetty",
       "ASSIGNEE_NO_ACCESS": "Tämä henkilö ei näe tätä taulua",
-      "BULK_ACTION_INVALID": "Tämä joukkotoiminto ei ole kelvollinen"
+      "BULK_ACTION_INVALID": "Tämä joukkotoiminto ei ole kelvollinen",
+      "TICKET_STATUS_REQUIRED": "Valitse tila tikettien näyttämiseksi"
     },
     "PRIORITIES": {
       "PRIORITY_NOT_FOUND": "Prioriteettia ei löytynyt",

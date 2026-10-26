@@ -10,7 +10,9 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
 import {DeleteFolderDialogComponent} from '@components/delete-folder-dialog/delete-folder-dialog.component';
 import {ConfirmDialogComponent} from '@components/confirm-dialog/confirm-dialog.component';
 import {FavoriteStarComponent} from '@components/favorite-star/favorite-star.component';
+import {LoadMoreComponent} from '@components/load-more/load-more.component';
 import {FolderDeleteMode} from "@models/folder.model";
+import {compareByTitle} from '@utils/titleOrder';
 
 export interface TreeFolder {
   id: number;
@@ -29,6 +31,14 @@ export interface TreeItem {
     creator: { nickname: string };
     updatedAt: string;
   };
+}
+
+export type ItemLevel = number | 'root';
+
+export interface ItemLevelState {
+  loaded: boolean;
+  isLoading: boolean;
+  hasMore: boolean;
 }
 
 interface BuiltFolder extends TreeFolder {
@@ -59,6 +69,7 @@ type DropTarget =
     DeleteFolderDialogComponent,
     ConfirmDialogComponent,
     FavoriteStarComponent,
+    LoadMoreComponent,
     CdkDrag
   ],
   templateUrl: './item-tree.component.html',
@@ -75,6 +86,7 @@ export class ItemTreeComponent implements OnChanges {
   @Input({required: true}) favoritableType!: 'Page' | 'Diagram';
   @Input({required: true}) deleteItemConfirmMessage!: string;
   @Input() canChangeFolderProject = false;
+  @Input() levels: ReadonlyMap<ItemLevel, ItemLevelState> = new Map();
 
   @Output() openItem = new EventEmitter<TreeItem>();
   @Output() createFolder = new EventEmitter<{ parentId: number | null }>();
@@ -86,6 +98,8 @@ export class ItemTreeComponent implements OnChanges {
   @Output() moveItem = new EventEmitter<{ itemId: number; folderId: number | null }>();
   @Output() moveFolder = new EventEmitter<{ folderId: number; parentId: number | null }>();
   @Output() changeFolderProject = new EventEmitter<{ folderId: number }>();
+  @Output() expandFolder = new EventEmitter<{ folderId: number }>();
+  @Output() loadMore = new EventEmitter<{ level: ItemLevel }>();
 
   rootFolders: BuiltFolder[] = [];
   rootItems: TreeItem[] = [];
@@ -122,12 +136,16 @@ export class ItemTreeComponent implements OnChanges {
     return this.expandedFolderIds.has(folderId);
   }
 
-  hasContents(folder: BuiltFolder): boolean {
-    return folder.children.length > 0 || folder.items.length > 0;
+  canExpand(folder: BuiltFolder): boolean {
+    return folder.children.length > 0 || folder.items.length > 0 || !this.levels.get(folder.id)?.loaded;
+  }
+
+  levelState(level: ItemLevel): ItemLevelState | undefined {
+    return this.levels.get(level);
   }
 
   toggleExpand(folder: BuiltFolder) {
-    if (!this.hasContents(folder)) {
+    if (!this.canExpand(folder)) {
       return;
     }
 
@@ -135,6 +153,7 @@ export class ItemTreeComponent implements OnChanges {
       this.expandedFolderIds.delete(folder.id);
     } else {
       this.expandedFolderIds.add(folder.id);
+      this.expandFolder.emit({folderId: folder.id});
     }
   }
 
@@ -361,6 +380,6 @@ export class ItemTreeComponent implements OnChanges {
   private itemsIn(folderId: number | null): TreeItem[] {
     return this.items
       .filter((item) => item.folderId === folderId)
-      .sort((a, b) => a.title.localeCompare(b.title));
+      .sort(compareByTitle);
   }
 }

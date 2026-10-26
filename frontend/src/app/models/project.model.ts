@@ -11,6 +11,11 @@ export interface ProjectSummary {
   canManage: boolean;
 }
 
+export interface ProjectOption {
+  id: number;
+  name: string;
+}
+
 export interface ProjectDetail extends ProjectSummary {
   members: BoardUser[];
   createdAt: string;
@@ -25,7 +30,14 @@ export interface ProjectParams {
 
 export type DeleteProjectMode = 'keep' | 'delete_items';
 
-export type ListProjectsResponse = Result<{ projects: ProjectSummary[] }, TeamAccessErrorCode>;
+export interface ListProjectsParams {
+  search?: string;
+  offset?: number;
+}
+
+export type ListProjectsResponse = Result<{ projects: ProjectSummary[], hasMore: boolean }, TeamAccessErrorCode>;
+
+export type ListProjectOptionsResponse = Result<{ projects: ProjectOption[] }, TeamAccessErrorCode>;
 
 export type ProjectResponse = Result<{ project: ProjectDetail }, TeamAccessErrorCode | ProjectsErrorCode>;
 

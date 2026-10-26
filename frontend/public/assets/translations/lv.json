@@ -45,12 +45,14 @@
   "LOGOUT": "Iziet",
   "LANGUAGE": "Valoda",
   "SEARCH_PAGES": "Meklēt lapas pēc nosaukuma",
+  "SEARCH_PROJECTS": "Meklēt projektus pēc nosaukuma vai apraksta",
   "NEW_PAGE": "Jauna lapa",
   "NEW_FOLDER": "Jauna mape",
   "NO_PAGES_YET": "Vēl nav lapu — izveidojiet vienu, lai sāktu.",
   "NO_SEARCH_RESULTS": "Nekas netika atrasts.",
   "SEARCH_EVERYTHING": "Meklēt visur",
   "SEARCH_SHOW_MORE": "Rādīt vairāk",
+  "LOAD_MORE": "Ielādēt vairāk",
   "SEARCH_IN_PROJECT": "Pašlaik meklē projektā '{{project}}'",
   "SEARCH_INCLUDE_ALL_PROJECTS": "Iekļaut visus projektus",
   "SEARCH_FAILED": "Meklēšana neizdevās",
@@ -382,7 +384,8 @@
       "ASSIGNEE_NOT_TEAM_MEMBER": "Šī persona nav komandas dalībnieks",
       "ASSIGNEE_NOT_FOUND": "Šī persona nav piešķirta",
       "ASSIGNEE_NO_ACCESS": "Šī persona neredz šo dēli",
-      "BULK_ACTION_INVALID": "Šī grupas darbība nav derīga"
+      "BULK_ACTION_INVALID": "Šī grupas darbība nav derīga",
+      "TICKET_STATUS_REQUIRED": "Izvēlieties statusu, lai parādītu pieteikumus"
     },
     "PRIORITIES": {
       "PRIORITY_NOT_FOUND": "Prioritāte nav atrasta",

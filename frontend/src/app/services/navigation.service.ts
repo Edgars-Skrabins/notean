@@ -17,8 +17,16 @@ export class NavigationService {
   }
 
   navigate(...routeSegments: AppRoutes[]) {
+    this.track(this.router.navigate(routeSegments));
+  }
+
+  navigateWithState(state: Record<string, unknown>, ...routeSegments: AppRoutes[]) {
+    this.track(this.router.navigate(routeSegments, {state}));
+  }
+
+  private track(navigation: Promise<boolean>) {
     this.isNavigating = true;
-    this.router.navigate(routeSegments)
+    navigation
       .then(() => {
         this.isNavigating = false;
       })

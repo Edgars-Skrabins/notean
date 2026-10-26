@@ -24,6 +24,37 @@ describe('BoardPageStateService', () => {
     expect(state.errorCode).toBe('BOARD_NOT_FOUND');
   });
 
+  it('announces each load', async () => {
+    const state = createBoardState();
+    let loads = 0;
+    state.boardLoaded$.subscribe(() => loads++);
+
+    await state.reload();
+
+    expect(loads).toBe(1);
+  });
+
+  it('reports ticket upserts and removals from its changes', () => {
+    const state = createBoardState();
+    const changes: { upserted: number[]; removedIds: number[] }[] = [];
+    state.ticketChanges$.subscribe((change) => changes.push({upserted: change.upserted.map((ticket) => ticket.id), removedIds: change.removedIds}));
+
+    state.placeTicket(ticketSummary(7, null, 0));
+    state.applyTickets([ticketSummary(1, 11, 0)]);
+    state.updateTicket({...ticketSummary(2, 10, 1), title: 'Renamed'});
+    state.updateTicket(ticketSummary(99, null));
+    state.removeTicket(3);
+    state.removeTickets([4, 7]);
+
+    expect(changes).toEqual([
+      {upserted: [7], removedIds: []},
+      {upserted: [1], removedIds: []},
+      {upserted: [2], removedIds: []},
+      {upserted: [], removedIds: [3]},
+      {upserted: [], removedIds: [4, 7]},
+    ]);
+  });
+
   it('places a ticket into its column or the backlog at its position', () => {
     const state = createBoardState();
 

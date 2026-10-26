@@ -45,12 +45,14 @@
   "LOGOUT": "Atsijungti",
   "LANGUAGE": "Kalba",
   "SEARCH_PAGES": "Ieškoti puslapių pagal pavadinimą",
+  "SEARCH_PROJECTS": "Ieškoti projektų pagal pavadinimą arba aprašymą",
   "NEW_PAGE": "Naujas puslapis",
   "NEW_FOLDER": "Naujas aplankas",
   "NO_PAGES_YET": "Puslapių dar nėra – sukurkite pirmąjį.",
   "NO_SEARCH_RESULTS": "Rezultatų nerasta.",
   "SEARCH_EVERYTHING": "Ieškoti visur",
   "SEARCH_SHOW_MORE": "Rodyti daugiau",
+  "LOAD_MORE": "Įkelti daugiau",
   "SEARCH_IN_PROJECT": "Šiuo metu ieškoma projekte '{{project}}'",
   "SEARCH_INCLUDE_ALL_PROJECTS": "Įtraukti visus projektus",
   "SEARCH_FAILED": "Paieška nepavyko",
@@ -382,7 +384,8 @@
       "ASSIGNEE_NOT_TEAM_MEMBER": "Šis asmuo nėra komandos narys",
       "ASSIGNEE_NOT_FOUND": "Šis asmuo nėra priskirtas",
       "ASSIGNEE_NO_ACCESS": "Šis asmuo nemato šios lentos",
-      "BULK_ACTION_INVALID": "Šis grupinis veiksmas negalioja"
+      "BULK_ACTION_INVALID": "Šis grupinis veiksmas negalioja",
+      "TICKET_STATUS_REQUIRED": "Pasirinkite būseną, kad būtų parodyti bilietai"
     },
     "PRIORITIES": {
       "PRIORITY_NOT_FOUND": "Prioritetas nerastas",

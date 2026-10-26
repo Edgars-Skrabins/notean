@@ -45,12 +45,14 @@
   "LOGOUT": "Logga ut",
   "LANGUAGE": "Språk",
   "SEARCH_PAGES": "Sök sidor efter titel",
+  "SEARCH_PROJECTS": "Sök projekt efter namn eller beskrivning",
   "NEW_PAGE": "Ny sida",
   "NEW_FOLDER": "Ny mapp",
   "NO_PAGES_YET": "Inga sidor ännu – skapa en för att komma igång.",
   "NO_SEARCH_RESULTS": "Inga resultat hittades.",
   "SEARCH_EVERYTHING": "Sök överallt",
   "SEARCH_SHOW_MORE": "Visa fler",
+  "LOAD_MORE": "Läs in fler",
   "SEARCH_IN_PROJECT": "Söker just nu i projektet '{{project}}'",
   "SEARCH_INCLUDE_ALL_PROJECTS": "Inkludera alla projekt",
   "SEARCH_FAILED": "Sökningen misslyckades",
@@ -382,7 +384,8 @@
       "ASSIGNEE_NOT_TEAM_MEMBER": "Den här personen är inte medlem i teamet",
       "ASSIGNEE_NOT_FOUND": "Den här personen är inte tilldelad",
       "ASSIGNEE_NO_ACCESS": "Den här personen kan inte se den här tavlan",
-      "BULK_ACTION_INVALID": "Den här massåtgärden är inte giltig"
+      "BULK_ACTION_INVALID": "Den här massåtgärden är inte giltig",
+      "TICKET_STATUS_REQUIRED": "Välj en status för att visa ärenden"
     },
     "PRIORITIES": {
       "PRIORITY_NOT_FOUND": "Prioriteten hittades inte",

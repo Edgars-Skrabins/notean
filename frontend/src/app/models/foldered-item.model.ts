@@ -43,7 +43,14 @@ export interface SaveFolderedItemParams {
   lockVersion: number;
 }
 
-export type ListFolderedItemsResponse = Result<{ items: FolderedItemSummary[] }, TeamAccessErrorCode | ProjectsErrorCode>;
+export interface ListFolderedItemsParams {
+  folderId?: number | 'root';
+  search?: string;
+  projectId?: number | null;
+  offset?: number;
+}
+
+export type ListFolderedItemsResponse = Result<{ items: FolderedItemSummary[], hasMore: boolean }, TeamAccessErrorCode | ProjectsErrorCode | FoldersErrorCode>;
 
 export type FolderedItemResponse<E extends ErrorCode> = Result<{ item: FolderedItemDetail }, TeamAccessErrorCode | ProjectsErrorCode | FoldersErrorCode | E>;
 

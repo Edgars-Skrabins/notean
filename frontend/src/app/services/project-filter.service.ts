@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {BehaviorSubject, map, Observable} from 'rxjs';
 import {ProjectService} from "@services/project.service";
 import {TeamService} from "@services/team.service";
-import {ProjectSummary} from "@models/project.model";
+import {ProjectOption} from "@models/project.model";
 
 const STORAGE_KEY_PREFIX = 'selectedProject:';
 const ALL_PROJECTS = 'all';
@@ -11,10 +11,10 @@ const ALL_PROJECTS = 'all';
   providedIn: 'root',
 })
 export class ProjectFilterService {
-  private projectsSubject = new BehaviorSubject<ProjectSummary[]>([]);
+  private projectsSubject = new BehaviorSubject<ProjectOption[]>([]);
   private selectedSubject: BehaviorSubject<number | null>;
 
-  readonly projects$: Observable<ProjectSummary[]> = this.projectsSubject.asObservable();
+  readonly projects$: Observable<ProjectOption[]> = this.projectsSubject.asObservable();
   readonly hasProjects$: Observable<boolean> = this.projects$.pipe(map((projects) => projects.length > 0));
   readonly selectedProjectId$: Observable<number | null>;
 
@@ -30,12 +30,12 @@ export class ProjectFilterService {
     return this.selectedSubject.value;
   }
 
-  getProjects(): ProjectSummary[] {
+  getProjects(): ProjectOption[] {
     return this.projectsSubject.value;
   }
 
   async load() {
-    const response = await this.projectService.listProjects(this.teamService.getCurrentTeamCode());
+    const response = await this.projectService.listProjectOptions(this.teamService.getCurrentTeamCode());
     if (!response.success) {
       return;
     }

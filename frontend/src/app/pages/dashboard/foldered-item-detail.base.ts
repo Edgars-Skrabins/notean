@@ -216,7 +216,9 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
           return;
         }
 
-        this.handleGoBack();
+        const {id, title, folderId, projectId, lockVersion, creator, createdAt, updatedAt} = response.item;
+        const createdItem = {id, title, folderId, projectId, lockVersion, creator, createdAt, updatedAt};
+        this.navigationService.navigateWithState({createdItem}, AppRoutes.DASHBOARD, this.listRoute);
       });
   }
 

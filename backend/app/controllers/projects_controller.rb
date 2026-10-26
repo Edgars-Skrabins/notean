@@ -8,12 +8,17 @@ class ProjectsController < ApplicationController
   before_action :authorize_project_management!, only: [ :update, :destroy ]
 
   def index
-    projects = @team.projects
-      .where(id: project_access.visible_project_ids)
-      .includes(:project_members, owner: User::AVATAR_PRELOAD)
-      .order(Arel.sql("LOWER(name)"))
+    projects = visible_projects.includes(:project_members, owner: User::AVATAR_PRELOAD).order(Arel.sql("LOWER(name)"), :id)
+    projects = projects.text_search(params[:search]) if params[:search].present?
+    projects, has_more = paginate(projects)
 
-    render json: { projects: projects.map { |project| project_summary_json(project) } }
+    render json: { projects: projects.map { |project| project_summary_json(project) }, has_more: has_more }
+  end
+
+  def options
+    projects = visible_projects.order(Arel.sql("LOWER(name)"), :id).select(:id, :name)
+
+    render json: { projects: projects.map { |project| { id: project.id, name: project.name } } }
   end
 
   def show
@@ -48,8 +53,12 @@ class ProjectsController < ApplicationController
 
   private
 
+  def visible_projects
+    @team.projects.where(id: project_access.visible_project_ids)
+  end
+
   def set_project
-    @project = @team.projects.where(id: project_access.visible_project_ids).find_by(id: params[:id])
+    @project = visible_projects.find_by(id: params[:id])
 
     render_error(ErrorCodes::Projects::PROJECT_NOT_FOUND, :not_found) if @project.nil?
   end

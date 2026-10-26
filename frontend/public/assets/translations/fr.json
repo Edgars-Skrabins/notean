@@ -45,12 +45,14 @@
   "LOGOUT": "Se déconnecter",
   "LANGUAGE": "Langue",
   "SEARCH_PAGES": "Rechercher des pages par titre",
+  "SEARCH_PROJECTS": "Rechercher des projets par nom ou description",
   "NEW_PAGE": "Nouvelle page",
   "NEW_FOLDER": "Nouveau dossier",
   "NO_PAGES_YET": "Aucune page pour l'instant — créez-en une pour commencer.",
   "NO_SEARCH_RESULTS": "Aucun résultat trouvé.",
   "SEARCH_EVERYTHING": "Tout rechercher",
   "SEARCH_SHOW_MORE": "Afficher plus",
+  "LOAD_MORE": "Charger plus",
   "SEARCH_IN_PROJECT": "Recherche actuelle dans le projet '{{project}}'",
   "SEARCH_INCLUDE_ALL_PROJECTS": "Inclure tous les projets",
   "SEARCH_FAILED": "La recherche a échoué",
@@ -382,7 +384,8 @@
       "ASSIGNEE_NOT_TEAM_MEMBER": "Cette personne n'est pas membre de l'équipe",
       "ASSIGNEE_NOT_FOUND": "Cette personne n'est pas assignée",
       "ASSIGNEE_NO_ACCESS": "Cette personne ne peut pas voir ce tableau",
-      "BULK_ACTION_INVALID": "Cette action groupée n'est pas valide"
+      "BULK_ACTION_INVALID": "Cette action groupée n'est pas valide",
+      "TICKET_STATUS_REQUIRED": "Choisissez un statut pour afficher les tickets"
     },
     "PRIORITIES": {
       "PRIORITY_NOT_FOUND": "Priorité introuvable",

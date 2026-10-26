@@ -45,12 +45,14 @@
   "LOGOUT": "Выйти",
   "LANGUAGE": "Язык",
   "SEARCH_PAGES": "Искать страницы по названию",
+  "SEARCH_PROJECTS": "Искать проекты по названию или описанию",
   "NEW_PAGE": "Новая страница",
   "NEW_FOLDER": "Новая папка",
   "NO_PAGES_YET": "Страниц пока нет — создайте первую.",
   "NO_SEARCH_RESULTS": "Ничего не найдено.",
   "SEARCH_EVERYTHING": "Искать везде",
   "SEARCH_SHOW_MORE": "Показать ещё",
+  "LOAD_MORE": "Загрузить ещё",
   "SEARCH_IN_PROJECT": "Сейчас поиск в проекте '{{project}}'",
   "SEARCH_INCLUDE_ALL_PROJECTS": "Включить все проекты",
   "SEARCH_FAILED": "Не удалось выполнить поиск",
@@ -382,7 +384,8 @@
       "ASSIGNEE_NOT_TEAM_MEMBER": "Этот человек не состоит в команде",
       "ASSIGNEE_NOT_FOUND": "Этот человек не назначен",
       "ASSIGNEE_NO_ACCESS": "Этот человек не видит эту доску",
-      "BULK_ACTION_INVALID": "Это групповое действие недопустимо"
+      "BULK_ACTION_INVALID": "Это групповое действие недопустимо",
+      "TICKET_STATUS_REQUIRED": "Выберите статус, чтобы показать задачи"
     },
     "PRIORITIES": {
       "PRIORITY_NOT_FOUND": "Приоритет не найден",

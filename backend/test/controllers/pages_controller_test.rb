@@ -283,4 +283,73 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_equal({ "code" => "CONTENT_TOO_LARGE" }, JSON.parse(response.body))
   end
+
+  def list_pages(params = {})
+    get "/teams/#{@team.code}/pages", params: params, headers: @headers
+    JSON.parse(response.body)
+  end
+
+  def listed_titles(params = {})
+    list_pages(params)["pages"].map { |page| page["title"] }
+  end
+
+  test "index lists root pages without the foldered ones, sorted by title" do
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Specs")
+    Page.create!(team: @team, creator: @user, title: "alpha", content: "")
+    Page.create!(team: @team, creator: @user, title: "Inside", content: "", folder: folder)
+
+    assert_equal [ "alpha", "Notes" ], listed_titles(folder_id: "root")
+  end
+
+  test "index lists only the pages of the requested folder" do
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Specs")
+    other = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Other")
+    Page.create!(team: @team, creator: @user, title: "Inside", content: "", folder: folder)
+    Page.create!(team: @team, creator: @user, title: "Elsewhere", content: "", folder: other)
+
+    assert_equal [ "Inside" ], listed_titles(folder_id: folder.id)
+  end
+
+  test "index returns FOLDER_NOT_FOUND for a folder the user can't see" do
+    secret = Project.create!(team: @team, name: "Secret", owner: @user, creator: @user)
+    bob = create_member(@team, "Bob")
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Hidden", project: secret)
+
+    get "/teams/#{@team.code}/pages", params: { folder_id: folder.id }, headers: { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: bob.id)}" }
+
+    assert_response :not_found
+    assert_equal({ "code" => "FOLDER_NOT_FOUND" }, JSON.parse(response.body))
+  end
+
+  test "index search crosses folders and ignores folder_id" do
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Specs")
+    Page.create!(team: @team, creator: @user, title: "Roadmap draft", content: "", folder: folder)
+    Page.create!(team: @team, creator: @user, title: "roadmap", content: "")
+
+    assert_equal [ "roadmap", "Roadmap draft" ], listed_titles(search: "ROAD", folder_id: "root")
+  end
+
+  test "index pages by 50 and flips has_more at the end" do
+    @page.destroy
+    55.times { |index| Page.create!(team: @team, creator: @user, title: format("Item %02d", index), content: "") }
+
+    first = list_pages(folder_id: "root")
+    assert_equal 50, first["pages"].length
+    assert first["has_more"]
+
+    rest = list_pages(folder_id: "root", offset: 50)
+    assert_equal (50..54).map { |index| format("Item %02d", index) }, rest["pages"].map { |page| page["title"] }
+    assert_not rest["has_more"]
+  end
+
+  test "index applies the project filter and hides other people's projects" do
+    project = Project.create!(team: @team, name: "Apollo", owner: @user, creator: @user)
+    Page.create!(team: @team, creator: @user, title: "In project", content: "", project: project)
+    bob = create_member(@team, "Bob")
+
+    assert_equal [ "In project" ], listed_titles(project_id: project.id, folder_id: "root")
+
+    get "/teams/#{@team.code}/pages", params: { folder_id: "root" }, headers: { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: bob.id)}" }
+    assert_equal [ "Notes" ], JSON.parse(response.body)["pages"].map { |page| page["title"] }
+  end
 end

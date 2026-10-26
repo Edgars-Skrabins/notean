@@ -24,7 +24,7 @@ Rails.application.routes.draw do
       get :overview, on: :member
       resources :columns, only: [ :create, :update, :destroy ]
       resources :priorities, only: [ :create, :update, :destroy ]
-      resources :tickets, only: [ :create, :show, :update, :destroy ] do
+      resources :tickets, only: [ :index, :create, :show, :update, :destroy ] do
         collection do
           patch :bulk, action: :bulk_update
           delete :bulk, action: :bulk_destroy
@@ -35,7 +35,9 @@ Rails.application.routes.draw do
     resources :favorites, only: [ :index, :create, :update, :destroy ]
     get :my_work, to: "my_work#index"
     get :search, to: "search#index"
-    resources :projects, only: [ :index, :create, :show, :update, :destroy ]
+    resources :projects, only: [ :index, :create, :show, :update, :destroy ] do
+      get :options, on: :collection
+    end
   end
 
   post "actions/jointeam" => "actions#join_team"

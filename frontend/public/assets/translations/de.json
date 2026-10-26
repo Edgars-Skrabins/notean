@@ -45,12 +45,14 @@
   "LOGOUT": "Abmelden",
   "LANGUAGE": "Sprache",
   "SEARCH_PAGES": "Seiten nach Titel suchen",
+  "SEARCH_PROJECTS": "Projekte nach Name oder Beschreibung suchen",
   "NEW_PAGE": "Neue Seite",
   "NEW_FOLDER": "Neuer Ordner",
   "NO_PAGES_YET": "Noch keine Seiten – erstelle eine, um loszulegen.",
   "NO_SEARCH_RESULTS": "Keine Ergebnisse gefunden.",
   "SEARCH_EVERYTHING": "Alles durchsuchen",
   "SEARCH_SHOW_MORE": "Mehr anzeigen",
+  "LOAD_MORE": "Mehr laden",
   "SEARCH_IN_PROJECT": "Suche derzeit im Projekt '{{project}}'",
   "SEARCH_INCLUDE_ALL_PROJECTS": "Alle Projekte einbeziehen",
   "SEARCH_FAILED": "Suche fehlgeschlagen",
@@ -382,7 +384,8 @@
       "ASSIGNEE_NOT_TEAM_MEMBER": "Diese Person ist kein Mitglied des Teams",
       "ASSIGNEE_NOT_FOUND": "Diese Person ist nicht zugewiesen",
       "ASSIGNEE_NO_ACCESS": "Diese Person kann dieses Board nicht sehen",
-      "BULK_ACTION_INVALID": "Diese Sammelaktion ist ungültig"
+      "BULK_ACTION_INVALID": "Diese Sammelaktion ist ungültig",
+      "TICKET_STATUS_REQUIRED": "Wähle einen Status, um Tickets anzuzeigen"
     },
     "PRIORITIES": {
       "PRIORITY_NOT_FOUND": "Priorität nicht gefunden",

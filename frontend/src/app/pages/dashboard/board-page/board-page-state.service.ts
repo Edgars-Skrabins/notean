@@ -3,7 +3,7 @@ import {Subject} from 'rxjs';
 import {BoardService} from "@services/board.service";
 import {TeamService} from "@services/team.service";
 import {BoardColumn, BoardDetail, BoardSummary} from "@models/board.model";
-import {TicketStatus, TicketStatusGroup, TicketSummary} from "@models/ticket.model";
+import {TicketChange, TicketStatus, TicketStatusGroup, TicketSummary} from "@models/ticket.model";
 import {BoardPriority} from "@models/priority.model";
 import {ErrorCode} from "@config/errorCodes";
 import {PHRASES} from "@config/phrases";
@@ -15,6 +15,8 @@ export class BoardPageStateService {
   errorCode: ErrorCode | null = null;
 
   readonly remoteChanges$ = new Subject<Map<number, string>>();
+  readonly ticketChanges$ = new Subject<TicketChange>();
+  readonly boardLoaded$ = new Subject<void>();
 
   readonly teamCode: string;
 
@@ -30,6 +32,7 @@ export class BoardPageStateService {
     const response = await this.boardService.getBoard(this.teamCode, boardId);
     this.board = response.success ? response.board : null;
     this.errorCode = response.success ? null : response.code;
+    this.boardLoaded$.next();
   }
 
   reload() {
@@ -103,21 +106,19 @@ export class BoardPageStateService {
         moved.push(ticket);
       }
     });
-    this.removeTickets(moved.map((ticket) => ticket.id));
+    this.dropTickets(moved.map((ticket) => ticket.id));
     [...moved]
       .sort((first, second) => first.position - second.position)
       .forEach((ticket) => this.ticketList(ticket.columnId)?.push({...ticket}));
+    this.ticketChanges$.next({upserted: tickets, removedIds: []});
   }
 
   removeTickets(ticketIds: number[]) {
     if (!this.board) {
       return;
     }
-    const ids = new Set(ticketIds);
-    this.board.backlog = this.board.backlog.filter((ticket) => !ids.has(ticket.id));
-    this.board.columns.forEach((column) => {
-      column.tickets = column.tickets.filter((ticket) => !ids.has(ticket.id));
-    });
+    this.dropTickets(ticketIds);
+    this.ticketChanges$.next({upserted: [], removedIds: ticketIds});
   }
 
   findTicket(ticketId: number): TicketSummary | null {
@@ -129,20 +130,14 @@ export class BoardPageStateService {
   }
 
   removeTicket(ticketId: number) {
-    if (!this.board) {
-      return;
-    }
-    this.board.backlog = this.board.backlog.filter((ticket) => ticket.id !== ticketId);
-    this.board.columns.forEach((column) => {
-      column.tickets = column.tickets.filter((ticket) => ticket.id !== ticketId);
-    });
+    this.removeTickets([ticketId]);
   }
 
   placeTicket(ticket: TicketSummary) {
     if (!this.board) {
       return;
     }
-    this.removeTicket(ticket.id);
+    this.dropTickets([ticket.id]);
     const summary: TicketSummary = {
       id: ticket.id,
       title: ticket.title,
@@ -157,6 +152,7 @@ export class BoardPageStateService {
     const column = this.board.columns.find((item) => item.id === ticket.columnId);
     const list = column ? column.tickets : this.board.backlog;
     list.splice(Math.min(summary.position, list.length), 0, summary);
+    this.ticketChanges$.next({upserted: [summary], removedIds: []});
   }
 
   updateTicket(updated: TicketSummary) {
@@ -167,7 +163,16 @@ export class BoardPageStateService {
       ticket.lockVersion = updated.lockVersion;
       ticket.assignees = updated.assignees;
       ticket.updatedAt = updated.updatedAt;
+      this.ticketChanges$.next({upserted: [{...ticket}], removedIds: []});
     }
+  }
+
+  private dropTickets(ticketIds: number[]) {
+    const ids = new Set(ticketIds);
+    this.board!.backlog = this.board!.backlog.filter((ticket) => !ids.has(ticket.id));
+    this.board!.columns.forEach((column) => {
+      column.tickets = column.tickets.filter((ticket) => !ids.has(ticket.id));
+    });
   }
 
   private ticketList(columnId: number | null): TicketSummary[] | null {

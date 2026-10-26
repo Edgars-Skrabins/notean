@@ -67,7 +67,7 @@ describe('PageDetailComponent', () => {
   beforeEach(() => {
     pageService = jasmine.createSpyObj<PageService>('PageService', ['get', 'create', 'save', 'setProject']);
     editingService = jasmine.createSpyObj<PageEditingService>('PageEditingService', ['connect', 'disconnect', 'startEditing', 'stopEditing']);
-    navigationService = jasmine.createSpyObj<NavigationService>('NavigationService', ['navigate']);
+    navigationService = jasmine.createSpyObj<NavigationService>('NavigationService', ['navigate', 'navigateWithState']);
     projectFilter = projectFilterStub(4);
     folderService = jasmine.createSpyObj<FolderService>('FolderService', ['listFolders']);
     folderService.listFolders.and.returnValue(Promise.resolve({
@@ -86,7 +86,7 @@ describe('PageDetailComponent', () => {
     expect(component.draftProjectId).toBe(4);
   });
 
-  it('creates with the drafts and folder, then goes back to the list', fakeAsync(() => {
+  it('creates with the drafts and folder, then goes back to the list with the created item', fakeAsync(() => {
     pageService.create.and.returnValue(Promise.resolve({success: true, item: createdPage()}));
     createComponent({folder: '3'});
     tick();
@@ -98,7 +98,8 @@ describe('PageDetailComponent', () => {
     tick();
 
     expect(pageService.create).toHaveBeenCalledOnceWith('abc', {title: 'Plan', content: '<p>Hi</p>', projectId: 8, folderId: 3});
-    expect(navigationService.navigate).toHaveBeenCalledOnceWith(AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES);
+    const createdItem = {id: 9, title: 'Plan', folderId: 3, projectId: 4, lockVersion: 0, creator: createdPage().creator, createdAt: '', updatedAt: ''};
+    expect(navigationService.navigateWithState).toHaveBeenCalledOnceWith({createdItem}, AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES);
     expect(component.isCreating).toBeFalse();
   }));
 

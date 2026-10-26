@@ -20,6 +20,7 @@ import {HasUnsavedChanges} from "@models/unsaved-changes.model";
 import {IconName} from "@components/icon/icon.component";
 import {AvatarComponent} from "@components/avatar/avatar.component";
 import {ButtonComponent} from "@components/button/button.component";
+import {LoadMoreComponent} from "@components/load-more/load-more.component";
 import {ProjectItemRowComponent} from "@components/project-item-row/project-item-row.component";
 import {ProjectSettingsDialogComponent} from "@components/project-settings-dialog/project-settings-dialog.component";
 import {errorPhrase} from "@utils/errorPhrase";
@@ -39,6 +40,13 @@ export interface ProjectItemGroup {
   label: string;
   icon: IconName;
   items: ProjectItem[];
+  hasMore: boolean;
+  isLoading: boolean;
+}
+
+interface ProjectItemPage {
+  items: ProjectItem[];
+  hasMore: boolean;
 }
 
 function newestFirst(items: ProjectItem[]): ProjectItem[] {
@@ -55,6 +63,7 @@ function newestFirst(items: ProjectItem[]): ProjectItem[] {
     TranslateModule,
     AvatarComponent,
     ButtonComponent,
+    LoadMoreComponent,
     ProjectItemRowComponent,
     ProjectSettingsDialogComponent
   ],
@@ -73,10 +82,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChan
   itemsLoaded = false;
   isSettingsOpen = false;
   groups: ProjectItemGroup[] = [
-    {feature: 'pages', label: PHRASES.DOCUMENT_PAGES, icon: 'page', items: []},
-    {feature: 'diagrams', label: PHRASES.DIAGRAMS, icon: 'diagram', items: []},
-    {feature: 'boards', label: PHRASES.BOARDS, icon: 'board', items: []},
+    {feature: 'pages', label: PHRASES.DOCUMENT_PAGES, icon: 'page', items: [], hasMore: false, isLoading: false},
+    {feature: 'diagrams', label: PHRASES.DIAGRAMS, icon: 'diagram', items: [], hasMore: false, isLoading: false},
+    {feature: 'boards', label: PHRASES.BOARDS, icon: 'board', items: [], hasMore: false, isLoading: false},
   ];
+
+  private projectId = 0;
 
   private featuresSubscription?: Subscription;
 
@@ -119,6 +130,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChan
   ngOnInit() {
     this.unregisterEscape = this.escapeService.push(() => this.handleGoBack());
     const projectId = Number(this.route.snapshot.paramMap.get('id'));
+    this.projectId = projectId;
     this.featuresSubscription = this.teamService.features$.subscribe((features) => {
       this.features = features;
     });
@@ -129,7 +141,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChan
       }
       this.project = response.project;
     });
-    this.loadItems(projectId);
+    this.loadItems();
   }
 
   ngOnDestroy() {
@@ -149,6 +161,28 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChan
         this.router.navigate(boardRoute(item.id));
         break;
     }
+  }
+
+  handleLoadMore(group: ProjectItemGroup) {
+    if (group.isLoading) {
+      return;
+    }
+
+    this.updateGroup(group.feature, {isLoading: true});
+    this.loadGroupPage(group.feature, group.items.length).then((page) => {
+      const current = this.groups.find((candidate) => candidate.feature === group.feature)!;
+      if (!page) {
+        this.updateGroup(group.feature, {isLoading: false});
+        return;
+      }
+
+      const loadedIds = new Set(page.items.map((item) => item.id));
+      this.updateGroup(group.feature, {
+        items: [...current.items.filter((item) => !loadedIds.has(item.id)), ...page.items],
+        hasMore: page.hasMore,
+        isLoading: false,
+      });
+    });
   }
 
   handleOpenSettings() {
@@ -179,22 +213,35 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChan
     return this.settingsDialog?.confirmLeave() ?? true;
   }
 
-  private loadItems(projectId: number) {
-    const requests: Record<TeamFeature, () => Promise<ProjectItem[]>> = {
-      pages: () => this.pageService.list(this.teamCode, projectId).then((response) => response.success ? response.items : this.failedItems(response.code)),
-      diagrams: () => this.diagramService.list(this.teamCode, projectId).then((response) => response.success ? response.items : this.failedItems(response.code)),
-      boards: () => this.boardService.listBoards(this.teamCode, projectId).then((response) => response.success ? response.boards : this.failedItems(response.code)),
-    };
-
-    Promise.all(this.groups.map((group) => this.teamService.isFeatureEnabled(group.feature) ? requests[group.feature]() : Promise.resolve([])))
-      .then((results) => {
-        this.groups = this.groups.map((group, index) => ({...group, items: newestFirst(results[index])}));
+  private loadItems() {
+    Promise.all(this.groups.map((group) => this.teamService.isFeatureEnabled(group.feature) ? this.loadGroupPage(group.feature, 0) : Promise.resolve(null)))
+      .then((pages) => {
+        this.groups = this.groups.map((group, index) => ({...group, items: pages[index]?.items ?? [], hasMore: pages[index]?.hasMore ?? false}));
         this.itemsLoaded = true;
       });
   }
 
-  private failedItems(code: ErrorCode): ProjectItem[] {
+  private loadGroupPage(feature: TeamFeature, offset: number): Promise<ProjectItemPage | null> {
+    const projectId = this.projectId;
+    switch (feature) {
+      case 'pages':
+        return this.pageService.list(this.teamCode, {projectId, offset})
+          .then((response) => response.success ? {items: response.items, hasMore: response.hasMore} : this.failedPage(response.code));
+      case 'diagrams':
+        return this.diagramService.list(this.teamCode, {projectId, offset})
+          .then((response) => response.success ? {items: response.items, hasMore: response.hasMore} : this.failedPage(response.code));
+      case 'boards':
+        return this.boardService.listBoards(this.teamCode, projectId)
+          .then((response) => response.success ? {items: newestFirst(response.boards), hasMore: false} : this.failedPage(response.code));
+    }
+  }
+
+  private updateGroup(feature: TeamFeature, changes: Partial<ProjectItemGroup>) {
+    this.groups = this.groups.map((group) => group.feature === feature ? {...group, ...changes} : group);
+  }
+
+  private failedPage(code: ErrorCode): null {
     this.toastService.show({type: ToastType.ERROR, message: errorPhrase(code)});
-    return [];
+    return null;
   }
 }

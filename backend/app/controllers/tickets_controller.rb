@@ -12,6 +12,16 @@ class TicketsController < ApplicationController
   before_action :set_board
   before_action :set_ticket, only: [ :show, :update, :destroy ]
 
+  def index
+    tickets = tickets_in_status
+    return if tickets.nil?
+
+    tickets = tickets.text_search(params[:search]) if params[:search].present?
+    tickets, has_more = paginate(assignee_filtered(tickets).includes(TicketJson::ASSIGNEES_PRELOAD).order(:position, :id))
+
+    render json: { tickets: tickets.map { |ticket| ticket_summary_json(ticket) }, has_more: has_more }
+  end
+
   def create
     column = nil
 
@@ -130,6 +140,34 @@ class TicketsController < ApplicationController
 
   def to_backlog?
     ActiveModel::Type::Boolean.new.cast(update_ticket_params[:to_backlog])
+  end
+
+  def tickets_in_status
+    status = params[:status]
+    if status.blank?
+      render_error(ErrorCodes::Tickets::TICKET_STATUS_REQUIRED, :unprocessable_entity)
+      return nil
+    end
+    return @board.tickets.where(column_id: nil) if status == "backlog"
+
+    column = @board.columns.find_by(id: status)
+    if column.nil?
+      render_error(ErrorCodes::Boards::COLUMN_NOT_FOUND, :not_found)
+      return nil
+    end
+
+    @board.tickets.where(column: column)
+  end
+
+  def assignee_filtered(tickets)
+    assignee_ids = Array(params[:assignee_ids]).map(&:to_s)
+    return tickets if assignee_ids.empty?
+
+    member_ids = assignee_ids - [ "none" ]
+    filtered = tickets.where(id: TicketAssignee.where(user_id: member_ids).select(:ticket_id))
+    return filtered unless assignee_ids.include?("none")
+
+    filtered.or(tickets.where.not(id: TicketAssignee.select(:ticket_id)))
   end
 
   def bulk_ticket_ids

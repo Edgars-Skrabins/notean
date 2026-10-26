@@ -45,12 +45,14 @@
   "LOGOUT": "Logout",
   "LANGUAGE": "Language",
   "SEARCH_PAGES": "Search pages by title",
+  "SEARCH_PROJECTS": "Search projects by name or description",
   "NEW_PAGE": "New page",
   "NEW_FOLDER": "New folder",
   "NO_PAGES_YET": "No pages yet — create one to get started.",
   "NO_SEARCH_RESULTS": "No results found.",
   "SEARCH_EVERYTHING": "Search everything",
   "SEARCH_SHOW_MORE": "Show more",
+  "LOAD_MORE": "Load more",
   "SEARCH_IN_PROJECT": "Currently searching in project '{{project}}'",
   "SEARCH_INCLUDE_ALL_PROJECTS": "Include all projects",
   "SEARCH_FAILED": "Search failed",
@@ -382,7 +384,8 @@
       "ASSIGNEE_NOT_TEAM_MEMBER": "This person is not a member of the team",
       "ASSIGNEE_NOT_FOUND": "This person is not assigned",
       "ASSIGNEE_NO_ACCESS": "This person can't see this board",
-      "BULK_ACTION_INVALID": "This bulk action is not valid"
+      "BULK_ACTION_INVALID": "This bulk action is not valid",
+      "TICKET_STATUS_REQUIRED": "Choose a status to list tickets"
     },
     "PRIORITIES": {
       "PRIORITY_NOT_FOUND": "Priority not found",

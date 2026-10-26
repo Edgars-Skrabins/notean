@@ -1,0 +1,26 @@
+:host {
+  display: block;
+}
+
+.loadMore {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--row-height);
+  padding: 0 var(--space-3);
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-primary-light);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.loadMore:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--color-tint) 8%, transparent);
+}
+
+.loadMore--loading {
+  opacity: 0.5;
+  cursor: progress;
+}

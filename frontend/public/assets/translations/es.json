@@ -45,12 +45,14 @@
   "LOGOUT": "Cerrar sesión",
   "LANGUAGE": "Idioma",
   "SEARCH_PAGES": "Buscar páginas por título",
+  "SEARCH_PROJECTS": "Buscar proyectos por nombre o descripción",
   "NEW_PAGE": "Nueva página",
   "NEW_FOLDER": "Nueva carpeta",
   "NO_PAGES_YET": "Aún no hay páginas: crea una para empezar.",
   "NO_SEARCH_RESULTS": "No se encontraron resultados.",
   "SEARCH_EVERYTHING": "Buscar en todo",
   "SEARCH_SHOW_MORE": "Mostrar más",
+  "LOAD_MORE": "Cargar más",
   "SEARCH_IN_PROJECT": "Buscando ahora en el proyecto '{{project}}'",
   "SEARCH_INCLUDE_ALL_PROJECTS": "Incluir todos los proyectos",
   "SEARCH_FAILED": "La búsqueda falló",
@@ -382,7 +384,8 @@
       "ASSIGNEE_NOT_TEAM_MEMBER": "Esta persona no es miembro del equipo",
       "ASSIGNEE_NOT_FOUND": "Esta persona no está asignada",
       "ASSIGNEE_NO_ACCESS": "Esta persona no puede ver este tablero",
-      "BULK_ACTION_INVALID": "Esta acción masiva no es válida"
+      "BULK_ACTION_INVALID": "Esta acción masiva no es válida",
+      "TICKET_STATUS_REQUIRED": "Elige un estado para mostrar los tickets"
     },
     "PRIORITIES": {
       "PRIORITY_NOT_FOUND": "Prioridad no encontrada",
