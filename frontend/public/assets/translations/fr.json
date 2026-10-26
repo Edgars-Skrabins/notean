@@ -371,7 +371,8 @@
       "ASSIGNEE_NOT_TEAM_MEMBER": "Cette personne n'est pas membre de l'équipe",
       "ASSIGNEE_NOT_FOUND": "Cette personne n'est pas assignée",
       "ASSIGNEE_NO_ACCESS": "Cette personne ne peut pas voir ce tableau",
-      "BULK_ACTION_INVALID": "Cette action groupée n'est pas valide"
+      "BULK_ACTION_INVALID": "Cette action groupée n'est pas valide",
+      "TICKET_STATUS_REQUIRED": "Choisissez un statut pour afficher les tickets"
     },
     "PRIORITIES": {
       "PRIORITY_NOT_FOUND": "Priorité introuvable",

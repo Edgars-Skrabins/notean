@@ -371,7 +371,8 @@
       "ASSIGNEE_NOT_TEAM_MEMBER": "Den här personen är inte medlem i teamet",
       "ASSIGNEE_NOT_FOUND": "Den här personen är inte tilldelad",
       "ASSIGNEE_NO_ACCESS": "Den här personen kan inte se den här tavlan",
-      "BULK_ACTION_INVALID": "Den här massåtgärden är inte giltig"
+      "BULK_ACTION_INVALID": "Den här massåtgärden är inte giltig",
+      "TICKET_STATUS_REQUIRED": "Välj en status för att visa ärenden"
     },
     "PRIORITIES": {
       "PRIORITY_NOT_FOUND": "Prioriteten hittades inte",

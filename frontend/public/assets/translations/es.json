@@ -371,7 +371,8 @@
       "ASSIGNEE_NOT_TEAM_MEMBER": "Esta persona no es miembro del equipo",
       "ASSIGNEE_NOT_FOUND": "Esta persona no está asignada",
       "ASSIGNEE_NO_ACCESS": "Esta persona no puede ver este tablero",
-      "BULK_ACTION_INVALID": "Esta acción masiva no es válida"
+      "BULK_ACTION_INVALID": "Esta acción masiva no es válida",
+      "TICKET_STATUS_REQUIRED": "Elige un estado para mostrar los tickets"
     },
     "PRIORITIES": {
       "PRIORITY_NOT_FOUND": "Prioridad no encontrada",

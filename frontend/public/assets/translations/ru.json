@@ -371,7 +371,8 @@
       "ASSIGNEE_NOT_TEAM_MEMBER": "Этот человек не состоит в команде",
       "ASSIGNEE_NOT_FOUND": "Этот человек не назначен",
       "ASSIGNEE_NO_ACCESS": "Этот человек не видит эту доску",
-      "BULK_ACTION_INVALID": "Это групповое действие недопустимо"
+      "BULK_ACTION_INVALID": "Это групповое действие недопустимо",
+      "TICKET_STATUS_REQUIRED": "Выберите статус, чтобы показать задачи"
     },
     "PRIORITIES": {
       "PRIORITY_NOT_FOUND": "Приоритет не найден",

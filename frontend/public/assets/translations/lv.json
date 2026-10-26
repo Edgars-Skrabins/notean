@@ -371,7 +371,8 @@
       "ASSIGNEE_NOT_TEAM_MEMBER": "Šī persona nav komandas dalībnieks",
       "ASSIGNEE_NOT_FOUND": "Šī persona nav piešķirta",
       "ASSIGNEE_NO_ACCESS": "Šī persona neredz šo dēli",
-      "BULK_ACTION_INVALID": "Šī grupas darbība nav derīga"
+      "BULK_ACTION_INVALID": "Šī grupas darbība nav derīga",
+      "TICKET_STATUS_REQUIRED": "Izvēlieties statusu, lai parādītu pieteikumus"
     },
     "PRIORITIES": {
       "PRIORITY_NOT_FOUND": "Prioritāte nav atrasta",

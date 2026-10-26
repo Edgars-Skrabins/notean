@@ -371,7 +371,8 @@
       "ASSIGNEE_NOT_TEAM_MEMBER": "See inimene ei ole meeskonna liige",
       "ASSIGNEE_NOT_FOUND": "See inimene ei ole määratud",
       "ASSIGNEE_NO_ACCESS": "See inimene ei näe seda tahvlit",
-      "BULK_ACTION_INVALID": "See hulgitoiming pole kehtiv"
+      "BULK_ACTION_INVALID": "See hulgitoiming pole kehtiv",
+      "TICKET_STATUS_REQUIRED": "Piletite kuvamiseks vali olek"
     },
     "PRIORITIES": {
       "PRIORITY_NOT_FOUND": "Prioriteeti ei leitud",

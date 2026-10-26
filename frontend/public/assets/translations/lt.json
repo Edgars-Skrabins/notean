@@ -371,7 +371,8 @@
       "ASSIGNEE_NOT_TEAM_MEMBER": "Šis asmuo nėra komandos narys",
       "ASSIGNEE_NOT_FOUND": "Šis asmuo nėra priskirtas",
       "ASSIGNEE_NO_ACCESS": "Šis asmuo nemato šios lentos",
-      "BULK_ACTION_INVALID": "Šis grupinis veiksmas negalioja"
+      "BULK_ACTION_INVALID": "Šis grupinis veiksmas negalioja",
+      "TICKET_STATUS_REQUIRED": "Pasirinkite būseną, kad būtų parodyti bilietai"
     },
     "PRIORITIES": {
       "PRIORITY_NOT_FOUND": "Prioritetas nerastas",

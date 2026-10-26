@@ -371,7 +371,8 @@
       "ASSIGNEE_NOT_TEAM_MEMBER": "Tämä henkilö ei ole tiimin jäsen",
       "ASSIGNEE_NOT_FOUND": "Tätä henkilöä ei ole määritetty",
       "ASSIGNEE_NO_ACCESS": "Tämä henkilö ei näe tätä taulua",
-      "BULK_ACTION_INVALID": "Tämä joukkotoiminto ei ole kelvollinen"
+      "BULK_ACTION_INVALID": "Tämä joukkotoiminto ei ole kelvollinen",
+      "TICKET_STATUS_REQUIRED": "Valitse tila tikettien näyttämiseksi"
     },
     "PRIORITIES": {
       "PRIORITY_NOT_FOUND": "Prioriteettia ei löytynyt",

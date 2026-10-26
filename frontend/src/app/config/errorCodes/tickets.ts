@@ -6,6 +6,7 @@ export const TICKETS_ERROR_CODES = [
   'ASSIGNEE_NOT_FOUND',
   'ASSIGNEE_NO_ACCESS',
   'BULK_ACTION_INVALID',
+  'TICKET_STATUS_REQUIRED',
 ] as const;
 
 export type TicketsErrorCode = typeof TICKETS_ERROR_CODES[number];

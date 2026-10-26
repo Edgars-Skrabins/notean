@@ -371,7 +371,8 @@
       "ASSIGNEE_NOT_TEAM_MEMBER": "This person is not a member of the team",
       "ASSIGNEE_NOT_FOUND": "This person is not assigned",
       "ASSIGNEE_NO_ACCESS": "This person can't see this board",
-      "BULK_ACTION_INVALID": "This bulk action is not valid"
+      "BULK_ACTION_INVALID": "This bulk action is not valid",
+      "TICKET_STATUS_REQUIRED": "Choose a status to list tickets"
     },
     "PRIORITIES": {
       "PRIORITY_NOT_FOUND": "Priority not found",
