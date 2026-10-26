@@ -3,7 +3,7 @@ require "test_helper"
 class UsersControllerTest < ActionDispatch::IntegrationTest
   setup do
     @user = User.create!(email: "alice@example.com", password: "supersecret")
-    token = JsonWebToken.encode(user_id: @user.id)
+    token = session_token(@user)
     @headers = { "Authorization" => "Bearer #{token}" }
   end
 

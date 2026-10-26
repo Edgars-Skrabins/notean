@@ -5,7 +5,7 @@ class FoldersControllerTest < ActionDispatch::IntegrationTest
     @team = Team.create!(name: "Engineering", password: "supersecret")
     @user = User.create!(email: "alice@example.com", password: "supersecret")
     Membership.create!(user: @user, team: @team, role: "owner", nickname: "alice")
-    token = JsonWebToken.encode(user_id: @user.id)
+    token = session_token(@user)
     @headers = { "Authorization" => "Bearer #{token}" }
   end
 
@@ -238,6 +238,6 @@ class FoldersControllerTest < ActionDispatch::IntegrationTest
   end
 
   def headers_for(user)
-    { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: user.id)}" }
+    { "Authorization" => "Bearer #{session_token(user)}" }
   end
 end

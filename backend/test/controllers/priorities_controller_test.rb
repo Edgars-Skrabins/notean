@@ -6,7 +6,7 @@ class PrioritiesControllerTest < ActionDispatch::IntegrationTest
     @team = Team.create!(name: "Engineering", password: "supersecret")
     @user = User.create!(email: "alice@example.com", password: "supersecret")
     Membership.create!(user: @user, team: @team, role: "owner", nickname: "alice")
-    @headers = { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: @user.id)}" }
+    @headers = { "Authorization" => "Bearer #{session_token(@user)}" }
     @board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
   end
 
@@ -120,7 +120,7 @@ class PrioritiesControllerTest < ActionDispatch::IntegrationTest
     outsider = User.create!(email: "mallory@example.com", password: "supersecret")
 
     post priorities_url, params: { priority: { name: "Urgent", color: "red" } },
-      headers: { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: outsider.id)}" }, as: :json
+      headers: { "Authorization" => "Bearer #{session_token(outsider)}" }, as: :json
 
     assert_response :forbidden
   end

@@ -8,7 +8,7 @@ class MyWorkControllerTest < ActionDispatch::IntegrationTest
     @bob = create_member(@team, "Bob")
     @board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
     @column = Column.create!(board: @board, title: "Doing", position: 0)
-    @headers = { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: @user.id)}" }
+    @headers = { "Authorization" => "Bearer #{session_token(@user)}" }
   end
 
   def ticket(title, column: @column, board: @board, team: @team, assignees: [ @user ])
@@ -62,7 +62,7 @@ class MyWorkControllerTest < ActionDispatch::IntegrationTest
   test "returns NOT_TEAM_MEMBER for someone outside the team" do
     outsider = User.create!(email: "mallory@example.com", password: "supersecret")
 
-    get "/teams/#{@team.code}/my_work", headers: { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: outsider.id)}" }
+    get "/teams/#{@team.code}/my_work", headers: { "Authorization" => "Bearer #{session_token(outsider)}" }
 
     assert_response :forbidden
     assert_equal "NOT_TEAM_MEMBER", JSON.parse(response.body)["code"]

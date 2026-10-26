@@ -40,6 +40,8 @@ Rails.application.routes.draw do
 
   post "auth/register" => "users#create"
   post "auth/login" => "sessions#create"
+  delete "auth/session" => "sessions#destroy"
+  post "auth/cable_ticket" => "sessions#cable_ticket"
 
   mount ActionCable.server => "/cable"
 end

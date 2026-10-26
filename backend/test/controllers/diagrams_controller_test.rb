@@ -6,7 +6,7 @@ class DiagramsControllerTest < ActionDispatch::IntegrationTest
     @user = User.create!(email: "alice@example.com", password: "supersecret")
     Membership.create!(user: @user, team: @team, role: "owner", nickname: "Alice")
     @diagram = Diagram.create!(team: @team, creator: @user, title: "Flow", content: "")
-    token = JsonWebToken.encode(user_id: @user.id)
+    token = session_token(@user)
     @headers = { "Authorization" => "Bearer #{token}" }
   end
 
@@ -108,7 +108,7 @@ class DiagramsControllerTest < ActionDispatch::IntegrationTest
     member = create_member(@team, "Bob")
     secret = Project.create!(team: @team, name: "Secret", owner: @user, creator: @user)
     folder = Folder.create!(team: @team, creator: @user, item_type: "Diagram", title: "Plans", project: secret)
-    member_headers = { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: member.id)}" }
+    member_headers = { "Authorization" => "Bearer #{session_token(member)}" }
 
     post "/teams/#{@team.code}/diagrams", params: { diagram: { title: "New", folder_id: folder.id } }, headers: member_headers, as: :json
 

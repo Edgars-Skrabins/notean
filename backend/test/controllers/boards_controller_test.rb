@@ -6,7 +6,7 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     @team = Team.create!(name: "Engineering", password: "supersecret")
     @user = User.create!(email: "alice@example.com", password: "supersecret")
     Membership.create!(user: @user, team: @team, role: "owner", nickname: "alice")
-    token = JsonWebToken.encode(user_id: @user.id)
+    token = session_token(@user)
     @headers = { "Authorization" => "Bearer #{token}" }
   end
 
@@ -80,7 +80,7 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
 
   test "non-members cannot access a team's boards" do
     outsider = User.create!(email: "mallory@example.com", password: "supersecret")
-    token = JsonWebToken.encode(user_id: outsider.id)
+    token = session_token(outsider)
 
     get "/teams/#{@team.code}/boards", headers: { "Authorization" => "Bearer #{token}" }
 

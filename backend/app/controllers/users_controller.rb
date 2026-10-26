@@ -10,8 +10,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      token = JsonWebToken.encode(user_id: @user.id)
-      render json: { user: @user.as_json(only: [ :id, :email ]), token: token }, status: :created
+      render json: { user: @user.as_json(only: [ :id, :email ]), token: start_session(@user) }, status: :created
     elsif @user.errors.of_kind?(:password, :too_short)
       render_error(ErrorCodes::Auth::PASSWORD_TOO_SHORT, :unprocessable_entity)
     else

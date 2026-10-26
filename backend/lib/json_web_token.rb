@@ -1,10 +1,9 @@
 class JsonWebToken
   SECRET_KEY = Rails.application.credentials.secret_key_base
   ALGORITHM = "HS256"
-  EXPIRY = 24.hours
 
-  def self.encode(payload, exp = EXPIRY.from_now)
-    payload = payload.merge(exp: exp.to_i)
+  def self.encode(payload, exp = nil)
+    payload = payload.merge(exp: exp.to_i) if exp
     JWT.encode(payload, SECRET_KEY, ALGORITHM)
   end
 

@@ -29,6 +29,10 @@ module ActiveSupport
       user
     end
 
+    def session_token(user)
+      JsonWebToken.encode(session_id: user.user_sessions.create!(last_used_at: Time.current).id)
+    end
+
     def attach_avatar(user)
       user.avatar_image.attach(io: file_fixture("avatar.png").open, filename: "avatar.png", content_type: "image/png")
     end

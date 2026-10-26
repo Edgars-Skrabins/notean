@@ -6,7 +6,7 @@ class ColumnsControllerTest < ActionDispatch::IntegrationTest
     @team = Team.create!(name: "Engineering", password: "supersecret")
     @user = User.create!(email: "alice@example.com", password: "supersecret")
     Membership.create!(user: @user, team: @team, role: "owner", nickname: "alice")
-    token = JsonWebToken.encode(user_id: @user.id)
+    token = session_token(@user)
     @headers = { "Authorization" => "Bearer #{token}" }
     @board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
     @board.columns.destroy_all
