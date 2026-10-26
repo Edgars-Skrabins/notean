@@ -36,6 +36,7 @@ class UsersController < ApplicationController
     end
 
     current_user.anonymise!
+    current_user.user_sessions.delete_all
     head :no_content
   end
 

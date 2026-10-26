@@ -202,6 +202,38 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert @user.all_memberships.first.removed?
   end
 
+  test "destroy ends all of the user's sessions" do
+    other_headers = { "Authorization" => "Bearer #{session_token(@user)}" }
+    bob = User.create!(email: "bob@example.com", password: "supersecret")
+    bob_headers = { "Authorization" => "Bearer #{session_token(bob)}" }
+
+    delete "/users/me", headers: @headers
+
+    assert_equal 0, @user.user_sessions.count
+    get "/users/me", headers: other_headers
+    assert_response :unauthorized
+    get "/users/me", headers: bob_headers
+    assert_response :success
+  end
+
+  test "a session of a deleted user gets 401" do
+    @user.update!(deleted_at: Time.current)
+
+    get "/users/me", headers: @headers
+
+    assert_response :unauthorized
+  end
+
+  test "a blocked destroy keeps the user's sessions" do
+    team = Team.create!(name: "Zeta", password: "supersecret")
+    Membership.create!(user: @user, team: team, role: "owner", nickname: "Alice")
+
+    delete "/users/me", headers: @headers
+
+    get "/users/me", headers: @headers
+    assert_response :success
+  end
+
   test "destroy rejects a team owner with OWNS_TEAMS and the owned teams" do
     owned = Team.create!(name: "Zeta", password: "supersecret")
     other_owned = Team.create!(name: "Alpha", password: "supersecret")
