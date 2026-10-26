@@ -19,7 +19,8 @@
   border-radius: var(--radius-sm);
   padding-right: var(--space-2);
   touch-action: none;
-  transition: background var(--transition-fast), border-color var(--transition-fast);
+  transition: var(--transition-fast);
+  transition-property: background, border-color;
 }
 
 .itemTree__row:hover {
@@ -80,7 +81,8 @@
   border-radius: var(--radius-sm);
   border: 1px dashed transparent;
   overflow: hidden;
-  transition: height var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+  transition: var(--transition-fast);
+  transition-property: height, border-color, background;
 }
 
 .itemTree__rootDropZone--active {
