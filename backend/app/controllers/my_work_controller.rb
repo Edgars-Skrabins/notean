@@ -12,6 +12,7 @@ class MyWorkController < ApplicationController
     return if boards.nil?
 
     tickets = Ticket
+      .without_description
       .where(team: @team, board: boards)
       .where(id: current_user.ticket_assignees.select(:ticket_id))
       .includes(:board, :column, TicketJson::ASSIGNEES_PRELOAD)
