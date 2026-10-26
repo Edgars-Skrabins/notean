@@ -159,7 +159,7 @@ Import with the tsconfig aliases instead of relative paths: `@components/*`, `@c
 
 ### Tech stack
 
-- **Framework**: Rails 7.2 (API-only) on Ruby 3.3.5, served by Puma
+- **Framework**: Rails 8.1 (API-only) on Ruby 3.3.5, served by Puma
 - **Database**: PostgreSQL 17, run with Docker Compose in development and tests
 - **Auth**: `jwt` gem for tokens, `bcrypt` via `has_secure_password`
 - **Realtime**: ActionCable
