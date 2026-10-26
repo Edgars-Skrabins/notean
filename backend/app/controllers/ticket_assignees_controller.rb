@@ -20,6 +20,7 @@ class TicketAssigneesController < ApplicationController
     assignee.save! if assignee.new_record?
 
     render json: { ticket: ticket_json(@ticket.reload) }, status: status
+    BoardBroadcast.tickets_upserted(@board, [ ticket_broadcast_json(@ticket) ])
   end
 
   def destroy
@@ -28,6 +29,7 @@ class TicketAssigneesController < ApplicationController
 
     assignee.destroy
     render json: { ticket: ticket_json(@ticket.reload) }
+    BoardBroadcast.tickets_upserted(@board, [ ticket_broadcast_json(@ticket) ])
   end
 
   private

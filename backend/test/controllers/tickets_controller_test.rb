@@ -1,6 +1,7 @@
 require "test_helper"
 
 class TicketsControllerTest < ActionDispatch::IntegrationTest
+  include ActionCable::TestHelper
   setup do
     @team = Team.create!(name: "Engineering", password: "supersecret")
     @user = User.create!(email: "alice@example.com", password: "supersecret")
@@ -443,5 +444,79 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     get "/teams/#{@team.code}/boards/#{@board.id}", headers: @headers
 
     assert_equal @board.priorities.first.id, JSON.parse(response.body)["board"]["backlog"][0]["priority_id"]
+  end
+
+  test "create broadcasts the new ticket with its description" do
+    post tickets_url, params: { ticket: { title: "Fix bug", column_id: @todo.id } }, headers: @headers, as: :json
+
+    assert_response :created
+    assert_broadcast_on(BoardChannel.stream_name(@board), type: "tickets_upserted", tickets: [ ticket_broadcast_json(JSON.parse(response.body)["ticket"]) ])
+  end
+
+  test "update broadcasts the ticket with its description" do
+    ticket = ticket_in(@todo, "Fix bug", 0)
+
+    patch tickets_url(ticket.id), params: { ticket: { title: "Fix the bug", description: "<p>Steps</p>" } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_broadcast_on(BoardChannel.stream_name(@board), type: "tickets_upserted", tickets: [ ticket_broadcast_json(JSON.parse(response.body)["ticket"]) ])
+  end
+
+  test "a move broadcasts the moved ticket and only the siblings whose position changed" do
+    first = ticket_in(@todo, "First", 0)
+    second = ticket_in(@todo, "Second", 1)
+    third = ticket_in(@todo, "Third", 2)
+    ticket_in(@todo, "Fourth", 3)
+
+    patch tickets_url(third.id), params: { ticket: { column_id: @todo.id, position: 1 } }, headers: @headers, as: :json
+
+    assert_response :success
+    message = board_broadcasts(@board).sole
+    assert_equal "tickets_upserted", message["type"]
+    assert_equal [ [ third.id, 1 ], [ second.id, 2 ] ], message["tickets"].map { |ticket| [ ticket["id"], ticket["position"] ] }
+    assert_not message["tickets"].last.key?("description")
+    assert_not_includes message["tickets"].map { |ticket| ticket["id"] }, first.id
+  end
+
+  test "a failed update broadcasts nothing" do
+    ticket = ticket_in(@todo, "Fix bug", 0)
+
+    assert_no_broadcasts(BoardChannel.stream_name(@board)) do
+      patch tickets_url(ticket.id), params: { ticket: { column_id: 0 } }, headers: @headers, as: :json
+    end
+    assert_response :not_found
+  end
+
+  test "destroy broadcasts the removed ticket id" do
+    ticket = ticket_in(@todo, "Fix bug", 0)
+
+    delete tickets_url(ticket.id), headers: @headers
+
+    assert_response :no_content
+    assert_broadcast_on(BoardChannel.stream_name(@board), type: "tickets_removed", ticket_ids: [ ticket.id ])
+  end
+
+  test "bulk update broadcasts the moved tickets and the reindexed source tickets" do
+    first = ticket_in(nil, "First", 0)
+    kept = ticket_in(nil, "Kept", 1)
+    second = ticket_in(@todo, "Second", 0)
+
+    bulk_update(ticket_ids: [ second.id, first.id ], column_id: @doing.id)
+
+    assert_response :success
+    message = board_broadcasts(@board).sole
+    assert_equal "tickets_upserted", message["type"]
+    assert_equal JSON.parse(response.body)["tickets"], message["tickets"].first(2)
+    assert_equal [ [ kept.id, nil, 0 ] ], message["tickets"].drop(2).map { |ticket| [ ticket["id"], ticket["column_id"], ticket["position"] ] }
+  end
+
+  test "bulk delete broadcasts the removed ticket ids" do
+    first = ticket_in(nil, "First", 0)
+    second = ticket_in(@todo, "Second", 0)
+
+    delete bulk_url, params: { bulk: { ticket_ids: [ first.id, second.id ] } }, headers: @headers, as: :json
+
+    assert_response :no_content
+    assert_broadcast_on(BoardChannel.stream_name(@board), type: "tickets_removed", ticket_ids: [ first.id, second.id ])
   end
 end

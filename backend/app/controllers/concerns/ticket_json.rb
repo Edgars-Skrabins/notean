@@ -34,6 +34,10 @@ module TicketJson
     }
   end
 
+  def ticket_broadcast_json(ticket)
+    ticket_summary_json(ticket).merge(description: ticket.description)
+  end
+
   def assignees_json(ticket)
     ticket.ticket_assignees.map { |assignee| member_json(assignee.user) }
   end

@@ -33,6 +33,14 @@ module ActiveSupport
       user.avatar_image.attach(io: file_fixture("avatar.png").open, filename: "avatar.png", content_type: "image/png")
     end
 
+    def board_broadcasts(board)
+      broadcasts(BoardChannel.stream_name(board)).map { |message| ::JSON.parse(message) }
+    end
+
+    def ticket_broadcast_json(ticket_json)
+      ticket_json.slice("id", "title", "position", "column_id", "priority_id", "assignees", "created_at", "updated_at", "description")
+    end
+
     def nickname_for(index)
       "Member#{("a".."z").to_a[index]}"
     end

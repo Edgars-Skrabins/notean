@@ -1,6 +1,7 @@
 require "test_helper"
 
 class TicketAssigneesControllerTest < ActionDispatch::IntegrationTest
+  include ActionCable::TestHelper
   setup do
     @team = Team.create!(name: "Engineering", password: "supersecret")
     @user = User.create!(email: "alice@example.com", password: "supersecret")
@@ -84,5 +85,21 @@ class TicketAssigneesControllerTest < ActionDispatch::IntegrationTest
     assert_response :forbidden
     assert_equal({ "code" => "FEATURE_DISABLED" }, JSON.parse(response.body))
     assert_empty @ticket.ticket_assignees
+  end
+
+  test "create broadcasts the ticket with its new assignee" do
+    post assignees_url, params: { assignee: { user_id: @bob.id } }, headers: @headers, as: :json
+
+    assert_response :created
+    assert_broadcast_on(BoardChannel.stream_name(@board), type: "tickets_upserted", tickets: [ ticket_broadcast_json(JSON.parse(response.body)["ticket"]) ])
+  end
+
+  test "destroy broadcasts the ticket without the removed assignee" do
+    TicketAssignee.create!(ticket: @ticket, user: @bob)
+
+    delete "#{assignees_url}/#{@bob.id}", headers: @headers
+
+    assert_response :success
+    assert_broadcast_on(BoardChannel.stream_name(@board), type: "tickets_upserted", tickets: [ ticket_broadcast_json(JSON.parse(response.body)["ticket"]) ])
   end
 end

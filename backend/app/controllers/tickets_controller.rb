@@ -25,6 +25,7 @@ class TicketsController < ApplicationController
 
     if @ticket.save
       render json: { ticket: ticket_json(@ticket) }, status: :created
+      BoardBroadcast.tickets_upserted(@board, [ ticket_broadcast_json(@ticket) ])
     else
       render_error(ErrorCodes::Tickets::TICKET_CREATE_FAILED, :unprocessable_entity)
     end
@@ -57,6 +58,7 @@ class TicketsController < ApplicationController
 
     if @ticket.save
       render json: { ticket: ticket_json(@ticket) }
+      BoardBroadcast.tickets_upserted(@board, [ ticket_broadcast_json(@ticket), *reindexed_tickets_json ])
     else
       render_error(ErrorCodes::Tickets::TICKET_UPDATE_FAILED, :unprocessable_entity)
     end
@@ -65,6 +67,7 @@ class TicketsController < ApplicationController
   def destroy
     @ticket.destroy
     head :no_content
+    BoardBroadcast.tickets_removed(@board, [ @ticket.id ])
   end
 
   def bulk_update
@@ -91,6 +94,7 @@ class TicketsController < ApplicationController
     end
 
     render json: { tickets: bulk_tickets_json }
+    BoardBroadcast.tickets_upserted(@board, bulk_tickets_json + reindexed_tickets_json)
   end
 
   def bulk_destroy
@@ -105,6 +109,7 @@ class TicketsController < ApplicationController
       column_ids.each { |column_id| reindex_group(column_id) }
     end
     head :no_content
+    BoardBroadcast.tickets_removed(@board, bulk_ticket_ids)
   end
 
   private
@@ -162,8 +167,20 @@ class TicketsController < ApplicationController
 
   def reindex_group(column_id)
     @board.tickets.where(column_id: column_id).order(:position).each_with_index do |ticket, index|
-      ticket.update_column(:position, index) unless ticket.position == index
+      next if ticket.position == index
+
+      ticket.update_column(:position, index)
+      reindexed_tickets << ticket
     end
+  end
+
+  def reindexed_tickets
+    @reindexed_tickets ||= []
+  end
+
+  def reindexed_tickets_json
+    ActiveRecord::Associations::Preloader.new(records: reindexed_tickets, associations: TicketJson::ASSIGNEES_PRELOAD).call
+    reindexed_tickets.map { |ticket| ticket_summary_json(ticket) }
   end
 
   def assign_tickets(tickets, user)
@@ -185,7 +202,9 @@ class TicketsController < ApplicationController
 
   def move_ticket(target_column)
     siblings = @board.tickets.where(column: target_column).where.not(id: @ticket.id).order(:position).to_a
+    positions = siblings.to_h { |sibling| [ sibling.id, sibling.position ] }
     @ticket.column = target_column
     @ticket.position = insert_and_reindex(siblings, @ticket, update_ticket_params[:position], :position)
+    reindexed_tickets.concat(siblings.reject { |sibling| sibling == @ticket || positions[sibling.id] == sibling.position })
   end
 end
