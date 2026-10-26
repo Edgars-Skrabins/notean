@@ -151,6 +151,9 @@
   "EDIT_CONFLICT_LOAD_LATEST": "Läs in senaste",
   "EDIT_CONFLICT_OVERWRITE": "Skriv över",
   "PROFILE_UPDATED": "Profilinformationen har uppdaterats",
+  "DELETE_ACCOUNT": "Radera konto",
+  "CONFIRM_DELETE_ACCOUNT": "Radera ditt konto? Du tas bort från alla team och kan inte logga in igen. Ditt innehåll finns kvar i dina team.",
+  "ACCOUNT_DELETED": "Ditt konto har raderats",
   "NICKNAME_TOO_SHORT": "Smeknamnet måste vara minst 3 tecken",
   "NICKNAME_TOO_LONG": "Smeknamnet får vara högst 30 tecken",
   "NICKNAME_INVALID_CHARACTERS": "Smeknamnet får bara innehålla bokstäverna a–z",
@@ -327,7 +330,8 @@
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Det gick inte att spara inställningarna",
       "AVATAR_COLOR_INVALID": "Den här färgen kan inte användas",
-      "AVATAR_IMAGE_INVALID": "Bilden måste vara PNG, JPEG eller WebP och högst 2 MB"
+      "AVATAR_IMAGE_INVALID": "Bilden måste vara PNG, JPEG eller WebP och högst 2 MB",
+      "OWNS_TEAMS": "Överför ägarskapet eller radera dessa team först: {{teams}}"
     },
     "TEAMS": {
       "TEAM_NOT_FOUND": "Teamet hittades inte",

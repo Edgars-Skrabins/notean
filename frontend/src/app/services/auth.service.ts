@@ -1,14 +1,18 @@
 import {Injectable} from '@angular/core';
 import {axiosInstance, setAuthToken} from "@config/axiosConfig";
+import {AxiosError} from "axios";
 import {
   AuthCredentials,
   AuthResponse,
   AuthResponseSuccess,
   AuthUser,
   ChangePasswordResponse,
+  DeleteAccountResponse,
+  OwnedTeam,
   RegisterCredentials,
 } from "@models/auth.model";
 import {apiRequest} from "@utils/apiRequest";
+import {toErrorCode, toErrorResult} from "@utils/httpError";
 
 @Injectable({
   providedIn: 'root',
@@ -16,6 +20,7 @@ import {apiRequest} from "@utils/apiRequest";
 export class AuthService {
   private loginUrl = '/auth/login';
   private registerUrl = '/auth/register';
+  private meUrl = '/users/me';
   private passwordUrl = '/users/me/password';
   private tokenStorageKey = 'authToken';
   private userStorageKey = 'authUser';
@@ -61,6 +66,14 @@ export class AuthService {
     );
   }
 
+  async deleteAccount(): Promise<DeleteAccountResponse> {
+    return axiosInstance.delete(this.meUrl)
+      .then((): DeleteAccountResponse => ({success: true}))
+      .catch((error): DeleteAccountResponse => toErrorCode(error) === 'OWNS_TEAMS'
+        ? {success: false, code: 'OWNS_TEAMS', teams: mapOwnedTeams((error as AxiosError<RawOwnsTeamsError>).response!.data)}
+        : toErrorResult<DeleteAccountResponse>(error));
+  }
+
   async changePassword(currentPassword: string, newPassword: string): Promise<ChangePasswordResponse> {
     return apiRequest<ChangePasswordResponse>(
       axiosInstance.patch(this.passwordUrl, {password: {current_password: currentPassword, new_password: newPassword}}),
@@ -96,4 +109,12 @@ export class AuthService {
       return null;
     }
   }
+}
+
+interface RawOwnsTeamsError {
+  teams: { code: string; name: string }[];
+}
+
+export function mapOwnedTeams(data: RawOwnsTeamsError): OwnedTeam[] {
+  return data.teams.map((team) => ({code: team.code, name: team.name}));
 }

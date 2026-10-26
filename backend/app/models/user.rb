@@ -18,6 +18,8 @@ class User < ApplicationRecord
 
   before_save { self.email = email.downcase }
 
+  scope :active, -> { where(deleted_at: nil) }
+
   validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
   validates :password, length: { minimum: PASSWORD_MIN_LENGTH }, allow_nil: true
   validates :show_favorites_on_home, inclusion: { in: [ true, false ] }
@@ -27,6 +29,18 @@ class User < ApplicationRecord
   validates :theme_mode, inclusion: { in: THEME_MODES }
   validates :avatar_color, inclusion: { in: AVATAR_COLORS }, allow_nil: true
   validate :avatar_image_is_allowed
+
+  def deleted?
+    deleted_at.present?
+  end
+
+  def anonymise!
+    transaction do
+      memberships.each(&:remove!)
+      avatar_image.purge if avatar_image.attached?
+      update!(email: "deleted-#{id}@deleted.invalid", password: SecureRandom.hex(32), avatar_color: nil, deleted_at: Time.current)
+    end
+  end
 
   def effective_avatar_color
     avatar_color || AVATAR_COLORS[id % AVATAR_COLORS.length]

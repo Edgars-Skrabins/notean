@@ -290,7 +290,7 @@ class ApplicationController < ActionController::API
     header = request.headers["Authorization"]
     token = header.split(" ").last if header
 
-    @current_user = token && User.find_by(id: JsonWebToken.decode(token)[:user_id])
+    @current_user = token && User.active.find_by(id: JsonWebToken.decode(token)[:user_id])
   rescue JWT::DecodeError
     @current_user = nil
   end

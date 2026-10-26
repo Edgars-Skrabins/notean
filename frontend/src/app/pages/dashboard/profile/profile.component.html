@@ -99,7 +99,18 @@
     {{ PHRASES.CHANGE_PASSWORD | translate }}
   </button>
   <p class="authStatus" *ngIf="passwordError">{{ passwordError | translate }}</p>
+
+  <h3 class="profile__sectionTitle">{{ PHRASES.DELETE_ACCOUNT | translate }}</h3>
+  <app-button variant="danger" [disabled]="isDeletingAccount" (pressed)="handleDeleteAccount()">{{ PHRASES.DELETE_ACCOUNT | translate }}</app-button>
 </div>
+
+<app-confirm-dialog
+  *ngIf="isDeleteAccountConfirmOpen"
+  [message]="PHRASES.CONFIRM_DELETE_ACCOUNT | translate"
+  [confirmLabel]="PHRASES.DELETE_ACCOUNT"
+  (confirmed)="handleConfirmDeleteAccount()"
+  (cancelled)="handleCancelDeleteAccount()"
+></app-confirm-dialog>
 
 <app-confirm-dialog
   *ngIf="isLeaveConfirmOpen"

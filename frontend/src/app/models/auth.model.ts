@@ -1,5 +1,5 @@
 import {Result} from "@models/result.model";
-import {AuthErrorCode} from "@config/errorCodes";
+import {AuthErrorCode, UsersErrorCode} from "@config/errorCodes";
 
 export interface AuthCredentials {
   email: string;
@@ -19,5 +19,16 @@ export interface AuthResponseSuccess {
 }
 
 export type AuthResponse = Result<object, AuthErrorCode>;
+
+export interface OwnedTeam {
+  code: string;
+  name: string;
+}
+
+export type DeleteAccountErrorCode = Extract<UsersErrorCode, 'OWNS_TEAMS'>;
+
+export type OwnsTeamsFailure = { success: false; code: DeleteAccountErrorCode; teams: OwnedTeam[] };
+
+export type DeleteAccountResponse = Result<object> | OwnsTeamsFailure;
 
 export type ChangePasswordResponse = Result<object, AuthErrorCode>;
