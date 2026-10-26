@@ -8,6 +8,8 @@
   "PASSWORD": "Slaptažodis",
   "ENTER_EMAIL": "Įveskite el. paštą",
   "ENTER_PASSWORD": "slaptažodis",
+  "PASSWORD_HINT": "Bent 8 simboliai",
+  "PASSWORD_TOO_SHORT": "Slaptažodį turi sudaryti bent 8 simboliai",
   "LOGIN": "Prisijungti",
   "REGISTER": "Registruotis",
   "TEAM_SELECTION_PROMPT": "Ką norėtumėte daryti?",
@@ -285,7 +287,8 @@
     "AUTH": {
       "INVALID_CREDENTIALS": "Neteisingas el. paštas arba slaptažodis",
       "EMAIL_TAKEN": "Paskyra su šiuo el. paštu jau egzistuoja",
-      "REGISTRATION_FAILED": "Nepavyko sukurti paskyros. Patikrinkite el. paštą ir slaptažodį"
+      "REGISTRATION_FAILED": "Nepavyko sukurti paskyros. Patikrinkite el. paštą ir slaptažodį",
+      "PASSWORD_TOO_SHORT": "Slaptažodį turi sudaryti bent 8 simboliai"
     },
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Nepavyko išsaugoti nustatymų",

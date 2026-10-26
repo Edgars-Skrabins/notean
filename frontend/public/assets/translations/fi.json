@@ -8,6 +8,8 @@
   "PASSWORD": "Salasana",
   "ENTER_EMAIL": "Anna sähköposti",
   "ENTER_PASSWORD": "salasana",
+  "PASSWORD_HINT": "Vähintään 8 merkkiä",
+  "PASSWORD_TOO_SHORT": "Salasanan on oltava vähintään 8 merkkiä pitkä",
   "LOGIN": "Kirjaudu sisään",
   "REGISTER": "Rekisteröidy",
   "TEAM_SELECTION_PROMPT": "Mitä haluat tehdä?",
@@ -285,7 +287,8 @@
     "AUTH": {
       "INVALID_CREDENTIALS": "Virheellinen sähköposti tai salasana",
       "EMAIL_TAKEN": "Tällä sähköpostilla on jo tili",
-      "REGISTRATION_FAILED": "Tiliä ei voitu luoda. Tarkista sähköpostisi ja salasanasi"
+      "REGISTRATION_FAILED": "Tiliä ei voitu luoda. Tarkista sähköpostisi ja salasanasi",
+      "PASSWORD_TOO_SHORT": "Salasanan on oltava vähintään 8 merkkiä pitkä"
     },
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Asetuksia ei voitu tallentaa",

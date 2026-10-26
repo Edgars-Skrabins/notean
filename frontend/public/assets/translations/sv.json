@@ -8,6 +8,8 @@
   "PASSWORD": "Lösenord",
   "ENTER_EMAIL": "Ange e-post",
   "ENTER_PASSWORD": "lösenord",
+  "PASSWORD_HINT": "Minst 8 tecken",
+  "PASSWORD_TOO_SHORT": "Lösenordet måste vara minst 8 tecken",
   "LOGIN": "Logga in",
   "REGISTER": "Registrera dig",
   "TEAM_SELECTION_PROMPT": "Vad vill du göra?",
@@ -285,7 +287,8 @@
     "AUTH": {
       "INVALID_CREDENTIALS": "Ogiltig e-post eller ogiltigt lösenord",
       "EMAIL_TAKEN": "Det finns redan ett konto med den här e-postadressen",
-      "REGISTRATION_FAILED": "Det gick inte att skapa kontot. Kontrollera din e-post och ditt lösenord"
+      "REGISTRATION_FAILED": "Det gick inte att skapa kontot. Kontrollera din e-post och ditt lösenord",
+      "PASSWORD_TOO_SHORT": "Lösenordet måste vara minst 8 tecken"
     },
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Det gick inte att spara inställningarna",

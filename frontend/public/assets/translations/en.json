@@ -8,6 +8,8 @@
   "PASSWORD": "Password",
   "ENTER_EMAIL": "Enter email",
   "ENTER_PASSWORD": "password",
+  "PASSWORD_HINT": "At least 8 characters",
+  "PASSWORD_TOO_SHORT": "Password must be at least 8 characters",
   "LOGIN": "Login",
   "REGISTER": "Register",
   "TEAM_SELECTION_PROMPT": "What would you like to do?",
@@ -285,7 +287,8 @@
     "AUTH": {
       "INVALID_CREDENTIALS": "Invalid email or password",
       "EMAIL_TAKEN": "An account with this email already exists",
-      "REGISTRATION_FAILED": "Could not create the account. Check your email and password"
+      "REGISTRATION_FAILED": "Could not create the account. Check your email and password",
+      "PASSWORD_TOO_SHORT": "Password must be at least 8 characters"
     },
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Could not save settings",
