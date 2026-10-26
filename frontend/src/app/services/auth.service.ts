@@ -9,6 +9,7 @@ import {apiRequest} from "@utils/apiRequest";
 export class AuthService {
   private loginUrl = '/auth/login';
   private registerUrl = '/auth/register';
+  private sessionUrl = '/auth/session';
   private tokenStorageKey = 'authToken';
   private userStorageKey = 'authUser';
 
@@ -54,6 +55,9 @@ export class AuthService {
   }
 
   logout() {
+    if (this.token) {
+      axiosInstance.delete(this.sessionUrl, {headers: {Authorization: `Bearer ${this.token}`}}).catch(() => undefined);
+    }
     this.token = null;
     this.user = null;
     setAuthToken(null);
