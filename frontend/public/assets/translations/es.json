@@ -10,6 +10,12 @@
   "ENTER_PASSWORD": "contraseña",
   "PASSWORD_HINT": "Al menos 8 caracteres",
   "PASSWORD_TOO_SHORT": "La contraseña debe tener al menos 8 caracteres",
+  "CURRENT_PASSWORD": "Contraseña actual",
+  "NEW_PASSWORD": "Nueva contraseña",
+  "CONFIRM_NEW_PASSWORD": "Confirmar nueva contraseña",
+  "CHANGE_PASSWORD": "Cambiar contraseña",
+  "PASSWORDS_DO_NOT_MATCH": "Las contraseñas no coinciden",
+  "PASSWORD_CHANGED": "Contraseña cambiada",
   "LOGIN": "Iniciar sesión",
   "REGISTER": "Registrarse",
   "TEAM_SELECTION_PROMPT": "¿Qué te gustaría hacer?",
@@ -318,7 +324,8 @@
       "INVALID_CREDENTIALS": "Correo o contraseña no válidos",
       "EMAIL_TAKEN": "Ya existe una cuenta con este correo",
       "REGISTRATION_FAILED": "No se pudo crear la cuenta. Comprueba tu correo y tu contraseña",
-      "PASSWORD_TOO_SHORT": "La contraseña debe tener al menos 8 caracteres"
+      "PASSWORD_TOO_SHORT": "La contraseña debe tener al menos 8 caracteres",
+      "CURRENT_PASSWORD_INVALID": "La contraseña actual es incorrecta"
     },
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "No se pudieron guardar los ajustes",

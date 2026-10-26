@@ -192,6 +192,7 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 - `MembersController` handles `DELETE /teams/:code/members/:user_id` (owner, or admin on a `user`), `PATCH /teams/:code/members/:user_id/role` (owner, `user` ↔ `admin`), `POST /teams/:code/transfer_ownership` (owner; the old owner becomes `admin`) and `POST /teams/:code/leave` (anyone but the owner). Remove, role and transfer respond with the active members.
 - `PATCH` and `DELETE /teams/:team_code/boards/:board_id/tickets/bulk` (`TicketsController#bulk_update` / `#bulk_destroy`) take `{ bulk: { ticket_ids, ... } }` with exactly one of `column_id`, `to_backlog`, `add_assignee_id` or `remove_assignee_id` for the update. They are all-or-nothing: an id outside the board fails the whole request.
 - `POST`, `PATCH` and `DELETE /teams/:team_code/boards/:board_id/priorities` (`PrioritiesController`) manage a board's priorities; update and delete respond with all of the board's priorities. The board JSON includes `priorities` (with `ticket_count`, built by the `PriorityJson` concern) and tickets carry `priority_id`, which ticket update accepts.
+- `PATCH /users/me/password` (`UsersController#update_password`) takes `{ password: { current_password, new_password } }` and responds 204, or 422 `CURRENT_PASSWORD_INVALID` / `PASSWORD_TOO_SHORT`. The Profile page's Password section calls it through `AuthService.changePassword`, outside Profile's unsaved-changes guard.
 - ActionCable is mounted at `/cable`.
 
 #### Controllers

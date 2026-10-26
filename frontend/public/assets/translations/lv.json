@@ -10,6 +10,12 @@
   "ENTER_PASSWORD": "parole",
   "PASSWORD_HINT": "Vismaz 8 rakstzīmes",
   "PASSWORD_TOO_SHORT": "Parolei jābūt vismaz 8 rakstzīmes garai",
+  "CURRENT_PASSWORD": "Pašreizējā parole",
+  "NEW_PASSWORD": "Jaunā parole",
+  "CONFIRM_NEW_PASSWORD": "Apstiprināt jauno paroli",
+  "CHANGE_PASSWORD": "Mainīt paroli",
+  "PASSWORDS_DO_NOT_MATCH": "Paroles nesakrīt",
+  "PASSWORD_CHANGED": "Parole nomainīta",
   "LOGIN": "Pieslēgties",
   "REGISTER": "Reģistrēties",
   "TEAM_SELECTION_PROMPT": "Ko vēlaties darīt?",
@@ -318,7 +324,8 @@
       "INVALID_CREDENTIALS": "Nepareizs e-pasts vai parole",
       "EMAIL_TAKEN": "Konts ar šo e-pastu jau eksistē",
       "REGISTRATION_FAILED": "Neizdevās izveidot kontu. Pārbaudiet e-pastu un paroli",
-      "PASSWORD_TOO_SHORT": "Parolei jābūt vismaz 8 rakstzīmes garai"
+      "PASSWORD_TOO_SHORT": "Parolei jābūt vismaz 8 rakstzīmes garai",
+      "CURRENT_PASSWORD_INVALID": "Pašreizējā parole ir nepareiza"
     },
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Neizdevās saglabāt iestatījumus",

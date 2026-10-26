@@ -122,6 +122,10 @@ class ApplicationController < ActionController::API
     params.require(:avatar).permit(:color, :image, :remove_image)
   end
 
+  def update_password_params
+    params.require(:password).permit(:current_password, :new_password)
+  end
+
   def insert_and_reindex(siblings, record, requested_position, attribute)
     insert_at = requested_position.nil? ? siblings.length : requested_position.to_i.clamp(0, siblings.length)
     siblings.insert(insert_at, record).each_with_index do |sibling, index|

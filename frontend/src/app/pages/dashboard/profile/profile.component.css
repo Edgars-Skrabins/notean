@@ -15,6 +15,12 @@
   font-weight: 700;
 }
 
+.profile__sectionTitle {
+  margin: var(--space-6) 0 var(--space-4);
+  font-size: var(--font-lg);
+  font-weight: 700;
+}
+
 .profile__avatar {
   display: flex;
   align-items: center;
@@ -54,16 +60,4 @@
 
 .profile__swatch--selected {
   box-shadow: 0 0 0 2px var(--color-card-bg), 0 0 0 4px var(--color-text-heading);
-}
-
-.profile__deleteAccount {
-  margin-top: var(--space-5);
-  padding-top: var(--space-5);
-  border-top: 1px solid color-mix(in srgb, var(--color-tint) 12%, transparent);
-}
-
-.profile__sectionTitle {
-  margin: 0 0 var(--space-4);
-  font-size: var(--font-lg);
-  font-weight: 600;
 }

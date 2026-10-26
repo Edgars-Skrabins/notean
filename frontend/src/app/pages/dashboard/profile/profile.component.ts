@@ -15,6 +15,7 @@ import {ToastType} from "@models/toast.model";
 import {Avatar, AvatarUpdate} from "@models/avatar.model";
 import {HasUnsavedChanges} from "@models/unsaved-changes.model";
 import {nicknameErrorPhrase, validateNickname} from "@utils/nicknameValidation";
+import {isPasswordLongEnough} from "@utils/passwordValidation";
 import {errorPhrase} from "@utils/errorPhrase";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {AvatarComponent} from "@components/avatar/avatar.component";
@@ -53,6 +54,11 @@ export class ProfileComponent implements HasUnsavedChanges, OnInit, OnDestroy {
   isLeaveConfirmOpen = false;
   isDeleteAccountConfirmOpen = false;
   isDeletingAccount = false;
+  currentPassword = '';
+  newPassword = '';
+  confirmNewPassword = '';
+  isChangingPassword = false;
+  passwordError: string | null = null;
 
   private isAccountDeleted = false;
   private resolveLeave: ((canLeave: boolean) => void) | null = null;
@@ -93,6 +99,13 @@ export class ProfileComponent implements HasUnsavedChanges, OnInit, OnDestroy {
       return false;
     }
     return this.nickname !== this.savedNickname || this.hasAvatarChanges;
+  }
+
+  get canChangePassword(): boolean {
+    return !this.isChangingPassword
+      && this.currentPassword !== ''
+      && this.newPassword !== ''
+      && this.confirmNewPassword !== '';
   }
 
   get previewAvatar(): Avatar | null {
@@ -195,6 +208,38 @@ export class ProfileComponent implements HasUnsavedChanges, OnInit, OnDestroy {
       this.toastService.show({type: ToastType.SUCCESS, message: PHRASES.PROFILE_UPDATED});
     } finally {
       this.isSaving = false;
+    }
+  }
+
+  async handleChangePassword() {
+    if (!this.canChangePassword) {
+      return;
+    }
+
+    if (this.newPassword !== this.confirmNewPassword) {
+      this.passwordError = PHRASES.PASSWORDS_DO_NOT_MATCH;
+      return;
+    }
+    if (!isPasswordLongEnough(this.newPassword)) {
+      this.passwordError = PHRASES.PASSWORD_TOO_SHORT;
+      return;
+    }
+
+    this.passwordError = null;
+    this.isChangingPassword = true;
+
+    try {
+      const response = await this.authService.changePassword(this.currentPassword, this.newPassword);
+      if (!response.success) {
+        this.passwordError = errorPhrase(response.code);
+        return;
+      }
+      this.currentPassword = '';
+      this.newPassword = '';
+      this.confirmNewPassword = '';
+      this.toastService.show({type: ToastType.SUCCESS, message: PHRASES.PASSWORD_CHANGED});
+    } finally {
+      this.isChangingPassword = false;
     }
   }
 

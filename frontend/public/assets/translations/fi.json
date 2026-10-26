@@ -10,6 +10,12 @@
   "ENTER_PASSWORD": "salasana",
   "PASSWORD_HINT": "Vähintään 8 merkkiä",
   "PASSWORD_TOO_SHORT": "Salasanan on oltava vähintään 8 merkkiä pitkä",
+  "CURRENT_PASSWORD": "Nykyinen salasana",
+  "NEW_PASSWORD": "Uusi salasana",
+  "CONFIRM_NEW_PASSWORD": "Vahvista uusi salasana",
+  "CHANGE_PASSWORD": "Vaihda salasana",
+  "PASSWORDS_DO_NOT_MATCH": "Salasanat eivät täsmää",
+  "PASSWORD_CHANGED": "Salasana vaihdettu",
   "LOGIN": "Kirjaudu sisään",
   "REGISTER": "Rekisteröidy",
   "TEAM_SELECTION_PROMPT": "Mitä haluat tehdä?",
@@ -318,7 +324,8 @@
       "INVALID_CREDENTIALS": "Virheellinen sähköposti tai salasana",
       "EMAIL_TAKEN": "Tällä sähköpostilla on jo tili",
       "REGISTRATION_FAILED": "Tiliä ei voitu luoda. Tarkista sähköpostisi ja salasanasi",
-      "PASSWORD_TOO_SHORT": "Salasanan on oltava vähintään 8 merkkiä pitkä"
+      "PASSWORD_TOO_SHORT": "Salasanan on oltava vähintään 8 merkkiä pitkä",
+      "CURRENT_PASSWORD_INVALID": "Nykyinen salasana on väärä"
     },
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Asetuksia ei voitu tallentaa",

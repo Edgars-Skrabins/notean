@@ -6,9 +6,10 @@ import {
   AuthResponse,
   AuthResponseSuccess,
   AuthUser,
+  ChangePasswordResponse,
   DeleteAccountResponse,
   OwnedTeam,
-  RegisterCredentials
+  RegisterCredentials,
 } from "@models/auth.model";
 import {apiRequest} from "@utils/apiRequest";
 import {toErrorCode, toErrorResult} from "@utils/httpError";
@@ -20,6 +21,7 @@ export class AuthService {
   private loginUrl = '/auth/login';
   private registerUrl = '/auth/register';
   private meUrl = '/users/me';
+  private passwordUrl = '/users/me/password';
   private tokenStorageKey = 'authToken';
   private userStorageKey = 'authUser';
 
@@ -70,6 +72,13 @@ export class AuthService {
       .catch((error): DeleteAccountResponse => toErrorCode(error) === 'OWNS_TEAMS'
         ? {success: false, code: 'OWNS_TEAMS', teams: mapOwnedTeams((error as AxiosError<RawOwnsTeamsError>).response!.data)}
         : toErrorResult<DeleteAccountResponse>(error));
+  }
+
+  async changePassword(currentPassword: string, newPassword: string): Promise<ChangePasswordResponse> {
+    return apiRequest<ChangePasswordResponse>(
+      axiosInstance.patch(this.passwordUrl, {password: {current_password: currentPassword, new_password: newPassword}}),
+      () => ({success: true}),
+    );
   }
 
   logout() {

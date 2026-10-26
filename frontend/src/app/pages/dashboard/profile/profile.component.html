@@ -58,10 +58,50 @@
     {{ PHRASES.SAVE | translate }}
   </button>
 
-  <section class="profile__deleteAccount">
-    <h3 class="profile__sectionTitle">{{ PHRASES.DELETE_ACCOUNT | translate }}</h3>
-    <app-button variant="danger" [disabled]="isDeletingAccount" (pressed)="handleDeleteAccount()">{{ PHRASES.DELETE_ACCOUNT | translate }}</app-button>
-  </section>
+  <h3 class="profile__sectionTitle">{{ PHRASES.PASSWORD | translate }}</h3>
+
+  <div class="authField">
+    <label class="authField__label" for="currentPasswordInput">{{ PHRASES.CURRENT_PASSWORD | translate }}</label>
+    <input
+      [(ngModel)]="currentPassword"
+      id="currentPasswordInput"
+      (keydown.enter)="handleChangePassword()"
+      type="password"
+      autocomplete="current-password"
+    />
+  </div>
+
+  <div class="authField">
+    <label class="authField__label" for="newPasswordInput">{{ PHRASES.NEW_PASSWORD | translate }}</label>
+    <input
+      [(ngModel)]="newPassword"
+      id="newPasswordInput"
+      (keydown.enter)="handleChangePassword()"
+      type="password"
+      autocomplete="new-password"
+      aria-describedby="newPasswordHint"
+    />
+    <span class="authField__hint" id="newPasswordHint">{{ PHRASES.PASSWORD_HINT | translate }}</span>
+  </div>
+
+  <div class="authField">
+    <label class="authField__label" for="confirmNewPasswordInput">{{ PHRASES.CONFIRM_NEW_PASSWORD | translate }}</label>
+    <input
+      [(ngModel)]="confirmNewPassword"
+      id="confirmNewPasswordInput"
+      (keydown.enter)="handleChangePassword()"
+      type="password"
+      autocomplete="new-password"
+    />
+  </div>
+
+  <button class="authButton" [disabled]="!canChangePassword" (click)="handleChangePassword()">
+    {{ PHRASES.CHANGE_PASSWORD | translate }}
+  </button>
+  <p class="authStatus" *ngIf="passwordError">{{ passwordError | translate }}</p>
+
+  <h3 class="profile__sectionTitle">{{ PHRASES.DELETE_ACCOUNT | translate }}</h3>
+  <app-button variant="danger" [disabled]="isDeletingAccount" (pressed)="handleDeleteAccount()">{{ PHRASES.DELETE_ACCOUNT | translate }}</app-button>
 </div>
 
 <app-confirm-dialog

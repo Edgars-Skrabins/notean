@@ -30,3 +30,5 @@ export type DeleteAccountErrorCode = Extract<UsersErrorCode, 'OWNS_TEAMS'>;
 export type OwnsTeamsFailure = { success: false; code: DeleteAccountErrorCode; teams: OwnedTeam[] };
 
 export type DeleteAccountResponse = Result<object> | OwnsTeamsFailure;
+
+export type ChangePasswordResponse = Result<object, AuthErrorCode>;
