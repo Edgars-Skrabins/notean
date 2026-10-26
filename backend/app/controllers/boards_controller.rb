@@ -56,20 +56,19 @@ class BoardsController < ApplicationController
 
   def overview
     tickets = @board.tickets
-    column_counts = tickets.where.not(column_id: nil).group(:column_id).count
+    counts = ticket_counts(tickets)
     recent_tickets = tickets.includes(:column).order(updated_at: :desc).limit(RECENT_TICKETS_LIMIT)
-    recent_since = RECENT_ACTIVITY_PERIOD.ago
 
     render json: {
       overview: {
-        total_tickets: tickets.count,
-        board_tickets: column_counts.values.sum,
-        backlog_tickets: tickets.where(column_id: nil).count,
-        columns: @board.columns.map { |column| { id: column.id, title: column.title, ticket_count: column_counts.fetch(column.id, 0) } },
-        created_last_7_days: tickets.where(created_at: recent_since..).count,
-        updated_last_7_days: tickets.where(updated_at: recent_since..).count,
+        total_tickets: counts[:total],
+        board_tickets: counts[:total] - counts[:backlog],
+        backlog_tickets: counts[:backlog],
+        columns: @board.columns.map { |column| { id: column.id, title: column.title, ticket_count: counts[:columns].fetch(column.id, 0) } },
+        created_last_7_days: counts[:created],
+        updated_last_7_days: counts[:updated],
         recent_tickets: recent_tickets.map { |ticket| recent_ticket_json(ticket) },
-        assignees: assignee_counts_json(tickets)
+        assignees: assignee_counts_json(tickets, counts[:unassigned])
       }
     }
   end
@@ -118,11 +117,32 @@ class BoardsController < ApplicationController
     }
   end
 
-  def assignee_counts_json(tickets)
+  def ticket_counts(tickets)
+    since = RECENT_ACTIVITY_PERIOD.ago
+    rows = tickets.group(:column_id).pluck(
+      :column_id,
+      Arel.sql("COUNT(*)"),
+      Arel.sql(Ticket.sanitize_sql_array([ "COUNT(*) FILTER (WHERE tickets.created_at >= ?)", since ])),
+      Arel.sql(Ticket.sanitize_sql_array([ "COUNT(*) FILTER (WHERE tickets.updated_at >= ?)", since ])),
+      Arel.sql("COUNT(*) FILTER (WHERE NOT EXISTS (SELECT 1 FROM ticket_assignees WHERE ticket_assignees.ticket_id = tickets.id))")
+    )
+    by_column = rows.to_h { |column_id, count| [ column_id, count ] }
+
+    {
+      total: by_column.values.sum,
+      backlog: by_column.fetch(nil, 0),
+      columns: by_column.except(nil),
+      created: rows.sum { |row| row[2] },
+      updated: rows.sum { |row| row[3] },
+      unassigned: rows.sum { |row| row[4] }
+    }
+  end
+
+  def assignee_counts_json(tickets, unassigned_count)
     counts = TicketAssignee.where(ticket: tickets).group(:user_id).count
     users = User.includes(User::AVATAR_PRELOAD).where(id: counts.keys)
     rows = users.map { |user| { user: member_json(user), ticket_count: counts[user.id] } }
-    rows << { user: nil, ticket_count: tickets.where.missing(:ticket_assignees).count }
+    rows << { user: nil, ticket_count: unassigned_count }
     rows.sort_by { |row| -row[:ticket_count] }
   end
 
