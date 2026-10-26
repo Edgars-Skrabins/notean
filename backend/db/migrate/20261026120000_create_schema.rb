@@ -1,4 +1,4 @@
-class CreateSchema < ActiveRecord::Migration[7.2]
+class CreateSchema < ActiveRecord::Migration[8.1]
   def change
     enable_extension "plpgsql"
 
