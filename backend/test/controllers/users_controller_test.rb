@@ -16,6 +16,15 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal "PASSWORD_TOO_SHORT", JSON.parse(response.body)["code"]
   end
 
+  test "register rejects a taken email in any letter case with 409" do
+    assert_no_difference "User.count" do
+      post "/auth/register", params: { user: { email: "Alice@Example.com", password: "supersecret" } }, as: :json
+    end
+
+    assert_response :conflict
+    assert_equal "EMAIL_TAKEN", JSON.parse(response.body)["code"]
+  end
+
   test "me returns the user, default settings, avatar and no team" do
     get "/users/me", headers: @headers
 
