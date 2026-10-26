@@ -83,7 +83,9 @@ class BoardsController < ApplicationController
   private
 
   def set_board
-    @board = project_access.scope(@team.boards).includes(creator: User::AVATAR_PRELOAD, columns: { tickets: TicketJson::ASSIGNEES_PRELOAD }, backlog_tickets: TicketJson::ASSIGNEES_PRELOAD, priorities: []).find_by(id: params[:id])
+    boards = project_access.scope(@team.boards)
+    boards = boards.includes(creator: User::AVATAR_PRELOAD, columns: { tickets: TicketJson::ASSIGNEES_PRELOAD }, backlog_tickets: TicketJson::ASSIGNEES_PRELOAD, priorities: []) if action_name.in?(%w[show update])
+    @board = boards.find_by(id: params[:id])
 
     render_error(ErrorCodes::Boards::BOARD_NOT_FOUND, :not_found) if @board.nil?
   end
