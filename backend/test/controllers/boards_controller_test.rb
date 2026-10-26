@@ -169,6 +169,22 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal overview_one, overview_ten
   end
 
+  test "overview counts its tickets in one query plus the per-assignee count" do
+    board, todo, = board_with_columns
+    assigned = ticket_on(board, todo, "Assigned", 0)
+    ticket_on(board, nil, "Backlog", 0)
+    TicketAssignee.create!(ticket: assigned, user: @user)
+    statements = []
+    collector = ->(*, payload) { statements << payload[:sql] unless payload[:name] == "SCHEMA" }
+
+    ActiveSupport::Notifications.subscribed(collector, "sql.active_record") do
+      get "/teams/#{@team.code}/boards/#{board.id}/overview", headers: @headers
+    end
+
+    assert_response :success
+    assert_equal 2, statements.grep(/COUNT\(/i).size
+  end
+
   test "show and update load tickets without their descriptions" do
     board, todo, = board_with_columns
     ticket_on(board, todo, "First", 0).update!(description: "<p>Steps</p>")
