@@ -227,6 +227,14 @@ class CreateSchema < ActiveRecord::Migration[7.2]
       t.index [ "team_id" ], name: "index_tickets_on_team_id"
     end
 
+    create_table "user_sessions" do |t|
+      t.bigint "user_id", null: false
+      t.datetime "last_used_at", null: false
+      t.datetime "created_at", null: false
+      t.datetime "updated_at", null: false
+      t.index [ "user_id" ], name: "index_user_sessions_on_user_id"
+    end
+
     create_table "users" do |t|
       t.string "email", null: false
       t.string "password_digest", null: false
@@ -280,5 +288,6 @@ class CreateSchema < ActiveRecord::Migration[7.2]
     add_foreign_key "tickets", "columns"
     add_foreign_key "tickets", "teams"
     add_foreign_key "tickets", "users", column: "created_by_user_id"
+    add_foreign_key "user_sessions", "users"
   end
 end
