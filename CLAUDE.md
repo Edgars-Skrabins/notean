@@ -113,6 +113,8 @@ src/environments/             environment.ts (apiUrl)
 - Inputs and outputs use `@Input()` and `@Output()` with `EventEmitter`, not signals.
 - CSS class names follow a camelCase BEM style: `kanbanCard`, `itemTree__row`, `dashboardStub__title`.
 - Reuse the shared components in `components/` (buttons, icons, dialogs and so on) rather than building new ones.
+- `styles.css` holds shared classes for repeated looks: `.popupPanel` (dropdown and overlay panels), `.textInput` (text fields) and `.capsLabel` (small uppercase labels). Add them in the template next to the component's own class, which keeps only what differs.
+- When a component's stylesheet outgrows the style budget after removing duplication, split a self-contained part into its own component (as `ItemTreeRowComponent` and `ItemDetailSidebarComponent` were).
 - Title and name inputs bind `[maxlength]="TITLE_MAX_LENGTH"` and description textareas `[maxlength]="DESCRIPTION_MAX_LENGTH"`, from `config/contentLimits.ts`, matching the backend's `ContentLimits`.
 - Icon-only controls get a styled tooltip with the `appTooltip` directive (`components/tooltip/`) plus an `aria-label`, never a native `title`. `app-icon-button` applies it from its `tooltip` input.
 

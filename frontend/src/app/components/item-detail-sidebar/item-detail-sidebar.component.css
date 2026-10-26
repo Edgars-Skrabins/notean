@@ -1,0 +1,45 @@
+:host {
+  width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+}
+
+.itemDetailSidebar__label {
+  margin: 0 0 4px;
+  font-weight: 700;
+}
+
+.itemDetailSidebar__value {
+  margin: 0;
+  color: var(--color-text-heading);
+  font-size: var(--font-sm);
+}
+
+.itemDetailSidebar__person {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.itemDetailSidebar__person + .itemDetailSidebar__person {
+  margin-top: var(--space-2);
+}
+
+.itemDetailSidebar__value--muted {
+  color: var(--color-text-faint);
+}
+
+@media (max-width: 720px) {
+  :host {
+    width: 100%;
+    box-sizing: border-box;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}

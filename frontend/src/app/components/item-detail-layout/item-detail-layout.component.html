@@ -31,7 +31,7 @@
         <input
           *ngIf="mode !== 'view'"
           type="text"
-          class="itemDetail__titleInput"
+          class="itemDetail__titleInput textInput"
           [ngModel]="draftTitle"
           (ngModelChange)="draftTitleChange.emit($event)"
           [maxlength]="TITLE_MAX_LENGTH"
@@ -40,49 +40,13 @@
         <ng-content></ng-content>
       </div>
 
-      <div class="itemDetail__sidebar">
-        <ng-container *ngIf="mode !== 'create' && item">
-          <div>
-            <h3 class="itemDetail__sidebarLabel">{{ PHRASES.OWNER | translate }}</h3>
-            <p class="itemDetail__sidebarValue itemDetail__person">
-              <app-avatar [avatar]="item.creator.avatar" [nickname]="item.creator.nickname"></app-avatar>
-              {{ item.creator.nickname }}
-            </p>
-          </div>
-
-          <div>
-            <h3 class="itemDetail__sidebarLabel">{{ PHRASES.CONTRIBUTORS | translate }}</h3>
-            <p class="itemDetail__sidebarValue itemDetail__person" *ngFor="let contributor of item.contributors">
-              <app-avatar [avatar]="contributor.avatar" [nickname]="contributor.nickname"></app-avatar>
-              {{ contributor.nickname }}
-            </p>
-            <p class="itemDetail__sidebarValue itemDetail__sidebarValue--muted" *ngIf="!item.contributors.length">&mdash;</p>
-          </div>
-        </ng-container>
-
-        <div *ngIf="projectFilterService.hasProjects$ | async">
-          <h3 class="itemDetail__sidebarLabel">{{ PHRASES.PROJECT | translate }}</h3>
-          <ng-container *ngIf="projectSetByFolder; else projectSelect">
-            <p class="itemDetail__sidebarValue">{{ selectedProjectName ?? (PHRASES.NO_PROJECT | translate) }}</p>
-            <p class="itemDetail__sidebarValue itemDetail__sidebarValue--muted">{{ PHRASES.PROJECT_SET_BY_FOLDER_HINT | translate }}</p>
-          </ng-container>
-          <ng-template #projectSelect>
-            <app-project-select [projectId]="selectedProjectId" (projectChange)="handleProjectSelected($event)"></app-project-select>
-          </ng-template>
-        </div>
-
-        <ng-container *ngIf="mode !== 'create' && item">
-          <div>
-            <h3 class="itemDetail__sidebarLabel">{{ PHRASES.CREATED | translate }}</h3>
-            <p class="itemDetail__sidebarValue">{{ item.createdAt | date }}</p>
-          </div>
-
-          <div>
-            <h3 class="itemDetail__sidebarLabel">{{ PHRASES.LAST_EDITED | translate }}</h3>
-            <p class="itemDetail__sidebarValue">{{ item.updatedAt | date }}</p>
-          </div>
-        </ng-container>
-      </div>
+      <app-item-detail-sidebar
+        [item]="item"
+        [mode]="mode"
+        [draftProjectId]="draftProjectId"
+        [projectSetByFolder]="projectSetByFolder"
+        (projectSelected)="handleProjectSelected($event)"
+      ></app-item-detail-sidebar>
     </div>
   </div>
 

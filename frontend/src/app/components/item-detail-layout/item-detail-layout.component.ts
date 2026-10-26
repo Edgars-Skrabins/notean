@@ -1,20 +1,18 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {FormsModule} from '@angular/forms';
-import {AsyncPipe, DatePipe, NgFor, NgIf} from '@angular/common';
+import {NgIf} from '@angular/common';
 import {CdkScrollable} from '@angular/cdk/scrolling';
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {TITLE_MAX_LENGTH} from "@config/contentLimits";
 import {FolderedItemDetail} from "@models/foldered-item.model";
 import {FavoritableType} from "@models/favorite.model";
-import {AvatarComponent} from "@components/avatar/avatar.component";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {ButtonComponent} from "@components/button/button.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {EditConflictDialogComponent} from "@components/edit-conflict-dialog/edit-conflict-dialog.component";
 import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
-import {ProjectSelectComponent} from "@components/project-select/project-select.component";
-import {ProjectFilterService} from "@services/project-filter.service";
+import {ItemDetailSidebarComponent} from "@components/item-detail-sidebar/item-detail-sidebar.component";
 import {EscapeService} from "@services/escape.service";
 
 @Component({
@@ -23,18 +21,14 @@ import {EscapeService} from "@services/escape.service";
   imports: [
     FormsModule,
     NgIf,
-    NgFor,
-    AsyncPipe,
-    DatePipe,
     CdkScrollable,
     TranslateModule,
-    AvatarComponent,
     IconButtonComponent,
     ButtonComponent,
     ConfirmDialogComponent,
     EditConflictDialogComponent,
     FavoriteStarComponent,
-    ProjectSelectComponent
+    ItemDetailSidebarComponent
   ],
   templateUrl: './item-detail-layout.component.html',
   styleUrl: './item-detail-layout.component.css'
@@ -80,10 +74,7 @@ export class ItemDetailLayoutComponent implements OnInit, OnDestroy {
 
   private unregisterEscape = () => {};
 
-  constructor(
-    protected projectFilterService: ProjectFilterService,
-    private escapeService: EscapeService
-  ) {
+  constructor(private escapeService: EscapeService) {
   }
 
   ngOnInit() {
@@ -92,15 +83,6 @@ export class ItemDetailLayoutComponent implements OnInit, OnDestroy {
 
   ngOnDestroy() {
     this.unregisterEscape();
-  }
-
-  get selectedProjectId(): number | null {
-    return this.mode === 'create' ? this.draftProjectId : this.item?.projectId ?? null;
-  }
-
-  get selectedProjectName(): string | null {
-    const projectId = this.selectedProjectId;
-    return this.projectFilterService.getProjects().find((project) => project.id === projectId)?.name ?? null;
   }
 
   handleProjectSelected(projectId: number | null) {
