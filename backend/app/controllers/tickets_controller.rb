@@ -35,6 +35,8 @@ class TicketsController < ApplicationController
   end
 
   def update
+    return unless assign_lock_version(@ticket, update_ticket_params, :title, :description)
+
     @ticket.title = update_ticket_params[:title] if update_ticket_params[:title].present?
     @ticket.description = update_ticket_params[:description] if update_ticket_params.key?(:description)
 
@@ -60,6 +62,8 @@ class TicketsController < ApplicationController
     else
       render_error(ErrorCodes::Tickets::TICKET_UPDATE_FAILED, :unprocessable_entity)
     end
+  rescue ActiveRecord::StaleObjectError
+    render_error(ErrorCodes::Common::EDIT_CONFLICT, :conflict, extra: { ticket: ticket_json(@board.tickets.includes(:creator, TicketJson::ASSIGNEES_PRELOAD).find(@ticket.id)) })
   end
 
   def destroy

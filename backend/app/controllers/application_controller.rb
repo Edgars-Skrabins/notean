@@ -31,7 +31,7 @@ class ApplicationController < ActionController::API
   end
 
   def update_page_params
-    params.require(:page).permit(:title, :content, :folder_id, :project_id)
+    params.require(:page).permit(:title, :content, :folder_id, :project_id, :lock_version)
   end
 
   def create_diagram_params
@@ -39,7 +39,7 @@ class ApplicationController < ActionController::API
   end
 
   def update_diagram_params
-    params.require(:diagram).permit(:title, :content, :folder_id, :project_id)
+    params.require(:diagram).permit(:title, :content, :folder_id, :project_id, :lock_version)
   end
 
   def create_folder_params
@@ -79,7 +79,7 @@ class ApplicationController < ActionController::API
   end
 
   def update_ticket_params
-    params.require(:ticket).permit(:title, :description, :column_id, :position, :to_backlog, :priority_id)
+    params.require(:ticket).permit(:title, :description, :column_id, :position, :to_backlog, :priority_id, :lock_version)
   end
 
   def bulk_ticket_params
@@ -176,8 +176,20 @@ class ApplicationController < ActionController::API
     assign_project(record, record_params[:project_id])
   end
 
-  def render_error(code, status)
-    render json: { code: code }, status: status
+  def assign_lock_version(record, record_params, *checked_keys)
+    return true unless checked_keys.any? { |key| record_params.key?(key) }
+
+    if record_params[:lock_version].blank?
+      render_error(ErrorCodes::Common::LOCK_VERSION_REQUIRED, :unprocessable_entity)
+      return false
+    end
+
+    record.lock_version = record_params[:lock_version]
+    true
+  end
+
+  def render_error(code, status, extra: {})
+    render json: { code: code }.merge(extra), status: status
   end
 
   def set_team

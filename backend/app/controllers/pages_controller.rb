@@ -32,6 +32,8 @@ class PagesController < ApplicationController
   end
 
   def update
+    return unless assign_lock_version(@page, update_page_params, :title, :content)
+
     @page.title = update_page_params[:title] if update_page_params[:title].present?
     @page.content = Rails::Html::SafeListSanitizer.new.sanitize(update_page_params[:content].to_s) if update_page_params.key?(:content)
     return unless place_in_folder(@page, update_page_params, :folder_id)
@@ -43,6 +45,8 @@ class PagesController < ApplicationController
     else
       render_error(ErrorCodes::Pages::PAGE_UPDATE_FAILED, :unprocessable_entity)
     end
+  rescue ActiveRecord::StaleObjectError
+    render_error(ErrorCodes::Common::EDIT_CONFLICT, :conflict, extra: { page: page_json(find_page(@page.id)) })
   end
 
   def destroy
@@ -68,6 +72,7 @@ class PagesController < ApplicationController
       title: page.title,
       folder_id: page.folder_id,
       project_id: page.project_id,
+      lock_version: page.lock_version,
       creator: member_json(page.creator),
       created_at: page.created_at,
       updated_at: page.updated_at
@@ -83,6 +88,7 @@ class PagesController < ApplicationController
       content: page.content,
       folder_id: page.folder_id,
       project_id: page.project_id,
+      lock_version: page.lock_version,
       creator: member_json(page.creator),
       contributors: page.contributors.map { |user| member_json(user) },
       created_at: page.created_at,
