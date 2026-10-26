@@ -2,7 +2,7 @@
   <input
     #input
     type="text"
-    class="globalSearch__input"
+    class="globalSearch__input textInput"
     [value]="query"
     [placeholder]="PHRASES.SEARCH_EVERYTHING | translate"
     [attr.aria-label]="PHRASES.SEARCH_EVERYTHING | translate"
@@ -24,7 +24,7 @@
   (overlayOutsideClick)="handleOutsideClick($event)"
   (detach)="close()"
 >
-  <div class="globalSearch__panel" [attr.aria-busy]="isLoading">
+  <div class="globalSearch__panel popupPanel" [attr.aria-busy]="isLoading">
     <div class="globalSearch__loading" *ngIf="isLoading"></div>
 
     <ng-container *ngIf="!isLoading">
@@ -32,7 +32,7 @@
       <p class="globalSearch__message" *ngIf="isEmpty">{{ PHRASES.NO_SEARCH_RESULTS | translate }}</p>
 
       <section class="globalSearch__section" *ngFor="let section of visibleSections">
-        <h3 class="globalSearch__heading">{{ SECTION_PHRASES[section.type] | translate }}</h3>
+        <h3 class="globalSearch__heading capsLabel">{{ SECTION_PHRASES[section.type] | translate }}</h3>
 
         <button
           type="button"

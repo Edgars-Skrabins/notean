@@ -4,33 +4,18 @@
 
 .globalSearch__input {
   width: 100%;
-  box-sizing: border-box;
   height: var(--control-height-sm);
   padding: 0 14px;
-  background: var(--color-input-bg);
-  border: 1px solid var(--color-input-border);
-  border-radius: var(--radius-sm);
-  color: var(--color-text-heading);
   font: inherit;
   font-size: var(--font-md);
-  outline: none;
 }
 
 .globalSearch__input:focus {
   background: var(--color-input-bg-focus);
-  border-color: var(--color-input-border-focus);
 }
 
 .globalSearch__panel {
-  box-sizing: border-box;
-  width: 100%;
   max-height: 70vh;
-  overflow-y: auto;
-  background: linear-gradient(160deg, var(--color-card-bg) 0%, var(--color-card-bg-alt) 100%);
-  border: 1px solid var(--color-input-border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
-  padding: var(--space-2);
 }
 
 .globalSearch__loading {
@@ -49,10 +34,6 @@
 
 .globalSearch__heading {
   margin: var(--space-2) var(--space-3) var(--space-1);
-  color: var(--color-text-faint);
-  font-size: var(--font-xs);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
 }
 
 .globalSearch__row {

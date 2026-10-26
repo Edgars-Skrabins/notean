@@ -301,3 +301,35 @@ textarea {
   color: var(--color-text-muted);
   font-size: var(--font-md);
 }
+
+.popupPanel {
+  box-sizing: border-box;
+  width: 100%;
+  overflow-y: auto;
+  background: linear-gradient(160deg, var(--color-card-bg) 0%, var(--color-card-bg-alt) 100%);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-2);
+}
+
+.textInput {
+  box-sizing: border-box;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-heading);
+  font-family: var(--font-ui);
+  outline: none;
+}
+
+.textInput:focus {
+  border-color: var(--color-input-border-focus);
+}
+
+.capsLabel {
+  color: var(--color-text-faint);
+  font-size: var(--font-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
