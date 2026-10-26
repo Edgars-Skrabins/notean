@@ -26,7 +26,7 @@ class FoldersController < ApplicationController
     if @folder.save
       render json: { folder: folder_json(@folder) }, status: :created
     else
-      render_error(folder_error_code(ErrorCodes::Folders::FOLDER_CREATE_FAILED), :unprocessable_entity)
+      render_error(limit_error_code(@folder) || folder_error_code(ErrorCodes::Folders::FOLDER_CREATE_FAILED), :unprocessable_entity)
     end
   end
 
@@ -46,7 +46,7 @@ class FoldersController < ApplicationController
     if saved
       render json: { folder: folder_json(@folder) }
     else
-      render_error(folder_error_code(ErrorCodes::Folders::FOLDER_UPDATE_FAILED), :unprocessable_entity)
+      render_error(limit_error_code(@folder) || folder_error_code(ErrorCodes::Folders::FOLDER_UPDATE_FAILED), :unprocessable_entity)
     end
   end
 

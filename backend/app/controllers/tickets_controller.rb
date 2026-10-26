@@ -27,7 +27,7 @@ class TicketsController < ApplicationController
       render json: { ticket: ticket_json(@ticket) }, status: :created
       BoardBroadcast.tickets_upserted(@board, [ ticket_broadcast_json(@ticket) ])
     else
-      render_error(ErrorCodes::Tickets::TICKET_CREATE_FAILED, :unprocessable_entity)
+      render_error(limit_error_code(@ticket) || ErrorCodes::Tickets::TICKET_CREATE_FAILED, :unprocessable_entity)
     end
   end
 
@@ -60,7 +60,7 @@ class TicketsController < ApplicationController
       render json: { ticket: ticket_json(@ticket) }
       BoardBroadcast.tickets_upserted(@board, [ ticket_broadcast_json(@ticket), *reindexed_tickets_json ])
     else
-      render_error(ErrorCodes::Tickets::TICKET_UPDATE_FAILED, :unprocessable_entity)
+      render_error(limit_error_code(@ticket) || ErrorCodes::Tickets::TICKET_UPDATE_FAILED, :unprocessable_entity)
     end
   end
 

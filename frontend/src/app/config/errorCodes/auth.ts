@@ -2,6 +2,7 @@ export const AUTH_ERROR_CODES = [
   'INVALID_CREDENTIALS',
   'EMAIL_TAKEN',
   'REGISTRATION_FAILED',
+  'PASSWORD_TOO_SHORT',
 ] as const;
 
 export type AuthErrorCode = typeof AUTH_ERROR_CODES[number];

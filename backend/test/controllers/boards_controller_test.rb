@@ -283,4 +283,11 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_response :no_content
     assert_broadcast_on(BoardChannel.stream_name(board), type: "board_deleted")
   end
+
+  test "create returns TITLE_TOO_LONG for an over-limit title" do
+    post "/teams/#{@team.code}/boards", params: { board: { title: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1) } }, headers: @headers, as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal({ "code" => "TITLE_TOO_LONG" }, JSON.parse(response.body))
+  end
 end

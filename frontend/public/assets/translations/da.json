@@ -8,6 +8,8 @@
   "PASSWORD": "Adgangskode",
   "ENTER_EMAIL": "Indtast e-mail",
   "ENTER_PASSWORD": "adgangskode",
+  "PASSWORD_HINT": "Mindst 8 tegn",
+  "PASSWORD_TOO_SHORT": "Adgangskoden skal være mindst 8 tegn",
   "LOGIN": "Log ind",
   "REGISTER": "Tilmeld dig",
   "TEAM_SELECTION_PROMPT": "Hvad vil du gerne gøre?",
@@ -282,13 +284,17 @@
       "UNAUTHORIZED": "Din session er udløbet. Log ind igen",
       "FORBIDDEN": "Du har ikke tilladelse til at gøre dette",
       "RATE_LIMITED": "For mange forsøg. Vent, og prøv igen",
+      "TITLE_TOO_LONG": "Denne titel er for lang",
+      "CONTENT_TOO_LARGE": "Dette indhold er for stort til at blive gemt",
+      "DESCRIPTION_TOO_LONG": "Denne beskrivelse er for lang",
       "NETWORK_ERROR": "Netværksfejl. Tjek din forbindelse, og prøv igen",
       "UNKNOWN_ERROR": "Noget gik galt. Prøv igen"
     },
     "AUTH": {
       "INVALID_CREDENTIALS": "Ugyldig e-mail eller adgangskode",
       "EMAIL_TAKEN": "Der findes allerede en konto med denne e-mail",
-      "REGISTRATION_FAILED": "Kontoen kunne ikke oprettes. Tjek din e-mail og adgangskode"
+      "REGISTRATION_FAILED": "Kontoen kunne ikke oprettes. Tjek din e-mail og adgangskode",
+      "PASSWORD_TOO_SHORT": "Adgangskoden skal være mindst 8 tegn"
     },
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Indstillingerne kunne ikke gemmes",

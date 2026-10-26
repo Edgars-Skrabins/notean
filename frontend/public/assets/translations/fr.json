@@ -8,6 +8,8 @@
   "PASSWORD": "Mot de passe",
   "ENTER_EMAIL": "Saisissez votre e-mail",
   "ENTER_PASSWORD": "mot de passe",
+  "PASSWORD_HINT": "Au moins 8 caractères",
+  "PASSWORD_TOO_SHORT": "Le mot de passe doit contenir au moins 8 caractères",
   "LOGIN": "Se connecter",
   "REGISTER": "S'inscrire",
   "TEAM_SELECTION_PROMPT": "Que souhaitez-vous faire ?",
@@ -282,13 +284,17 @@
       "UNAUTHORIZED": "Votre session a expiré. Veuillez vous reconnecter",
       "FORBIDDEN": "Vous n'avez pas l'autorisation de faire cela",
       "RATE_LIMITED": "Trop de tentatives. Veuillez patienter et réessayer",
+      "TITLE_TOO_LONG": "Ce titre est trop long",
+      "CONTENT_TOO_LARGE": "Ce contenu est trop volumineux pour être enregistré",
+      "DESCRIPTION_TOO_LONG": "Cette description est trop longue",
       "NETWORK_ERROR": "Erreur réseau. Vérifiez votre connexion et réessayez",
       "UNKNOWN_ERROR": "Une erreur s'est produite. Veuillez réessayer"
     },
     "AUTH": {
       "INVALID_CREDENTIALS": "E-mail ou mot de passe invalide",
       "EMAIL_TAKEN": "Un compte avec cet e-mail existe déjà",
-      "REGISTRATION_FAILED": "Impossible de créer le compte. Vérifiez votre e-mail et votre mot de passe"
+      "REGISTRATION_FAILED": "Impossible de créer le compte. Vérifiez votre e-mail et votre mot de passe",
+      "PASSWORD_TOO_SHORT": "Le mot de passe doit contenir au moins 8 caractères"
     },
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Impossible d'enregistrer les paramètres",

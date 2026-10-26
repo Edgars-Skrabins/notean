@@ -519,4 +519,20 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     assert_response :no_content
     assert_broadcast_on(BoardChannel.stream_name(@board), type: "tickets_removed", ticket_ids: [ first.id, second.id ])
   end
+
+  test "create returns TITLE_TOO_LONG for an over-limit title" do
+    post "/teams/#{@team.code}/boards/#{@board.id}/tickets", params: { ticket: { title: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1), column_id: @todo.id } }, headers: @headers, as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal({ "code" => "TITLE_TOO_LONG" }, JSON.parse(response.body))
+  end
+
+  test "update returns DESCRIPTION_TOO_LONG for an over-limit description" do
+    ticket = Ticket.create!(column: @todo, team: @team, created_by_user_id: @user.id, title: "Fix bug", position: 0)
+
+    patch "/teams/#{@team.code}/boards/#{@board.id}/tickets/#{ticket.id}", params: { ticket: { description: "a" * (ContentLimits::DESCRIPTION_MAX_LENGTH + 1) } }, headers: @headers, as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal({ "code" => "DESCRIPTION_TOO_LONG" }, JSON.parse(response.body))
+  end
 end

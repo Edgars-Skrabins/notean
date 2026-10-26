@@ -85,4 +85,13 @@ class ColumnsControllerTest < ActionDispatch::IntegrationTest
     delete "#{columns_url}/#{todo.id}", headers: @headers
     assert_broadcast_on(BoardChannel.stream_name(@board), type: "columns_changed", columns: [ { id: doing_id, title: "Doing", position: 1 } ])
   end
+
+  test "update returns TITLE_TOO_LONG for an over-limit title" do
+    column = Column.create!(board: @board, title: "To Do", position: 0)
+
+    patch "/teams/#{@team.code}/boards/#{@board.id}/columns/#{column.id}", params: { column: { title: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1) } }, headers: @headers, as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal({ "code" => "TITLE_TOO_LONG" }, JSON.parse(response.body))
+  end
 end

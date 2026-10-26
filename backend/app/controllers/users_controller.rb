@@ -12,6 +12,8 @@ class UsersController < ApplicationController
     if @user.save
       token = JsonWebToken.encode(user_id: @user.id)
       render json: { user: @user.as_json(only: [ :id, :email ]), token: token }, status: :created
+    elsif @user.errors.of_kind?(:password, :too_short)
+      render_error(ErrorCodes::Auth::PASSWORD_TOO_SHORT, :unprocessable_entity)
     else
       render_error(ErrorCodes::Auth::REGISTRATION_FAILED, :unprocessable_entity)
     end

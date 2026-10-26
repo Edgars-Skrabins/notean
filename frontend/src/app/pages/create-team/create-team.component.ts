@@ -6,6 +6,7 @@ import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
 import {AppRoutes} from "../../app/app-routes.enum";
 import {PHRASES} from "@config/phrases";
+import {TITLE_MAX_LENGTH} from "@config/contentLimits";
 import {ToastService} from "@services/toast.service";
 import {ToastType} from "@models/toast.model";
 import {isNicknameErrorCode, nicknameErrorPhrase, validateNickname} from "@utils/nicknameValidation";
@@ -28,6 +29,7 @@ import {errorPhrase} from "@utils/errorPhrase";
 })
 export class CreateTeamComponent {
   protected readonly PHRASES = PHRASES;
+  protected readonly TITLE_MAX_LENGTH = TITLE_MAX_LENGTH;
 
   teamName = '';
   teamPassword = '';

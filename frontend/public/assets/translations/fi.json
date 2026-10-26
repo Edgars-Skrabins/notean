@@ -8,6 +8,8 @@
   "PASSWORD": "Salasana",
   "ENTER_EMAIL": "Anna sähköposti",
   "ENTER_PASSWORD": "salasana",
+  "PASSWORD_HINT": "Vähintään 8 merkkiä",
+  "PASSWORD_TOO_SHORT": "Salasanan on oltava vähintään 8 merkkiä pitkä",
   "LOGIN": "Kirjaudu sisään",
   "REGISTER": "Rekisteröidy",
   "TEAM_SELECTION_PROMPT": "Mitä haluat tehdä?",
@@ -282,13 +284,17 @@
       "UNAUTHORIZED": "Istuntosi on vanhentunut. Kirjaudu sisään uudelleen",
       "FORBIDDEN": "Sinulla ei ole oikeutta tehdä tätä",
       "RATE_LIMITED": "Liian monta yritystä. Odota hetki ja yritä uudelleen",
+      "TITLE_TOO_LONG": "Tämä otsikko on liian pitkä",
+      "CONTENT_TOO_LARGE": "Tämä sisältö on liian suuri tallennettavaksi",
+      "DESCRIPTION_TOO_LONG": "Tämä kuvaus on liian pitkä",
       "NETWORK_ERROR": "Verkkovirhe. Tarkista yhteytesi ja yritä uudelleen",
       "UNKNOWN_ERROR": "Jokin meni pieleen. Yritä uudelleen"
     },
     "AUTH": {
       "INVALID_CREDENTIALS": "Virheellinen sähköposti tai salasana",
       "EMAIL_TAKEN": "Tällä sähköpostilla on jo tili",
-      "REGISTRATION_FAILED": "Tiliä ei voitu luoda. Tarkista sähköpostisi ja salasanasi"
+      "REGISTRATION_FAILED": "Tiliä ei voitu luoda. Tarkista sähköpostisi ja salasanasi",
+      "PASSWORD_TOO_SHORT": "Salasanan on oltava vähintään 8 merkkiä pitkä"
     },
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Asetuksia ei voitu tallentaa",

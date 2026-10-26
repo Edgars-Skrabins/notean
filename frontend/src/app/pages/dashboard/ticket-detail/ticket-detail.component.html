@@ -25,6 +25,7 @@
           type="text"
           class="ticketDetail__titleInput"
           [(ngModel)]="titleDraft"
+          [maxlength]="TITLE_MAX_LENGTH"
           [placeholder]="PHRASES.TICKET_TITLE_PLACEHOLDER | translate"
           (keydown.enter)="commitTitle()"
           (keydown.escape)="cancelTitleEdit($event)"
@@ -35,6 +36,7 @@
         <textarea
           class="ticketDetail__descriptionInput"
           [(ngModel)]="descriptionDraft"
+          [maxlength]="DESCRIPTION_MAX_LENGTH"
           [placeholder]="PHRASES.TICKET_DESCRIPTION_PLACEHOLDER | translate"
           (keydown.escape)="cancelDescriptionEdit($event)"
           (focus)="handleDescriptionFocus()"

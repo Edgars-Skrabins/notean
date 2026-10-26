@@ -1,5 +1,6 @@
 class Ticket < ApplicationRecord
   include TextSearchable
+  include ContentLimits
 
   text_searchable :title, :description
 
@@ -15,7 +16,8 @@ class Ticket < ApplicationRecord
 
   before_validation { self.board ||= column&.board }
 
-  validates :title, presence: true
+  validates :title, presence: true, length: { maximum: TITLE_MAX_LENGTH }
+  validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }
   validates :position, presence: true
   validate :column_belongs_to_board
   validate :priority_belongs_to_board

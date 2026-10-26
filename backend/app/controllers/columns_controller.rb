@@ -18,7 +18,7 @@ class ColumnsController < ApplicationController
       render json: { column: column_json(@column) }, status: :created
       broadcast_columns
     else
-      render_error(ErrorCodes::Boards::COLUMN_CREATE_FAILED, :unprocessable_entity)
+      render_error(limit_error_code(@column) || ErrorCodes::Boards::COLUMN_CREATE_FAILED, :unprocessable_entity)
     end
   end
 
@@ -29,7 +29,7 @@ class ColumnsController < ApplicationController
       render json: { column: column_json(@column) }
       broadcast_columns
     else
-      render_error(ErrorCodes::Boards::COLUMN_UPDATE_FAILED, :unprocessable_entity)
+      render_error(limit_error_code(@column) || ErrorCodes::Boards::COLUMN_UPDATE_FAILED, :unprocessable_entity)
     end
   end
 

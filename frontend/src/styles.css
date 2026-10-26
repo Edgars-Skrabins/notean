@@ -153,6 +153,11 @@ textarea {
   color: var(--color-text-faint);
 }
 
+.authField__hint {
+  color: var(--color-text-faint);
+  font-size: var(--font-xs);
+}
+
 .authField input:focus {
   border-color: var(--color-input-border-focus);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-input-border-focus) 18%, transparent);

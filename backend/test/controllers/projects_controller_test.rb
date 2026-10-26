@@ -184,4 +184,18 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 10, body["projects"].length
     assert_equal one, ten
   end
+
+  test "create returns TITLE_TOO_LONG for an over-limit name" do
+    post projects_url, params: { project: { name: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1) } }, headers: headers_for(@owner), as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal "TITLE_TOO_LONG", body["code"]
+  end
+
+  test "update returns DESCRIPTION_TOO_LONG for an over-limit description" do
+    patch projects_url(@game), params: { project: { name: "Game", description: "a" * (ContentLimits::DESCRIPTION_MAX_LENGTH + 1) } }, headers: headers_for(@owner), as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal "DESCRIPTION_TOO_LONG", body["code"]
+  end
 end

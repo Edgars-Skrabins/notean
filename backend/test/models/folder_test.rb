@@ -13,6 +13,14 @@ class FolderTest < ActiveSupport::TestCase
     assert_includes folder.errors[:title], "can't be blank"
   end
 
+  test "accepts a title at the length limit and rejects one over it" do
+    assert Folder.new(team: @team, creator: @user, item_type: "Page", title: "a" * ContentLimits::TITLE_MAX_LENGTH).valid?
+
+    record = Folder.new(team: @team, creator: @user, item_type: "Page", title: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1))
+    assert_not record.valid?
+    assert record.errors.of_kind?(:title, :too_long)
+  end
+
   test "is invalid with an item_type other than Page or Diagram" do
     folder = Folder.new(team: @team, creator: @user, item_type: "Board", title: "Engineering")
 

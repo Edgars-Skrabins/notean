@@ -6,6 +6,7 @@ import {CdkScrollable} from '@angular/cdk/scrolling';
 import {Subscription} from 'rxjs';
 import {TranslateModule} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
+import {TITLE_MAX_LENGTH, DESCRIPTION_MAX_LENGTH} from "@config/contentLimits";
 import {TicketService} from "@services/ticket.service";
 import {FavoriteService} from "@services/favorite.service";
 import {TeamService} from "@services/team.service";
@@ -49,6 +50,8 @@ import {EscapeService} from "@services/escape.service";
 })
 export class TicketDetailComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
+  protected readonly TITLE_MAX_LENGTH = TITLE_MAX_LENGTH;
+  protected readonly DESCRIPTION_MAX_LENGTH = DESCRIPTION_MAX_LENGTH;
 
   ticket: TicketDetail | null = null;
   titleDraft = '';

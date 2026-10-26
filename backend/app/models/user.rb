@@ -5,6 +5,7 @@ class User < ApplicationRecord
   AVATAR_PRELOAD = { avatar_image_attachment: :blob }.freeze
   THEMES = %w[purple_haze midnight_purple graphite coffee teal_ocean terminal paper winter_forest nature].freeze
   THEME_MODES = %w[system light dark].freeze
+  PASSWORD_MIN_LENGTH = 8
 
   has_secure_password
 
@@ -17,6 +18,7 @@ class User < ApplicationRecord
   before_save { self.email = email.downcase }
 
   validates :email, presence: true, uniqueness: { case_sensitive: false }, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates :password, length: { minimum: PASSWORD_MIN_LENGTH }, allow_nil: true
   validates :show_favorites_on_home, inclusion: { in: [ true, false ] }
   validates :show_favorites_in_sidebar, inclusion: { in: [ true, false ] }
   validates :show_my_work_on_home, inclusion: { in: [ true, false ] }

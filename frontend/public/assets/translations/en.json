@@ -8,6 +8,8 @@
   "PASSWORD": "Password",
   "ENTER_EMAIL": "Enter email",
   "ENTER_PASSWORD": "password",
+  "PASSWORD_HINT": "At least 8 characters",
+  "PASSWORD_TOO_SHORT": "Password must be at least 8 characters",
   "LOGIN": "Login",
   "REGISTER": "Register",
   "TEAM_SELECTION_PROMPT": "What would you like to do?",
@@ -282,13 +284,17 @@
       "UNAUTHORIZED": "Your session has expired. Please log in again",
       "FORBIDDEN": "You don't have permission to do this",
       "RATE_LIMITED": "Too many attempts. Please wait and try again",
+      "TITLE_TOO_LONG": "This title is too long",
+      "CONTENT_TOO_LARGE": "This content is too large to save",
+      "DESCRIPTION_TOO_LONG": "This description is too long",
       "NETWORK_ERROR": "Network error. Check your connection and try again",
       "UNKNOWN_ERROR": "Something went wrong. Please try again"
     },
     "AUTH": {
       "INVALID_CREDENTIALS": "Invalid email or password",
       "EMAIL_TAKEN": "An account with this email already exists",
-      "REGISTRATION_FAILED": "Could not create the account. Check your email and password"
+      "REGISTRATION_FAILED": "Could not create the account. Check your email and password",
+      "PASSWORD_TOO_SHORT": "Password must be at least 8 characters"
     },
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Could not save settings",
