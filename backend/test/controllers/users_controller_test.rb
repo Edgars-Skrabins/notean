@@ -194,6 +194,36 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :unauthorized
   end
 
+  test "update_password ends the user's other sessions and keeps the current one" do
+    other_headers = { "Authorization" => "Bearer #{session_token(@user)}" }
+    bob = User.create!(email: "bob@example.com", password: "supersecret")
+    bob_headers = { "Authorization" => "Bearer #{session_token(bob)}" }
+
+    patch "/users/me/password",
+      params: { password: { current_password: "supersecret", new_password: "brandnewpass" } },
+      headers: @headers,
+      as: :json
+
+    get "/users/me", headers: @headers
+    assert_response :success
+    get "/users/me", headers: other_headers
+    assert_response :unauthorized
+    get "/users/me", headers: bob_headers
+    assert_response :success
+  end
+
+  test "a failed update_password keeps the user's other sessions" do
+    other_headers = { "Authorization" => "Bearer #{session_token(@user)}" }
+
+    patch "/users/me/password",
+      params: { password: { current_password: "wrongpassword", new_password: "brandnewpass" } },
+      headers: @headers,
+      as: :json
+
+    get "/users/me", headers: other_headers
+    assert_response :success
+  end
+
   test "update_password rejects a wrong current password with 422 and keeps the old one" do
     patch "/users/me/password",
       params: { password: { current_password: "wrongpassword", new_password: "brandnewpass" } },

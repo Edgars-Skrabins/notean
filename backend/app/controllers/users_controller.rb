@@ -64,6 +64,7 @@ class UsersController < ApplicationController
     new_password = update_password_params[:new_password].to_s
 
     if new_password.present? && current_user.update(password: new_password)
+      current_user.user_sessions.where.not(id: @current_session.id).delete_all
       head :no_content
     else
       render_error(ErrorCodes::Auth::PASSWORD_TOO_SHORT, :unprocessable_entity)
