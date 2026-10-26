@@ -138,7 +138,9 @@ ActiveRecord::Schema[7.2].define(version: 2026_10_25_120000) do
     t.datetime "updated_at", null: false
     t.datetime "last_active_at", null: false
     t.string "nickname", null: false
+    t.datetime "removed_at"
     t.index ["team_id", "nickname"], name: "index_memberships_on_team_id_and_nickname", unique: true
+    t.index ["team_id", "removed_at"], name: "index_memberships_on_team_id_and_removed_at"
     t.index ["team_id"], name: "index_memberships_on_team_id"
     t.index ["team_id"], name: "index_memberships_on_team_id_unique_owner", unique: true, where: "((role)::text = 'owner'::text)"
     t.index ["user_id", "team_id"], name: "index_memberships_on_user_id_and_team_id", unique: true

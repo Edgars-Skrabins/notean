@@ -73,4 +73,25 @@ class TeamTest < ActiveSupport::TestCase
   test "reports an unknown feature as disabled" do
     assert_not build_team.feature_enabled?(:projects)
   end
+
+  test "users and user teams leave out removed memberships" do
+    team = Team.create!(name: "Engineering", password: "supersecret")
+    alice = create_member(team, "Alice")
+    bob = create_member(team, "Bob")
+    bob.all_memberships.first.update!(removed_at: Time.current)
+
+    assert_equal [ alice ], team.users.to_a
+    assert_equal [ team ], alice.teams.to_a
+    assert_empty bob.teams
+  end
+
+  test "destroying a team also destroys removed memberships" do
+    team = Team.create!(name: "Engineering", password: "supersecret")
+    create_member(team, "Alice")
+    create_member(team, "Bob").all_memberships.first.update!(removed_at: Time.current)
+
+    team.destroy!
+
+    assert_equal 0, Membership.where(team_id: team.id).count
+  end
 end

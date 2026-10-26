@@ -19,6 +19,17 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal({ "color" => "blue", "image_url" => nil }, creator["avatar"])
   end
 
+  test "show returns the last nickname of a creator who was removed from the team" do
+    former = create_member(@team, "Former")
+    page = Page.create!(team: @team, creator: former, title: "Old notes", content: "")
+    former.memberships.first.update!(removed_at: Time.current)
+
+    get "/teams/#{@team.code}/pages/#{page.id}", headers: @headers
+
+    assert_response :success
+    assert_equal "Former", JSON.parse(response.body)["page"]["creator"]["nickname"]
+  end
+
   test "show returns only the payload without a message" do
     get "/teams/#{@team.code}/pages/#{@page.id}", headers: @headers
 

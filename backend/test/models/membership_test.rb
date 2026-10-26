@@ -106,4 +106,39 @@ class MembershipTest < ActiveSupport::TestCase
 
     assert Membership.new(team: @team, user: @bob, nickname: "alice").valid?
   end
+
+  test "restore! clears removed_at, resets the role to user and sets the nickname" do
+    membership = Membership.create!(team: @team, user: @alice, nickname: "Alice", role: "admin", removed_at: 1.day.ago)
+
+    membership.restore!(nickname: "Alicia")
+
+    assert_not membership.reload.removed?
+    assert_equal "user", membership.role
+    assert_equal "Alicia", membership.nickname
+  end
+
+  test "a removed member's nickname still blocks the same nickname for a new member" do
+    Membership.create!(team: @team, user: @alice, nickname: "Alice", removed_at: 1.day.ago)
+    duplicate = Membership.new(team: @team, user: @bob, nickname: "Alice")
+
+    assert_not duplicate.valid?
+    assert_includes duplicate.errors.details[:nickname].map { |error| error[:error] }, :taken
+  end
+
+  test "a removed member can be restored with their old nickname" do
+    membership = Membership.create!(team: @team, user: @alice, nickname: "Alice", removed_at: 1.day.ago)
+
+    membership.restore!(nickname: "Alice")
+
+    assert_equal "Alice", membership.reload.nickname
+    assert_not membership.removed?
+  end
+
+  test "active and removed scopes split memberships by removed_at" do
+    active = Membership.create!(team: @team, user: @alice, nickname: "Alice")
+    removed = Membership.create!(team: @team, user: @bob, nickname: "Bob", removed_at: 1.day.ago)
+
+    assert_equal [ active ], Membership.active.to_a
+    assert_equal [ removed ], Membership.removed.to_a
+  end
 end

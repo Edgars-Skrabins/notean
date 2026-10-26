@@ -10,17 +10,29 @@
   <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
   <div class="switchTeam__list" *ngIf="!isLoading && teams.length">
-    <button
-      type="button"
-      class="switchTeam__row"
-      [class.switchTeam__row--active]="isActive(team)"
-      *ngFor="let team of teams"
-      (click)="handleSelectTeam(team)"
-    >
-      <span class="switchTeam__rowName">{{ team.name }}</span>
-      <span class="switchTeam__rowRole">{{ teamRoleLabel(team.role) | translate }}</span>
-    </button>
+    <div class="switchTeam__item" *ngFor="let team of teams">
+      <button
+        type="button"
+        class="switchTeam__row"
+        [class.switchTeam__row--active]="isActive(team)"
+        (click)="handleSelectTeam(team)"
+      >
+        <span class="switchTeam__rowName">{{ team.name }}</span>
+        <span class="switchTeam__rowRole">{{ teamRoleLabel(team.role) | translate }}</span>
+      </button>
+      <span class="switchTeam__leave" [appTooltip]="team.role === 'owner' ? (PHRASES.TRANSFER_BEFORE_LEAVING | translate) : ''">
+        <app-button variant="ghost" [disabled]="team.role === 'owner'" (pressed)="handleLeaveTeam(team)">{{ PHRASES.LEAVE_TEAM | translate }}</app-button>
+      </span>
+    </div>
   </div>
 
   <p class="dashboardStub__body" *ngIf="!isLoading && !teams.length">{{ PHRASES.NO_OTHER_TEAMS | translate }}</p>
 </div>
+
+<app-confirm-dialog
+  *ngIf="pendingLeave"
+  [message]="pendingLeaveMessage"
+  [confirmLabel]="PHRASES.LEAVE_TEAM"
+  (confirmed)="handleConfirmLeaveTeam()"
+  (cancelled)="handleCancelLeaveTeam()"
+></app-confirm-dialog>

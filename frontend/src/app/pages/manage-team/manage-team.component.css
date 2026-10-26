@@ -69,6 +69,12 @@
   font-size: var(--font-md);
 }
 
+.manageTeam__memberControls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
 .manageTeam__memberRole {
   color: var(--color-text-muted);
   font-size: var(--font-xs);
