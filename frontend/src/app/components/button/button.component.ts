@@ -4,7 +4,6 @@ import {IconComponent, IconName} from "@components/icon/icon.component";
 
 @Component({
   selector: 'app-button',
-  standalone: true,
   imports: [
     NgIf,
     IconComponent

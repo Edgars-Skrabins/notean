@@ -8,7 +8,6 @@ import {DropdownComponent} from '@components/dropdown/dropdown.component';
 
 @Component({
   selector: 'app-project-selector',
-  standalone: true,
   imports: [
     AsyncPipe,
     NgIf,

@@ -10,7 +10,6 @@ import {ToastContainerComponent} from "@components/toast-container/toast-contain
 
 @Component({
   selector: 'app-root',
-  standalone: true,
   imports: [
     RouterOutlet,
     ToastContainerComponent,

@@ -15,7 +15,6 @@ import {TooltipDirective} from "@components/tooltip/tooltip.directive";
 
 @Component({
   selector: 'app-switch-team',
-  standalone: true,
   imports: [
     NgFor,
     NgIf,

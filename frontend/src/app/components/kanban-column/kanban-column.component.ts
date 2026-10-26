@@ -13,7 +13,6 @@ import {KanbanTicketComponent} from '@components/kanban-ticket/kanban-ticket.com
 
 @Component({
   selector: 'app-kanban-column',
-  standalone: true,
   imports: [
     NgFor,
     NgIf,

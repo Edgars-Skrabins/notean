@@ -10,7 +10,6 @@ let nextDropdownId = 0;
 
 @Component({
   selector: 'app-dropdown',
-  standalone: true,
   imports: [
     NgFor,
     NgIf,

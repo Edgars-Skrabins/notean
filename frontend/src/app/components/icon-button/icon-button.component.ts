@@ -4,7 +4,6 @@ import {TooltipDirective} from "@components/tooltip/tooltip.directive";
 
 @Component({
   selector: 'app-icon-button',
-  standalone: true,
   imports: [
     IconComponent,
     TooltipDirective

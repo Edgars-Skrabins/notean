@@ -10,7 +10,6 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
 
 @Component({
   selector: 'app-ticket-selection-bar',
-  standalone: true,
   imports: [
     TranslateModule,
     MenuButtonComponent,

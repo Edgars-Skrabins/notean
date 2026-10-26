@@ -8,7 +8,6 @@ import {EscapeService} from '@services/escape.service';
 
 @Component({
   selector: 'app-delete-project-dialog',
-  standalone: true,
   imports: [
     FormsModule,
     TranslateModule,

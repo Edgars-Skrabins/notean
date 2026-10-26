@@ -32,7 +32,6 @@ import {EscapeService} from "@services/escape.service";
 
 @Component({
   selector: 'app-ticket-detail',
-  standalone: true,
   imports: [
     FormsModule,
     NgIf,

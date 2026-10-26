@@ -18,7 +18,6 @@ import {BoardPageStateService} from '@pages/dashboard/board-page/board-page-stat
 
 @Component({
   selector: 'app-priority-list',
-  standalone: true,
   imports: [
     FormsModule,
     NgFor,

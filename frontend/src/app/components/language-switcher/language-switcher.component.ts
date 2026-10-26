@@ -7,7 +7,6 @@ import {DropdownComponent} from '@components/dropdown/dropdown.component';
 
 @Component({
   selector: 'app-language-switcher',
-  standalone: true,
   imports: [
     DropdownComponent
   ],

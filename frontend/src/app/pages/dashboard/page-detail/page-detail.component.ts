@@ -19,7 +19,6 @@ import {FolderedItemDetailComponent} from "../foldered-item-detail.base";
 
 @Component({
   selector: 'app-page-detail',
-  standalone: true,
   imports: [
     NgIf,
     RichTextEditorComponent,

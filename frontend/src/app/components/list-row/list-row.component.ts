@@ -11,7 +11,6 @@ import {CheckboxComponent} from '@components/checkbox/checkbox.component';
 
 @Component({
   selector: 'app-list-row',
-  standalone: true,
   imports: [
     DatePipe,
     NgIf,

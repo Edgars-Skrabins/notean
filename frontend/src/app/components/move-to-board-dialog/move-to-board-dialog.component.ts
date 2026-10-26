@@ -13,7 +13,6 @@ export interface MoveTargetColumn {
 
 @Component({
   selector: 'app-move-to-board-dialog',
-  standalone: true,
   imports: [
     NgFor,
     FormsModule,

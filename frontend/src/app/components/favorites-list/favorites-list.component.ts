@@ -13,7 +13,6 @@ import {favoriteTypeIcon} from '@utils/favoriteTypeIcon';
 
 @Component({
   selector: 'app-favorites-list',
-  standalone: true,
   imports: [
     AsyncPipe,
     NgFor,

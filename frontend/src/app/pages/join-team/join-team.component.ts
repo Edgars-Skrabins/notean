@@ -14,7 +14,6 @@ import {errorPhrase} from "@utils/errorPhrase";
 
 @Component({
   selector: 'app-join-team',
-  standalone: true,
   imports: [
     FormsModule,
     NgIf,

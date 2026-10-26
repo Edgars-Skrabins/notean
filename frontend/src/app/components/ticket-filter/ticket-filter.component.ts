@@ -10,7 +10,6 @@ import {CheckboxComponent} from '@components/checkbox/checkbox.component';
 
 @Component({
   selector: 'app-ticket-filter',
-  standalone: true,
   imports: [
     NgFor,
     NgIf,

@@ -135,7 +135,6 @@ interface EditingLabel {
 
 @Component({
   selector: 'app-flowchart-editor',
-  standalone: true,
   imports: [
     NgIf,
     FormsModule,

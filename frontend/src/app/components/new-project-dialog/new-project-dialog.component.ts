@@ -9,7 +9,6 @@ import {EscapeService} from '@services/escape.service';
 
 @Component({
   selector: 'app-new-project-dialog',
-  standalone: true,
   imports: [
     TranslateModule,
     ButtonComponent,

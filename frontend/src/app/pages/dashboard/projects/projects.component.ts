@@ -22,7 +22,6 @@ import {AppRoutes} from "../../../app/app-routes.enum";
 
 @Component({
   selector: 'app-projects',
-  standalone: true,
   imports: [
     FormsModule,
     NgFor,

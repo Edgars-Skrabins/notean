@@ -7,7 +7,6 @@ import {ResolvedThemeMode} from "@utils/themeDom";
 
 @Component({
   selector: 'app-theme-picker',
-  standalone: true,
   imports: [
     NgForOf,
     TranslateModule

@@ -9,7 +9,6 @@ import {MyWorkComponent} from "@components/my-work/my-work.component";
 
 @Component({
   selector: 'app-home',
-  standalone: true,
   imports: [
     AsyncPipe,
     NgIf,

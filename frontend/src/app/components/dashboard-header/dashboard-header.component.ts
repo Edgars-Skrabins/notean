@@ -18,7 +18,6 @@ import {AppRoutes} from "../../app/app-routes.enum";
 
 @Component({
   selector: 'app-dashboard-header',
-  standalone: true,
   imports: [
     TranslateModule,
     NgIf,

@@ -7,7 +7,6 @@ import StarterKit from '@tiptap/starter-kit';
 
 @Component({
   selector: 'app-rich-text-editor',
-  standalone: true,
   imports: [
     NgIf,
     TranslateModule

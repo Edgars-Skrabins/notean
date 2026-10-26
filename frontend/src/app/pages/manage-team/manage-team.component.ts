@@ -47,7 +47,6 @@ const MEMBER_ACTION_TOASTS: Record<MemberAction, string> = {
 
 @Component({
   selector: 'app-manage-team',
-  standalone: true,
   imports: [
     FormsModule,
     NgFor,

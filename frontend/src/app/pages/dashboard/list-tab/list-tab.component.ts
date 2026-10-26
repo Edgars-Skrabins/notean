@@ -53,7 +53,6 @@ function byPosition(first: TicketSummary, second: TicketSummary): number {
 
 @Component({
   selector: 'app-list-tab',
-  standalone: true,
   imports: [
     FormsModule,
     NgFor,

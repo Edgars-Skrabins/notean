@@ -55,7 +55,6 @@ function newestFirst(items: ProjectItem[]): ProjectItem[] {
 
 @Component({
   selector: 'app-project-detail',
-  standalone: true,
   imports: [
     DatePipe,
     NgFor,

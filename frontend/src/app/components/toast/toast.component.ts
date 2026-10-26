@@ -6,7 +6,6 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
 
 @Component({
   selector: 'app-toast',
-  standalone: true,
   imports: [
     TranslateModule,
     IconButtonComponent

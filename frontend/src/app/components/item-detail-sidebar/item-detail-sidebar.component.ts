@@ -9,7 +9,6 @@ import {ProjectFilterService} from "@services/project-filter.service";
 
 @Component({
   selector: 'app-item-detail-sidebar',
-  standalone: true,
   imports: [NgIf, NgFor, AsyncPipe, DatePipe, TranslateModule, AvatarComponent, ProjectSelectComponent],
   templateUrl: './item-detail-sidebar.component.html',
   styleUrl: './item-detail-sidebar.component.css'

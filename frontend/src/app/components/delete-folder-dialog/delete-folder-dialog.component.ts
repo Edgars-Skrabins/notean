@@ -8,7 +8,6 @@ import {EscapeService} from '@services/escape.service';
 
 @Component({
   selector: 'app-delete-folder-dialog',
-  standalone: true,
   imports: [
     TranslateModule,
     ButtonComponent,

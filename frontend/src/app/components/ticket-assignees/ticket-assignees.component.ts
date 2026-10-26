@@ -12,7 +12,6 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
 
 @Component({
   selector: 'app-ticket-assignees',
-  standalone: true,
   imports: [
     FormsModule,
     NgFor,

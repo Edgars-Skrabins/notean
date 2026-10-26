@@ -26,7 +26,6 @@ import {EscapeService} from "@services/escape.service";
 
 @Component({
   selector: 'app-profile',
-  standalone: true,
   imports: [
     FormsModule,
     NgIf,

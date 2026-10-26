@@ -38,7 +38,6 @@ function sameParams(a: ProjectParams, b: ProjectParams): boolean {
 
 @Component({
   selector: 'app-project-settings-dialog',
-  standalone: true,
   imports: [
     NgIf,
     TranslateModule,

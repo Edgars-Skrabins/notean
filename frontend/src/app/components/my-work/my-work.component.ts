@@ -13,7 +13,6 @@ import {boardRoute, ticketRoute} from '@utils/ticketRoute';
 
 @Component({
   selector: 'app-my-work',
-  standalone: true,
   imports: [
     NgFor,
     NgIf,

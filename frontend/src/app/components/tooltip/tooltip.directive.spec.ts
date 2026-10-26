@@ -3,7 +3,6 @@ import {ComponentFixture, TestBed, fakeAsync, tick} from '@angular/core/testing'
 import {TooltipDirective} from './tooltip.directive';
 
 @Component({
-  standalone: true,
   imports: [TooltipDirective],
   template: '<button type="button" [appTooltip]="text">x</button>'
 })

@@ -13,7 +13,6 @@ import {isPasswordLongEnough} from "@utils/passwordValidation";
 
 @Component({
   selector: 'app-register',
-  standalone: true,
   imports: [
     FormsModule,
     NgIf,

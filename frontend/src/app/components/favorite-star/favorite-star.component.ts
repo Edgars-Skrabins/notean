@@ -7,7 +7,6 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
 
 @Component({
   selector: 'app-favorite-star',
-  standalone: true,
   imports: [
     TranslateModule,
     IconButtonComponent

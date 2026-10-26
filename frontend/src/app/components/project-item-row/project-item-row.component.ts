@@ -3,7 +3,6 @@ import {IconComponent, IconName} from '@components/icon/icon.component';
 
 @Component({
   selector: 'app-project-item-row',
-  standalone: true,
   imports: [
     IconComponent
   ],

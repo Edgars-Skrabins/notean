@@ -9,7 +9,6 @@ import {AuthCardComponent} from "@components/auth-card/auth-card.component";
 
 @Component({
   selector: 'app-team-selection',
-  standalone: true,
   imports: [
     TranslateModule,
     NgIf,

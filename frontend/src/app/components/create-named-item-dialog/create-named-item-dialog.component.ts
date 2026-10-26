@@ -11,7 +11,6 @@ import {ProjectFilterService} from '@services/project-filter.service';
 
 @Component({
   selector: 'app-create-named-item-dialog',
-  standalone: true,
   imports: [
     AsyncPipe,
     NgIf,

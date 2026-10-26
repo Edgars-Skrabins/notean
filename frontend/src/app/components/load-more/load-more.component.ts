@@ -4,7 +4,6 @@ import {PHRASES} from '@config/phrases';
 
 @Component({
   selector: 'app-load-more',
-  standalone: true,
   imports: [
     TranslateModule
   ],

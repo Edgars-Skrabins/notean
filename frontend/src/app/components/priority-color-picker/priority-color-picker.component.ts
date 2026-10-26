@@ -20,7 +20,6 @@ const COLOR_PHRASES: Record<PriorityColor, string> = {
 
 @Component({
   selector: 'app-priority-color-picker',
-  standalone: true,
   imports: [
     NgFor,
     OverlayModule,

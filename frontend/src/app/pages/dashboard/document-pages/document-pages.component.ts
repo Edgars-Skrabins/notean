@@ -19,7 +19,6 @@ import {FolderedListPageComponent} from "../foldered-list-page.base";
 
 @Component({
   selector: 'app-document-pages',
-  standalone: true,
   imports: [
     FormsModule,
     NgIf,

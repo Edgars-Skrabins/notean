@@ -14,7 +14,6 @@ import {favoriteTypeLabel} from '@utils/favoriteTypeLabel';
 
 @Component({
   selector: 'app-favorites-grid',
-  standalone: true,
   imports: [
     AsyncPipe,
     NgFor,

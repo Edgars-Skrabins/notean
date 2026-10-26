@@ -8,7 +8,6 @@ import {AvatarStackComponent} from '@components/avatar-stack/avatar-stack.compon
 
 @Component({
   selector: 'app-kanban-ticket',
-  standalone: true,
   imports: [
     TranslateModule,
     IconButtonComponent,

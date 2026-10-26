@@ -15,7 +15,6 @@ import {BoardPageStateService} from "../board-page/board-page-state.service";
 
 @Component({
   selector: 'app-board-overview-tab',
-  standalone: true,
   imports: [
     NgFor,
     NgIf,

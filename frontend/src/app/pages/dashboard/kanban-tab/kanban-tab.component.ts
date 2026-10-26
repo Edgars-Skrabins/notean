@@ -21,7 +21,6 @@ import {BoardPageStateService} from "../board-page/board-page-state.service";
 
 @Component({
   selector: 'app-kanban-tab',
-  standalone: true,
   imports: [
     NgFor,
     NgIf,

@@ -22,7 +22,6 @@ function pointAt(fraction: number): string {
 
 @Component({
   selector: 'app-pie-chart',
-  standalone: true,
   imports: [
     NgFor,
     NgIf

@@ -6,7 +6,6 @@ import {EscapeService} from '@services/escape.service';
 
 @Component({
   selector: 'app-edit-conflict-dialog',
-  standalone: true,
   imports: [
     TranslateModule,
     ButtonComponent

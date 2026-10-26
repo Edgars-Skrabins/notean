@@ -9,7 +9,6 @@ import {IconComponent} from '@components/icon/icon.component';
 
 @Component({
   selector: 'app-menu-button',
-  standalone: true,
   imports: [
     NgFor,
     NgIf,

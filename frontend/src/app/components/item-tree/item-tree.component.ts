@@ -55,7 +55,6 @@ type DropTarget =
 
 @Component({
   selector: 'app-item-tree',
-  standalone: true,
   imports: [
     NgFor,
     NgIf,

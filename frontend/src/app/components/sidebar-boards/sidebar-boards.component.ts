@@ -17,7 +17,6 @@ import {boardRoute} from "@utils/ticketRoute";
 
 @Component({
   selector: 'app-sidebar-boards',
-  standalone: true,
   imports: [
     AsyncPipe,
     NgFor,

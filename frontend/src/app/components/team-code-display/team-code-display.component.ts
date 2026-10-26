@@ -5,7 +5,6 @@ import {PHRASES} from '@config/phrases';
 
 @Component({
   selector: 'app-team-code-display',
-  standalone: true,
   imports: [
     NgIf,
     TranslateModule

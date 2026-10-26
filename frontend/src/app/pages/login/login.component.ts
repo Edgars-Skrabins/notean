@@ -12,7 +12,6 @@ import {errorPhrase} from "@utils/errorPhrase";
 
 @Component({
   selector: 'app-login',
-  standalone: true,
   imports: [
     FormsModule,
     NgIf,

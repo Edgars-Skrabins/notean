@@ -23,7 +23,6 @@ import {BoardChannelService} from "@services/board-channel.service";
 
 @Component({
   selector: 'app-board-page',
-  standalone: true,
   imports: [
     FormsModule,
     NgIf,

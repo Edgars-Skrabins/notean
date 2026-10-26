@@ -11,7 +11,6 @@ export type IconName =
 
 @Component({
   selector: 'app-icon',
-  standalone: true,
   imports: [
     NgSwitch,
     NgSwitchCase

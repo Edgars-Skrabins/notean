@@ -6,7 +6,6 @@ import {apiUrl} from "@utils/apiUrl";
 
 @Component({
   selector: 'app-avatar',
-  standalone: true,
   imports: [
     NgIf
   ],

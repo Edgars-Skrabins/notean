@@ -30,7 +30,6 @@ type NavItem = { result: SearchResult; section?: undefined } | { section: Search
 
 @Component({
   selector: 'app-global-search',
-  standalone: true,
   imports: [
     NgFor,
     NgIf,

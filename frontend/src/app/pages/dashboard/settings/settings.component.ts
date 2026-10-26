@@ -21,7 +21,6 @@ import {EscapeService} from "@services/escape.service";
 
 @Component({
   selector: 'app-settings',
-  standalone: true,
   imports: [
     NgIf,
     TranslateModule,

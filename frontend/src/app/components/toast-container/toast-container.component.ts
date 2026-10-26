@@ -6,7 +6,6 @@ import {ToastComponent} from '@components/toast/toast.component';
 
 @Component({
   selector: 'app-toast-container',
-  standalone: true,
   imports: [
     AsyncPipe,
     NgFor,

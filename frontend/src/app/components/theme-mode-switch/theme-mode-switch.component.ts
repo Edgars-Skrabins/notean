@@ -6,7 +6,6 @@ import {DEFAULT_THEME_MODE, ThemeMode} from "@config/themes";
 
 @Component({
   selector: 'app-theme-mode-switch',
-  standalone: true,
   imports: [
     NgForOf,
     TranslateModule

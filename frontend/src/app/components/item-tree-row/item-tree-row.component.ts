@@ -9,7 +9,6 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
 
 @Component({
   selector: 'app-item-tree-row',
-  standalone: true,
   imports: [NgIf, FormsModule, TranslateModule, IconComponent, IconButtonComponent],
   templateUrl: './item-tree-row.component.html',
   styleUrl: './item-tree-row.component.css'

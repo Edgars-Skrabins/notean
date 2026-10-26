@@ -5,7 +5,6 @@ import {AvatarComponent} from '@components/avatar/avatar.component';
 
 @Component({
   selector: 'app-avatar-stack',
-  standalone: true,
   imports: [
     NgFor,
     NgIf,

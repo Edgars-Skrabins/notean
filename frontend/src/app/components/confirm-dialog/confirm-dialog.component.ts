@@ -6,7 +6,6 @@ import {EscapeService} from '@services/escape.service';
 
 @Component({
   selector: 'app-confirm-dialog',
-  standalone: true,
   imports: [
     TranslateModule,
     ButtonComponent

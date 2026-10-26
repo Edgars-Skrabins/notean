@@ -4,7 +4,6 @@ import {LanguageSwitcherComponent} from "@components/language-switcher/language-
 
 @Component({
   selector: 'app-auth-card',
-  standalone: true,
   imports: [
     NgIf,
     LanguageSwitcherComponent
