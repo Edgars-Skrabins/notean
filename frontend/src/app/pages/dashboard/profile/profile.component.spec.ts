@@ -11,6 +11,7 @@ import {TranslateService} from "@ngx-translate/core";
 import {ToastType} from "@models/toast.model";
 import {Avatar} from "@models/avatar.model";
 import {PHRASES} from "@config/phrases";
+import {AVATAR_IMAGE_MAX_BYTES} from "@config/avatarColors";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {errorPhrase} from "@utils/errorPhrase";
 import {escapeServiceStub} from "../../../testing/escapeServiceStub";
@@ -33,6 +34,14 @@ describe('ProfileComponent', () => {
     transfer.items.add(file);
     input.files = transfer.files;
     return {target: input} as unknown as Event;
+  }
+
+  function pngFile(padding = 0): Promise<File> {
+    const canvas = document.createElement('canvas');
+    canvas.width = 40;
+    canvas.height = 20;
+    canvas.getContext('2d')!.fillRect(0, 0, 40, 20);
+    return new Promise(resolve => canvas.toBlob(blob => resolve(new File([blob!, new Uint8Array(padding)], 'a.png', {type: 'image/png'})), 'image/png'));
   }
 
   beforeEach(() => {
@@ -162,10 +171,10 @@ describe('ProfileComponent', () => {
     expect(component.previewAvatar).toEqual({color: 'green', imageUrl: null});
   });
 
-  it('has unsaved changes with a pending image and previews it', () => {
-    component.handleFileSelected(imageEvent(new File(['x'], 'a.png', {type: 'image/png'})));
+  it('has unsaved changes with a pending resized image and previews it', async () => {
+    await component.handleFileSelected(imageEvent(await pngFile()));
 
-    expect(component.pendingImage).not.toBeNull();
+    expect(component.pendingImage?.type).toBe('image/webp');
     expect(component.pendingImagePreviewUrl).toMatch(/^blob:/);
     expect(component.hasImage).toBeTrue();
     expect(component.hasUnsavedChanges).toBeTrue();
@@ -179,13 +188,21 @@ describe('ProfileComponent', () => {
     expect(component.hasUnsavedChanges).toBeFalse();
   });
 
-  it('refuses an image over 2 MB with a toast', () => {
-    const large = new File([new Uint8Array(2 * 1024 * 1024 + 1)], 'a.png', {type: 'image/png'});
+  it('accepts a large original and keeps the small resized image', async () => {
+    const large = await pngFile(3 * 1024 * 1024);
 
-    component.handleFileSelected(imageEvent(large));
+    await component.handleFileSelected(imageEvent(large));
 
-    expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: PHRASES.IMAGE_TOO_LARGE});
+    expect(toastService.show).not.toHaveBeenCalled();
+    expect(component.pendingImage!.size).toBeLessThan(AVATAR_IMAGE_MAX_BYTES);
+  });
+
+  it('refuses a file that cannot be read as an image with a toast', async () => {
+    await component.handleFileSelected(imageEvent(new File(['x'], 'a.png', {type: 'image/png'})));
+
+    expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: errorPhrase('AVATAR_IMAGE_INVALID')});
     expect(component.pendingImage).toBeNull();
+    expect(component.hasUnsavedChanges).toBeFalse();
   });
 
   it('removing the saved image is a pending change', () => {
@@ -199,8 +216,8 @@ describe('ProfileComponent', () => {
     expect(component.hasUnsavedChanges).toBeTrue();
   });
 
-  it('removing a pending image without a saved one leaves nothing pending', () => {
-    component.handleFileSelected(imageEvent(new File(['x'], 'a.png', {type: 'image/png'})));
+  it('removing a pending image without a saved one leaves nothing pending', async () => {
+    await component.handleFileSelected(imageEvent(await pngFile()));
 
     component.handleRemoveImage();
 
@@ -209,21 +226,20 @@ describe('ProfileComponent', () => {
     expect(component.hasUnsavedChanges).toBeFalse();
   });
 
-  it('saves the avatar changes and shows one success toast', fakeAsync(() => {
+  it('saves the avatar changes and shows one success toast', async () => {
     avatarService.update.and.returnValue(Promise.resolve({success: true, avatar: {color: 'green', imageUrl: '/new'}}));
-    const image = new File(['x'], 'a.png', {type: 'image/png'});
     component.handleSelectColor('green');
-    component.handleFileSelected(imageEvent(image));
+    await component.handleFileSelected(imageEvent(await pngFile()));
+    const image = component.pendingImage!;
 
-    component.handleSave();
-    tick();
+    await component.handleSave();
 
     expect(teamService.updateNickname).not.toHaveBeenCalled();
     expect(avatarService.update).toHaveBeenCalledWith({color: 'green', image});
     expect(component.hasUnsavedChanges).toBeFalse();
     expect(component.pendingImagePreviewUrl).toBeNull();
     expect(toastService.show).toHaveBeenCalledOnceWith({type: ToastType.SUCCESS, message: PHRASES.PROFILE_UPDATED});
-  }));
+  });
 
   it('saves the nickname and the avatar together with one toast', fakeAsync(() => {
     teamService.updateNickname.and.returnValue(Promise.resolve({success: true, nickname: 'Ally'}));

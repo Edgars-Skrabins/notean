@@ -177,7 +177,7 @@
   "REMOVE_IMAGE": "Remove image",
   "AVATAR_COLOR": "Colour",
   "IMAGE_INVALID_TYPE": "Image must be PNG, JPEG or WebP",
-  "IMAGE_TOO_LARGE": "Image must be 2 MB or smaller",
+  "IMAGE_TOO_LARGE": "Image must be 256 kB or smaller",
   "AVATAR_UPDATE_FAILED": "Could not update profile image",
   "COLOR_RED": "Red",
   "COLOR_ORANGE": "Orange",
@@ -332,7 +332,7 @@
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Could not save settings",
       "AVATAR_COLOR_INVALID": "This colour can't be used",
-      "AVATAR_IMAGE_INVALID": "Image must be PNG, JPEG or WebP and 2 MB or smaller",
+      "AVATAR_IMAGE_INVALID": "Image must be PNG, JPEG or WebP and 256 kB or smaller",
       "OWNS_TEAMS": "Transfer ownership or delete these teams first: {{teams}}"
     },
     "TEAMS": {

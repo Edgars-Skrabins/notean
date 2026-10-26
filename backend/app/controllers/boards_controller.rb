@@ -83,7 +83,7 @@ class BoardsController < ApplicationController
 
   def set_board
     boards = project_access.scope(@team.boards)
-    boards = boards.includes(creator: User::AVATAR_PRELOAD, columns: { tickets: TicketJson::ASSIGNEES_PRELOAD }, backlog_tickets: TicketJson::ASSIGNEES_PRELOAD, priorities: []) if action_name.in?(%w[show update])
+    boards = boards.includes(creator: User::AVATAR_PRELOAD, columns: [], priorities: []) if action_name.in?(%w[show update])
     @board = boards.find_by(id: params[:id])
 
     render_error(ErrorCodes::Boards::BOARD_NOT_FOUND, :not_found) if @board.nil?
@@ -101,19 +101,21 @@ class BoardsController < ApplicationController
   end
 
   def board_json(board)
+    tickets = board.tickets.without_description.includes(TicketJson::ASSIGNEES_PRELOAD).order(:position).group_by(&:column_id)
+
     board_summary_json(board).merge(
-      columns: board.columns.map { |column| column_json(column) },
-      backlog: board.backlog_tickets.map { |ticket| ticket_summary_json(ticket) },
+      columns: board.columns.map { |column| column_json(column, tickets.fetch(column.id, [])) },
+      backlog: tickets.fetch(nil, []).map { |ticket| ticket_summary_json(ticket) },
       priorities: priorities_json(board)
     )
   end
 
-  def column_json(column)
+  def column_json(column, tickets)
     {
       id: column.id,
       title: column.title,
       position: column.position,
-      tickets: column.tickets.map { |ticket| ticket_summary_json(ticket) }
+      tickets: tickets.map { |ticket| ticket_summary_json(ticket) }
     }
   end
 

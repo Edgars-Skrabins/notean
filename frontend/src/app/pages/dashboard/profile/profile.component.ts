@@ -17,6 +17,7 @@ import {HasUnsavedChanges} from "@models/unsaved-changes.model";
 import {nicknameErrorPhrase, validateNickname} from "@utils/nicknameValidation";
 import {isPasswordLongEnough} from "@utils/passwordValidation";
 import {errorPhrase} from "@utils/errorPhrase";
+import {resizeAvatar} from "@utils/resizeAvatar";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {AvatarComponent} from "@components/avatar/avatar.component";
 import {ButtonComponent} from "@components/button/button.component";
@@ -132,7 +133,7 @@ export class ProfileComponent implements HasUnsavedChanges, OnInit, OnDestroy {
     this.revokePreviewUrl();
   }
 
-  handleFileSelected(event: Event) {
+  async handleFileSelected(event: Event) {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     input.value = '';
@@ -144,14 +145,20 @@ export class ProfileComponent implements HasUnsavedChanges, OnInit, OnDestroy {
       this.toastService.show({type: ToastType.ERROR, message: PHRASES.IMAGE_INVALID_TYPE});
       return;
     }
-    if (file.size > AVATAR_IMAGE_MAX_BYTES) {
+
+    const resized = await resizeAvatar(file);
+    if (!resized) {
+      this.toastService.show({type: ToastType.ERROR, message: errorPhrase('AVATAR_IMAGE_INVALID')});
+      return;
+    }
+    if (resized.size > AVATAR_IMAGE_MAX_BYTES) {
       this.toastService.show({type: ToastType.ERROR, message: PHRASES.IMAGE_TOO_LARGE});
       return;
     }
 
     this.revokePreviewUrl();
-    this.pendingImage = file;
-    this.pendingImagePreviewUrl = URL.createObjectURL(file);
+    this.pendingImage = resized;
+    this.pendingImagePreviewUrl = URL.createObjectURL(resized);
     this.pendingRemoveImage = false;
   }
 

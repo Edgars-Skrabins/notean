@@ -177,7 +177,7 @@
   "REMOVE_IMAGE": "Удалить изображение",
   "AVATAR_COLOR": "Цвет",
   "IMAGE_INVALID_TYPE": "Изображение должно быть в формате PNG, JPEG или WebP",
-  "IMAGE_TOO_LARGE": "Размер изображения не должен превышать 2 МБ",
+  "IMAGE_TOO_LARGE": "Размер изображения не должен превышать 256 КБ",
   "AVATAR_UPDATE_FAILED": "Не удалось обновить фото профиля",
   "COLOR_RED": "Красный",
   "COLOR_ORANGE": "Оранжевый",
@@ -332,7 +332,7 @@
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Не удалось сохранить настройки",
       "AVATAR_COLOR_INVALID": "Этот цвет нельзя использовать",
-      "AVATAR_IMAGE_INVALID": "Изображение должно быть в формате PNG, JPEG или WebP и не больше 2 МБ",
+      "AVATAR_IMAGE_INVALID": "Изображение должно быть в формате PNG, JPEG или WebP и не больше 256 КБ",
       "OWNS_TEAMS": "Сначала передайте права владельца или удалите эти команды: {{teams}}"
     },
     "TEAMS": {

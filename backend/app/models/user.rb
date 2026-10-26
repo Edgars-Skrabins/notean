@@ -1,7 +1,7 @@
 class User < ApplicationRecord
   AVATAR_COLORS = %w[red orange green lime yellow blue cyan pink purple brown beige light_grey dark_grey].freeze
   AVATAR_IMAGE_TYPES = %w[image/png image/jpeg image/webp].freeze
-  AVATAR_IMAGE_MAX_BYTES = 2.megabytes
+  AVATAR_IMAGE_MAX_BYTES = 256.kilobytes
   AVATAR_PRELOAD = { avatar_image_attachment: :blob }.freeze
   THEMES = %w[purple_haze midnight_purple graphite coffee teal_ocean terminal paper winter_forest nature].freeze
   THEME_MODES = %w[system light dark].freeze
@@ -53,6 +53,6 @@ class User < ApplicationRecord
     return unless avatar_image.attached?
 
     errors.add(:avatar_image, "must be a PNG, JPEG or WebP image") unless AVATAR_IMAGE_TYPES.include?(avatar_image.blob.content_type)
-    errors.add(:avatar_image, "must be 2 MB or smaller") if avatar_image.blob.byte_size > AVATAR_IMAGE_MAX_BYTES
+    errors.add(:avatar_image, "must be 256 kB or smaller") if avatar_image.blob.byte_size > AVATAR_IMAGE_MAX_BYTES
   end
 end

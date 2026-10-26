@@ -291,7 +291,7 @@ class ApplicationController < ActionController::API
   def avatar_json(user)
     {
       color: user.effective_avatar_color,
-      image_url: user.avatar_image.attached? ? rails_blob_path(user.avatar_image, only_path: true) : nil
+      image_url: user.avatar_image.attached? ? rails_storage_proxy_path(user.avatar_image, only_path: true) : nil
     }
   end
 
