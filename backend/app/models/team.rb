@@ -5,7 +5,8 @@ class Team < ApplicationRecord
 
   has_secure_password
 
-  has_many :memberships, dependent: :destroy
+  has_many :memberships, -> { active }
+  has_many :all_memberships, class_name: "Membership", dependent: :destroy
   has_many :users, through: :memberships
   has_many :pages, dependent: :destroy
   has_many :diagrams, dependent: :destroy

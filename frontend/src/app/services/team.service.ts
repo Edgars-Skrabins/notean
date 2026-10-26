@@ -9,6 +9,8 @@ import {
   DeleteTeamResponse,
   JoinTeamParams,
   JoinTeamResponse,
+  LeaveTeamResponse,
+  RemoveMemberResponse,
   RenameTeamResponse,
   Team,
   TeamFeature,
@@ -16,7 +18,9 @@ import {
   TeamMember,
   TeamRole,
   TeamWithRole,
+  TransferOwnershipResponse,
   UpdateFeaturesResponse,
+  UpdateMemberRoleResponse,
   UpdateNicknameResponse
 } from "@models/team.model";
 import {mapAvatar, RawAvatar} from "@services/avatar.service";
@@ -200,6 +204,46 @@ export class TeamService {
     return axiosInstance.get(`${this.teamUrl(code)}/members`)
       .then((response) => (response.data.members as RawTeamMember[]).map(mapTeamMember))
       .catch(() => []);
+  }
+
+  async removeMember(code: string, userId: number): Promise<RemoveMemberResponse> {
+    return apiRequest<RemoveMemberResponse>(
+      axiosInstance.delete(`${this.teamUrl(code)}/members/${userId}`),
+      (data) => ({success: true, members: (data.members as RawTeamMember[]).map(mapTeamMember)}),
+    );
+  }
+
+  async updateMemberRole(code: string, userId: number, role: TeamRole): Promise<UpdateMemberRoleResponse> {
+    return apiRequest<UpdateMemberRoleResponse>(
+      axiosInstance.patch(`${this.teamUrl(code)}/members/${userId}/role`, {membership: {role}}),
+      (data) => ({success: true, members: (data.members as RawTeamMember[]).map(mapTeamMember)}),
+    );
+  }
+
+  async transferOwnership(code: string, userId: number): Promise<TransferOwnershipResponse> {
+    return apiRequest<TransferOwnershipResponse>(
+      axiosInstance.post(`${this.teamUrl(code)}/transfer_ownership`, {membership: {user_id: userId}}),
+      (data) => {
+        const role = data.role as TeamRole;
+        if (this.currentTeam?.code === code) {
+          this.currentRole = role;
+          localStorage.setItem(this.teamRoleStorageKey, role);
+        }
+        return {success: true, members: (data.members as RawTeamMember[]).map(mapTeamMember), role};
+      },
+    );
+  }
+
+  async leaveTeam(code: string): Promise<LeaveTeamResponse> {
+    return apiRequest<LeaveTeamResponse>(
+      axiosInstance.post(`${this.teamUrl(code)}/leave`),
+      () => {
+        if (this.currentTeam?.code === code) {
+          this.clearCurrentTeam();
+        }
+        return {success: true};
+      },
+    );
   }
 
   async renameTeam(code: string, name: string): Promise<RenameTeamResponse> {

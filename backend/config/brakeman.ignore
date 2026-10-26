@@ -1,0 +1,29 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Mass Assignment",
+      "warning_code": 105,
+      "fingerprint": "a6fc4ac660f4fc95ed30cf50e7a156d653df234124a12fa8602fb7137ae3344d",
+      "check_name": "PermitAttributes",
+      "message": "Potentially dangerous key allowed for mass assignment",
+      "file": "app/controllers/application_controller.rb",
+      "line": 26,
+      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
+      "code": "params.require(:membership).permit(:role)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "ApplicationController",
+        "method": "update_member_role_params"
+      },
+      "user_input": ":role",
+      "confidence": "Medium",
+      "cwe_id": [
+        915
+      ],
+      "note": "Reviewed false positive: MembersController#update_role only reads the role, requires the owner, rejects anything but admin or user and the owner as target, and sets it explicitly."
+    }
+  ],
+  "updated": "2026-10-26 14:00:00 +0200",
+  "brakeman_version": "6.2.2"
+}

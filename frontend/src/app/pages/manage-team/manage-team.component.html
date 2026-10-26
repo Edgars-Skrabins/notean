@@ -31,7 +31,15 @@
           <app-avatar [avatar]="member.avatar" [nickname]="member.nickname"></app-avatar>
           <span class="manageTeam__memberName">{{ member.nickname }}</span>
         </span>
-        <span class="manageTeam__memberRole">{{ teamRoleLabel(member.role) | translate }}</span>
+        <span class="manageTeam__memberControls">
+          <span class="manageTeam__memberRole">{{ teamRoleLabel(member.role) | translate }}</span>
+          <app-menu-button
+            *ngIf="memberActions[member.id]?.length"
+            [label]="PHRASES.MEMBER_ACTIONS"
+            [options]="memberActions[member.id]"
+            (picked)="handleMemberAction(member, $event)"
+          ></app-menu-button>
+        </span>
       </div>
     </div>
   </section>
@@ -57,4 +65,13 @@
   [message]="PHRASES.CONFIRM_DELETE_TEAM | translate"
   (confirmed)="handleConfirmDeleteTeam()"
   (cancelled)="handleCancelDeleteTeam()"
+></app-confirm-dialog>
+
+<app-confirm-dialog
+  *ngIf="pendingAction"
+  [message]="pendingActionMessage"
+  [confirmLabel]="pendingActionLabel"
+  [confirmVariant]="pendingAction.action === 'remove' ? 'danger' : 'primary'"
+  (confirmed)="handleConfirmMemberAction()"
+  (cancelled)="handleCancelMemberAction()"
 ></app-confirm-dialog>

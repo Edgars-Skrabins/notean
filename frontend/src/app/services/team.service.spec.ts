@@ -1,6 +1,6 @@
 import {AxiosError, AxiosHeaders} from "axios";
 import {mapTeam, mapTeamMember, TeamService} from "./team.service";
-import {TeamFeatures} from "@models/team.model";
+import {TeamFeatures, TeamMember} from "@models/team.model";
 import {axiosInstance} from "@config/axiosConfig";
 import {testTeam, rawTestTeam} from "../testing/teamFixtures";
 
@@ -244,5 +244,106 @@ describe('TeamService features', () => {
     service.clearCurrentTeam();
 
     expect(emitted[emitted.length - 1]).toEqual({pages: true, diagrams: true, boards: true});
+  });
+});
+
+describe('TeamService member management', () => {
+  let service: TeamService;
+  const rawMember = {id: 2, nickname: 'Bob', role: 'admin', avatar: {color: 'lime', image_url: null}};
+  const member: TeamMember = {id: 2, nickname: 'Bob', role: 'admin', avatar: {color: 'lime', imageUrl: null}};
+
+  function axiosError(status: number, code: string) {
+    return new AxiosError('failed', undefined, undefined, undefined, {
+      status, statusText: '', data: {code}, headers: {}, config: {headers: new AxiosHeaders()}
+    });
+  }
+
+  beforeEach(() => {
+    localStorage.setItem('currentTeam', JSON.stringify(testTeam({code: 'aaa'})));
+    localStorage.setItem('currentTeamRole', 'owner');
+    localStorage.setItem('currentNickname', 'Alice');
+    service = new TeamService();
+  });
+
+  afterEach(() => {
+    localStorage.clear();
+  });
+
+  it('removeMember deletes the member and maps the returned members', async () => {
+    const del = spyOn(axiosInstance, 'delete').and.returnValue(Promise.resolve({data: {members: [rawMember]}}));
+
+    const response = await service.removeMember('aaa', 3);
+
+    expect(del).toHaveBeenCalledWith('/teams/aaa/members/3');
+    expect(response).toEqual({success: true, members: [member]});
+  });
+
+  it('removeMember returns the server code on failure', async () => {
+    spyOn(axiosInstance, 'delete').and.returnValue(Promise.reject(axiosError(403, 'CANNOT_MANAGE_ADMIN')));
+
+    expect(await service.removeMember('aaa', 3)).toEqual({success: false, code: 'CANNOT_MANAGE_ADMIN'});
+  });
+
+  it('updateMemberRole patches the role and maps the returned members', async () => {
+    const patch = spyOn(axiosInstance, 'patch').and.returnValue(Promise.resolve({data: {members: [rawMember]}}));
+
+    const response = await service.updateMemberRole('aaa', 2, 'admin');
+
+    expect(patch).toHaveBeenCalledWith('/teams/aaa/members/2/role', {membership: {role: 'admin'}});
+    expect(response).toEqual({success: true, members: [member]});
+    expect(service.getCurrentRole()).toBe('owner');
+  });
+
+  it('updateMemberRole returns the server code on failure', async () => {
+    spyOn(axiosInstance, 'patch').and.returnValue(Promise.reject(axiosError(422, 'ROLE_INVALID')));
+
+    expect(await service.updateMemberRole('aaa', 2, 'admin')).toEqual({success: false, code: 'ROLE_INVALID'});
+  });
+
+  it('transferOwnership stores the new admin role for the active team', async () => {
+    const post = spyOn(axiosInstance, 'post').and.returnValue(Promise.resolve({data: {members: [rawMember], role: 'admin'}}));
+
+    const response = await service.transferOwnership('aaa', 2);
+
+    expect(post).toHaveBeenCalledWith('/teams/aaa/transfer_ownership', {membership: {user_id: 2}});
+    expect(response).toEqual({success: true, members: [member], role: 'admin'});
+    expect(service.getCurrentRole()).toBe('admin');
+    expect(localStorage.getItem('currentTeamRole')).toBe('admin');
+  });
+
+  it('transferOwnership keeps the stored role when it fails', async () => {
+    spyOn(axiosInstance, 'post').and.returnValue(Promise.reject(axiosError(422, 'CANNOT_TRANSFER_TO_SELF')));
+
+    const response = await service.transferOwnership('aaa', 1);
+
+    expect(response).toEqual({success: false, code: 'CANNOT_TRANSFER_TO_SELF'});
+    expect(service.getCurrentRole()).toBe('owner');
+  });
+
+  it('leaveTeam clears the active team when leaving it', async () => {
+    const post = spyOn(axiosInstance, 'post').and.returnValue(Promise.resolve({data: ''}));
+
+    const response = await service.leaveTeam('aaa');
+
+    expect(post).toHaveBeenCalledWith('/teams/aaa/leave');
+    expect(response).toEqual({success: true});
+    expect(service.getCurrentTeam()).toBeNull();
+  });
+
+  it('leaveTeam keeps the active team when leaving another team', async () => {
+    spyOn(axiosInstance, 'post').and.returnValue(Promise.resolve({data: ''}));
+
+    await service.leaveTeam('bbb');
+
+    expect(service.getCurrentTeam()).toEqual(testTeam({code: 'aaa'}));
+  });
+
+  it('leaveTeam returns the server code and keeps the team on failure', async () => {
+    spyOn(axiosInstance, 'post').and.returnValue(Promise.reject(axiosError(422, 'OWNER_CANNOT_LEAVE')));
+
+    const response = await service.leaveTeam('aaa');
+
+    expect(response).toEqual({success: false, code: 'OWNER_CANNOT_LEAVE'});
+    expect(service.getCurrentTeam()).toEqual(testTeam({code: 'aaa'}));
   });
 });

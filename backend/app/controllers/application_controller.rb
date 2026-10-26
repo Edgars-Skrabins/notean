@@ -22,6 +22,14 @@ class ApplicationController < ActionController::API
     params.require(:membership).permit(:nickname)
   end
 
+  def update_member_role_params
+    params.require(:membership).permit(:role)
+  end
+
+  def transfer_ownership_params
+    params.require(:membership).permit(:user_id)
+  end
+
   def user_params
     params.require(:user).permit(:email, :password)
   end
@@ -245,6 +253,10 @@ class ApplicationController < ActionController::API
     team.as_json(except: [ :password, :password_digest ])
   end
 
+  def members_json(team)
+    team.memberships.includes(user: User::AVATAR_PRELOAD).map { |m| member_json(m.user).merge(role: m.role) }
+  end
+
   def member_json(user)
     { id: user.id, nickname: team_nicknames[user.id], avatar: avatar_json(user) }
   end
@@ -257,7 +269,7 @@ class ApplicationController < ActionController::API
   end
 
   def team_nicknames
-    @team_nicknames ||= @team.memberships.pluck(:user_id, :nickname).to_h
+    @team_nicknames ||= @team.all_memberships.pluck(:user_id, :nickname).to_h
   end
 
   def render_nickname_error(membership)
