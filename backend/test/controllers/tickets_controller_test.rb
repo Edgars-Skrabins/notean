@@ -112,7 +112,7 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ 0, 1, 2 ], ordered.pluck(:position)
   end
 
-  test "move across columns reindexes the destination and leaves a harmless gap in the source" do
+  test "move across columns reindexes the destination and closes the gap in the source" do
     first = Ticket.create!(column: @todo, team: @team, created_by_user_id: @user.id, title: "First", position: 0)
     second = Ticket.create!(column: @todo, team: @team, created_by_user_id: @user.id, title: "Second", position: 1)
     existing = Ticket.create!(column: @doing, team: @team, created_by_user_id: @user.id, title: "Existing", position: 0)
@@ -131,7 +131,7 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
 
     source = @todo.tickets.reload
     assert_equal [ second.id ], source.pluck(:id)
-    assert_equal [ 1 ], source.pluck(:position)
+    assert_equal [ 0 ], source.pluck(:position)
   end
 
   test "move rejects a target column that does not belong to this board" do
@@ -462,20 +462,42 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     assert_broadcast_on(BoardChannel.stream_name(@board), type: "tickets_upserted", tickets: [ ticket_broadcast_json(JSON.parse(response.body)["ticket"]) ])
   end
 
-  test "a move broadcasts the moved ticket and only the siblings whose position changed" do
-    first = ticket_in(@todo, "First", 0)
-    second = ticket_in(@todo, "Second", 1)
+  test "a move broadcasts the shifted range and then only the moved ticket" do
+    ticket_in(@todo, "First", 0)
+    ticket_in(@todo, "Second", 1)
     third = ticket_in(@todo, "Third", 2)
     ticket_in(@todo, "Fourth", 3)
 
     patch tickets_url(third.id), params: { ticket: { column_id: @todo.id, position: 1 } }, headers: @headers, as: :json
 
     assert_response :success
-    message = board_broadcasts(@board).sole
-    assert_equal "tickets_upserted", message["type"]
-    assert_equal [ [ third.id, 1 ], [ second.id, 2 ] ], message["tickets"].map { |ticket| [ ticket["id"], ticket["position"] ] }
-    assert_not message["tickets"].last.key?("description")
-    assert_not_includes message["tickets"].map { |ticket| ticket["id"] }, first.id
+    shifted, upserted = board_broadcasts(@board)
+    assert_equal({ "type" => "tickets_shifted", "shifts" => [ { "column_id" => @todo.id, "from_position" => 1, "to_position" => 1, "delta" => 1 } ] }, shifted)
+    assert_equal "tickets_upserted", upserted["type"]
+    assert_equal [ [ third.id, 1 ] ], upserted["tickets"].map { |ticket| [ ticket["id"], ticket["position"] ] }
+  end
+
+  test "a cross-column move broadcasts the closed source and the opened target" do
+    first = ticket_in(@todo, "First", 0)
+    ticket_in(@todo, "Second", 1)
+    ticket_in(@doing, "Existing", 0)
+
+    patch tickets_url(first.id), params: { ticket: { column_id: @doing.id, position: 0 } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal [
+      { "column_id" => @todo.id, "from_position" => 1, "to_position" => nil, "delta" => -1 },
+      { "column_id" => @doing.id, "from_position" => 0, "to_position" => nil, "delta" => 1 }
+    ], board_broadcasts(@board).first["shifts"]
+  end
+
+  test "an edit without a move broadcasts no shift" do
+    ticket = ticket_in(@todo, "Fix bug", 0)
+
+    patch tickets_url(ticket.id), params: { ticket: { priority_id: nil } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal [ "tickets_upserted" ], board_broadcasts(@board).map { |message| message["type"] }
   end
 
   test "a failed update broadcasts nothing" do
@@ -487,37 +509,159 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
-  test "destroy broadcasts the removed ticket id" do
+  test "destroy broadcasts the closed gap and then the removed ticket id" do
     ticket = ticket_in(@todo, "Fix bug", 0)
 
     delete tickets_url(ticket.id), headers: @headers
 
     assert_response :no_content
-    assert_broadcast_on(BoardChannel.stream_name(@board), type: "tickets_removed", ticket_ids: [ ticket.id ])
+    assert_equal [
+      { "type" => "tickets_shifted", "shifts" => [ { "column_id" => @todo.id, "from_position" => 1, "to_position" => nil, "delta" => -1 } ] },
+      { "type" => "tickets_removed", "ticket_ids" => [ ticket.id ] }
+    ], board_broadcasts(@board)
   end
 
-  test "bulk update broadcasts the moved tickets and the reindexed source tickets" do
+  test "bulk update broadcasts the source shifts and then only the moved tickets" do
     first = ticket_in(nil, "First", 0)
-    kept = ticket_in(nil, "Kept", 1)
+    ticket_in(nil, "Kept", 1)
     second = ticket_in(@todo, "Second", 0)
 
     bulk_update(ticket_ids: [ second.id, first.id ], column_id: @doing.id)
 
     assert_response :success
-    message = board_broadcasts(@board).sole
-    assert_equal "tickets_upserted", message["type"]
-    assert_equal JSON.parse(response.body)["tickets"], message["tickets"].first(2)
-    assert_equal [ [ kept.id, nil, 0 ] ], message["tickets"].drop(2).map { |ticket| [ ticket["id"], ticket["column_id"], ticket["position"] ] }
+    shifted, upserted = board_broadcasts(@board)
+    assert_equal "tickets_shifted", shifted["type"]
+    assert_equal [
+      { "column_id" => @todo.id, "from_position" => 1, "to_position" => nil, "delta" => -1 },
+      { "column_id" => nil, "from_position" => 1, "to_position" => nil, "delta" => -1 }
+    ], shifted["shifts"]
+    assert_equal "tickets_upserted", upserted["type"]
+    assert_equal JSON.parse(response.body)["tickets"], upserted["tickets"]
   end
 
-  test "bulk delete broadcasts the removed ticket ids" do
+  test "bulk assign broadcasts no shift" do
+    bob = create_member(@team, "Bob")
+    idea = ticket_in(nil, "Idea", 0)
+
+    bulk_update(ticket_ids: [ idea.id ], add_assignee_id: bob.id)
+
+    assert_response :success
+    assert_equal [ "tickets_upserted" ], board_broadcasts(@board).map { |message| message["type"] }
+  end
+
+  test "bulk delete broadcasts the closed gaps and then the removed ticket ids" do
     first = ticket_in(nil, "First", 0)
     second = ticket_in(@todo, "Second", 0)
 
     delete bulk_url, params: { bulk: { ticket_ids: [ first.id, second.id ] } }, headers: @headers, as: :json
 
     assert_response :no_content
-    assert_broadcast_on(BoardChannel.stream_name(@board), type: "tickets_removed", ticket_ids: [ first.id, second.id ])
+    shifted, removed = board_broadcasts(@board)
+    assert_equal "tickets_shifted", shifted["type"]
+    assert_equal [ nil, @todo.id ], shifted["shifts"].map { |shift| shift["column_id"] }
+    assert_equal({ "type" => "tickets_removed", "ticket_ids" => [ first.id, second.id ] }, removed)
+  end
+
+  test "a cross-column move keeps both columns dense" do
+    moved = ticket_in(@todo, "Moved", 1)
+    todo = [ ticket_in(@todo, "A", 0), ticket_in(@todo, "B", 2), ticket_in(@todo, "C", 3) ]
+    doing = [ ticket_in(@doing, "D", 0), ticket_in(@doing, "E", 1) ]
+
+    patch tickets_url(moved.id), params: { ticket: { column_id: @doing.id, position: 1 } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal todo, @todo.tickets.reload.order(:position).to_a
+    assert_equal [ 0, 1, 2 ], @todo.tickets.order(:position).pluck(:position)
+    assert_equal [ doing[0], moved, doing[1] ], @doing.tickets.reload.order(:position).to_a
+    assert_equal [ 0, 1, 2 ], @doing.tickets.order(:position).pluck(:position)
+  end
+
+  test "a move down within a column keeps it dense" do
+    tickets = 4.times.map { |index| ticket_in(@todo, "Ticket #{index}", index) }
+
+    patch tickets_url(tickets[0].id), params: { ticket: { position: 2 } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal tickets.values_at(1, 2, 0, 3), @todo.tickets.reload.order(:position).to_a
+    assert_equal [ 0, 1, 2, 3 ], @todo.tickets.order(:position).pluck(:position)
+  end
+
+  test "a move past the end is clamped to the last position" do
+    tickets = 3.times.map { |index| ticket_in(@todo, "Ticket #{index}", index) }
+    ticket_in(@doing, "Other", 0)
+
+    patch tickets_url(tickets[0].id), params: { ticket: { position: 99 } }, headers: @headers, as: :json
+    patch tickets_url(tickets[1].id), params: { ticket: { column_id: @doing.id, position: 99 } }, headers: @headers, as: :json
+
+    assert_equal [ tickets[2], tickets[0] ], @todo.tickets.reload.order(:position).to_a
+    assert_equal [ 0, 1 ], @todo.tickets.order(:position).pluck(:position)
+    assert_equal [ @doing.id, 1 ], [ tickets[1].reload.column_id, tickets[1].position ]
+  end
+
+  test "a failed save rolls back the shifts" do
+    tickets = 3.times.map { |index| ticket_in(@todo, "Ticket #{index}", index) }
+
+    patch tickets_url(tickets[2].id), params: { ticket: { position: 0, title: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1), lock_version: 0 } }, headers: @headers, as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal [ 0, 1, 2 ], tickets.map { |ticket| ticket.reload.position }
+  end
+
+  test "a single delete closes its gap" do
+    tickets = 4.times.map { |index| ticket_in(nil, "Ticket #{index}", index) }
+
+    delete tickets_url(tickets[1].id), headers: @headers
+
+    assert_response :no_content
+    assert_equal [ 0, 1, 2 ], tickets.values_at(0, 2, 3).map { |ticket| ticket.reload.position }
+  end
+
+  test "a bulk move from two groups keeps every group dense" do
+    backlog = 3.times.map { |index| ticket_in(nil, "Backlog #{index}", index) }
+    todo = 3.times.map { |index| ticket_in(@todo, "Todo #{index}", index) }
+    doing = ticket_in(@doing, "Doing", 0)
+
+    bulk_update(ticket_ids: [ todo[1].id, backlog[0].id, backlog[2].id ], column_id: @doing.id)
+
+    assert_response :success
+    assert_equal [ [ backlog[1].id, 0 ] ], @board.backlog_tickets.reload.map { |ticket| [ ticket.id, ticket.position ] }
+    assert_equal [ [ todo[0].id, 0 ], [ todo[2].id, 1 ] ], @todo.tickets.reload.order(:position).map { |ticket| [ ticket.id, ticket.position ] }
+    assert_equal [ doing, todo[1], backlog[0], backlog[2] ], @doing.tickets.reload.order(:position).to_a
+    assert_equal [ 0, 1, 2, 3 ], @doing.tickets.order(:position).pluck(:position)
+  end
+
+  test "a bulk move into a column it also takes tickets from keeps the moved tickets at the end" do
+    todo = 3.times.map { |index| ticket_in(@todo, "Todo #{index}", index) }
+    idea = ticket_in(nil, "Idea", 0)
+
+    bulk_update(ticket_ids: [ todo[0].id, idea.id ], column_id: @todo.id)
+
+    assert_response :success
+    assert_equal [ todo[1], todo[2], todo[0], idea ], @todo.tickets.reload.order(:position).to_a
+    assert_equal [ 0, 1, 2, 3 ], @todo.tickets.order(:position).pluck(:position)
+  end
+
+  test "a bulk delete keeps every group dense" do
+    backlog = 3.times.map { |index| ticket_in(nil, "Backlog #{index}", index) }
+    todo = 4.times.map { |index| ticket_in(@todo, "Todo #{index}", index) }
+
+    delete bulk_url, params: { bulk: { ticket_ids: [ backlog[0].id, todo[1].id, todo[2].id ] } }, headers: @headers, as: :json
+
+    assert_response :no_content
+    assert_equal [ 0, 1 ], backlog.drop(1).map { |ticket| ticket.reload.position }
+    assert_equal [ 0, 1 ], todo.values_at(0, 3).map { |ticket| ticket.reload.position }
+  end
+
+  test "moving a ticket to the top runs the same number of queries for 1 and 10 siblings" do
+    ticket_in(@todo, "Sibling", 0)
+    one_moved = ticket_in(@todo, "Moved", 1)
+    one = query_count { patch tickets_url(one_moved.id), params: { ticket: { position: 0 } }, headers: @headers, as: :json }
+
+    10.times { |index| ticket_in(@doing, "Sibling #{index}", index) }
+    ten_moved = ticket_in(@doing, "Moved", 10)
+    ten = query_count { patch tickets_url(ten_moved.id), params: { ticket: { position: 0 } }, headers: @headers, as: :json }
+
+    assert_equal one, ten
   end
 
   test "a title edit with a stale version returns EDIT_CONFLICT with the latest ticket" do

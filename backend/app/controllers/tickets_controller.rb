@@ -57,20 +57,24 @@ class TicketsController < ApplicationController
       return render_error(ErrorCodes::Priorities::PRIORITY_NOT_FOUND, :not_found) if priority_id && @ticket.priority.nil?
     end
 
+    target_column = @ticket.column
     if to_backlog?
-      move_ticket(nil)
+      target_column = nil
     elsif update_ticket_params[:column_id].present?
-      column = @board.columns.find_by(id: update_ticket_params[:column_id])
-      return render_error(ErrorCodes::Boards::COLUMN_NOT_FOUND, :not_found) if column.nil?
+      target_column = @board.columns.find_by(id: update_ticket_params[:column_id])
+      return render_error(ErrorCodes::Boards::COLUMN_NOT_FOUND, :not_found) if target_column.nil?
+    end
+    moving = to_backlog? || update_ticket_params[:column_id].present? || update_ticket_params.key?(:position)
 
-      move_ticket(column)
-    elsif update_ticket_params.key?(:position)
-      move_ticket(@ticket.column)
+    saved = Ticket.transaction do
+      shift_for_move(target_column) if moving
+      @ticket.save || raise(ActiveRecord::Rollback)
     end
 
-    if @ticket.save
+    if saved
       render json: { ticket: ticket_json(@ticket) }
-      BoardBroadcast.tickets_upserted(@board, [ ticket_broadcast_json(@ticket), *reindexed_tickets_json ])
+      BoardBroadcast.tickets_shifted(@board, ticket_shifts) if ticket_shifts.any?
+      BoardBroadcast.tickets_upserted(@board, [ ticket_broadcast_json(@ticket) ])
     else
       render_error(limit_error_code(@ticket) || ErrorCodes::Tickets::TICKET_UPDATE_FAILED, :unprocessable_entity)
     end
@@ -79,8 +83,12 @@ class TicketsController < ApplicationController
   end
 
   def destroy
-    @ticket.destroy
+    shifts = Ticket.transaction do
+      @ticket.destroy!
+      TicketPositions.shift(@board, @ticket.column_id, from: @ticket.position + 1, delta: -1)
+    end
     head :no_content
+    BoardBroadcast.tickets_shifted(@board, shifts)
     BoardBroadcast.tickets_removed(@board, [ @ticket.id ])
   end
 
@@ -97,7 +105,7 @@ class TicketsController < ApplicationController
         column = @board.columns.find_by(id: bulk_ticket_params[:column_id])
         return render_error(ErrorCodes::Boards::COLUMN_NOT_FOUND, :not_found) if column.nil?
       end
-      Ticket.transaction { move_tickets(tickets, column) }
+      Ticket.transaction { append_tickets(tickets, column) }
     when :add_assignee_id
       user = find_assignable_user(bulk_ticket_params[:add_assignee_id])
       return if user.nil?
@@ -108,7 +116,8 @@ class TicketsController < ApplicationController
     end
 
     render json: { tickets: bulk_tickets_json }
-    BoardBroadcast.tickets_upserted(@board, bulk_tickets_json + reindexed_tickets_json)
+    BoardBroadcast.tickets_shifted(@board, ticket_shifts) if ticket_shifts.any?
+    BoardBroadcast.tickets_upserted(@board, bulk_tickets_json)
   end
 
   def bulk_destroy
@@ -118,11 +127,11 @@ class TicketsController < ApplicationController
     return if tickets.nil?
 
     Ticket.transaction do
-      column_ids = tickets.map(&:column_id).uniq
       tickets.each(&:destroy!)
-      column_ids.each { |column_id| reindex_group(column_id) }
+      close_source_gaps(tickets)
     end
     head :no_content
+    BoardBroadcast.tickets_shifted(@board, ticket_shifts)
     BoardBroadcast.tickets_removed(@board, bulk_ticket_ids)
   end
 
@@ -198,31 +207,19 @@ class TicketsController < ApplicationController
     bulk_ticket_ids.map { |id| tickets[id] }
   end
 
-  def move_tickets(tickets, target_column)
-    source_column_ids = tickets.map(&:column_id).uniq - [ target_column&.id ]
-    start = (@board.tickets.where(column: target_column).where.not(id: tickets.map(&:id)).maximum(:position) || -1) + 1
-    tickets.each_with_index do |ticket, index|
-      ticket.update_columns(column_id: target_column&.id, position: start + index, updated_at: Time.current)
-    end
-    source_column_ids.each { |column_id| reindex_group(column_id) }
+  def append_tickets(tickets, target_column)
+    TicketPositions.append(@board, target_column&.id, tickets.map(&:id))
+    close_source_gaps(tickets)
   end
 
-  def reindex_group(column_id)
-    @board.tickets.where(column_id: column_id).order(:position).each_with_index do |ticket, index|
-      next if ticket.position == index
-
-      ticket.update_column(:position, index)
-      reindexed_tickets << ticket
+  def close_source_gaps(tickets)
+    tickets.group_by(&:column_id).each do |column_id, group|
+      ticket_shifts.concat(TicketPositions.close_gaps(@board, column_id, group.map(&:position)))
     end
   end
 
-  def reindexed_tickets
-    @reindexed_tickets ||= []
-  end
-
-  def reindexed_tickets_json
-    ActiveRecord::Associations::Preloader.new(records: reindexed_tickets, associations: TicketJson::ASSIGNEES_PRELOAD).call
-    reindexed_tickets.map { |ticket| ticket_summary_json(ticket) }
+  def ticket_shifts
+    @ticket_shifts ||= []
   end
 
   def assign_tickets(tickets, user)
@@ -242,11 +239,24 @@ class TicketsController < ApplicationController
     bulk_ticket_ids.map { |id| ticket_summary_json(tickets[id]) }
   end
 
-  def move_ticket(target_column)
-    siblings = @board.tickets.where(column: target_column).where.not(id: @ticket.id).order(:position).to_a
-    positions = siblings.to_h { |sibling| [ sibling.id, sibling.position ] }
+  def shift_for_move(target_column)
+    source_id = @ticket.column_id
+    target_id = target_column&.id
+    old_position = @ticket.position
+    size = @board.tickets.where(column_id: target_id).where.not(id: @ticket.id).count
+    requested = update_ticket_params[:position]
+    index = requested.nil? ? size : requested.to_i.clamp(0, size)
+
+    if source_id != target_id
+      ticket_shifts.concat(TicketPositions.shift(@board, source_id, from: old_position + 1, delta: -1))
+      ticket_shifts.concat(TicketPositions.shift(@board, target_id, from: index, delta: 1))
+    elsif index > old_position
+      ticket_shifts.concat(TicketPositions.shift(@board, source_id, from: old_position + 1, to: index, delta: -1))
+    elsif index < old_position
+      ticket_shifts.concat(TicketPositions.shift(@board, source_id, from: index, to: old_position - 1, delta: 1))
+    end
+
     @ticket.column = target_column
-    @ticket.position = insert_and_reindex(siblings, @ticket, update_ticket_params[:position], :position)
-    reindexed_tickets.concat(siblings.reject { |sibling| sibling == @ticket || positions[sibling.id] == sibling.position })
+    @ticket.position = index
   end
 end
