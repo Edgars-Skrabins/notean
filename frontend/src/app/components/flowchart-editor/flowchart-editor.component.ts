@@ -350,8 +350,6 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
       width: 120,
     };
 
-    // Hide the cell's own rendered label while editing, otherwise it shows through
-    // the semi-transparent input and looks like the title got duplicated.
     this.setCellLabel(kind, cell, '');
   }
 
@@ -394,7 +392,6 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
       try {
         this.graph.fromJSON(JSON.parse(this.content));
       } catch {
-        // ignore malformed content and start from a blank canvas
       }
     }
 
