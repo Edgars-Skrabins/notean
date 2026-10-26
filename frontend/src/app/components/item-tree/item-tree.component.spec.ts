@@ -54,7 +54,7 @@ describe('ItemTreeComponent', () => {
     const item = buildItem();
     render([], [item]);
 
-    query<HTMLButtonElement>('.itemTree__row--item .itemTree__rowMain').click();
+    query<HTMLButtonElement>('.itemTree__row--item .itemTreeRow__main').click();
 
     expect(openedItems).toEqual([item]);
   });
@@ -80,7 +80,7 @@ describe('ItemTreeComponent', () => {
   it('toggles a folder from its row main and its row padding', () => {
     render([{id: 1, title: 'Docs', parentId: null, projectId: null}], [buildItem({folderId: 1})]);
 
-    query<HTMLButtonElement>('.itemTree__row--folder .itemTree__rowMain').click();
+    query<HTMLButtonElement>('.itemTree__row--folder .itemTreeRow__main').click();
     expect(component.isExpanded(1)).toBeTrue();
 
     query<HTMLElement>('.itemTree__row--folder').click();
@@ -92,9 +92,9 @@ describe('ItemTreeComponent', () => {
     component.expandFolder.subscribe((event) => expanded.push(event));
     render([{id: 1, title: 'Docs', parentId: null, projectId: null}], []);
 
-    query<HTMLButtonElement>('.itemTree__row--folder .itemTree__rowMain').click();
-    query<HTMLButtonElement>('.itemTree__row--folder .itemTree__rowMain').click();
-    query<HTMLButtonElement>('.itemTree__row--folder .itemTree__rowMain').click();
+    query<HTMLButtonElement>('.itemTree__row--folder .itemTreeRow__main').click();
+    query<HTMLButtonElement>('.itemTree__row--folder .itemTreeRow__main').click();
+    query<HTMLButtonElement>('.itemTree__row--folder .itemTreeRow__main').click();
 
     expect(expanded).toEqual([{folderId: 1}, {folderId: 1}]);
   });
@@ -103,7 +103,7 @@ describe('ItemTreeComponent', () => {
     fixture.componentRef.setInput('levels', new Map([[1, {loaded: true, isLoading: false, hasMore: false}]]));
     render([{id: 1, title: 'Docs', parentId: null, projectId: null}], []);
 
-    expect(query('.itemTree__chevron')).toBeNull();
+    expect(query('.itemTreeRow__chevron')).toBeNull();
   });
 
   it('shows Load more for a level with more items and reports its level', () => {
@@ -129,7 +129,7 @@ describe('ItemTreeComponent', () => {
     component.changeFolderProject.subscribe((event) => requested.push(event));
     fixture.componentRef.setInput('canChangeFolderProject', true);
     render([{id: 1, title: 'Docs', parentId: null, projectId: null}, {id: 2, title: 'Inner', parentId: 1, projectId: null}], []);
-    query<HTMLButtonElement>('.itemTree__row--folder .itemTree__rowMain').click();
+    query<HTMLButtonElement>('.itemTree__row--folder .itemTreeRow__main').click();
     fixture.detectChanges();
 
     const buttons = fixture.nativeElement.querySelectorAll(`[aria-label="${PHRASES.CHANGE_FOLDER_PROJECT}"]`);
@@ -157,7 +157,7 @@ describe('ItemTreeComponent', () => {
     });
 
     function renameInput(): HTMLInputElement {
-      return query<HTMLInputElement>('.itemTree__renameInput');
+      return query<HTMLInputElement>('.itemTreeRow__renameInput');
     }
 
     function typeTitle(title: string) {
@@ -195,7 +195,7 @@ describe('ItemTreeComponent', () => {
 
       expect(renamed).toEqual([]);
       expect(renameInput()).toBeNull();
-      expect(query('.itemTree__row--item .itemTree__rowTitle').textContent).toBe('Notes');
+      expect(query('.itemTree__row--item .itemTreeRow__title').textContent).toBe('Notes');
     });
 
     it('cancels an empty title', () => {

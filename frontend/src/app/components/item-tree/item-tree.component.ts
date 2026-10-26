@@ -1,16 +1,15 @@
-import {Component, ElementRef, EventEmitter, Input, OnChanges, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, Output} from '@angular/core';
 import {DatePipe, NgFor, NgIf, NgTemplateOutlet} from '@angular/common';
-import {FormsModule} from '@angular/forms';
 import {CdkDrag, CdkDragEnd, CdkDragMove} from '@angular/cdk/drag-drop';
 import {TranslateModule} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
-import {TITLE_MAX_LENGTH} from '@config/contentLimits';
-import {IconComponent, IconName} from '@components/icon/icon.component';
+import {IconName} from '@components/icon/icon.component';
 import {IconButtonComponent} from '@components/icon-button/icon-button.component';
 import {DeleteFolderDialogComponent} from '@components/delete-folder-dialog/delete-folder-dialog.component';
 import {ConfirmDialogComponent} from '@components/confirm-dialog/confirm-dialog.component';
 import {FavoriteStarComponent} from '@components/favorite-star/favorite-star.component';
 import {LoadMoreComponent} from '@components/load-more/load-more.component';
+import {ItemTreeRowComponent} from '@components/item-tree-row/item-tree-row.component';
 import {FolderDeleteMode} from "@models/folder.model";
 import {compareByTitle} from '@utils/titleOrder';
 
@@ -62,14 +61,13 @@ type DropTarget =
     NgIf,
     NgTemplateOutlet,
     DatePipe,
-    FormsModule,
     TranslateModule,
-    IconComponent,
     IconButtonComponent,
     DeleteFolderDialogComponent,
     ConfirmDialogComponent,
     FavoriteStarComponent,
     LoadMoreComponent,
+    ItemTreeRowComponent,
     CdkDrag
   ],
   templateUrl: './item-tree.component.html',
@@ -77,7 +75,6 @@ type DropTarget =
 })
 export class ItemTreeComponent implements OnChanges {
   protected readonly PHRASES = PHRASES;
-  protected readonly TITLE_MAX_LENGTH = TITLE_MAX_LENGTH;
 
   @Input() folders: TreeFolder[] = [];
   @Input() items: TreeItem[] = [];
@@ -114,18 +111,6 @@ export class ItemTreeComponent implements OnChanges {
   readonly rootTarget: DropTarget = {kind: 'root'};
 
   private expandedFolderIds = new Set<number>();
-
-  @ViewChild('itemRenameInput')
-  set itemRenameInput(input: ElementRef<HTMLInputElement> | undefined) {
-    if (!input) {
-      return;
-    }
-
-    setTimeout(() => {
-      input.nativeElement.focus();
-      input.nativeElement.select();
-    });
-  }
 
   ngOnChanges() {
     this.rootFolders = this.buildFolders(null);

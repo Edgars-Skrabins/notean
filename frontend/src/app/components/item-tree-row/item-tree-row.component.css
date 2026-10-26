@@ -1,0 +1,67 @@
+.itemTreeRow__chevronSlot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin-left: var(--space-2);
+  flex-shrink: 0;
+}
+
+.itemTreeRow__chevron {
+  transition: transform var(--transition-fast);
+}
+
+.itemTreeRow__chevron--expanded {
+  transform: rotate(90deg);
+}
+
+.itemTreeRow__main {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+  align-self: stretch;
+  min-width: 0;
+  background: none;
+  border: none;
+  padding: 0 var(--space-2) 0 0;
+  cursor: pointer;
+  text-align: left;
+  font-family: var(--font-ui);
+}
+
+.itemTreeRow__main--renaming {
+  padding: 0;
+}
+
+.itemTreeRow__main--item {
+  padding: 0 var(--space-2) 0 36px;
+}
+
+.itemTreeRow__icon {
+  width: 17px;
+  height: 17px;
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+
+.itemTreeRow__title,
+.itemTreeRow__renameInput {
+  color: var(--color-text-heading);
+  font-weight: 600;
+  font-size: var(--font-md);
+}
+
+.itemTreeRow__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.itemTreeRow__renameInput {
+  flex: 1;
+  min-width: 0;
+  border-color: var(--color-input-border-focus);
+  padding: 4px 8px;
+}

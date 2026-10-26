@@ -1,0 +1,45 @@
+<div *ngIf="kind === 'folder'" class="itemTreeRow__chevronSlot">
+  <app-icon-button
+    *ngIf="expandable"
+    icon="chevron-right"
+    [tooltip]="(expanded ? PHRASES.COLLAPSE_FOLDER : PHRASES.EXPAND_FOLDER) | translate"
+    [size]="28"
+    class="itemTreeRow__chevron"
+    [class.itemTreeRow__chevron--expanded]="expanded"
+    (pressed)="activate.emit()"
+  ></app-icon-button>
+</div>
+
+<button
+  *ngIf="!renaming"
+  type="button"
+  class="itemTreeRow__main"
+  [class.itemTreeRow__main--item]="kind === 'item'"
+  (click)="activate.emit()"
+>
+  <app-icon [name]="icon" class="itemTreeRow__icon"></app-icon>
+  <span class="itemTreeRow__title">{{ title }}</span>
+  <ng-content select="[rowMeta]"></ng-content>
+</button>
+
+<div
+  *ngIf="renaming"
+  class="itemTreeRow__main itemTreeRow__main--renaming"
+  [class.itemTreeRow__main--item]="kind === 'item'"
+>
+  <app-icon [name]="icon" class="itemTreeRow__icon"></app-icon>
+  <input
+    #renameInput
+    type="text"
+    class="itemTreeRow__renameInput textInput"
+    [ngModel]="renameDraft"
+    (ngModelChange)="renameDraftChange.emit($event)"
+    [maxlength]="TITLE_MAX_LENGTH"
+    (click)="$event.stopPropagation()"
+    (keydown.enter)="renameCommit.emit()"
+    (keydown.escape)="renameCancel.emit(); $event.preventDefault()"
+    (blur)="renameCommit.emit()"
+  />
+</div>
+
+<ng-content></ng-content>

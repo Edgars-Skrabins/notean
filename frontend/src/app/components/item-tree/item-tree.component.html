@@ -1,6 +1,6 @@
 <ng-template #levelTemplate let-folders let-items="items" let-depth="depth" let-level="level">
   <ng-container *ngFor="let folder of folders">
-    <div
+    <app-item-tree-row
       cdkDrag
       [cdkDragData]="toFolderDrag(folder)"
       (cdkDragStarted)="handleDragStarted(toFolderDrag(folder))"
@@ -12,44 +12,17 @@
       [class.itemTree__row--hoverTarget]="isHovered(toFolderDrop(folder))"
       [style.paddingLeft.px]="depth * 20"
       (click)="handleFolderRowClick($event, folder)"
+      kind="folder"
+      icon="folder"
+      [title]="folder.title"
+      [expandable]="canExpand(folder)"
+      [expanded]="isExpanded(folder.id)"
+      [renaming]="renamingFolderId === folder.id"
+      [(renameDraft)]="renameDraftTitle"
+      (activate)="toggleExpand(folder)"
+      (renameCommit)="commitRenameFolder(folder)"
+      (renameCancel)="cancelRenameFolder()"
     >
-      <div class="itemTree__chevronSlot">
-        <app-icon-button
-          *ngIf="canExpand(folder)"
-          icon="chevron-right"
-          [tooltip]="(isExpanded(folder.id) ? PHRASES.COLLAPSE_FOLDER : PHRASES.EXPAND_FOLDER) | translate"
-          [size]="28"
-          class="itemTree__chevron"
-          [class.itemTree__chevron--expanded]="isExpanded(folder.id)"
-          (pressed)="toggleExpand(folder)"
-        ></app-icon-button>
-      </div>
-
-      <button
-        *ngIf="renamingFolderId !== folder.id"
-        type="button"
-        class="itemTree__rowMain"
-        (click)="toggleExpand(folder)"
-      >
-        <app-icon name="folder" class="itemTree__rowIcon"></app-icon>
-        <span class="itemTree__rowTitle">{{ folder.title }}</span>
-      </button>
-
-      <div *ngIf="renamingFolderId === folder.id" class="itemTree__rowMain itemTree__rowMain--renaming">
-        <app-icon name="folder" class="itemTree__rowIcon"></app-icon>
-        <input
-          type="text"
-          class="itemTree__renameInput"
-          [(ngModel)]="renameDraftTitle"
-          [maxlength]="TITLE_MAX_LENGTH"
-          (click)="$event.stopPropagation()"
-          (keydown.enter)="commitRenameFolder(folder)"
-          (keydown.escape)="cancelRenameFolder(); $event.preventDefault()"
-          (blur)="commitRenameFolder(folder)"
-          autofocus
-        />
-      </div>
-
       <div class="itemTree__rowActions">
         <app-icon-button
           icon="folder-plus"
@@ -84,7 +57,7 @@
           (pressed)="requestDeleteFolder(folder)"
         ></app-icon-button>
       </div>
-    </div>
+    </app-item-tree-row>
 
     <ng-container *ngIf="isExpanded(folder.id)">
       <ng-container
@@ -94,7 +67,7 @@
   </ng-container>
 
   <ng-container *ngFor="let item of items">
-    <div
+    <app-item-tree-row
       cdkDrag
       [cdkDragData]="toItemDrag(item)"
       (cdkDragStarted)="handleDragStarted(toItemDrag(item))"
@@ -103,32 +76,16 @@
       class="itemTree__row itemTree__row--item"
       [style.paddingLeft.px]="depth * 20"
       (click)="handleItemRowClick($event, item)"
+      kind="item"
+      [icon]="itemIcon"
+      [title]="item.title"
+      [renaming]="renamingItemId === item.id"
+      [(renameDraft)]="renameItemDraftTitle"
+      (activate)="openItem.emit(item)"
+      (renameCommit)="commitRenameItem(item)"
+      (renameCancel)="cancelRenameItem()"
     >
-      <button
-        *ngIf="renamingItemId !== item.id"
-        type="button"
-        class="itemTree__rowMain"
-        (click)="openItem.emit(item)"
-      >
-        <app-icon [name]="itemIcon" class="itemTree__rowIcon"></app-icon>
-        <span class="itemTree__rowTitle">{{ item.title }}</span>
-        <span class="itemTree__rowMeta">{{ item.meta.creator.nickname }} &middot; {{ item.meta.updatedAt | date }}</span>
-      </button>
-
-      <div *ngIf="renamingItemId === item.id" class="itemTree__rowMain itemTree__rowMain--renaming">
-        <app-icon [name]="itemIcon" class="itemTree__rowIcon"></app-icon>
-        <input
-          #itemRenameInput
-          type="text"
-          class="itemTree__renameInput"
-          [(ngModel)]="renameItemDraftTitle"
-          [maxlength]="TITLE_MAX_LENGTH"
-          (click)="$event.stopPropagation()"
-          (keydown.enter)="commitRenameItem(item)"
-          (keydown.escape)="cancelRenameItem(); $event.preventDefault()"
-          (blur)="commitRenameItem(item)"
-        />
-      </div>
+      <span rowMeta class="itemTree__rowMeta">{{ item.meta.creator.nickname }} &middot; {{ item.meta.updatedAt | date }}</span>
 
       <div class="itemTree__rowActions">
         <app-icon-button
@@ -146,7 +103,7 @@
           (pressed)="requestDeleteItem(item)"
         ></app-icon-button>
       </div>
-    </div>
+    </app-item-tree-row>
   </ng-container>
 
   <app-load-more
