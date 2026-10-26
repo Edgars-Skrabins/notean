@@ -81,4 +81,53 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid?
     assert_includes @user.errors[:avatar_image], "must be 2 MB or smaller"
   end
+
+  test "active excludes deleted users" do
+    deleted = User.create!(email: "bob@example.com", password: "supersecret", deleted_at: Time.current)
+
+    assert_includes User.active, @user
+    assert_not_includes User.active, deleted
+    assert deleted.deleted?
+    assert_not @user.deleted?
+  end
+
+  test "anonymise! scrubs the email, password, avatar and sets deleted_at" do
+    attach_avatar(@user)
+    @user.update!(avatar_color: "purple")
+
+    @user.anonymise!
+    @user.reload
+
+    assert_equal "deleted-#{@user.id}@deleted.invalid", @user.email
+    assert_not @user.authenticate("supersecret")
+    assert_not @user.avatar_image.attached?
+    assert_nil @user.avatar_color
+    assert @user.deleted?
+  end
+
+  test "anonymise! soft-removes every membership and hands owned projects to each team's owner" do
+    team = Team.create!(name: "Engineering", password: "supersecret")
+    owner = create_member(team, "Owner")
+    owner.memberships.first.update!(role: "owner")
+    Membership.create!(user: @user, team: team, nickname: "Alice")
+    other_team = Team.create!(name: "Design", password: "supersecret")
+    other_owner = create_member(other_team, "Boss")
+    other_owner.memberships.first.update!(role: "owner")
+    Membership.create!(user: @user, team: other_team, nickname: "Alice")
+    project = Project.create!(team: team, name: "Apollo", owner: @user, creator: @user)
+    other_project = Project.create!(team: other_team, name: "Gemini", owner: @user, creator: @user)
+
+    @user.anonymise!
+
+    assert @user.all_memberships.reload.all?(&:removed?)
+    assert_equal 2, @user.all_memberships.count
+    assert_equal owner, project.reload.owner
+    assert_equal other_owner, other_project.reload.owner
+  end
+
+  test "the original email can register again after anonymise!" do
+    @user.anonymise!
+
+    assert User.create!(email: "alice@example.com", password: "supersecret").persisted?
+  end
 end
