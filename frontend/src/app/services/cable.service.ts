@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import {createConsumer, Consumer, Subscription} from '@rails/actioncable';
-import {baseUrl} from "@config/axiosConfig";
-import {AuthService} from "@services/auth.service";
+import {axiosInstance, baseUrl} from "@config/axiosConfig";
+import {apiRequest} from "@utils/apiRequest";
+import {Result} from "@models/result.model";
 
 export type CableCallbacks = {
   connected?: () => void;
@@ -9,33 +10,93 @@ export type CableCallbacks = {
   received?: (data: any) => void;
 };
 
+export type CableSubscription = Pick<Subscription, 'perform' | 'unsubscribe'>;
+
+export const CABLE_TICKET_REFRESH_MS = 45_000;
+
 @Injectable({
   providedIn: 'root',
 })
 export class CableService {
-  private consumer: Consumer | null = null;
+  private ticketUrl = '/auth/cable_ticket';
+  private consumer: Promise<Consumer | null> | null = null;
+  private ticket: string | null = null;
+  private refreshTimer: ReturnType<typeof setInterval> | null = null;
+  private generation = 0;
 
-  constructor(private authService: AuthService) {
-  }
+  subscribe(params: Record<string, unknown>, callbacks: CableCallbacks): CableSubscription {
+    let subscription: Subscription | null = null;
+    let cancelled = false;
 
-  subscribe(params: Record<string, unknown>, callbacks: CableCallbacks): Subscription {
-    return this.getConsumer().subscriptions.create(params, callbacks);
+    this.getConsumer().then((consumer) => {
+      if (consumer && !cancelled) {
+        subscription = consumer.subscriptions.create(params, callbacks);
+      }
+    });
+
+    return {
+      perform: (action, data) => subscription?.perform(action, data),
+      unsubscribe: () => {
+        cancelled = true;
+        subscription?.unsubscribe();
+      },
+    };
   }
 
   disconnect() {
-    this.consumer?.disconnect();
+    this.generation++;
+    this.stopRefreshing();
+    this.consumer?.then((consumer) => consumer?.disconnect());
     this.consumer = null;
+    this.ticket = null;
   }
 
-  createConsumer(url: string): Consumer {
+  createConsumer(url: () => string): Consumer {
     return createConsumer(url);
   }
 
-  private getConsumer(): Consumer {
+  private getConsumer(): Promise<Consumer | null> {
     if (!this.consumer) {
-      const token = this.authService.getToken();
-      this.consumer = this.createConsumer(baseUrl.replace(/^http/, 'ws') + `/cable?token=${token}`);
+      this.consumer = this.openConsumer();
     }
     return this.consumer;
+  }
+
+  private async openConsumer(): Promise<Consumer | null> {
+    const generation = this.generation;
+    const ticket = await this.fetchTicket();
+    if (generation !== this.generation) {
+      return null;
+    }
+    if (!ticket) {
+      this.consumer = null;
+      return null;
+    }
+
+    this.ticket = ticket;
+    this.refreshTimer = setInterval(() => this.refreshTicket(generation), CABLE_TICKET_REFRESH_MS);
+    return this.createConsumer(() => baseUrl.replace(/^http/, 'ws') + `/cable?ticket=${this.ticket}`);
+  }
+
+  private async refreshTicket(generation: number) {
+    const ticket = await this.fetchTicket();
+    if (ticket && generation === this.generation) {
+      this.ticket = ticket;
+    }
+  }
+
+  private async fetchTicket(): Promise<string | null> {
+    const result = await apiRequest<Result<{ ticket: string }>>(
+      axiosInstance.post(this.ticketUrl),
+      (data) => ({success: true, ticket: data.ticket}),
+    );
+    return result.success ? result.ticket : null;
+  }
+
+  private stopRefreshing() {
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer);
+      this.refreshTimer = null;
+    }
   }
 }

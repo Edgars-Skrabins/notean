@@ -1,12 +1,11 @@
-import {Subscription} from '@rails/actioncable';
-import {CableService} from "@services/cable.service";
+import {CableService, CableSubscription} from "@services/cable.service";
 import {FolderedItemEditingUser} from "@models/foldered-item.model";
 
 export abstract class EditingService {
   protected abstract readonly channel: string;
   protected abstract readonly idParam: string;
 
-  private subscription: Subscription | null = null;
+  private subscription: CableSubscription | null = null;
 
   protected constructor(private cableService: CableService) {
   }

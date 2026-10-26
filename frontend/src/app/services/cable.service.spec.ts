@@ -1,49 +1,138 @@
 import {Consumer, Subscription} from '@rails/actioncable';
-import {CableService} from "./cable.service";
-import {AuthService} from "@services/auth.service";
-import {baseUrl} from "@config/axiosConfig";
+import {CABLE_TICKET_REFRESH_MS, CableService} from "./cable.service";
+import {axiosInstance, baseUrl} from "@config/axiosConfig";
 
 describe('CableService', () => {
-  let authService: jasmine.SpyObj<AuthService>;
+  let tickets: string[];
+  let post: jasmine.Spy;
   let consumers: jasmine.SpyObj<Consumer>[];
+  let urls: (() => string)[];
   let service: CableService;
+
+  const cableUrl = (ticket: string) => baseUrl.replace(/^http/, 'ws') + `/cable?ticket=${ticket}`;
 
   function fakeConsumer(): jasmine.SpyObj<Consumer> {
     const consumer = jasmine.createSpyObj<Consumer>('Consumer', ['disconnect']);
     consumer.subscriptions = jasmine.createSpyObj('Subscriptions', ['create']);
-    (consumer.subscriptions.create as jasmine.Spy).and.returnValue({} as Subscription);
+    (consumer.subscriptions.create as jasmine.Spy).and.callFake(() =>
+      jasmine.createSpyObj<Subscription>('Subscription', ['perform', 'unsubscribe']));
     return consumer;
   }
 
+  async function flush() {
+    for (let i = 0; i < 10; i++) {
+      await Promise.resolve();
+    }
+  }
+
   beforeEach(() => {
-    authService = jasmine.createSpyObj<AuthService>('AuthService', ['getToken']);
-    authService.getToken.and.returnValue('jwt');
+    jasmine.clock().install();
+    tickets = ['first', 'second', 'third'];
+    post = spyOn(axiosInstance, 'post').and.callFake(() => Promise.resolve({data: {ticket: tickets.shift()}}) as any);
     consumers = [];
-    service = new CableService(authService);
-    spyOn(service, 'createConsumer').and.callFake(() => {
+    urls = [];
+    service = new CableService();
+    spyOn(service, 'createConsumer').and.callFake((url: () => string) => {
       const consumer = fakeConsumer();
       consumers.push(consumer);
+      urls.push(url);
       return consumer;
     });
   });
 
-  it('shares one consumer across subscriptions', () => {
+  afterEach(() => {
+    service.disconnect();
+    jasmine.clock().uninstall();
+  });
+
+  it('opens one consumer with a cable ticket in the URL and shares it across subscriptions', async () => {
     service.subscribe({channel: 'TeamChannel', team_code: 'abc'}, {});
     service.subscribe({channel: 'BoardChannel', board_id: 1}, {});
+    await flush();
 
-    expect(service.createConsumer).toHaveBeenCalledOnceWith(baseUrl.replace(/^http/, 'ws') + '/cable?token=jwt');
+    expect(post).toHaveBeenCalledOnceWith('/auth/cable_ticket');
+    expect(consumers.length).toBe(1);
+    expect(urls[0]()).toBe(cableUrl('first'));
+    expect(urls[0]()).not.toContain('token=');
     expect(consumers[0].subscriptions.create).toHaveBeenCalledTimes(2);
   });
 
-  it('disconnect closes the consumer and the next subscribe opens a new one with the current token', () => {
+  it('passes perform and unsubscribe through to the subscription', async () => {
+    const handle = service.subscribe({channel: 'PageEditingChannel', page_id: 7}, {});
+    await flush();
+    const subscription = (consumers[0].subscriptions.create as jasmine.Spy).calls.mostRecent().returnValue;
+
+    handle.perform('start_editing');
+    handle.unsubscribe();
+
+    expect(subscription.perform).toHaveBeenCalledWith('start_editing', undefined);
+    expect(subscription.unsubscribe).toHaveBeenCalled();
+  });
+
+  it('refreshes the ticket every 45 seconds so reconnects use a fresh one', async () => {
     service.subscribe({channel: 'TeamChannel', team_code: 'abc'}, {});
+    await flush();
+
+    jasmine.clock().tick(CABLE_TICKET_REFRESH_MS - 1);
+    await flush();
+    expect(post).toHaveBeenCalledTimes(1);
+
+    jasmine.clock().tick(1);
+    await flush();
+    expect(post).toHaveBeenCalledTimes(2);
+    expect(urls[0]()).toBe(cableUrl('second'));
+  });
+
+  it('stops refreshing on disconnect', async () => {
+    service.subscribe({channel: 'TeamChannel', team_code: 'abc'}, {});
+    await flush();
+
     service.disconnect();
-    authService.getToken.and.returnValue('next');
-    service.subscribe({channel: 'TeamChannel', team_code: 'abc'}, {});
+    await flush();
+    jasmine.clock().tick(CABLE_TICKET_REFRESH_MS * 3);
+    await flush();
 
     expect(consumers[0].disconnect).toHaveBeenCalled();
+    expect(post).toHaveBeenCalledTimes(1);
+  });
+
+  it('unsubscribing before the ticket arrives never creates the subscription', async () => {
+    const handle = service.subscribe({channel: 'TeamChannel', team_code: 'abc'}, {});
+    handle.unsubscribe();
+    await flush();
+
+    expect(consumers[0].subscriptions.create).not.toHaveBeenCalled();
+  });
+
+  it('disconnecting before the ticket arrives opens no consumer', async () => {
+    service.subscribe({channel: 'TeamChannel', team_code: 'abc'}, {});
+    service.disconnect();
+    await flush();
+
+    expect(service.createConsumer).not.toHaveBeenCalled();
+  });
+
+  it('the next subscribe after disconnect fetches a new ticket and opens a new consumer', async () => {
+    service.subscribe({channel: 'TeamChannel', team_code: 'abc'}, {});
+    await flush();
+    service.disconnect();
+    service.subscribe({channel: 'TeamChannel', team_code: 'abc'}, {});
+    await flush();
+
     expect(consumers.length).toBe(2);
-    expect(service.createConsumer).toHaveBeenCalledWith(baseUrl.replace(/^http/, 'ws') + '/cable?token=next');
+    expect(urls[1]()).toBe(cableUrl('second'));
+  });
+
+  it('retries the ticket on the next subscribe when it could not be fetched', async () => {
+    post.and.returnValues(Promise.reject(new Error('network')), Promise.resolve({data: {ticket: 'retry'}}));
+
+    service.subscribe({channel: 'TeamChannel', team_code: 'abc'}, {});
+    await flush();
+    expect(service.createConsumer).not.toHaveBeenCalled();
+
+    service.subscribe({channel: 'TeamChannel', team_code: 'abc'}, {});
+    await flush();
+    expect(urls[0]()).toBe(cableUrl('retry'));
   });
 
   it('disconnect without a consumer does nothing', () => {
