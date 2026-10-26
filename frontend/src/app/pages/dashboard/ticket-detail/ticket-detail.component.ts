@@ -143,6 +143,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
       priorityId: summary.priorityId,
       assignees: summary.assignees,
       updatedAt: summary.updatedAt,
+      lockVersion: keepTitleDraft || keepDescriptionDraft ? ticket.lockVersion : summary.lockVersion,
       description,
     };
     if (!keepTitleDraft) {

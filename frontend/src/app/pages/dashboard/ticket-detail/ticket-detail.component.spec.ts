@@ -404,6 +404,24 @@ describe('TicketDetailComponent editing', () => {
     expect(component.ticket?.title).toBe('Renamed elsewhere');
   });
 
+  it('takes the remote version when no draft is kept, so the next save does not conflict', () => {
+    state.findTicket(1)!.lockVersion = 3;
+
+    component.applyRemoteChange(new Map());
+
+    expect(component.ticket?.lockVersion).toBe(3);
+  });
+
+  it('keeps its version while a draft is kept, so saving it goes through the conflict check', () => {
+    component.handleDescriptionFocus();
+    component.descriptionDraft = 'My notes';
+    state.findTicket(1)!.lockVersion = 3;
+
+    component.applyRemoteChange(new Map([[1, 'New details']]));
+
+    expect(component.ticket?.lockVersion).toBe(0);
+  });
+
   it('keeps a description draft being edited', () => {
     component.handleDescriptionFocus();
     component.descriptionDraft = 'My notes';
