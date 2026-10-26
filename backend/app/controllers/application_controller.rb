@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
   DEFAULT_TITLE = "Untitled"
+  PAGE_SIZE = 50
 
   private
   def team_params
@@ -130,6 +131,11 @@ class ApplicationController < ActionController::API
     insert_at
   end
 
+  def paginate(relation)
+    records = relation.offset([ params[:offset].to_i, 0 ].max).limit(PAGE_SIZE + 1).to_a
+    [ records.first(PAGE_SIZE), records.length > PAGE_SIZE ]
+  end
+
   def project_access
     @project_access ||= ProjectAccess.new(current_user, @team)
   end
@@ -156,6 +162,19 @@ class ApplicationController < ActionController::API
 
   def visible_folder(folder_id)
     project_access.scope(@team.folders).find_by(id: folder_id)
+  end
+
+  def in_listed_folder(relation)
+    return relation if params[:search].present? || params[:folder_id].blank?
+    return relation.where(folder_id: nil) if params[:folder_id] == "root"
+
+    folder = visible_folder(params[:folder_id])
+    if folder.nil?
+      render_error(ErrorCodes::Folders::FOLDER_NOT_FOUND, :not_found)
+      return nil
+    end
+
+    relation.where(folder: folder)
   end
 
   def place_in_folder(record, record_params, folder_key)

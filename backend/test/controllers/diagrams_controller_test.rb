@@ -200,4 +200,73 @@ class DiagramsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_equal({ "code" => "CONTENT_TOO_LARGE" }, JSON.parse(response.body))
   end
+
+  def list_diagrams(params = {})
+    get "/teams/#{@team.code}/diagrams", params: params, headers: @headers
+    JSON.parse(response.body)
+  end
+
+  def listed_titles(params = {})
+    list_diagrams(params)["diagrams"].map { |diagram| diagram["title"] }
+  end
+
+  test "index lists root diagrams without the foldered ones, sorted by title" do
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Diagram", title: "Specs")
+    Diagram.create!(team: @team, creator: @user, title: "alpha", content: "")
+    Diagram.create!(team: @team, creator: @user, title: "Inside", content: "", folder: folder)
+
+    assert_equal [ "alpha", "Flow" ], listed_titles(folder_id: "root")
+  end
+
+  test "index lists only the diagrams of the requested folder" do
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Diagram", title: "Specs")
+    other = Folder.create!(team: @team, creator: @user, item_type: "Diagram", title: "Other")
+    Diagram.create!(team: @team, creator: @user, title: "Inside", content: "", folder: folder)
+    Diagram.create!(team: @team, creator: @user, title: "Elsewhere", content: "", folder: other)
+
+    assert_equal [ "Inside" ], listed_titles(folder_id: folder.id)
+  end
+
+  test "index returns FOLDER_NOT_FOUND for a folder the user can't see" do
+    secret = Project.create!(team: @team, name: "Secret", owner: @user, creator: @user)
+    bob = create_member(@team, "Bob")
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Diagram", title: "Hidden", project: secret)
+
+    get "/teams/#{@team.code}/diagrams", params: { folder_id: folder.id }, headers: { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: bob.id)}" }
+
+    assert_response :not_found
+    assert_equal({ "code" => "FOLDER_NOT_FOUND" }, JSON.parse(response.body))
+  end
+
+  test "index search crosses folders and ignores folder_id" do
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Diagram", title: "Specs")
+    Diagram.create!(team: @team, creator: @user, title: "Roadmap draft", content: "", folder: folder)
+    Diagram.create!(team: @team, creator: @user, title: "roadmap", content: "")
+
+    assert_equal [ "roadmap", "Roadmap draft" ], listed_titles(search: "ROAD", folder_id: "root")
+  end
+
+  test "index pages by 50 and flips has_more at the end" do
+    @diagram.destroy
+    55.times { |index| Diagram.create!(team: @team, creator: @user, title: format("Item %02d", index), content: "") }
+
+    first = list_diagrams(folder_id: "root")
+    assert_equal 50, first["diagrams"].length
+    assert first["has_more"]
+
+    rest = list_diagrams(folder_id: "root", offset: 50)
+    assert_equal (50..54).map { |index| format("Item %02d", index) }, rest["diagrams"].map { |diagram| diagram["title"] }
+    assert_not rest["has_more"]
+  end
+
+  test "index applies the project filter and hides other people's projects" do
+    project = Project.create!(team: @team, name: "Apollo", owner: @user, creator: @user)
+    Diagram.create!(team: @team, creator: @user, title: "In project", content: "", project: project)
+    bob = create_member(@team, "Bob")
+
+    assert_equal [ "In project" ], listed_titles(project_id: project.id, folder_id: "root")
+
+    get "/teams/#{@team.code}/diagrams", params: { folder_id: "root" }, headers: { "Authorization" => "Bearer #{JsonWebToken.encode(user_id: bob.id)}" }
+    assert_equal [ "Flow" ], JSON.parse(response.body)["diagrams"].map { |diagram| diagram["title"] }
+  end
 end

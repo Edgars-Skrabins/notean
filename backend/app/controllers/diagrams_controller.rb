@@ -8,10 +8,14 @@ class DiagramsController < ApplicationController
   before_action :set_diagram, only: [ :show, :update, :destroy ]
 
   def index
-    diagrams = project_filtered(@team.diagrams.includes(creator: User::AVATAR_PRELOAD).search_title(params[:search]))
+    diagrams = project_filtered(@team.diagrams.includes(creator: User::AVATAR_PRELOAD))
     return if diagrams.nil?
 
-    render json: { diagrams: diagrams.map { |diagram| diagram_summary_json(diagram) } }
+    diagrams = in_listed_folder(diagrams)
+    return if diagrams.nil?
+
+    diagrams, has_more = paginate(diagrams.search_title(params[:search]).order(Arel.sql("LOWER(title)"), :id))
+    render json: { diagrams: diagrams.map { |diagram| diagram_summary_json(diagram) }, has_more: has_more }
   end
 
   def create
