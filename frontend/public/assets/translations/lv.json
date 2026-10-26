@@ -8,6 +8,8 @@
   "PASSWORD": "Parole",
   "ENTER_EMAIL": "Ievadiet e-pastu",
   "ENTER_PASSWORD": "parole",
+  "PASSWORD_HINT": "Vismaz 8 rakstzīmes",
+  "PASSWORD_TOO_SHORT": "Parolei jābūt vismaz 8 rakstzīmes garai",
   "LOGIN": "Pieslēgties",
   "REGISTER": "Reģistrēties",
   "TEAM_SELECTION_PROMPT": "Ko vēlaties darīt?",
@@ -285,7 +287,8 @@
     "AUTH": {
       "INVALID_CREDENTIALS": "Nepareizs e-pasts vai parole",
       "EMAIL_TAKEN": "Konts ar šo e-pastu jau eksistē",
-      "REGISTRATION_FAILED": "Neizdevās izveidot kontu. Pārbaudiet e-pastu un paroli"
+      "REGISTRATION_FAILED": "Neizdevās izveidot kontu. Pārbaudiet e-pastu un paroli",
+      "PASSWORD_TOO_SHORT": "Parolei jābūt vismaz 8 rakstzīmes garai"
     },
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Neizdevās saglabāt iestatījumus",

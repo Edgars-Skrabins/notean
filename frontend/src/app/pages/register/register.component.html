@@ -26,7 +26,9 @@
       id="passwordInput"
       (keydown.enter)="handleRegister()"
       type="password"
+      aria-describedby="passwordHint"
     />
+    <span class="authField__hint" id="passwordHint">{{ PHRASES.PASSWORD_HINT | translate }}</span>
   </div>
 
   <button class="authButton" [disabled]="isSubmitting" (click)="handleRegister()">{{ PHRASES.REGISTER | translate }}</button>

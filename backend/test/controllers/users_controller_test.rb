@@ -7,6 +7,15 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     @headers = { "Authorization" => "Bearer #{token}" }
   end
 
+  test "register rejects a password shorter than 8 characters with 422" do
+    assert_no_difference "User.count" do
+      post "/auth/register", params: { user: { email: "bob@example.com", password: "a" * 7 } }, as: :json
+    end
+
+    assert_response :unprocessable_entity
+    assert_equal "PASSWORD_TOO_SHORT", JSON.parse(response.body)["code"]
+  end
+
   test "me returns the user, default settings, avatar and no team" do
     get "/users/me", headers: @headers
 

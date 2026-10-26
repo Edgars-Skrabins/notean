@@ -8,6 +8,8 @@
   "PASSWORD": "Adgangskode",
   "ENTER_EMAIL": "Indtast e-mail",
   "ENTER_PASSWORD": "adgangskode",
+  "PASSWORD_HINT": "Mindst 8 tegn",
+  "PASSWORD_TOO_SHORT": "Adgangskoden skal være mindst 8 tegn",
   "LOGIN": "Log ind",
   "REGISTER": "Tilmeld dig",
   "TEAM_SELECTION_PROMPT": "Hvad vil du gerne gøre?",
@@ -285,7 +287,8 @@
     "AUTH": {
       "INVALID_CREDENTIALS": "Ugyldig e-mail eller adgangskode",
       "EMAIL_TAKEN": "Der findes allerede en konto med denne e-mail",
-      "REGISTRATION_FAILED": "Kontoen kunne ikke oprettes. Tjek din e-mail og adgangskode"
+      "REGISTRATION_FAILED": "Kontoen kunne ikke oprettes. Tjek din e-mail og adgangskode",
+      "PASSWORD_TOO_SHORT": "Adgangskoden skal være mindst 8 tegn"
     },
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Indstillingerne kunne ikke gemmes",
