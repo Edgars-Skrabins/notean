@@ -47,8 +47,8 @@ class SearchController < ApplicationController
   def search_scope(type)
     case type
     when "project" then visible_projects
-    when "page" then project_filtered(@team.pages).includes(:project)
-    when "diagram" then project_filtered(@team.diagrams).includes(:project)
+    when "page" then project_filtered(@team.pages).without_content.select(:search_text).includes(:project)
+    when "diagram" then project_filtered(@team.diagrams).without_content.select(:search_text).includes(:project)
     when "board" then @boards.includes(:project)
     when "ticket" then Ticket.where(team: @team, board: @boards).includes(board: :project)
     end

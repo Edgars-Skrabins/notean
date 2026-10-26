@@ -8,7 +8,7 @@ class DiagramsController < ApplicationController
   before_action :set_diagram, only: [ :show, :update, :destroy ]
 
   def index
-    diagrams = project_filtered(@team.diagrams.includes(creator: User::AVATAR_PRELOAD))
+    diagrams = project_filtered(@team.diagrams.without_content.includes(creator: User::AVATAR_PRELOAD))
     return if diagrams.nil?
 
     diagrams = in_listed_folder(diagrams)

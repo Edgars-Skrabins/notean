@@ -8,7 +8,7 @@ class PagesController < ApplicationController
   before_action :set_page, only: [ :show, :update, :destroy ]
 
   def index
-    pages = project_filtered(@team.pages.includes(creator: User::AVATAR_PRELOAD))
+    pages = project_filtered(@team.pages.without_content.includes(creator: User::AVATAR_PRELOAD))
     return if pages.nil?
 
     pages = in_listed_folder(pages)

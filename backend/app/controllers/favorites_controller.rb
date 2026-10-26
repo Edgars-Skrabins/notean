@@ -11,7 +11,8 @@ class FavoritesController < ApplicationController
     project_id = params[:project_id]
     return render_error(ErrorCodes::Projects::PROJECT_NOT_FOUND, :not_found) if project_id.present? && !project_access.project_visible?(project_id)
 
-    favorites = user_favorites.where(favoritable_type: enabled_favoritable_types).includes(:favoritable).order(:home_position).to_a
+    favorites = user_favorites.where(favoritable_type: enabled_favoritable_types).order(:home_position).to_a
+    preload_favoritables(favorites)
     tickets = favorites.map(&:favoritable).grep(Ticket)
     ActiveRecord::Associations::Preloader.new(records: tickets, associations: :board).call
     favorites = favorites.select { |favorite| project_access.in_selection?(favorite.favoritable, project_id) }
@@ -84,6 +85,14 @@ class FavoritesController < ApplicationController
 
   def user_favorites
     current_user.favorites.where(team: @team)
+  end
+
+  def preload_favoritables(favorites)
+    favorites.group_by(&:favoritable_type).each do |type, group|
+      klass = type.constantize
+      scope = klass.without_content if klass.respond_to?(:without_content)
+      ActiveRecord::Associations::Preloader.new(records: group, associations: :favoritable, scope: scope).call
+    end
   end
 
   def enabled_favoritable_types
