@@ -22,6 +22,16 @@ module ActiveSupport
       count
     end
 
+    def ticket_description_selects(&block)
+      queries = []
+      collector = lambda do |*, payload|
+        select_list = payload[:sql][/\ASELECT ([^()]*?) FROM "tickets"/, 1]
+        queries << payload[:sql] if select_list&.match?(/"tickets"\.\*|"description"/)
+      end
+      ActiveSupport::Notifications.subscribed(collector, "sql.active_record", &block)
+      queries
+    end
+
     def create_member(team, nickname, with_avatar: false)
       user = User.create!(email: "#{nickname.downcase}@example.com", password: "supersecret")
       Membership.create!(user: user, team: team, nickname: nickname)

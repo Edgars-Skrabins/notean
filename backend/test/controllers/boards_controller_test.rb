@@ -169,6 +169,20 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal overview_one, overview_ten
   end
 
+  test "show and update load tickets without their descriptions" do
+    board, todo, = board_with_columns
+    ticket_on(board, todo, "First", 0).update!(description: "<p>Steps</p>")
+    ticket_on(board, nil, "Idea", 1).update!(description: "<p>Later</p>")
+
+    assert_empty ticket_description_selects { get "/teams/#{@team.code}/boards/#{board.id}", headers: @headers }
+    body = JSON.parse(response.body)["board"]
+    assert_equal [ "First" ], body["columns"].first["tickets"].map { |ticket| ticket["title"] }
+    assert_equal [ "Idea" ], body["backlog"].map { |ticket| ticket["title"] }
+
+    assert_empty ticket_description_selects { patch "/teams/#{@team.code}/boards/#{board.id}", params: { board: { title: "Sprint 13" } }, headers: @headers, as: :json }
+    assert_response :success
+  end
+
   test "show includes the assignees of each ticket" do
     board, todo, = board_with_columns
     bob = create_member(@team, "Bob")
