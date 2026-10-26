@@ -14,6 +14,8 @@ class Ticket < ApplicationRecord
   has_many :ticket_assignees, -> { order(:created_at, :id) }, dependent: :destroy
   has_many :assignees, through: :ticket_assignees, source: :user
 
+  scope :without_description, -> { select(column_names - %w[description]) }
+
   before_validation { self.board ||= column&.board }
 
   validates :title, presence: true, length: { maximum: TITLE_MAX_LENGTH }

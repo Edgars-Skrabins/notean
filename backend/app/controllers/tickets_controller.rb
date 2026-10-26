@@ -17,7 +17,7 @@ class TicketsController < ApplicationController
     return if tickets.nil?
 
     tickets = tickets.text_search(params[:search]) if params[:search].present?
-    tickets, has_more = paginate(assignee_filtered(tickets).includes(TicketJson::ASSIGNEES_PRELOAD).order(:position, :id))
+    tickets, has_more = paginate(assignee_filtered(tickets).without_description.includes(TicketJson::ASSIGNEES_PRELOAD).order(:position, :id))
 
     render json: { tickets: tickets.map { |ticket| ticket_summary_json(ticket) }, has_more: has_more }
   end
@@ -238,7 +238,7 @@ class TicketsController < ApplicationController
   end
 
   def bulk_tickets_json
-    tickets = @board.tickets.includes(TicketJson::ASSIGNEES_PRELOAD).where(id: bulk_ticket_ids).index_by(&:id)
+    tickets = @board.tickets.without_description.includes(TicketJson::ASSIGNEES_PRELOAD).where(id: bulk_ticket_ids).index_by(&:id)
     bulk_ticket_ids.map { |id| ticket_summary_json(tickets[id]) }
   end
 

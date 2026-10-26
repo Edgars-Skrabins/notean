@@ -120,4 +120,18 @@ class TicketTest < ActiveSupport::TestCase
     assert_not ticket.valid?
     assert_includes ticket.errors[:priority], "must belong to the same board"
   end
+
+  test "without_description loads every summary field but not the description" do
+    Ticket.create!(column: @column, team: @team, created_by_user_id: @user.id, title: "Fix bug", description: "<p>Steps</p>", position: 0)
+
+    ticket = Ticket.without_description.find_by!(title: "Fix bug")
+
+    assert_not ticket.has_attribute?(:description)
+    assert_raises(ActiveModel::MissingAttributeError) { ticket.description }
+    assert_equal [ "Fix bug", 0, @column.id, nil ], [ ticket.title, ticket.position, ticket.column_id, ticket.priority_id ]
+    assert_not_nil ticket.lock_version
+    assert_not_nil ticket.created_at
+    assert_not_nil ticket.updated_at
+    assert_empty ticket.ticket_assignees
+  end
 end

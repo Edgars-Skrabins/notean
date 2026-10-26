@@ -231,6 +231,7 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 - Title search uses the `TitleSearchable` concern's `search_title` scope (the pages and diagrams index search).
 - Global search uses the `TextSearchable` concern: models declare `text_searchable :title, ...` (title or name column first) and get the `text_search` and `title_match_first` scopes. Pages and diagrams keep a plain-text `search_text` column, refreshed from `content` on save by `SearchText` (page HTML without tags, diagram shape and connector labels).
 - List and detail endpoints preload what their JSON uses (e.g. `includes(creator: User::AVATAR_PRELOAD)`) so query counts don't grow with the number of items.
+- Lists skip the large columns their summary JSON never renders: `Page.without_content` and `Diagram.without_content` drop `content` and `search_text`, and `Ticket.without_description` drops `description` (board show and update, the tickets index, bulk responses and My Work). Reading a skipped column raises `ActiveModel::MissingAttributeError`. `ticket_description_selects { ... }` (from `test_helper.rb`) returns the SQL of a block that still reads ticket descriptions.
 
 #### Channels
 - `ApplicationCable::Connection` authenticates with a cable ticket passed as the `?ticket=` query param (`purpose: "cable"`, 1-minute expiry, active session). `?token=` is not accepted.

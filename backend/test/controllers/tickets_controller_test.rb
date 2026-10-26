@@ -410,6 +410,16 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     assert_equal one, ten
   end
 
+  test "bulk update reads descriptions only for the tickets it changes" do
+    bob = create_member(@team, "Bob")
+    tickets = 3.times.map { |index| ticket_in(nil, "Ticket #{index}", index) }
+
+    queries = ticket_description_selects { bulk_update(ticket_ids: tickets.map(&:id), add_assignee_id: bob.id) }
+
+    assert_response :success
+    assert_equal 1, queries.length
+  end
+
   test "update sets and clears a ticket's priority" do
     idea = ticket_in(nil, "Idea", 0)
     high = @board.priorities.find_by!(name: "High")
@@ -685,5 +695,12 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
 
     assert_equal 10, JSON.parse(response.body)["tickets"].length
     assert_equal one, ten
+  end
+
+  test "index loads tickets without their descriptions" do
+    ticket_in(nil, "Idea", 0).update!(description: "<p>Steps</p>")
+
+    assert_empty ticket_description_selects { get tickets_url, params: { status: "backlog" }, headers: @headers }
+    assert_equal [ "Idea" ], JSON.parse(response.body)["tickets"].map { |ticket| ticket["title"] }
   end
 end
