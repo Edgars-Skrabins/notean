@@ -10,6 +10,12 @@
   "ENTER_PASSWORD": "mot de passe",
   "PASSWORD_HINT": "Au moins 8 caractères",
   "PASSWORD_TOO_SHORT": "Le mot de passe doit contenir au moins 8 caractères",
+  "CURRENT_PASSWORD": "Mot de passe actuel",
+  "NEW_PASSWORD": "Nouveau mot de passe",
+  "CONFIRM_NEW_PASSWORD": "Confirmer le nouveau mot de passe",
+  "CHANGE_PASSWORD": "Changer le mot de passe",
+  "PASSWORDS_DO_NOT_MATCH": "Les mots de passe ne correspondent pas",
+  "PASSWORD_CHANGED": "Mot de passe modifié",
   "LOGIN": "Se connecter",
   "REGISTER": "S'inscrire",
   "TEAM_SELECTION_PROMPT": "Que souhaitez-vous faire ?",
@@ -315,7 +321,8 @@
       "INVALID_CREDENTIALS": "E-mail ou mot de passe invalide",
       "EMAIL_TAKEN": "Un compte avec cet e-mail existe déjà",
       "REGISTRATION_FAILED": "Impossible de créer le compte. Vérifiez votre e-mail et votre mot de passe",
-      "PASSWORD_TOO_SHORT": "Le mot de passe doit contenir au moins 8 caractères"
+      "PASSWORD_TOO_SHORT": "Le mot de passe doit contenir au moins 8 caractères",
+      "CURRENT_PASSWORD_INVALID": "Le mot de passe actuel est incorrect"
     },
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Impossible d'enregistrer les paramètres",

@@ -9,10 +9,12 @@ import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
 import {ToastService} from "@services/toast.service";
 import {AvatarService} from "@services/avatar.service";
+import {AuthService} from "@services/auth.service";
 import {ToastType} from "@models/toast.model";
 import {Avatar, AvatarUpdate} from "@models/avatar.model";
 import {HasUnsavedChanges} from "@models/unsaved-changes.model";
 import {nicknameErrorPhrase, validateNickname} from "@utils/nicknameValidation";
+import {isPasswordLongEnough} from "@utils/passwordValidation";
 import {errorPhrase} from "@utils/errorPhrase";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {AvatarComponent} from "@components/avatar/avatar.component";
@@ -49,6 +51,11 @@ export class ProfileComponent implements HasUnsavedChanges, OnInit, OnDestroy {
   pendingRemoveImage = false;
   isSaving = false;
   isLeaveConfirmOpen = false;
+  currentPassword = '';
+  newPassword = '';
+  confirmNewPassword = '';
+  isChangingPassword = false;
+  passwordError: string | null = null;
 
   private resolveLeave: ((canLeave: boolean) => void) | null = null;
   private avatarSubscription: Subscription;
@@ -60,7 +67,8 @@ export class ProfileComponent implements HasUnsavedChanges, OnInit, OnDestroy {
     private teamService: TeamService,
     private toastService: ToastService,
     private avatarService: AvatarService,
-    private escapeService: EscapeService
+    private escapeService: EscapeService,
+    private authService: AuthService
   ) {
     this.savedNickname = this.teamService.getCurrentNickname() ?? '';
     this.nickname = this.savedNickname;
@@ -82,6 +90,13 @@ export class ProfileComponent implements HasUnsavedChanges, OnInit, OnDestroy {
 
   get hasUnsavedChanges(): boolean {
     return this.nickname !== this.savedNickname || this.hasAvatarChanges;
+  }
+
+  get canChangePassword(): boolean {
+    return !this.isChangingPassword
+      && this.currentPassword !== ''
+      && this.newPassword !== ''
+      && this.confirmNewPassword !== '';
   }
 
   get previewAvatar(): Avatar | null {
@@ -184,6 +199,38 @@ export class ProfileComponent implements HasUnsavedChanges, OnInit, OnDestroy {
       this.toastService.show({type: ToastType.SUCCESS, message: PHRASES.PROFILE_UPDATED});
     } finally {
       this.isSaving = false;
+    }
+  }
+
+  async handleChangePassword() {
+    if (!this.canChangePassword) {
+      return;
+    }
+
+    if (this.newPassword !== this.confirmNewPassword) {
+      this.passwordError = PHRASES.PASSWORDS_DO_NOT_MATCH;
+      return;
+    }
+    if (!isPasswordLongEnough(this.newPassword)) {
+      this.passwordError = PHRASES.PASSWORD_TOO_SHORT;
+      return;
+    }
+
+    this.passwordError = null;
+    this.isChangingPassword = true;
+
+    try {
+      const response = await this.authService.changePassword(this.currentPassword, this.newPassword);
+      if (!response.success) {
+        this.passwordError = errorPhrase(response.code);
+        return;
+      }
+      this.currentPassword = '';
+      this.newPassword = '';
+      this.confirmNewPassword = '';
+      this.toastService.show({type: ToastType.SUCCESS, message: PHRASES.PASSWORD_CHANGED});
+    } finally {
+      this.isChangingPassword = false;
     }
   }
 
