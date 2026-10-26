@@ -178,4 +178,57 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_equal false, JSON.parse(response.body)["settings"]["show_my_work_on_home"]
     assert_equal false, @user.reload.show_my_work_on_home
   end
+
+  test "update_password changes the password so only the new one logs in" do
+    patch "/users/me/password",
+      params: { password: { current_password: "supersecret", new_password: "brandnewpass" } },
+      headers: @headers,
+      as: :json
+
+    assert_response :no_content
+
+    post "/auth/login", params: { user: { email: "alice@example.com", password: "brandnewpass" } }, as: :json
+    assert_response :success
+
+    post "/auth/login", params: { user: { email: "alice@example.com", password: "supersecret" } }, as: :json
+    assert_response :unauthorized
+  end
+
+  test "update_password rejects a wrong current password with 422 and keeps the old one" do
+    patch "/users/me/password",
+      params: { password: { current_password: "wrongpassword", new_password: "brandnewpass" } },
+      headers: @headers,
+      as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal "CURRENT_PASSWORD_INVALID", JSON.parse(response.body)["code"]
+    assert @user.reload.authenticate("supersecret")
+  end
+
+  test "update_password rejects a new password shorter than 8 characters with 422" do
+    patch "/users/me/password",
+      params: { password: { current_password: "supersecret", new_password: "a" * 7 } },
+      headers: @headers,
+      as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal "PASSWORD_TOO_SHORT", JSON.parse(response.body)["code"]
+    assert @user.reload.authenticate("supersecret")
+  end
+
+  test "update_password rejects a blank new password with 422" do
+    patch "/users/me/password",
+      params: { password: { current_password: "supersecret", new_password: "" } },
+      headers: @headers,
+      as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal "PASSWORD_TOO_SHORT", JSON.parse(response.body)["code"]
+  end
+
+  test "update_password returns 401 without a token" do
+    patch "/users/me/password", params: { password: { current_password: "supersecret", new_password: "brandnewpass" } }, as: :json
+
+    assert_response :unauthorized
+  end
 end
