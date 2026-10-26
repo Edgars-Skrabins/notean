@@ -45,6 +45,7 @@
   "NO_SEARCH_RESULTS": "Ничего не найдено.",
   "SEARCH_EVERYTHING": "Искать везде",
   "SEARCH_SHOW_MORE": "Показать ещё",
+  "LOAD_MORE": "Загрузить ещё",
   "SEARCH_IN_PROJECT": "Сейчас поиск в проекте '{{project}}'",
   "SEARCH_INCLUDE_ALL_PROJECTS": "Включить все проекты",
   "SEARCH_FAILED": "Не удалось выполнить поиск",

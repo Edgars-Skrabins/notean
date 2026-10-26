@@ -45,6 +45,7 @@
   "NO_SEARCH_RESULTS": "Tulemusi ei leitud.",
   "SEARCH_EVERYTHING": "Otsi kõikjalt",
   "SEARCH_SHOW_MORE": "Näita rohkem",
+  "LOAD_MORE": "Laadi rohkem",
   "SEARCH_IN_PROJECT": "Praegu otsitakse projektist '{{project}}'",
   "SEARCH_INCLUDE_ALL_PROJECTS": "Kaasa kõik projektid",
   "SEARCH_FAILED": "Otsing ebaõnnestus",

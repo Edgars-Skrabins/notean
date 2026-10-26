@@ -45,6 +45,7 @@
   "NO_SEARCH_RESULTS": "Inga resultat hittades.",
   "SEARCH_EVERYTHING": "Sök överallt",
   "SEARCH_SHOW_MORE": "Visa fler",
+  "LOAD_MORE": "Läs in fler",
   "SEARCH_IN_PROJECT": "Söker just nu i projektet '{{project}}'",
   "SEARCH_INCLUDE_ALL_PROJECTS": "Inkludera alla projekt",
   "SEARCH_FAILED": "Sökningen misslyckades",

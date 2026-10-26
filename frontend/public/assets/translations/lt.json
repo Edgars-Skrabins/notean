@@ -45,6 +45,7 @@
   "NO_SEARCH_RESULTS": "Rezultatų nerasta.",
   "SEARCH_EVERYTHING": "Ieškoti visur",
   "SEARCH_SHOW_MORE": "Rodyti daugiau",
+  "LOAD_MORE": "Įkelti daugiau",
   "SEARCH_IN_PROJECT": "Šiuo metu ieškoma projekte '{{project}}'",
   "SEARCH_INCLUDE_ALL_PROJECTS": "Įtraukti visus projektus",
   "SEARCH_FAILED": "Paieška nepavyko",

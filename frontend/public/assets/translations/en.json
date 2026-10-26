@@ -45,6 +45,7 @@
   "NO_SEARCH_RESULTS": "No results found.",
   "SEARCH_EVERYTHING": "Search everything",
   "SEARCH_SHOW_MORE": "Show more",
+  "LOAD_MORE": "Load more",
   "SEARCH_IN_PROJECT": "Currently searching in project '{{project}}'",
   "SEARCH_INCLUDE_ALL_PROJECTS": "Include all projects",
   "SEARCH_FAILED": "Search failed",

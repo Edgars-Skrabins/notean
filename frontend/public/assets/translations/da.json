@@ -45,6 +45,7 @@
   "NO_SEARCH_RESULTS": "Ingen resultater fundet.",
   "SEARCH_EVERYTHING": "Søg i alt",
   "SEARCH_SHOW_MORE": "Vis flere",
+  "LOAD_MORE": "Indlæs flere",
   "SEARCH_IN_PROJECT": "Søger lige nu i projektet '{{project}}'",
   "SEARCH_INCLUDE_ALL_PROJECTS": "Medtag alle projekter",
   "SEARCH_FAILED": "Søgningen mislykkedes",

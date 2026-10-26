@@ -45,6 +45,7 @@
   "NO_SEARCH_RESULTS": "Tuloksia ei löytynyt.",
   "SEARCH_EVERYTHING": "Hae kaikkialta",
   "SEARCH_SHOW_MORE": "Näytä lisää",
+  "LOAD_MORE": "Lataa lisää",
   "SEARCH_IN_PROJECT": "Haetaan nyt projektista '{{project}}'",
   "SEARCH_INCLUDE_ALL_PROJECTS": "Sisällytä kaikki projektit",
   "SEARCH_FAILED": "Haku epäonnistui",

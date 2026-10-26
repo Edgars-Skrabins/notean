@@ -1,0 +1,8 @@
+<button
+  type="button"
+  class="loadMore"
+  [class.loadMore--loading]="loading"
+  [disabled]="loading"
+  [attr.aria-busy]="loading"
+  (click)="pressed.emit()"
+>{{ PHRASES.LOAD_MORE | translate }}</button>
