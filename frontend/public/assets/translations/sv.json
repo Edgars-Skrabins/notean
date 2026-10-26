@@ -120,6 +120,9 @@
   "CONFIRM_LEAVE_UNSAVED_CHANGES": "Du har osparade ändringar. Vill du lämna utan att spara?",
   "DISCARD": "Släng",
   "CONFIRM_DISCARD_CHANGES": "Vill du slänga osparade ändringar?",
+  "EDIT_CONFLICT_MESSAGE": "Någon sparade en nyare version medan du redigerade.",
+  "EDIT_CONFLICT_LOAD_LATEST": "Läs in senaste",
+  "EDIT_CONFLICT_OVERWRITE": "Skriv över",
   "PROFILE_UPDATED": "Profilinformationen har uppdaterats",
   "NICKNAME_TOO_SHORT": "Smeknamnet måste vara minst 3 tecken",
   "NICKNAME_TOO_LONG": "Smeknamnet får vara högst 30 tecken",
@@ -279,6 +282,8 @@
       "UNAUTHORIZED": "Din session har gått ut. Logga in igen",
       "FORBIDDEN": "Du har inte behörighet att göra detta",
       "RATE_LIMITED": "För många försök. Vänta och försök igen",
+      "EDIT_CONFLICT": "Någon sparade en nyare version medan du redigerade",
+      "LOCK_VERSION_REQUIRED": "Ändringen kan inte sparas. Ladda om sidan och försök igen",
       "NETWORK_ERROR": "Nätverksfel. Kontrollera din anslutning och försök igen",
       "UNKNOWN_ERROR": "Något gick fel. Försök igen"
     },

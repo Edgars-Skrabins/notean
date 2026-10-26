@@ -120,6 +120,9 @@
   "CONFIRM_LEAVE_UNSAVED_CHANGES": "Tienes cambios sin guardar. ¿Salir sin guardar?",
   "DISCARD": "Descartar",
   "CONFIRM_DISCARD_CHANGES": "¿Descartar los cambios sin guardar?",
+  "EDIT_CONFLICT_MESSAGE": "Alguien guardó una versión más reciente mientras editabas.",
+  "EDIT_CONFLICT_LOAD_LATEST": "Cargar la última",
+  "EDIT_CONFLICT_OVERWRITE": "Sobrescribir",
   "PROFILE_UPDATED": "Información del perfil actualizada",
   "NICKNAME_TOO_SHORT": "El apodo debe tener al menos 3 caracteres",
   "NICKNAME_TOO_LONG": "El apodo puede tener como máximo 30 caracteres",
@@ -279,6 +282,8 @@
       "UNAUTHORIZED": "Tu sesión ha caducado. Vuelve a iniciar sesión",
       "FORBIDDEN": "No tienes permiso para hacer esto",
       "RATE_LIMITED": "Demasiados intentos. Espera e inténtalo de nuevo",
+      "EDIT_CONFLICT": "Alguien guardó una versión más reciente mientras editabas",
+      "LOCK_VERSION_REQUIRED": "No se puede guardar este cambio. Recarga la página e inténtalo de nuevo",
       "NETWORK_ERROR": "Error de red. Comprueba tu conexión e inténtalo de nuevo",
       "UNKNOWN_ERROR": "Algo salió mal. Inténtalo de nuevo"
     },

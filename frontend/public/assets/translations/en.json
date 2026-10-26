@@ -120,6 +120,9 @@
   "CONFIRM_LEAVE_UNSAVED_CHANGES": "You have unsaved changes. Leave without saving?",
   "DISCARD": "Discard",
   "CONFIRM_DISCARD_CHANGES": "Discard unsaved changes?",
+  "EDIT_CONFLICT_MESSAGE": "Someone saved a newer version while you were editing.",
+  "EDIT_CONFLICT_LOAD_LATEST": "Load latest",
+  "EDIT_CONFLICT_OVERWRITE": "Overwrite",
   "PROFILE_UPDATED": "Updated profile information",
   "NICKNAME_TOO_SHORT": "Nickname must be at least 3 characters",
   "NICKNAME_TOO_LONG": "Nickname can be at most 30 characters",
@@ -279,6 +282,8 @@
       "UNAUTHORIZED": "Your session has expired. Please log in again",
       "FORBIDDEN": "You don't have permission to do this",
       "RATE_LIMITED": "Too many attempts. Please wait and try again",
+      "EDIT_CONFLICT": "Someone saved a newer version while you were editing",
+      "LOCK_VERSION_REQUIRED": "This change can't be saved. Reload and try again",
       "NETWORK_ERROR": "Network error. Check your connection and try again",
       "UNKNOWN_ERROR": "Something went wrong. Please try again"
     },

@@ -120,6 +120,9 @@
   "CONFIRM_LEAVE_UNSAVED_CHANGES": "Sinulla on tallentamattomia muutoksia. Poistutaanko tallentamatta?",
   "DISCARD": "Hylkää",
   "CONFIRM_DISCARD_CHANGES": "Hylätäänkö tallentamattomat muutokset?",
+  "EDIT_CONFLICT_MESSAGE": "Joku tallensi uudemman version muokatessasi.",
+  "EDIT_CONFLICT_LOAD_LATEST": "Lataa uusin",
+  "EDIT_CONFLICT_OVERWRITE": "Korvaa",
   "PROFILE_UPDATED": "Profiilitiedot päivitetty",
   "NICKNAME_TOO_SHORT": "Nimimerkissä on oltava vähintään 3 merkkiä",
   "NICKNAME_TOO_LONG": "Nimimerkissä voi olla enintään 30 merkkiä",
@@ -279,6 +282,8 @@
       "UNAUTHORIZED": "Istuntosi on vanhentunut. Kirjaudu sisään uudelleen",
       "FORBIDDEN": "Sinulla ei ole oikeutta tehdä tätä",
       "RATE_LIMITED": "Liian monta yritystä. Odota hetki ja yritä uudelleen",
+      "EDIT_CONFLICT": "Joku tallensi uudemman version muokatessasi",
+      "LOCK_VERSION_REQUIRED": "Muutosta ei voi tallentaa. Lataa sivu uudelleen ja yritä uudelleen",
       "NETWORK_ERROR": "Verkkovirhe. Tarkista yhteytesi ja yritä uudelleen",
       "UNKNOWN_ERROR": "Jokin meni pieleen. Yritä uudelleen"
     },
