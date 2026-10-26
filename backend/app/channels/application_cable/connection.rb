@@ -9,9 +9,10 @@ module ApplicationCable
     private
 
     def find_verified_user
-      token = request.params[:token]
-      user = token && User.find_by(id: JsonWebToken.decode(token)[:user_id])
-      user || reject_unauthorized_connection
+      ticket = request.params[:ticket]
+      payload = ticket ? JsonWebToken.decode(ticket) : {}
+      session = UserSession.active.find_by(id: payload[:session_id]) if payload[:purpose] == "cable" && payload[:exp]
+      session&.user || reject_unauthorized_connection
     rescue JWT::DecodeError
       reject_unauthorized_connection
     end
