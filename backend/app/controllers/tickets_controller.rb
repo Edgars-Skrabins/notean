@@ -167,7 +167,7 @@ class TicketsController < ApplicationController
     filtered = tickets.where(id: TicketAssignee.where(user_id: member_ids).select(:ticket_id))
     return filtered unless assignee_ids.include?("none")
 
-    filtered.or(tickets.where.not(id: TicketAssignee.select(:ticket_id)))
+    filtered.or(tickets.where(TicketAssignee.where("ticket_assignees.ticket_id = tickets.id").arel.exists.not))
   end
 
   def bulk_ticket_ids
