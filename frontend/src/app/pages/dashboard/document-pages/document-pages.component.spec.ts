@@ -37,22 +37,30 @@ describe('DocumentPagesComponent', () => {
   let favoriteService: jasmine.SpyObj<FavoriteService>;
   let projectFilter: ProjectFilterStub;
   let router: jasmine.SpyObj<Router>;
+  let teamService: jasmine.SpyObj<TeamService>;
 
   beforeEach(fakeAsync(() => {
     projectFilter = projectFilterStub();
-    router = jasmine.createSpyObj<Router>('Router', ['navigate']);
+    router = jasmine.createSpyObj<Router>('Router', ['navigate', 'getCurrentNavigation']);
     pageService = jasmine.createSpyObj<PageService>('PageService', ['list', 'moveToFolder', 'delete', 'create', 'rename']);
     folderService = jasmine.createSpyObj<FolderService>('FolderService', ['listFolders', 'createFolder', 'renameFolder', 'moveFolder', 'deleteFolder', 'setFolderProject']);
     favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem', 'renameItem']);
-    const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeamCode']);
+    teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeamCode']);
     teamService.getCurrentTeamCode.and.returnValue('abc');
     folderService.listFolders.and.returnValue(Promise.resolve({success: true, folders: [folder(1, null), folder(2, 1), folder(3, 2)]}));
     pageService.list.and.returnValue(Promise.resolve({
       success: true,
       items: [page(10, 1, 'Roadmap'), page(11, 3, 'Release notes'), page(12, null, 'Ideas')],
+      hasMore: false,
     }));
 
-    component = new DocumentPagesComponent(
+    component = createComponent();
+    component.ngOnInit();
+    tick();
+  }));
+
+  function createComponent() {
+    return new DocumentPagesComponent(
       pageService,
       folderService,
       teamService,
@@ -60,9 +68,7 @@ describe('DocumentPagesComponent', () => {
       router,
       projectFilter.service,
     );
-    component.ngOnInit();
-    tick();
-  }));
+  }
 
   function expectNoReload() {
     expect(folderService.listFolders).toHaveBeenCalledTimes(1);
@@ -74,6 +80,74 @@ describe('DocumentPagesComponent', () => {
     expect(component.items.map((item) => item.id)).toEqual([10, 11, 12]);
     expectNoReload();
   });
+
+  it('loads the first root page on init', () => {
+    expect(pageService.list).toHaveBeenCalledOnceWith('abc', {folderId: 'root', projectId: null});
+    expect(component.levels.get('root')).toEqual({loaded: true, isLoading: false, hasMore: false});
+  });
+
+  it('loads an opened folder once and keeps what is already loaded', fakeAsync(() => {
+    pageService.list.and.returnValue(Promise.resolve({success: true, items: [page(20, 2, 'Inside'), page(11, 2, 'Release notes')], hasMore: true}));
+
+    component.handleExpandFolder({folderId: 2});
+    expect(component.levels.get(2)).toEqual({loaded: false, isLoading: true, hasMore: false});
+    tick();
+    component.handleExpandFolder({folderId: 2});
+    tick();
+
+    expect(pageService.list).toHaveBeenCalledTimes(2);
+    expect(pageService.list).toHaveBeenCalledWith('abc', {folderId: 2, projectId: null, offset: 0});
+    expect(component.items.map((item) => item.id).sort()).toEqual([10, 11, 12, 20]);
+    expect(component.levels.get(2)).toEqual({loaded: true, isLoading: false, hasMore: true});
+  }));
+
+  it('appends the next page of a level after the loaded items', fakeAsync(() => {
+    pageService.list.and.returnValue(Promise.resolve({success: true, items: [page(30, null, 'Zebra')], hasMore: false}));
+
+    component.handleLoadMore({level: 'root'});
+    tick();
+
+    expect(pageService.list).toHaveBeenCalledWith('abc', {folderId: 'root', projectId: null, offset: 1});
+    expect(component.items.map((item) => item.id)).toEqual([10, 11, 12, 30]);
+    expect(component.levels.get('root')?.hasMore).toBeFalse();
+  }));
+
+  it('keeps Load more available after a failed page', fakeAsync(() => {
+    component.levels = new Map([['root', {loaded: true, isLoading: false, hasMore: true}]]);
+    pageService.list.and.returnValue(Promise.resolve({success: false, code: 'NETWORK_ERROR'}));
+
+    component.handleLoadMore({level: 'root'});
+    tick();
+
+    expect(component.alertMessage).toBe(errorPhrase('NETWORK_ERROR'));
+    expect(component.levels.get('root')).toEqual({loaded: true, isLoading: false, hasMore: true});
+  }));
+
+  it('places an item created in a folder in its level without duplicating it later', fakeAsync(() => {
+    const created = page(40, 2, 'Brand new');
+    router.getCurrentNavigation.and.returnValue({extras: {state: {createdItem: created}}} as never);
+    component = createComponent();
+    component.ngOnInit();
+    tick();
+
+    expect(component.items.find((item) => item.id === 40)?.folderId).toBe(2);
+
+    pageService.list.and.returnValue(Promise.resolve({success: true, items: [created], hasMore: false}));
+    component.handleExpandFolder({folderId: 2});
+    tick();
+
+    expect(component.items.filter((item) => item.id === 40).length).toBe(1);
+  }));
+
+  it('leaves out a created item of another project than the selected one', fakeAsync(() => {
+    projectFilter.selected.next(5);
+    router.getCurrentNavigation.and.returnValue({extras: {state: {createdItem: {...page(40, null), projectId: 6}}}} as never);
+    component = createComponent();
+    component.ngOnInit();
+    tick();
+
+    expect(component.items.some((item) => item.id === 40)).toBeFalse();
+  }));
 
   it('adds a created folder without reloading', fakeAsync(() => {
     folderService.createFolder.and.returnValue(Promise.resolve({success: true, folder: folder(4, null, 'New')}));
@@ -212,12 +286,70 @@ describe('DocumentPagesComponent', () => {
     expectNoReload();
   }));
 
-  it('filters pages by title in the browser while searching', () => {
-    component.searchQuery = ' NOTES ';
+  describe('search', () => {
+    beforeEach(() => {
+      pageService.list.and.returnValue(Promise.resolve({success: true, items: [page(11, 3, 'Release notes'), page(50, 2, 'Notes draft')], hasMore: true}));
+    });
 
-    expect(component.displayItems.map((item) => [item.id, item.folderId])).toEqual([[11, null]]);
-    expect(component.displayFolders).toEqual([]);
-    expectNoReload();
+    it('asks the server once, 300 ms after typing stops', fakeAsync(() => {
+      component.handleSearchChange('no');
+      tick(299);
+      component.handleSearchChange(' notes ');
+      tick(299);
+      expect(pageService.list).toHaveBeenCalledTimes(1);
+
+      tick(1);
+
+      expect(pageService.list).toHaveBeenCalledTimes(2);
+      expect(pageService.list).toHaveBeenCalledWith('abc', {search: 'notes', projectId: null, offset: 0});
+      expect(component.displayItems.map((item) => [item.id, item.folderId])).toEqual([[11, null], [50, null]]);
+      expect(component.displayFolders).toEqual([]);
+    }));
+
+    it('loads more results after the ones shown', fakeAsync(() => {
+      component.handleSearchChange('notes');
+      tick(300);
+
+      component.handleLoadMore({level: 'root'});
+      tick();
+
+      expect(pageService.list).toHaveBeenCalledWith('abc', {search: 'notes', projectId: null, offset: 2});
+    }));
+
+    it('reports no results only once the search has answered', fakeAsync(() => {
+      pageService.list.and.returnValue(Promise.resolve({success: true, items: [], hasMore: false}));
+      component.handleSearchChange('zzz');
+      tick(300);
+
+      expect(component.hasNoSearchResults).toBeTrue();
+    }));
+
+    it('returns to the tree as it was when cleared', fakeAsync(() => {
+      component.handleSearchChange('notes');
+      tick(300);
+
+      component.handleSearchChange('');
+      tick(300);
+
+      expect(component.isSearching).toBeFalse();
+      expect(component.displayFolders.map((item) => item.id)).toEqual([1, 2, 3]);
+      expect(component.displayItems.map((item) => item.id)).toEqual([10, 11, 12]);
+      expect(pageService.list).toHaveBeenCalledTimes(2);
+    }));
+
+    it('renames and deletes found items in the results', fakeAsync(() => {
+      pageService.rename.and.returnValue(Promise.resolve({success: true, item: page(50, 2, 'Notes final')}));
+      pageService.delete.and.returnValue(Promise.resolve({success: true}));
+      component.handleSearchChange('notes');
+      tick(300);
+
+      component.handleRenameItem({itemId: 50, title: 'Notes final'});
+      component.handleDeleteItem({itemId: 11});
+      tick();
+
+      expect(pageService.rename).toHaveBeenCalledWith('abc', 50, 'Notes final', 0);
+      expect(component.displayItems.map((item) => item.title)).toEqual(['Notes final']);
+    }));
   });
 
   it('reloads folders and pages for the newly selected project', fakeAsync(() => {
@@ -225,7 +357,7 @@ describe('DocumentPagesComponent', () => {
     tick();
 
     expect(folderService.listFolders).toHaveBeenCalledWith('abc', 'Page', 4);
-    expect(pageService.list).toHaveBeenCalledWith('abc', 4);
+    expect(pageService.list).toHaveBeenCalledWith('abc', {folderId: 'root', projectId: 4});
   }));
 
   it('opens create mode without calling the API', () => {

@@ -1,4 +1,4 @@
-<ng-template #levelTemplate let-folders let-items="items" let-depth="depth">
+<ng-template #levelTemplate let-folders let-items="items" let-depth="depth" let-level="level">
   <ng-container *ngFor="let folder of folders">
     <div
       cdkDrag
@@ -15,7 +15,7 @@
     >
       <div class="itemTree__chevronSlot">
         <app-icon-button
-          *ngIf="hasContents(folder)"
+          *ngIf="canExpand(folder)"
           icon="chevron-right"
           [tooltip]="(isExpanded(folder.id) ? PHRASES.COLLAPSE_FOLDER : PHRASES.EXPAND_FOLDER) | translate"
           [size]="28"
@@ -88,7 +88,7 @@
 
     <ng-container *ngIf="isExpanded(folder.id)">
       <ng-container
-        *ngTemplateOutlet="levelTemplate; context: { $implicit: folder.children, items: folder.items, depth: depth + 1 }"
+        *ngTemplateOutlet="levelTemplate; context: { $implicit: folder.children, items: folder.items, depth: depth + 1, level: folder.id }"
       ></ng-container>
     </ng-container>
   </ng-container>
@@ -148,6 +148,13 @@
       </div>
     </div>
   </ng-container>
+
+  <app-load-more
+    *ngIf="levelState(level)?.hasMore"
+    [loading]="levelState(level)?.isLoading ?? false"
+    [style.paddingLeft.px]="depth * 20"
+    (pressed)="loadMore.emit({ level })"
+  ></app-load-more>
 </ng-template>
 
 <div class="itemTree">
@@ -159,7 +166,7 @@
   ></div>
 
   <ng-container
-    *ngTemplateOutlet="levelTemplate; context: { $implicit: rootFolders, items: rootItems, depth: 0 }"
+    *ngTemplateOutlet="levelTemplate; context: { $implicit: rootFolders, items: rootItems, depth: 0, level: 'root' }"
   ></ng-container>
 </div>
 

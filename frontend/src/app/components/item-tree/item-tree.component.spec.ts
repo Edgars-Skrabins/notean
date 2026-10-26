@@ -87,6 +87,43 @@ describe('ItemTreeComponent', () => {
     expect(component.isExpanded(1)).toBeFalse();
   });
 
+  it('lets an unloaded folder expand and asks for its items on each expand', () => {
+    const expanded: { folderId: number }[] = [];
+    component.expandFolder.subscribe((event) => expanded.push(event));
+    render([{id: 1, title: 'Docs', parentId: null, projectId: null}], []);
+
+    query<HTMLButtonElement>('.itemTree__row--folder .itemTree__rowMain').click();
+    query<HTMLButtonElement>('.itemTree__row--folder .itemTree__rowMain').click();
+    query<HTMLButtonElement>('.itemTree__row--folder .itemTree__rowMain').click();
+
+    expect(expanded).toEqual([{folderId: 1}, {folderId: 1}]);
+  });
+
+  it('hides the chevron of a loaded empty folder', () => {
+    fixture.componentRef.setInput('levels', new Map([[1, {loaded: true, isLoading: false, hasMore: false}]]));
+    render([{id: 1, title: 'Docs', parentId: null, projectId: null}], []);
+
+    expect(query('.itemTree__chevron')).toBeNull();
+  });
+
+  it('shows Load more for a level with more items and reports its level', () => {
+    const requested: { level: number | 'root' }[] = [];
+    component.loadMore.subscribe((event) => requested.push(event));
+    fixture.componentRef.setInput('levels', new Map([['root', {loaded: true, isLoading: false, hasMore: true}]]));
+    render([], [buildItem()]);
+
+    query<HTMLButtonElement>('.loadMore').click();
+
+    expect(requested).toEqual([{level: 'root'}]);
+  });
+
+  it('disables Load more while its level loads', () => {
+    fixture.componentRef.setInput('levels', new Map([['root', {loaded: true, isLoading: true, hasMore: true}]]));
+    render([], [buildItem()]);
+
+    expect(query<HTMLButtonElement>('.loadMore').disabled).toBeTrue();
+  });
+
   it('offers to change the project on top-level folders only', () => {
     const requested: { folderId: number }[] = [];
     component.changeFolderProject.subscribe((event) => requested.push(event));

@@ -1,12 +1,13 @@
 import {Directive, OnDestroy, OnInit} from '@angular/core';
-import {skip, Subscription} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map, skip, Subject, Subscription} from 'rxjs';
 import {FolderService} from "@services/folder.service";
 import {TeamService} from "@services/team.service";
 import {FavoriteService} from "@services/favorite.service";
 import {FolderDeleteMode, FolderItemType, FolderSummary} from "@models/folder.model";
-import {TreeFolder, TreeItem} from "@components/item-tree/item-tree.component";
+import {ItemLevel, ItemLevelState, TreeFolder, TreeItem} from "@components/item-tree/item-tree.component";
 import {errorPhrase} from "@utils/errorPhrase";
 import {itemIdsWithin, promoteFolderContents, removeFolderCascade, setFolderSubtreeProject} from "@utils/folderTree";
+import {compareByTitle, TitledItem} from "@utils/titleOrder";
 import {Router} from "@angular/router";
 import {ErrorCode} from "@config/errorCodes";
 import {FolderedItemSummary} from "@models/foldered-item.model";
@@ -21,7 +22,11 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
 
   folders: TreeFolder[] = [];
   items: TreeItem[] = [];
+  levels: ReadonlyMap<ItemLevel, ItemLevelState> = new Map();
   searchQuery = '';
+  activeSearch = '';
+  searchItems: TreeItem[] = [];
+  searchLevels: ReadonlyMap<ItemLevel, ItemLevelState> = new Map();
   isLoading = true;
   alertMessage = '';
   isCreateFolderDialogOpen = false;
@@ -30,6 +35,13 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   protected readonly teamCode: string;
   private pendingCreateFolderParentId: number | null = null;
   private projectSubscription: Subscription | null = null;
+  private levelBoundaries = new Map<ItemLevel, TitledItem>();
+  private loadGeneration = 0;
+  private createdItem: FolderedItemSummary | null;
+  private searchDisplayItems: TreeItem[] = [];
+  private searchGeneration = 0;
+  private searchTerms = new Subject<string>();
+  private searchSubscription: Subscription | null = null;
 
   protected constructor(
     private itemService: FolderedItemService<ErrorCode>,
@@ -40,6 +52,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
     protected projectFilterService: ProjectFilterService
   ) {
     this.teamCode = this.teamService.getCurrentTeamCode();
+    this.createdItem = this.router.getCurrentNavigation()?.extras.state?.['createdItem'] ?? null;
   }
 
   handleOpenItem(item: TreeItem) {
@@ -52,7 +65,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   }
 
   get isSearching(): boolean {
-    return this.searchQuery.trim().length > 0;
+    return this.activeSearch.length > 0;
   }
 
   get displayFolders(): TreeFolder[] {
@@ -60,23 +73,51 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   }
 
   get displayItems(): TreeItem[] {
-    if (!this.isSearching) {
-      return this.items;
-    }
+    return this.isSearching ? this.searchDisplayItems : this.items;
+  }
 
-    const query = this.searchQuery.trim().toLowerCase();
-    return this.items
-      .filter((item) => item.title.toLowerCase().includes(query))
-      .map((item) => ({...item, folderId: null}));
+  get displayLevels(): ReadonlyMap<ItemLevel, ItemLevelState> {
+    return this.isSearching ? this.searchLevels : this.levels;
+  }
+
+  get hasNoSearchResults(): boolean {
+    const state = this.searchLevels.get('root');
+    return this.isSearching && !!state?.loaded && !state.isLoading && !this.searchItems.length;
   }
 
   ngOnInit() {
     this.loadData();
-    this.projectSubscription = this.projectFilterService.selectedProjectId$.pipe(skip(1)).subscribe(() => this.loadData());
+    this.projectSubscription = this.projectFilterService.selectedProjectId$.pipe(skip(1)).subscribe(() => {
+      this.loadData();
+      this.startSearch(this.activeSearch);
+    });
+    this.searchSubscription = this.searchTerms
+      .pipe(map((query) => query.trim()), debounceTime(300), distinctUntilChanged())
+      .subscribe((term) => this.startSearch(term));
   }
 
   ngOnDestroy() {
     this.projectSubscription?.unsubscribe();
+    this.searchSubscription?.unsubscribe();
+  }
+
+  handleSearchChange(query: string) {
+    this.searchTerms.next(query);
+  }
+
+  handleExpandFolder(event: { folderId: number }) {
+    if (!this.levels.get(event.folderId)?.loaded) {
+      this.loadLevel(event.folderId);
+    }
+  }
+
+  handleLoadMore(event: { level: ItemLevel }) {
+    if (this.isSearching) {
+      this.loadSearchPage();
+      return;
+    }
+
+    this.loadLevel(event.level);
   }
 
   handleCreateFolder(parentId: number | null) {
@@ -212,7 +253,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   }
 
   handleRenameItem(event: { itemId: number; title: string }) {
-    const item = this.items.find((candidate) => candidate.id === event.itemId);
+    const item = [...this.items, ...this.searchItems].find((candidate) => candidate.id === event.itemId);
     if (!item) {
       return;
     }
@@ -222,7 +263,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
         if ('latest' in response) {
           this.alertMessage = errorPhrase(response.code);
           const latest = this.toTreeItem(response.latest);
-          this.items = this.items.map((candidate) => candidate.id === latest.id ? latest : candidate);
+          this.replaceItem(latest);
           this.favoriteService.renameItem(this.itemType, latest.id, latest.title);
           return;
         }
@@ -234,7 +275,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
 
         this.alertMessage = '';
         const renamed = this.toTreeItem(response.item);
-        this.items = this.items.map((item) => item.id === renamed.id ? renamed : item);
+        this.replaceItem(renamed);
         this.favoriteService.renameItem(this.itemType, renamed.id, renamed.title);
       });
   }
@@ -250,15 +291,22 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
         this.alertMessage = '';
         this.favoriteService.forgetItem(this.itemType, event.itemId);
         this.items = this.items.filter((item) => item.id !== event.itemId);
+        this.setSearchItems(this.searchItems.filter((item) => item.id !== event.itemId));
       });
   }
 
   private loadData() {
     const projectId = this.projectFilterService.getSelectedProjectId();
+    const generation = ++this.loadGeneration;
+    this.levels = new Map();
+    this.levelBoundaries.clear();
     Promise.all([
       this.folderService.listFolders(this.teamCode, this.itemType, projectId),
-      this.itemService.list(this.teamCode, projectId)
+      this.itemService.list(this.teamCode, {folderId: 'root', projectId})
     ]).then(([foldersResponse, itemsResponse]) => {
+      if (generation !== this.loadGeneration) {
+        return;
+      }
       this.isLoading = false;
 
       if (!foldersResponse.success) {
@@ -272,8 +320,118 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
 
       this.alertMessage = '';
       this.folders = foldersResponse.folders.map((folder) => this.toTreeFolder(folder));
-      this.items = itemsResponse.items.map((item) => this.toTreeItem(item));
+      this.items = [];
+      this.applyLevelPage('root', itemsResponse.items, itemsResponse.hasMore);
+      this.insertCreatedItem(projectId);
     });
+  }
+
+  private loadLevel(level: ItemLevel) {
+    const state = this.levels.get(level);
+    if (state?.isLoading) {
+      return;
+    }
+
+    const generation = this.loadGeneration;
+    const projectId = this.projectFilterService.getSelectedProjectId();
+    this.setLevel(level, {loaded: state?.loaded ?? false, isLoading: true, hasMore: state?.hasMore ?? false});
+    this.itemService.list(this.teamCode, {folderId: level, projectId, offset: this.loadedOffset(level)})
+      .then((response) => {
+        if (generation !== this.loadGeneration) {
+          return;
+        }
+        if (!response.success) {
+          this.alertMessage = errorPhrase(response.code);
+          this.setLevel(level, {...this.levels.get(level)!, isLoading: false});
+          return;
+        }
+
+        this.alertMessage = '';
+        this.applyLevelPage(level, response.items, response.hasMore);
+      });
+  }
+
+  private applyLevelPage(level: ItemLevel, page: FolderedItemSummary[], hasMore: boolean) {
+    const loadedIds = new Set(page.map((item) => item.id));
+    this.items = [...this.items.filter((item) => !loadedIds.has(item.id)), ...page.map((item) => this.toTreeItem(item))];
+    if (page.length) {
+      const last = page[page.length - 1];
+      this.levelBoundaries.set(level, {id: last.id, title: last.title});
+    }
+    this.setLevel(level, {loaded: true, isLoading: false, hasMore});
+  }
+
+  private loadedOffset(level: ItemLevel): number {
+    const boundary = this.levelBoundaries.get(level);
+    if (!boundary) {
+      return 0;
+    }
+
+    const folderId = level === 'root' ? null : level;
+    return this.items.filter((item) => item.folderId === folderId && compareByTitle(item, boundary) <= 0).length;
+  }
+
+  private setLevel(level: ItemLevel, state: ItemLevelState) {
+    this.levels = new Map(this.levels).set(level, state);
+  }
+
+  private insertCreatedItem(projectId: number | null) {
+    const created = this.createdItem;
+    this.createdItem = null;
+    if (!created || (projectId !== null && created.projectId !== projectId) || this.items.some((item) => item.id === created.id)) {
+      return;
+    }
+
+    this.items = [...this.items, this.toTreeItem(created)];
+  }
+
+  private startSearch(term: string) {
+    this.activeSearch = term;
+    this.searchGeneration++;
+    this.setSearchItems([]);
+    this.searchLevels = new Map();
+    if (term) {
+      this.loadSearchPage();
+    }
+  }
+
+  private loadSearchPage() {
+    const state = this.searchLevels.get('root');
+    if (state?.isLoading) {
+      return;
+    }
+
+    const generation = ++this.searchGeneration;
+    this.searchLevels = new Map([['root', {loaded: state?.loaded ?? false, isLoading: true, hasMore: state?.hasMore ?? false}]]);
+    this.itemService.list(this.teamCode, {
+      search: this.activeSearch,
+      projectId: this.projectFilterService.getSelectedProjectId(),
+      offset: this.searchItems.length,
+    }).then((response) => {
+      if (generation !== this.searchGeneration) {
+        return;
+      }
+      if (!response.success) {
+        this.alertMessage = errorPhrase(response.code);
+        this.searchLevels = new Map([['root', {...this.searchLevels.get('root')!, isLoading: false}]]);
+        return;
+      }
+
+      this.alertMessage = '';
+      const loadedIds = new Set(response.items.map((item) => item.id));
+      this.setSearchItems([...this.searchItems.filter((item) => !loadedIds.has(item.id)), ...response.items.map((item) => this.toTreeItem(item))]);
+      this.searchLevels = new Map([['root', {loaded: true, isLoading: false, hasMore: response.hasMore}]]);
+    });
+  }
+
+  private setSearchItems(items: TreeItem[]) {
+    this.searchItems = items;
+    this.searchDisplayItems = items.map((item) => ({...item, folderId: null}));
+  }
+
+  private replaceItem(updated: TreeItem) {
+    this.items = this.items.map((item) => item.id === updated.id ? updated : item);
+    this.setSearchItems(this.searchItems.map((item) => item.id === updated.id ? updated : item));
   }
 
   private replaceFolder(updated: TreeFolder) {
