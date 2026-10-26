@@ -1,5 +1,5 @@
-import {Component, ElementRef} from '@angular/core';
-import {TranslateModule} from "@ngx-translate/core";
+import {Component, ElementRef, ChangeDetectionStrategy} from '@angular/core';
+import {TranslatePipe} from "@ngx-translate/core";
 import {AsyncPipe, NgIf} from "@angular/common";
 import {OverlayModule} from "@angular/cdk/overlay";
 import {PHRASES} from "@config/phrases";
@@ -18,9 +18,8 @@ import {AppRoutes} from "../../app/app-routes.enum";
 
 @Component({
   selector: 'app-dashboard-header',
-  standalone: true,
   imports: [
-    TranslateModule,
+    TranslatePipe,
     NgIf,
     AsyncPipe,
     OverlayModule,
@@ -31,6 +30,7 @@ import {AppRoutes} from "../../app/app-routes.enum";
     GlobalSearchComponent
   ],
   templateUrl: './dashboard-header.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './dashboard-header.component.css'
 })
 export class DashboardHeaderComponent {

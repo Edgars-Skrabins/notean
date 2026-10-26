@@ -1,7 +1,7 @@
-import {Component, ElementRef, EventEmitter, Input, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {NgFor, NgIf} from '@angular/common';
 import {OverlayModule} from '@angular/cdk/overlay';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {DROPDOWN_POSITIONS} from '@config/overlayPositions';
 import {MenuButtonOption} from '@models/menu-button.model';
 import {AvatarComponent} from '@components/avatar/avatar.component';
@@ -9,16 +9,16 @@ import {IconComponent} from '@components/icon/icon.component';
 
 @Component({
   selector: 'app-menu-button',
-  standalone: true,
   imports: [
     NgFor,
     NgIf,
     OverlayModule,
-    TranslateModule,
+    TranslatePipe,
     AvatarComponent,
     IconComponent
   ],
   templateUrl: './menu-button.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './menu-button.component.css'
 })
 export class MenuButtonComponent {

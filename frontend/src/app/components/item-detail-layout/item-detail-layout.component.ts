@@ -1,8 +1,8 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
 import {CdkScrollable} from '@angular/cdk/scrolling';
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {TITLE_MAX_LENGTH} from "@config/contentLimits";
 import {FolderedItemDetail} from "@models/foldered-item.model";
@@ -17,12 +17,11 @@ import {EscapeService} from "@services/escape.service";
 
 @Component({
   selector: 'app-item-detail-layout',
-  standalone: true,
   imports: [
     FormsModule,
     NgIf,
     CdkScrollable,
-    TranslateModule,
+    TranslatePipe,
     IconButtonComponent,
     ButtonComponent,
     ConfirmDialogComponent,
@@ -31,6 +30,7 @@ import {EscapeService} from "@services/escape.service";
     ItemDetailSidebarComponent
   ],
   templateUrl: './item-detail-layout.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './item-detail-layout.component.css'
 })
 export class ItemDetailLayoutComponent implements OnInit, OnDestroy {

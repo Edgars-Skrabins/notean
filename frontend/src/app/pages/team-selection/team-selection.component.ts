@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {TranslateModule} from "@ngx-translate/core";
+import {Component, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {TranslatePipe} from "@ngx-translate/core";
 import {NgIf} from "@angular/common";
 import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
@@ -9,13 +9,13 @@ import {AuthCardComponent} from "@components/auth-card/auth-card.component";
 
 @Component({
   selector: 'app-team-selection',
-  standalone: true,
   imports: [
-    TranslateModule,
+    TranslatePipe,
     NgIf,
     AuthCardComponent
   ],
   templateUrl: './team-selection.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './team-selection.component.css'
 })
 export class TeamSelectionComponent implements OnInit {

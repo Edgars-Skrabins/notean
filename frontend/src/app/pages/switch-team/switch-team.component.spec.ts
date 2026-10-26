@@ -1,7 +1,7 @@
 import {NO_ERRORS_SCHEMA} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {NgFor, NgIf} from '@angular/common';
-import {TranslateModule, TranslateService} from '@ngx-translate/core';
+import {provideTranslateService, TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {SwitchTeamComponent} from "./switch-team.component";
 import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
@@ -109,14 +109,15 @@ describe('SwitchTeamComponent leave team', () => {
   it('disables Leave team with a tooltip on the owned team only', async () => {
     teamService.fetchMyTeams.and.returnValue(Promise.resolve(component.teams));
     await TestBed.configureTestingModule({
-      imports: [SwitchTeamComponent, TranslateModule.forRoot()],
+      imports: [SwitchTeamComponent],
       providers: [
+        provideTranslateService(),
         {provide: TeamService, useValue: teamService},
         {provide: NavigationService, useValue: navigationService},
         {provide: EscapeService, useValue: escapeServiceStub().service},
       ],
     })
-      .overrideComponent(SwitchTeamComponent, {set: {imports: [NgFor, NgIf, TranslateModule], schemas: [NO_ERRORS_SCHEMA]}})
+      .overrideComponent(SwitchTeamComponent, {set: {imports: [NgFor, NgIf, TranslatePipe], schemas: [NO_ERRORS_SCHEMA]}})
       .compileComponents();
     const fixture = TestBed.createComponent(SwitchTeamComponent);
     fixture.detectChanges();

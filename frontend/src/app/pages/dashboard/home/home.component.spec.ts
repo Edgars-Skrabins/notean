@@ -2,7 +2,7 @@ import {NO_ERRORS_SCHEMA} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {AsyncPipe, NgIf} from '@angular/common';
 import {BehaviorSubject} from 'rxjs';
-import {TranslateModule} from '@ngx-translate/core';
+import {provideTranslateService, TranslatePipe} from '@ngx-translate/core';
 import {HomeComponent} from './home.component';
 import {SettingsService} from '@services/settings.service';
 import {UserSettings} from '@models/settings.model';
@@ -27,13 +27,14 @@ describe('HomeComponent', () => {
     settings = new BehaviorSubject<UserSettings>({showFavoritesOnHome: true, showFavoritesInSidebar: true, showMyWorkOnHome: true, theme: 'purple_haze', themeMode: 'system'});
     features = new BehaviorSubject<TeamFeatures>({pages: true, diagrams: true, boards: true});
     await TestBed.configureTestingModule({
-      imports: [HomeComponent, TranslateModule.forRoot()],
+      imports: [HomeComponent],
       providers: [
+        provideTranslateService(),
         {provide: SettingsService, useValue: {settings$: settings}},
         {provide: TeamService, useValue: {features$: features}},
       ],
     })
-      .overrideComponent(HomeComponent, {set: {imports: [AsyncPipe, NgIf, TranslateModule], schemas: [NO_ERRORS_SCHEMA]}})
+      .overrideComponent(HomeComponent, {set: {imports: [AsyncPipe, NgIf, TranslatePipe], schemas: [NO_ERRORS_SCHEMA]}})
       .compileComponents();
     fixture = TestBed.createComponent(HomeComponent);
   });

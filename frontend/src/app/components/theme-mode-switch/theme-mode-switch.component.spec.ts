@@ -1,12 +1,13 @@
 import {TestBed} from '@angular/core/testing';
-import {TranslateModule} from '@ngx-translate/core';
+import {provideTranslateService} from '@ngx-translate/core';
 import {ThemeModeSwitchComponent} from './theme-mode-switch.component';
 import {ThemeMode} from "@config/themes";
 
 describe('ThemeModeSwitchComponent', () => {
   async function render(mode: ThemeMode) {
     await TestBed.configureTestingModule({
-      imports: [ThemeModeSwitchComponent, TranslateModule.forRoot()],
+      imports: [ThemeModeSwitchComponent],
+      providers: [provideTranslateService()],
     }).compileComponents();
     const fixture = TestBed.createComponent(ThemeModeSwitchComponent);
     fixture.componentRef.setInput('mode', mode);

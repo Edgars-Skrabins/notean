@@ -1,7 +1,7 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {NgIf} from "@angular/common";
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
 import {AppRoutes} from "../../app/app-routes.enum";
@@ -16,15 +16,15 @@ import {errorPhrase} from "@utils/errorPhrase";
 
 @Component({
   selector: 'app-create-team',
-  standalone: true,
   imports: [
     FormsModule,
     NgIf,
-    TranslateModule,
+    TranslatePipe,
     AuthCardComponent,
     TeamCodeDisplayComponent
   ],
   templateUrl: './create-team.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './create-team.component.css'
 })
 export class CreateTeamComponent {

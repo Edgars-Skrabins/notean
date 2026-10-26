@@ -7,8 +7,7 @@ import {TooltipComponent} from '@components/tooltip/tooltip.component';
 const SHOW_DELAY_MS = 300;
 
 @Directive({
-  selector: '[appTooltip]',
-  standalone: true
+  selector: '[appTooltip]'
 })
 export class TooltipDirective implements OnChanges, OnDestroy {
   @Input() appTooltip = '';

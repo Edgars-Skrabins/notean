@@ -70,11 +70,11 @@ Run frontend commands from `frontend/` and backend commands from `backend/`.
 
 ### Tech stack
 
-- **Framework**: Angular 18 with standalone components, TypeScript 5.5, RxJS 7.8
+- **Framework**: Angular 22 with standalone components and zone.js change detection, TypeScript 6.0, RxJS 7.8, built with `@angular/build`
 - **HTTP**: axios
 - **Realtime**: `@rails/actioncable`
-- **i18n**: `@ngx-translate/core` with the http loader
-- **Rich text**: Tiptap (core, pm, starter-kit)
+- **i18n**: `@ngx-translate/core` 18 with the http loader (`provideTranslateService`, `provideTranslateHttpLoader`); components import `TranslatePipe`
+- **Rich text**: Tiptap 3 (core, pm, starter-kit), with StarterKit's Link, Underline, ListKeymap and TrailingNode turned off
 - **Diagrams**: AntV X6 with the selection, snapline and keyboard plugins
 - **Drag and drop and popups**: Angular CDK (drag-drop, overlay)
 - **Theme fonts**: self-hosted `@fontsource/*` packages (Geist, Inter, Manrope, Plus Jakarta Sans, JetBrains Mono, IBM Plex Sans, Newsreader, DM Sans), included per weight in `angular.json` `styles`
@@ -105,7 +105,8 @@ src/environments/             environment.ts (apiUrl)
 - Guards are functional `CanActivateFn`s: `authGuard` (logged in), `teamGuard` (active team selected), `teamRoleGuard` (role is `admin` or `owner`), and `featureGuard(feature)` (the team has that feature on, otherwise redirects to Home) on the pages, diagrams and boards routes.
 
 #### Components
-- Every component is `standalone: true` with its own `.ts`, `.html` and `.css` files, using `templateUrl` and `styleUrl`.
+- Every component is standalone (Angular's default, no `standalone` flag) with its own `.ts`, `.html` and `.css` files, using `templateUrl` and `styleUrl`.
+- Every component sets `changeDetection: ChangeDetectionStrategy.Eager`, which keeps zone.js redraws working since Angular 22 changed the default.
 - Inputs and outputs use `@Input()` and `@Output()` with `EventEmitter`, not signals.
 - CSS class names follow a camelCase BEM style: `kanbanCard`, `itemTree__row`, `dashboardStub__title`.
 - Reuse the shared components in `components/` (buttons, icons, dialogs and so on) rather than building new ones.

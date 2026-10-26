@@ -1,6 +1,6 @@
 import {SimpleChange} from '@angular/core';
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {TranslateModule} from '@ngx-translate/core';
+import {provideTranslateService} from '@ngx-translate/core';
 import {Graph} from '@antv/x6';
 import {FlowchartEditorComponent} from './flowchart-editor.component';
 import {PHRASES} from '@config/phrases';
@@ -24,7 +24,8 @@ describe('FlowchartEditorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FlowchartEditorComponent, TranslateModule.forRoot()],
+      imports: [FlowchartEditorComponent],
+      providers: [provideTranslateService()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FlowchartEditorComponent);

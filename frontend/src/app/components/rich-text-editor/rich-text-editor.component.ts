@@ -1,19 +1,19 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, ViewEncapsulation, ChangeDetectionStrategy} from '@angular/core';
 import {NgIf} from "@angular/common";
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {Editor} from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
 
 @Component({
   selector: 'app-rich-text-editor',
-  standalone: true,
   imports: [
     NgIf,
-    TranslateModule
+    TranslatePipe
   ],
   templateUrl: './rich-text-editor.component.html',
   styleUrl: './rich-text-editor.component.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None
 })
 export class RichTextEditorComponent implements AfterViewInit, OnChanges, OnDestroy {
@@ -30,7 +30,7 @@ export class RichTextEditorComponent implements AfterViewInit, OnChanges, OnDest
   ngAfterViewInit() {
     this.editor = new Editor({
       element: this.editorHost.nativeElement,
-      extensions: [StarterKit],
+      extensions: [StarterKit.configure({link: false, underline: false, listKeymap: false, trailingNode: false})],
       content: this.content,
       editable: this.editable,
       editorProps: {

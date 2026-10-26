@@ -1,10 +1,10 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
 import {CdkScrollable} from '@angular/cdk/scrolling';
 import {Subscription} from 'rxjs';
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {TITLE_MAX_LENGTH, DESCRIPTION_MAX_LENGTH} from "@config/contentLimits";
 import {TicketService} from "@services/ticket.service";
@@ -32,12 +32,11 @@ import {EscapeService} from "@services/escape.service";
 
 @Component({
   selector: 'app-ticket-detail',
-  standalone: true,
   imports: [
     FormsModule,
     NgIf,
     CdkScrollable,
-    TranslateModule,
+    TranslatePipe,
     IconButtonComponent,
     ButtonComponent,
     ConfirmDialogComponent,
@@ -48,6 +47,7 @@ import {EscapeService} from "@services/escape.service";
     DropdownComponent
   ],
   templateUrl: './ticket-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './ticket-detail.component.css'
 })
 export class TicketDetailComponent implements OnInit, OnDestroy {

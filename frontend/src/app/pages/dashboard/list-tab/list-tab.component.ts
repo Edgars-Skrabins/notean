@@ -1,10 +1,10 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
 import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {NgFor, NgIf} from '@angular/common';
 import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
 import {debounceTime, distinctUntilChanged, map, Subject, Subscription} from 'rxjs';
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {TITLE_MAX_LENGTH} from "@config/contentLimits";
 import {TicketService} from "@services/ticket.service";
@@ -53,13 +53,12 @@ function byPosition(first: TicketSummary, second: TicketSummary): number {
 
 @Component({
   selector: 'app-list-tab',
-  standalone: true,
   imports: [
     FormsModule,
     NgFor,
     NgIf,
     RouterOutlet,
-    TranslateModule,
+    TranslatePipe,
     CdkDropList,
     CdkDrag,
     ListRowComponent,
@@ -73,6 +72,7 @@ function byPosition(first: TicketSummary, second: TicketSummary): number {
     LoadMoreComponent
   ],
   templateUrl: './list-tab.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './list-tab.component.css'
 })
 export class ListTabComponent implements OnInit, OnDestroy {

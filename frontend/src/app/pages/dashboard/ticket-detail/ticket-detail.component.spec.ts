@@ -1,6 +1,6 @@
 import {fakeAsync, flushMicrotasks, TestBed} from '@angular/core/testing';
 import {ActivatedRoute, Router} from "@angular/router";
-import {TranslateModule} from "@ngx-translate/core";
+import {provideTranslateService} from "@ngx-translate/core";
 import {TicketDetailComponent} from "./ticket-detail.component";
 import {TicketService} from "@services/ticket.service";
 import {FavoriteService} from "@services/favorite.service";
@@ -486,8 +486,9 @@ describe('TicketDetailComponent input limits', () => {
     authService.getCurrentUser.and.returnValue({id: 1, email: 'alice@example.com'});
 
     await TestBed.configureTestingModule({
-      imports: [TicketDetailComponent, TranslateModule.forRoot()],
+      imports: [TicketDetailComponent],
       providers: [
+        provideTranslateService(),
         {provide: ActivatedRoute, useValue: {snapshot: {paramMap: new Map([['ticketId', '1']])}}},
         {provide: Router, useValue: jasmine.createSpyObj<Router>('Router', ['navigate'])},
         {provide: BoardPageStateService, useValue: createBoardState()},

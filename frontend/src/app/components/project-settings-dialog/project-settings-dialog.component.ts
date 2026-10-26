@@ -1,6 +1,6 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import {NgIf} from '@angular/common';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ProjectService} from '@services/project.service';
 import {ProjectFilterService} from '@services/project-filter.service';
@@ -38,10 +38,9 @@ function sameParams(a: ProjectParams, b: ProjectParams): boolean {
 
 @Component({
   selector: 'app-project-settings-dialog',
-  standalone: true,
   imports: [
     NgIf,
-    TranslateModule,
+    TranslatePipe,
     ProjectFormComponent,
     ButtonComponent,
     IconButtonComponent,
@@ -49,6 +48,7 @@ function sameParams(a: ProjectParams, b: ProjectParams): boolean {
     DeleteProjectDialogComponent
   ],
   templateUrl: './project-settings-dialog.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './project-settings-dialog.component.css'
 })
 export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {

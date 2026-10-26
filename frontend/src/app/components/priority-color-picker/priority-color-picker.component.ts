@@ -1,7 +1,7 @@
-import {Component, ElementRef, EventEmitter, Input, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {NgFor} from '@angular/common';
 import {OverlayModule} from '@angular/cdk/overlay';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {DROPDOWN_POSITIONS} from '@config/overlayPositions';
 import {PRIORITY_COLORS, PriorityColor} from '@models/priority.model';
@@ -20,14 +20,14 @@ const COLOR_PHRASES: Record<PriorityColor, string> = {
 
 @Component({
   selector: 'app-priority-color-picker',
-  standalone: true,
   imports: [
     NgFor,
     OverlayModule,
-    TranslateModule,
+    TranslatePipe,
     TooltipDirective
   ],
   templateUrl: './priority-color-picker.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './priority-color-picker.component.css'
 })
 export class PriorityColorPickerComponent {

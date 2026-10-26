@@ -1,5 +1,5 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {TranslateModule} from '@ngx-translate/core';
+import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {TicketSummary} from '@models/ticket.model';
 import {IconButtonComponent} from '@components/icon-button/icon-button.component';
@@ -8,14 +8,14 @@ import {AvatarStackComponent} from '@components/avatar-stack/avatar-stack.compon
 
 @Component({
   selector: 'app-kanban-ticket',
-  standalone: true,
   imports: [
-    TranslateModule,
+    TranslatePipe,
     IconButtonComponent,
     FavoriteStarComponent,
     AvatarStackComponent
   ],
   templateUrl: './kanban-ticket.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './kanban-ticket.component.css'
 })
 export class KanbanTicketComponent {

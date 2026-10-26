@@ -1,8 +1,8 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {NgFor, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {CdkDrag, CdkDragDrop, CdkDropList} from '@angular/cdk/drag-drop';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {TITLE_MAX_LENGTH} from '@config/contentLimits';
 import {BoardColumn} from '@models/board.model';
@@ -13,12 +13,11 @@ import {KanbanTicketComponent} from '@components/kanban-ticket/kanban-ticket.com
 
 @Component({
   selector: 'app-kanban-column',
-  standalone: true,
   imports: [
     NgFor,
     NgIf,
     FormsModule,
-    TranslateModule,
+    TranslatePipe,
     IconButtonComponent,
     ButtonComponent,
     KanbanTicketComponent,
@@ -26,6 +25,7 @@ import {KanbanTicketComponent} from '@components/kanban-ticket/kanban-ticket.com
     CdkDrag
   ],
   templateUrl: './kanban-column.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './kanban-column.component.css'
 })
 export class KanbanColumnComponent {

@@ -3,25 +3,24 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "paths": {
       "@components/*": [
-        "src/app/components/*"
+        "./src/app/components/*"
       ],
       "@config/*": [
-        "src/app/config/*"
+        "./src/app/config/*"
       ],
       "@pages/*": [
-        "src/app/pages/*"
+        "./src/app/pages/*"
       ],
       "@models/*": [
-        "src/app/models/*"
+        "./src/app/models/*"
       ],
       "@services/*": [
-        "src/app/services/*"
+        "./src/app/services/*"
       ],
       "@utils/*": [
-        "src/app/utils/*"
+        "./src/app/utils/*"
       ]
     },
     "outDir": "./dist/out-tsc",
@@ -35,7 +34,7 @@
     "sourceMap": true,
     "declaration": false,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
     "module": "ES2022",

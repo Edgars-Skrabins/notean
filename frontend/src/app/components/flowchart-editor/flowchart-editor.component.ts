@@ -1,7 +1,7 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, ViewEncapsulation} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, ViewEncapsulation, ChangeDetectionStrategy} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
-import {TranslateModule, TranslateService} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {Graph, Node, Edge, Cell} from '@antv/x6';
 import {Selection} from '@antv/x6-plugin-selection';
 import {Snapline} from '@antv/x6-plugin-snapline';
@@ -135,15 +135,15 @@ interface EditingLabel {
 
 @Component({
   selector: 'app-flowchart-editor',
-  standalone: true,
   imports: [
     NgIf,
     FormsModule,
-    TranslateModule,
+    TranslatePipe,
     IconButtonComponent
   ],
   templateUrl: './flowchart-editor.component.html',
   styleUrl: './flowchart-editor.component.css',
+  changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None
 })
 export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDestroy {

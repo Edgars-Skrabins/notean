@@ -13,11 +13,11 @@ export class LanguageService {
   }
 
   getCurrentLanguage(): string {
-    return this.translateService.currentLang || defaultLanguage;
+    return this.translateService.getCurrentLang() || defaultLanguage;
   }
 
   initLanguage() {
-    this.translateService.setDefaultLang(defaultLanguage);
+    this.translateService.setFallbackLang(defaultLanguage);
 
     const storedLanguage = localStorage.getItem(this.languageStorageKey);
     const browserLanguage = getBrowserLanguage();

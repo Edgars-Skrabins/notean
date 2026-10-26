@@ -1,7 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ActivatedRoute, convertToParamMap, Router} from '@angular/router';
 import {BehaviorSubject} from 'rxjs';
-import {TranslateModule} from '@ngx-translate/core';
+import {provideTranslateService} from '@ngx-translate/core';
 import {ProjectDetailComponent} from './project-detail.component';
 import {ProjectService} from '@services/project.service';
 import {ProjectFilterService} from '@services/project-filter.service';
@@ -78,8 +78,9 @@ describe('ProjectDetailComponent', () => {
     const route = {snapshot: {paramMap: convertToParamMap({id: '5'})}} as unknown as ActivatedRoute;
 
     await TestBed.configureTestingModule({
-      imports: [ProjectDetailComponent, TranslateModule.forRoot()],
+      imports: [ProjectDetailComponent],
       providers: [
+        provideTranslateService(),
         {provide: ActivatedRoute, useValue: route},
         {provide: Router, useValue: router},
         {provide: ProjectService, useValue: projectService},

@@ -1,7 +1,7 @@
-import {Component, ElementRef, EventEmitter, Input, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {NgFor, NgIf} from '@angular/common';
 import {OverlayModule} from '@angular/cdk/overlay';
-import {TranslateModule} from '@ngx-translate/core';
+import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {MENU_POSITIONS} from '@config/overlayPositions';
 import {TicketFilters, TicketStatus} from '@models/ticket.model';
@@ -10,15 +10,15 @@ import {CheckboxComponent} from '@components/checkbox/checkbox.component';
 
 @Component({
   selector: 'app-ticket-filter',
-  standalone: true,
   imports: [
     NgFor,
     NgIf,
     OverlayModule,
-    TranslateModule,
+    TranslatePipe,
     CheckboxComponent
   ],
   templateUrl: './ticket-filter.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './ticket-filter.component.css'
 })
 export class TicketFilterComponent {

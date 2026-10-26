@@ -2,7 +2,7 @@ import {NO_ERRORS_SCHEMA} from '@angular/core';
 import {TestBed} from '@angular/core/testing';
 import {NgFor, NgIf} from '@angular/common';
 import {Subject} from 'rxjs';
-import {TranslateModule} from '@ngx-translate/core';
+import {provideTranslateService, TranslatePipe} from '@ngx-translate/core';
 import {ManageTeamComponent} from "./manage-team.component";
 import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
@@ -76,15 +76,16 @@ describe('ManageTeamComponent features', () => {
     teamService = teamServiceSpy();
     toastService = jasmine.createSpyObj<ToastService>('ToastService', ['show']);
     await TestBed.configureTestingModule({
-      imports: [ManageTeamComponent, TranslateModule.forRoot()],
+      imports: [ManageTeamComponent],
       providers: [
+        provideTranslateService(),
         {provide: TeamService, useValue: teamService},
         {provide: ToastService, useValue: toastService},
         {provide: NavigationService, useValue: {}},
         {provide: TeamChannelService, useValue: teamChannelServiceStub().service},
       ],
     })
-      .overrideComponent(ManageTeamComponent, {set: {imports: [NgFor, NgIf, TranslateModule], schemas: [NO_ERRORS_SCHEMA]}})
+      .overrideComponent(ManageTeamComponent, {set: {imports: [NgFor, NgIf, TranslatePipe], schemas: [NO_ERRORS_SCHEMA]}})
       .compileComponents();
   });
 

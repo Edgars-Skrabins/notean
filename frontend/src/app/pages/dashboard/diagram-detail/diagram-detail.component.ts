@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
 import {TranslateService} from "@ngx-translate/core";
 import {NgIf} from '@angular/common';
@@ -19,13 +19,13 @@ import {FolderedItemDetailComponent} from "../foldered-item-detail.base";
 
 @Component({
   selector: 'app-diagram-detail',
-  standalone: true,
   imports: [
     NgIf,
     FlowchartEditorComponent,
     ItemDetailLayoutComponent
   ],
   templateUrl: './diagram-detail.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './diagram-detail.component.css'
 })
 export class DiagramDetailComponent extends FolderedItemDetailComponent {

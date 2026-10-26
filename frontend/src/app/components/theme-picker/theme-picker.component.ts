@@ -1,18 +1,18 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {NgForOf} from "@angular/common";
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {DEFAULT_THEME, ThemeKey, THEMES} from "@config/themes";
 import {ResolvedThemeMode} from "@utils/themeDom";
 
 @Component({
   selector: 'app-theme-picker',
-  standalone: true,
   imports: [
     NgForOf,
-    TranslateModule
+    TranslatePipe
   ],
   templateUrl: './theme-picker.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './theme-picker.component.css'
 })
 export class ThemePickerComponent {

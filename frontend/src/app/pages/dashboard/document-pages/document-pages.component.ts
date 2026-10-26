@@ -1,8 +1,8 @@
-import {Component} from '@angular/core';
+import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {AsyncPipe, NgIf} from '@angular/common';
 import {Router} from '@angular/router';
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {PageService} from "@services/page.service";
 import {FolderService} from "@services/folder.service";
@@ -19,18 +19,18 @@ import {FolderedListPageComponent} from "../foldered-list-page.base";
 
 @Component({
   selector: 'app-document-pages',
-  standalone: true,
   imports: [
     FormsModule,
     NgIf,
     AsyncPipe,
-    TranslateModule,
+    TranslatePipe,
     ButtonComponent,
     ItemTreeComponent,
     CreateNamedItemDialogComponent,
     FolderProjectDialogComponent
   ],
   templateUrl: './document-pages.component.html',
+  changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './document-pages.component.css'
 })
 export class DocumentPagesComponent extends FolderedListPageComponent {
