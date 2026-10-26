@@ -11,6 +11,7 @@ import {ToastType} from "@models/toast.model";
 import {PHRASES} from "@config/phrases";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "./board-page-state.service";
+import {BoardChannelService} from "@services/board-channel.service";
 import {boardDetail, createBoardState} from "../../../testing/boardFixtures";
 
 describe('BoardPageComponent', () => {
@@ -21,6 +22,7 @@ describe('BoardPageComponent', () => {
   let favoriteService: jasmine.SpyObj<FavoriteService>;
   let navigationService: jasmine.SpyObj<NavigationService>;
   let toastService: jasmine.SpyObj<ToastService>;
+  let boardChannelService: jasmine.SpyObj<BoardChannelService>;
 
   beforeEach(() => {
     state = createBoardState();
@@ -29,17 +31,33 @@ describe('BoardPageComponent', () => {
     favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['renameItem', 'forgetItem']);
     navigationService = jasmine.createSpyObj<NavigationService>('NavigationService', ['navigate']);
     toastService = jasmine.createSpyObj<ToastService>('ToastService', ['show']);
+    boardChannelService = jasmine.createSpyObj<BoardChannelService>('BoardChannelService', ['connect', 'disconnect']);
     const route = {paramMap: of(convertToParamMap({id: '9'}))} as unknown as ActivatedRoute;
-    component = new BoardPageComponent(route, state, boardService, boardListService, favoriteService, navigationService, toastService);
+    component = new BoardPageComponent(route, state, boardService, boardListService, favoriteService, navigationService, toastService, boardChannelService);
   });
 
-  it('loads the board from the route', fakeAsync(() => {
+  it('loads the board from the route and follows its live updates until destroyed', fakeAsync(() => {
     const load = spyOn(state, 'load').and.returnValue(Promise.resolve());
 
     component.ngOnInit();
     flushMicrotasks();
 
     expect(load).toHaveBeenCalledWith(9);
+    expect(boardChannelService.connect).toHaveBeenCalledOnceWith(9);
+    component.ngOnDestroy();
+    expect(boardChannelService.disconnect).toHaveBeenCalled();
+  }));
+
+  it('does not follow live updates of a board that failed to load', fakeAsync(() => {
+    spyOn(state, 'load').and.callFake(async () => {
+      state.board = null;
+      state.errorCode = 'BOARD_NOT_FOUND';
+    });
+
+    component.ngOnInit();
+    flushMicrotasks();
+
+    expect(boardChannelService.connect).not.toHaveBeenCalled();
     component.ngOnDestroy();
   }));
 
@@ -74,6 +92,7 @@ describe('BoardPageComponent', () => {
     component.handleConfirmDelete();
     flushMicrotasks();
 
+    expect(boardChannelService.disconnect).toHaveBeenCalledBefore(boardService.deleteBoard);
     expect(boardListService.remove).toHaveBeenCalledWith(9);
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Board', 9);
     expect(navigationService.navigate).toHaveBeenCalledWith(AppRoutes.DASHBOARD, AppRoutes.DASHBOARD_HOME);
@@ -87,6 +106,7 @@ describe('BoardPageComponent', () => {
 
     expect(component.alertMessage).toBe('ERRORS.BOARDS.BOARD_NOT_FOUND');
     expect(navigationService.navigate).not.toHaveBeenCalled();
+    expect(boardChannelService.connect).toHaveBeenCalledWith(9);
   }));
 
   it('moves the board to another project and refreshes the sidebar', fakeAsync(() => {

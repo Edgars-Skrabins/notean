@@ -35,7 +35,7 @@ export interface RawTicketSummary {
   updated_at: string;
 }
 
-interface RawBoardColumn {
+export interface RawBoardColumn {
   id: number;
   title: string;
   position: number;

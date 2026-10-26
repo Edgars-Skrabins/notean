@@ -111,4 +111,36 @@ describe('BoardPageStateService', () => {
 
     expect(state.findTicket(4)?.priorityId).toBe(21);
   });
+
+  it('replaces the columns in the given order, keeping tickets of known columns and dropping removed ones', () => {
+    const state = createBoardState();
+
+    state.setColumns([
+      {id: 11, title: 'Finished', position: 0, tickets: []},
+      {id: 12, title: 'Review', position: 1, tickets: []},
+    ]);
+
+    expect(state.board!.columns.map((column) => [column.id, column.title])).toEqual([[11, 'Finished'], [12, 'Review']]);
+    expect(state.board!.columns[1].tickets).toEqual([]);
+    expect(state.findTicket(1)).toBeNull();
+    expect(state.board!.backlog.map((ticket) => ticket.id)).toEqual([3, 4]);
+  });
+
+  it('keeps the tickets already in a column when its columns are replaced', () => {
+    const state = createBoardState();
+
+    state.setColumns([{id: 10, title: 'Next', position: 0, tickets: []}]);
+
+    expect(state.board!.columns[0].tickets.map((ticket) => ticket.id)).toEqual([1, 2]);
+  });
+
+  it('sets the board title and project only for the same board', () => {
+    const state = createBoardState();
+
+    state.setBoardMeta({id: 9, title: 'Sprint 13', projectId: 5});
+    state.setBoardMeta({id: 99, title: 'Other', projectId: null});
+
+    expect(state.board!.title).toBe('Sprint 13');
+    expect(state.board!.projectId).toBe(5);
+  });
 });

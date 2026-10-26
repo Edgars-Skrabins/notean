@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
+import {Subject} from 'rxjs';
 import {BoardService} from "@services/board.service";
 import {TeamService} from "@services/team.service";
-import {BoardDetail} from "@models/board.model";
+import {BoardColumn, BoardDetail, BoardSummary} from "@models/board.model";
 import {TicketStatus, TicketStatusGroup, TicketSummary} from "@models/ticket.model";
 import {BoardPriority} from "@models/priority.model";
 import {ErrorCode} from "@config/errorCodes";
@@ -12,6 +13,8 @@ export class BoardPageStateService {
   board: BoardDetail | null = null;
   boardId = 0;
   errorCode: ErrorCode | null = null;
+
+  readonly remoteChanges$ = new Subject<Map<number, string>>();
 
   readonly teamCode: string;
 
@@ -31,6 +34,25 @@ export class BoardPageStateService {
 
   reload() {
     return this.load(this.boardId);
+  }
+
+  setColumns(columns: BoardColumn[]) {
+    if (!this.board) {
+      return;
+    }
+    const existing = new Map(this.board.columns.map((column) => [column.id, column]));
+    this.board.columns = columns.map((column) => ({
+      ...column,
+      tickets: existing.get(column.id)?.tickets ?? column.tickets,
+    }));
+  }
+
+  setBoardMeta(meta: Pick<BoardSummary, 'id' | 'title' | 'projectId'>) {
+    if (!this.board || this.board.id !== meta.id) {
+      return;
+    }
+    this.board.title = meta.title;
+    this.board.projectId = meta.projectId;
   }
 
   setPriorities(priorities: BoardPriority[]) {
