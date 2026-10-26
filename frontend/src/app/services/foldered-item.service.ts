@@ -13,6 +13,7 @@ import {
   FolderedItemResponse,
   FolderedItemSummary,
   FolderedItemUser,
+  ListFolderedItemsParams,
   ListFolderedItemsResponse,
   SaveFolderedItemParams,
   SaveFolderedItemResponse
@@ -87,10 +88,15 @@ export abstract class FolderedItemService<E extends ErrorCode> {
   protected abstract readonly resource: string;
   protected abstract readonly key: string;
 
-  async list(teamCode: string, projectId: number | null = null): Promise<ListFolderedItemsResponse> {
+  async list(teamCode: string, {folderId, search, projectId, offset}: ListFolderedItemsParams = {}): Promise<ListFolderedItemsResponse> {
+    const params = {...projectQuery(projectId)?.params, folder_id: folderId, search: search || undefined, offset: offset || undefined};
     return apiRequest<ListFolderedItemsResponse>(
-      axiosInstance.get(this.itemsUrl(teamCode), projectQuery(projectId)),
-      (data) => ({success: true, items: (data[this.resource] as RawFolderedItemSummary[]).map(mapFolderedItemSummary)}),
+      axiosInstance.get(this.itemsUrl(teamCode), {params}),
+      (data) => ({
+        success: true,
+        items: (data[this.resource] as RawFolderedItemSummary[]).map(mapFolderedItemSummary),
+        hasMore: data.has_more,
+      }),
     );
   }
 

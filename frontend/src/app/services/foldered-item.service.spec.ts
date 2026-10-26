@@ -112,12 +112,24 @@ describe('FolderedItemService', () => {
   };
 
   it('lists items from the resource key of the subclass', async () => {
-    const get = spyOn(axiosInstance, 'get').and.returnValue(Promise.resolve({data: {diagrams: [rawItem]}}));
+    const get = spyOn(axiosInstance, 'get').and.returnValue(Promise.resolve({data: {diagrams: [rawItem], has_more: true}}));
 
-    const response = await new DiagramService().list('abc', 4);
+    const response = await new DiagramService().list('abc', {projectId: 4});
 
-    expect(get).toHaveBeenCalledWith('/teams/abc/diagrams', {params: {project_id: 4}});
+    expect(get).toHaveBeenCalledWith('/teams/abc/diagrams', {params: {project_id: 4, folder_id: undefined, search: undefined, offset: undefined}});
     expect(response.success && response.items.map((item) => item.id)).toEqual([7]);
+    expect(response.success && response.hasMore).toBeTrue();
+  });
+
+  it('sends the folder level, search and offset when listing', async () => {
+    const get = spyOn(axiosInstance, 'get').and.returnValue(Promise.resolve({data: {pages: [], has_more: false}}));
+    const service = new PageService();
+
+    await service.list('abc', {folderId: 'root', offset: 50});
+    await service.list('abc', {folderId: 3, search: 'road'});
+
+    expect(get).toHaveBeenCalledWith('/teams/abc/pages', {params: {folder_id: 'root', search: undefined, offset: 50}});
+    expect(get).toHaveBeenCalledWith('/teams/abc/pages', {params: {folder_id: 3, search: 'road', offset: undefined}});
   });
 
   it('wraps create, save and move payloads in the item key', async () => {

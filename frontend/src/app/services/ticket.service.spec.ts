@@ -115,6 +115,18 @@ describe('TicketService', () => {
     expect(remove).toHaveBeenCalledWith(`${url}/1/assignees/5`);
   });
 
+  it('lists one status group with its filters and maps the tickets', async () => {
+    const get = spyOn(axiosInstance, 'get').and.returnValue(Promise.resolve({data: {tickets: [baseRaw], has_more: true}}));
+
+    const response = await service.list('abc', 9, {status: 3, search: 'bug', assigneeIds: [5, 'none'], offset: 50});
+    await service.list('abc', 9, {status: 'backlog', assigneeIds: []});
+
+    expect(get).toHaveBeenCalledWith(url, {params: {status: 3, search: 'bug', assignee_ids: [5, 'none'], offset: 50}});
+    expect(get).toHaveBeenCalledWith(url, {params: {status: 'backlog', search: undefined, assignee_ids: undefined, offset: undefined}});
+    expect(response.success && response.tickets.map((ticket) => [ticket.id, ticket.columnId])).toEqual([[1, 3]]);
+    expect(response.success && response.hasMore).toBeTrue();
+  });
+
   it('sends each bulk action with the ticket ids and maps the returned tickets', async () => {
     const patch = spyOn(axiosInstance, 'patch').and.returnValue(Promise.resolve({data: {tickets: [baseRaw]}}));
 

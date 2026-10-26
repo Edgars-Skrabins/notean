@@ -1,16 +1,16 @@
 import {BehaviorSubject, map} from "rxjs";
 import {ProjectFilterService} from "@services/project-filter.service";
-import {ProjectSummary} from "@models/project.model";
+import {ProjectOption} from "@models/project.model";
 
 export interface ProjectFilterStub {
   service: ProjectFilterService;
   selected: BehaviorSubject<number | null>;
-  projects: BehaviorSubject<ProjectSummary[]>;
+  projects: BehaviorSubject<ProjectOption[]>;
 }
 
 export function projectFilterStub(selectedProjectId: number | null = null): ProjectFilterStub {
   const selected = new BehaviorSubject<number | null>(selectedProjectId);
-  const projects = new BehaviorSubject<ProjectSummary[]>([]);
+  const projects = new BehaviorSubject<ProjectOption[]>([]);
   const service = {
     selectedProjectId$: selected,
     projects$: projects,

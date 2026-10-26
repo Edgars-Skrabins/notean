@@ -32,6 +32,25 @@ describe('ProjectService', () => {
   const service = new ProjectService();
   const params = {name: 'Game', description: 'Fun', ownerUserId: 2, memberIds: [3]};
 
+  it('lists a page of projects with search and offset', async () => {
+    const get = spyOn(axiosInstance, 'get').and.returnValue(Promise.resolve({data: {projects: [rawProject], has_more: true}}));
+
+    const response = await service.listProjects('abc', {search: 'ga', offset: 50});
+
+    expect(get).toHaveBeenCalledWith('/teams/abc/projects', {params: {search: 'ga', offset: 50}});
+    expect(response.success && response.projects.map((project) => project.name)).toEqual(['Game']);
+    expect(response.success && response.hasMore).toBeTrue();
+  });
+
+  it('lists every project option', async () => {
+    const get = spyOn(axiosInstance, 'get').and.returnValue(Promise.resolve({data: {projects: [{id: 1, name: 'Game'}]}}));
+
+    const response = await service.listProjectOptions('abc');
+
+    expect(get).toHaveBeenCalledWith('/teams/abc/projects/options');
+    expect(response).toEqual({success: true, projects: [{id: 1, name: 'Game'}]});
+  });
+
   it('sends snake_case params on create and update', async () => {
     const post = spyOn(axiosInstance, 'post').and.returnValue(Promise.resolve({data: {project: rawProject}}));
     const patch = spyOn(axiosInstance, 'patch').and.returnValue(Promise.resolve({data: {project: rawProject}}));

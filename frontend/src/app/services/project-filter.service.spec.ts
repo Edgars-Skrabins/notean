@@ -1,11 +1,11 @@
 import {ProjectFilterService} from "./project-filter.service";
 import {ProjectService} from "@services/project.service";
 import {TeamService} from "@services/team.service";
-import {ProjectSummary} from "@models/project.model";
+import {ProjectOption} from "@models/project.model";
 import {testTeam} from "../testing/teamFixtures";
 
-function project(id: number): ProjectSummary {
-  return {id, name: `P${id}`, description: '', owner: {id: 1, nickname: 'alice', avatar: {color: 'red', imageUrl: null}}, memberCount: 1, canManage: true};
+function project(id: number): ProjectOption {
+  return {id, name: `P${id}`};
 }
 
 describe('ProjectFilterService', () => {
@@ -18,8 +18,8 @@ describe('ProjectFilterService', () => {
 
   beforeEach(() => {
     localStorage.clear();
-    projectService = jasmine.createSpyObj<ProjectService>('ProjectService', ['listProjects']);
-    projectService.listProjects.and.returnValue(Promise.resolve({success: true, projects: [project(1), project(2)]}));
+    projectService = jasmine.createSpyObj<ProjectService>('ProjectService', ['listProjectOptions']);
+    projectService.listProjectOptions.and.returnValue(Promise.resolve({success: true, projects: [project(1), project(2)]}));
     teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeamCode', 'getCurrentTeam']);
     teamService.getCurrentTeamCode.and.returnValue('abc');
     teamService.getCurrentTeam.and.returnValue(testTeam({id: 1, name: 'Team', code: 'abc'}));
@@ -56,6 +56,7 @@ describe('ProjectFilterService', () => {
 
     await service.load();
 
+    expect(projectService.listProjectOptions).toHaveBeenCalledWith('abc');
     expect(service.getProjects().map((item) => item.id)).toEqual([1, 2]);
     expect(service.getSelectedProjectId()).toBe(2);
   });
@@ -66,7 +67,7 @@ describe('ProjectFilterService', () => {
     service.hasProjects$.subscribe((hasProjects) => changes.push(hasProjects));
 
     await service.load();
-    projectService.listProjects.and.returnValue(Promise.resolve({success: true, projects: []}));
+    projectService.listProjectOptions.and.returnValue(Promise.resolve({success: true, projects: []}));
     await service.load();
 
     expect(changes).toEqual([false, true, false]);

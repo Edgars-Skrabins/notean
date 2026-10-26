@@ -7,8 +7,11 @@ import {mapBoardUser, RawBoardUser} from "@services/board.service";
 import {
   DeleteProjectMode,
   DeleteProjectResponse,
+  ListProjectOptionsResponse,
+  ListProjectsParams,
   ListProjectsResponse,
   ProjectDetail,
+  ProjectOption,
   ProjectParams,
   ProjectResponse,
   ProjectSummary
@@ -60,10 +63,21 @@ function toRawParams(params: ProjectParams) {
   providedIn: 'root',
 })
 export class ProjectService {
-  async listProjects(teamCode: string): Promise<ListProjectsResponse> {
+  async listProjects(teamCode: string, {search, offset}: ListProjectsParams = {}): Promise<ListProjectsResponse> {
     return apiRequest<ListProjectsResponse>(
-      axiosInstance.get(this.projectsUrl(teamCode)),
-      (data) => ({success: true, projects: (data.projects as RawProjectSummary[]).map(mapProjectSummary)}),
+      axiosInstance.get(this.projectsUrl(teamCode), {params: {search: search || undefined, offset: offset || undefined}}),
+      (data) => ({
+        success: true,
+        projects: (data.projects as RawProjectSummary[]).map(mapProjectSummary),
+        hasMore: data.has_more,
+      }),
+    );
+  }
+
+  async listProjectOptions(teamCode: string): Promise<ListProjectOptionsResponse> {
+    return apiRequest<ListProjectOptionsResponse>(
+      axiosInstance.get(teamPath(teamCode, 'projects', 'options')),
+      (data) => ({success: true, projects: data.projects as ProjectOption[]}),
     );
   }
 
