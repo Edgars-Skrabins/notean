@@ -145,6 +145,9 @@
   "EDIT_CONFLICT_LOAD_LATEST": "Neueste laden",
   "EDIT_CONFLICT_OVERWRITE": "Überschreiben",
   "PROFILE_UPDATED": "Profilinformationen aktualisiert",
+  "DELETE_ACCOUNT": "Konto löschen",
+  "CONFIRM_DELETE_ACCOUNT": "Dein Konto löschen? Du wirst aus allen Teams entfernt und kannst dich nicht mehr anmelden. Deine Inhalte bleiben in deinen Teams.",
+  "ACCOUNT_DELETED": "Dein Konto wurde gelöscht",
   "NICKNAME_TOO_SHORT": "Der Spitzname muss mindestens 3 Zeichen lang sein",
   "NICKNAME_TOO_LONG": "Der Spitzname darf höchstens 30 Zeichen lang sein",
   "NICKNAME_INVALID_CHARACTERS": "Der Spitzname darf nur die Buchstaben a–z enthalten",
@@ -320,7 +323,8 @@
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Einstellungen konnten nicht gespeichert werden",
       "AVATAR_COLOR_INVALID": "Diese Farbe kann nicht verwendet werden",
-      "AVATAR_IMAGE_INVALID": "Das Bild muss PNG, JPEG oder WebP und höchstens 2 MB groß sein"
+      "AVATAR_IMAGE_INVALID": "Das Bild muss PNG, JPEG oder WebP und höchstens 2 MB groß sein",
+      "OWNS_TEAMS": "Übertrage zuerst die Inhaberschaft oder lösche diese Teams: {{teams}}"
     },
     "TEAMS": {
       "TEAM_NOT_FOUND": "Team nicht gefunden",

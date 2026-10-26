@@ -2,13 +2,15 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {NgFor, NgIf} from "@angular/common";
 import {Subscription} from "rxjs";
-import {TranslateModule} from "@ngx-translate/core";
+import {TranslateModule, TranslateService} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {AVATAR_COLORS, AVATAR_IMAGE_MAX_BYTES, AVATAR_IMAGE_TYPES, AvatarColor} from "@config/avatarColors";
 import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
 import {ToastService} from "@services/toast.service";
 import {AvatarService} from "@services/avatar.service";
+import {AuthService} from "@services/auth.service";
+import {SessionService} from "@services/session.service";
 import {ToastType} from "@models/toast.model";
 import {Avatar, AvatarUpdate} from "@models/avatar.model";
 import {HasUnsavedChanges} from "@models/unsaved-changes.model";
@@ -49,7 +51,10 @@ export class ProfileComponent implements HasUnsavedChanges, OnInit, OnDestroy {
   pendingRemoveImage = false;
   isSaving = false;
   isLeaveConfirmOpen = false;
+  isDeleteAccountConfirmOpen = false;
+  isDeletingAccount = false;
 
+  private isAccountDeleted = false;
   private resolveLeave: ((canLeave: boolean) => void) | null = null;
   private avatarSubscription: Subscription;
 
@@ -60,7 +65,10 @@ export class ProfileComponent implements HasUnsavedChanges, OnInit, OnDestroy {
     private teamService: TeamService,
     private toastService: ToastService,
     private avatarService: AvatarService,
-    private escapeService: EscapeService
+    private escapeService: EscapeService,
+    private authService: AuthService,
+    private sessionService: SessionService,
+    private translateService: TranslateService
   ) {
     this.savedNickname = this.teamService.getCurrentNickname() ?? '';
     this.nickname = this.savedNickname;
@@ -81,6 +89,9 @@ export class ProfileComponent implements HasUnsavedChanges, OnInit, OnDestroy {
   }
 
   get hasUnsavedChanges(): boolean {
+    if (this.isAccountDeleted) {
+      return false;
+    }
     return this.nickname !== this.savedNickname || this.hasAvatarChanges;
   }
 
@@ -206,6 +217,41 @@ export class ProfileComponent implements HasUnsavedChanges, OnInit, OnDestroy {
 
   handleCancelLeave() {
     this.closeLeaveConfirm(false);
+  }
+
+  handleDeleteAccount() {
+    this.isDeleteAccountConfirmOpen = true;
+  }
+
+  handleCancelDeleteAccount() {
+    this.isDeleteAccountConfirmOpen = false;
+  }
+
+  async handleConfirmDeleteAccount() {
+    this.isDeleteAccountConfirmOpen = false;
+    if (this.isDeletingAccount) {
+      return;
+    }
+
+    this.isDeletingAccount = true;
+    const response = await this.authService.deleteAccount();
+    this.isDeletingAccount = false;
+
+    if (!response.success) {
+      if (response.code === 'OWNS_TEAMS') {
+        const teams = response.teams.map((team) => team.name).join(', ');
+        this.showError(this.translateService.instant(errorPhrase(response.code), {teams}));
+        return;
+      }
+      this.showError(errorPhrase(response.code));
+      return;
+    }
+
+    this.isAccountDeleted = true;
+    this.authService.logout();
+    this.sessionService.clear();
+    this.navigationService.navigate(AppRoutes.LOGIN);
+    this.toastService.show({type: ToastType.SUCCESS, message: PHRASES.ACCOUNT_DELETED});
   }
 
   handleGoBack() {

@@ -145,6 +145,9 @@
   "EDIT_CONFLICT_LOAD_LATEST": "Laadi uusim",
   "EDIT_CONFLICT_OVERWRITE": "Kirjuta üle",
   "PROFILE_UPDATED": "Profiili andmed uuendatud",
+  "DELETE_ACCOUNT": "Kustuta konto",
+  "CONFIRM_DELETE_ACCOUNT": "Kas kustutada sinu konto? Sind eemaldatakse kõigist meeskondadest ja sa ei saa enam sisse logida. Sinu sisu jääb meeskondadesse alles.",
+  "ACCOUNT_DELETED": "Sinu konto kustutati",
   "NICKNAME_TOO_SHORT": "Hüüdnimi peab olema vähemalt 3 märki pikk",
   "NICKNAME_TOO_LONG": "Hüüdnimi võib olla kuni 30 märki pikk",
   "NICKNAME_INVALID_CHARACTERS": "Hüüdnimi võib sisaldada ainult tähti a–z",
@@ -320,7 +323,8 @@
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Seadeid ei õnnestunud salvestada",
       "AVATAR_COLOR_INVALID": "Seda värvi ei saa kasutada",
-      "AVATAR_IMAGE_INVALID": "Pilt peab olema PNG-, JPEG- või WebP-vormingus ja kuni 2 MB"
+      "AVATAR_IMAGE_INVALID": "Pilt peab olema PNG-, JPEG- või WebP-vormingus ja kuni 2 MB",
+      "OWNS_TEAMS": "Anna esmalt omandiõigus üle või kustuta need meeskonnad: {{teams}}"
     },
     "TEAMS": {
       "TEAM_NOT_FOUND": "Meeskonda ei leitud",

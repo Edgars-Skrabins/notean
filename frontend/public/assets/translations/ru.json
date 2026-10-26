@@ -145,6 +145,9 @@
   "EDIT_CONFLICT_LOAD_LATEST": "Загрузить последнюю",
   "EDIT_CONFLICT_OVERWRITE": "Перезаписать",
   "PROFILE_UPDATED": "Данные профиля обновлены",
+  "DELETE_ACCOUNT": "Удалить аккаунт",
+  "CONFIRM_DELETE_ACCOUNT": "Удалить аккаунт? Вы будете удалены из всех команд и больше не сможете войти. Ваш контент останется в командах.",
+  "ACCOUNT_DELETED": "Ваш аккаунт удалён",
   "NICKNAME_TOO_SHORT": "Никнейм должен содержать не менее 3 символов",
   "NICKNAME_TOO_LONG": "Никнейм может содержать не более 30 символов",
   "NICKNAME_INVALID_CHARACTERS": "Никнейм может содержать только буквы a–z",
@@ -320,7 +323,8 @@
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Не удалось сохранить настройки",
       "AVATAR_COLOR_INVALID": "Этот цвет нельзя использовать",
-      "AVATAR_IMAGE_INVALID": "Изображение должно быть в формате PNG, JPEG или WebP и не больше 2 МБ"
+      "AVATAR_IMAGE_INVALID": "Изображение должно быть в формате PNG, JPEG или WebP и не больше 2 МБ",
+      "OWNS_TEAMS": "Сначала передайте права владельца или удалите эти команды: {{teams}}"
     },
     "TEAMS": {
       "TEAM_NOT_FOUND": "Команда не найдена",

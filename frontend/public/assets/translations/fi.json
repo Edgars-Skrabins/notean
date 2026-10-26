@@ -145,6 +145,9 @@
   "EDIT_CONFLICT_LOAD_LATEST": "Lataa uusin",
   "EDIT_CONFLICT_OVERWRITE": "Korvaa",
   "PROFILE_UPDATED": "Profiilitiedot päivitetty",
+  "DELETE_ACCOUNT": "Poista tili",
+  "CONFIRM_DELETE_ACCOUNT": "Poistetaanko tilisi? Sinut poistetaan kaikista tiimeistä, etkä voi enää kirjautua sisään. Sisältösi säilyy tiimeissä.",
+  "ACCOUNT_DELETED": "Tilisi poistettiin",
   "NICKNAME_TOO_SHORT": "Nimimerkissä on oltava vähintään 3 merkkiä",
   "NICKNAME_TOO_LONG": "Nimimerkissä voi olla enintään 30 merkkiä",
   "NICKNAME_INVALID_CHARACTERS": "Nimimerkki voi sisältää vain kirjaimia a–z",
@@ -320,7 +323,8 @@
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Asetuksia ei voitu tallentaa",
       "AVATAR_COLOR_INVALID": "Tätä väriä ei voi käyttää",
-      "AVATAR_IMAGE_INVALID": "Kuvan on oltava PNG-, JPEG- tai WebP-muodossa ja enintään 2 Mt"
+      "AVATAR_IMAGE_INVALID": "Kuvan on oltava PNG-, JPEG- tai WebP-muodossa ja enintään 2 Mt",
+      "OWNS_TEAMS": "Siirrä omistajuus tai poista nämä tiimit ensin: {{teams}}"
     },
     "TEAMS": {
       "TEAM_NOT_FOUND": "Tiimiä ei löytynyt",

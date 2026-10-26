@@ -145,6 +145,9 @@
   "EDIT_CONFLICT_LOAD_LATEST": "Įkelti naujausią",
   "EDIT_CONFLICT_OVERWRITE": "Perrašyti",
   "PROFILE_UPDATED": "Profilio informacija atnaujinta",
+  "DELETE_ACCOUNT": "Ištrinti paskyrą",
+  "CONFIRM_DELETE_ACCOUNT": "Ištrinti paskyrą? Būsite pašalinti iš visų komandų ir nebegalėsite prisijungti. Jūsų turinys liks komandose.",
+  "ACCOUNT_DELETED": "Jūsų paskyra ištrinta",
   "NICKNAME_TOO_SHORT": "Slapyvardį turi sudaryti bent 3 simboliai",
   "NICKNAME_TOO_LONG": "Slapyvardį gali sudaryti ne daugiau kaip 30 simbolių",
   "NICKNAME_INVALID_CHARACTERS": "Slapyvardyje gali būti tik raidės a–z",
@@ -320,7 +323,8 @@
     "USERS": {
       "SETTINGS_UPDATE_FAILED": "Nepavyko išsaugoti nustatymų",
       "AVATAR_COLOR_INVALID": "Šios spalvos naudoti negalima",
-      "AVATAR_IMAGE_INVALID": "Paveikslėlis turi būti PNG, JPEG arba WebP formato ir ne didesnis nei 2 MB"
+      "AVATAR_IMAGE_INVALID": "Paveikslėlis turi būti PNG, JPEG arba WebP formato ir ne didesnis nei 2 MB",
+      "OWNS_TEAMS": "Pirmiausia perduokite nuosavybę arba ištrinkite šias komandas: {{teams}}"
     },
     "TEAMS": {
       "TEAM_NOT_FOUND": "Komanda nerasta",

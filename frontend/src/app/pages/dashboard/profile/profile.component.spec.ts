@@ -5,9 +5,14 @@ import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
 import {ToastService} from "@services/toast.service";
 import {AvatarService} from "@services/avatar.service";
+import {AuthService} from "@services/auth.service";
+import {SessionService} from "@services/session.service";
+import {TranslateService} from "@ngx-translate/core";
 import {ToastType} from "@models/toast.model";
 import {Avatar} from "@models/avatar.model";
 import {PHRASES} from "@config/phrases";
+import {AppRoutes} from "../../../app/app-routes.enum";
+import {errorPhrase} from "@utils/errorPhrase";
 import {escapeServiceStub} from "../../../testing/escapeServiceStub";
 
 describe('ProfileComponent', () => {
@@ -16,6 +21,10 @@ describe('ProfileComponent', () => {
   let toastService: jasmine.SpyObj<ToastService>;
   let avatarService: jasmine.SpyObj<AvatarService>;
   let avatarSubject: BehaviorSubject<Avatar | null>;
+  let navigationService: jasmine.SpyObj<NavigationService>;
+  let authService: jasmine.SpyObj<AuthService>;
+  let sessionService: jasmine.SpyObj<SessionService>;
+  let translateService: jasmine.SpyObj<TranslateService>;
 
   function imageEvent(file: File): Event {
     const input = document.createElement('input');
@@ -33,7 +42,20 @@ describe('ProfileComponent', () => {
     avatarSubject = new BehaviorSubject<Avatar | null>({color: 'blue', imageUrl: null});
     avatarService = jasmine.createSpyObj<AvatarService>('AvatarService', ['getAvatar', 'update'], {avatar$: avatarSubject});
     avatarService.getAvatar.and.callFake(() => avatarSubject.value);
-    component = new ProfileComponent({} as NavigationService, teamService, toastService, avatarService, escapeServiceStub().service);
+    navigationService = jasmine.createSpyObj('NavigationService', ['navigate']);
+    authService = jasmine.createSpyObj('AuthService', ['deleteAccount', 'logout']);
+    sessionService = jasmine.createSpyObj('SessionService', ['clear']);
+    translateService = jasmine.createSpyObj('TranslateService', ['instant']);
+    component = new ProfileComponent(
+      navigationService,
+      teamService,
+      toastService,
+      avatarService,
+      escapeServiceStub().service,
+      authService,
+      sessionService,
+      translateService
+    );
   });
 
   afterEach(() => {
@@ -248,4 +270,62 @@ describe('ProfileComponent', () => {
 
     expect(component.isLeaveConfirmOpen).toBeTrue();
   });
+
+  it('opens the delete account confirmation without sending anything', () => {
+    component.handleDeleteAccount();
+
+    expect(component.isDeleteAccountConfirmOpen).toBeTrue();
+    expect(authService.deleteAccount).not.toHaveBeenCalled();
+  });
+
+  it('closes the delete account confirmation on cancel', () => {
+    component.handleDeleteAccount();
+
+    component.handleCancelDeleteAccount();
+
+    expect(component.isDeleteAccountConfirmOpen).toBeFalse();
+    expect(authService.deleteAccount).not.toHaveBeenCalled();
+  });
+
+  it('logs out to the login page with a toast once the account is deleted', fakeAsync(() => {
+    authService.deleteAccount.and.returnValue(Promise.resolve({success: true}));
+    component.nickname = 'Ally';
+    component.handleDeleteAccount();
+
+    component.handleConfirmDeleteAccount();
+    tick();
+
+    expect(authService.logout).toHaveBeenCalled();
+    expect(sessionService.clear).toHaveBeenCalled();
+    expect(navigationService.navigate).toHaveBeenCalledWith(AppRoutes.LOGIN);
+    expect(toastService.show).toHaveBeenCalledWith({type: ToastType.SUCCESS, message: PHRASES.ACCOUNT_DELETED});
+    expect(component.hasUnsavedChanges).toBeFalse();
+  }));
+
+  it('names the owned teams and stays logged in when the user owns teams', fakeAsync(() => {
+    authService.deleteAccount.and.returnValue(Promise.resolve({
+      success: false,
+      code: 'OWNS_TEAMS',
+      teams: [{code: 'ABC123', name: 'Alpha'}, {code: 'XYZ789', name: 'Zeta'}],
+    }));
+    translateService.instant.and.returnValue('Transfer ownership or delete these teams first: Alpha, Zeta');
+
+    component.handleConfirmDeleteAccount();
+    tick();
+
+    expect(translateService.instant).toHaveBeenCalledWith('ERRORS.USERS.OWNS_TEAMS', {teams: 'Alpha, Zeta'});
+    expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: 'Transfer ownership or delete these teams first: Alpha, Zeta'});
+    expect(authService.logout).not.toHaveBeenCalled();
+    expect(navigationService.navigate).not.toHaveBeenCalled();
+  }));
+
+  it('shows the translated error for other failures', fakeAsync(() => {
+    authService.deleteAccount.and.returnValue(Promise.resolve({success: false, code: 'NETWORK_ERROR'}));
+
+    component.handleConfirmDeleteAccount();
+    tick();
+
+    expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: errorPhrase('NETWORK_ERROR')});
+    expect(authService.logout).not.toHaveBeenCalled();
+  }));
 });
