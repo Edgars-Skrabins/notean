@@ -30,7 +30,7 @@ export class RichTextEditorComponent implements AfterViewInit, OnChanges, OnDest
   ngAfterViewInit() {
     this.editor = new Editor({
       element: this.editorHost.nativeElement,
-      extensions: [StarterKit],
+      extensions: [StarterKit.configure({link: false, underline: false, listKeymap: false, trailingNode: false})],
       content: this.content,
       editable: this.editable,
       editorProps: {
