@@ -12,4 +12,19 @@ class Membership < ApplicationRecord
 
   before_validation { self.last_active_at ||= Time.current }
   before_validation { self.nickname = nickname&.strip }
+
+  scope :active, -> { where(removed_at: nil) }
+  scope :removed, -> { where.not(removed_at: nil) }
+
+  def removed?
+    removed_at.present?
+  end
+
+  def remove!
+    MembershipRemoval.apply(self)
+  end
+
+  def restore!(nickname:)
+    update!(removed_at: nil, role: "user", nickname: nickname, last_active_at: Time.current)
+  end
 end
