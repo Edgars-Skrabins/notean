@@ -84,7 +84,7 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     ticket = Ticket.create!(column: @todo, team: @team, created_by_user_id: @user.id, title: "Fix bug", position: 0)
 
     patch "/teams/#{@team.code}/boards/#{@board.id}/tickets/#{ticket.id}",
-      params: { ticket: { title: "Fix the bug", description: "Steps to reproduce..." } },
+      params: { ticket: { title: "Fix the bug", description: "Steps to reproduce...", lock_version: 0 } },
       headers: @headers,
       as: :json
 
@@ -456,7 +456,7 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
   test "update broadcasts the ticket with its description" do
     ticket = ticket_in(@todo, "Fix bug", 0)
 
-    patch tickets_url(ticket.id), params: { ticket: { title: "Fix the bug", description: "<p>Steps</p>" } }, headers: @headers, as: :json
+    patch tickets_url(ticket.id), params: { ticket: { title: "Fix the bug", description: "<p>Steps</p>", lock_version: 0 } }, headers: @headers, as: :json
 
     assert_response :success
     assert_broadcast_on(BoardChannel.stream_name(@board), type: "tickets_upserted", tickets: [ ticket_broadcast_json(JSON.parse(response.body)["ticket"]) ])
@@ -520,6 +520,60 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     assert_broadcast_on(BoardChannel.stream_name(@board), type: "tickets_removed", ticket_ids: [ first.id, second.id ])
   end
 
+  test "a title edit with a stale version returns EDIT_CONFLICT with the latest ticket" do
+    idea = ticket_in(@todo, "Idea", 0)
+    idea.update!(title: "Their idea")
+
+    patch tickets_url(idea.id), params: { ticket: { title: "My idea", lock_version: 0 } }, headers: @headers, as: :json
+
+    assert_response :conflict
+    body = JSON.parse(response.body)
+    assert_equal "EDIT_CONFLICT", body["code"]
+    assert_equal [ "Their idea", 1 ], [ body["ticket"]["title"], body["ticket"]["lock_version"] ]
+    assert_equal "Their idea", idea.reload.title
+  end
+
+  test "a description edit without a version returns LOCK_VERSION_REQUIRED" do
+    idea = ticket_in(@todo, "Idea", 0)
+
+    patch tickets_url(idea.id), params: { ticket: { description: "Details" } }, headers: @headers, as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal "LOCK_VERSION_REQUIRED", JSON.parse(response.body)["code"]
+    assert_nil idea.reload.description
+  end
+
+  test "a column move needs no version and bumps it" do
+    idea = ticket_in(@todo, "Idea", 0)
+    idea.update!(title: "Renamed")
+
+    patch tickets_url(idea.id), params: { ticket: { column_id: @doing.id } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal [ @doing.id, 2 ], [ idea.reload.column_id, idea.lock_version ]
+  end
+
+  test "a title edit based on the version from before a move conflicts" do
+    idea = ticket_in(@todo, "Idea", 0)
+    patch tickets_url(idea.id), params: { ticket: { column_id: @doing.id } }, headers: @headers, as: :json
+
+    patch tickets_url(idea.id), params: { ticket: { title: "My idea", lock_version: 0 } }, headers: @headers, as: :json
+
+    assert_response :conflict
+    assert_equal [ "Idea", @doing.id ], [ idea.reload.title, idea.column_id ]
+  end
+
+  test "bulk update needs no version" do
+    idea = ticket_in(@todo, "Idea", 0)
+
+    bulk_update(ticket_ids: [ idea.id ], column_id: @doing.id)
+
+    assert_response :success
+    assert_equal 0, JSON.parse(response.body)["tickets"][0]["lock_version"]
+    patch tickets_url(idea.id), params: { ticket: { title: "My idea", lock_version: 0 } }, headers: @headers, as: :json
+    assert_response :success
+  end
+
   test "create returns TITLE_TOO_LONG for an over-limit title" do
     post "/teams/#{@team.code}/boards/#{@board.id}/tickets", params: { ticket: { title: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1), column_id: @todo.id } }, headers: @headers, as: :json
 
@@ -530,7 +584,7 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
   test "update returns DESCRIPTION_TOO_LONG for an over-limit description" do
     ticket = Ticket.create!(column: @todo, team: @team, created_by_user_id: @user.id, title: "Fix bug", position: 0)
 
-    patch "/teams/#{@team.code}/boards/#{@board.id}/tickets/#{ticket.id}", params: { ticket: { description: "a" * (ContentLimits::DESCRIPTION_MAX_LENGTH + 1) } }, headers: @headers, as: :json
+    patch "/teams/#{@team.code}/boards/#{@board.id}/tickets/#{ticket.id}", params: { ticket: { description: "a" * (ContentLimits::DESCRIPTION_MAX_LENGTH + 1), lock_version: 0 } }, headers: @headers, as: :json
 
     assert_response :unprocessable_entity
     assert_equal({ "code" => "DESCRIPTION_TOO_LONG" }, JSON.parse(response.body))

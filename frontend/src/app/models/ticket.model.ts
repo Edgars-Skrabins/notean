@@ -1,4 +1,4 @@
-import {Result} from "@models/result.model";
+import {EditConflict, Result} from "@models/result.model";
 import {BoardsErrorCode, TicketsErrorCode, TeamAccessErrorCode} from "@config/errorCodes";
 import {BoardUser} from './board.model';
 
@@ -8,6 +8,7 @@ export interface TicketSummary {
   position: number;
   columnId: number | null;
   priorityId: number | null;
+  lockVersion: number;
   assignees: BoardUser[];
   createdAt: string;
   updatedAt: string;
@@ -35,6 +36,8 @@ export interface TicketFilters {
 }
 
 export type TicketResponse = Result<{ ticket: TicketDetail }, TeamAccessErrorCode | BoardsErrorCode | TicketsErrorCode>;
+
+export type UpdateTicketResponse = TicketResponse | EditConflict<TicketDetail>;
 
 export type BulkTicketAction = { columnId: number } | { toBacklog: true } | { addAssigneeId: number } | { removeAssigneeId: number };
 

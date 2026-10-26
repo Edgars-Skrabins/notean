@@ -18,6 +18,7 @@ function rawTicket(id: number, columnId: number | null, position: number, change
     position,
     column_id: columnId,
     priority_id: null,
+    lock_version: ticket.lockVersion,
     assignees: [],
     created_at: ticket.createdAt,
     updated_at: ticket.updatedAt,

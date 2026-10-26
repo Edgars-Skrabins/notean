@@ -71,11 +71,11 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     attach_avatar(@user)
     @page.page_contributors.create!(user: @user)
     show_one = query_count { get "/teams/#{@team.code}/pages/#{@page.id}", headers: @headers }
-    update_one = query_count { patch "/teams/#{@team.code}/pages/#{@page.id}", params: { page: { title: "Notes" } }, headers: @headers, as: :json }
+    update_one = query_count { patch "/teams/#{@team.code}/pages/#{@page.id}", params: { page: { title: "Notes", lock_version: @page.reload.lock_version } }, headers: @headers, as: :json }
 
     9.times { |index| @page.page_contributors.create!(user: create_member(@team, nickname_for(index), with_avatar: index.zero?)) }
     show_ten = query_count { get "/teams/#{@team.code}/pages/#{@page.id}", headers: @headers }
-    update_ten = query_count { patch "/teams/#{@team.code}/pages/#{@page.id}", params: { page: { title: "Notes" } }, headers: @headers, as: :json }
+    update_ten = query_count { patch "/teams/#{@team.code}/pages/#{@page.id}", params: { page: { title: "Notes", lock_version: @page.reload.lock_version } }, headers: @headers, as: :json }
 
     assert_equal 10, JSON.parse(response.body)["page"]["contributors"].length
     assert_equal show_one, show_ten
@@ -213,6 +213,52 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ nil, project.id ], [ @page.reload.folder_id, @page.project_id ]
   end
 
+  test "update with the current version saves and increments it" do
+    patch "/teams/#{@team.code}/pages/#{@page.id}", params: { page: { content: "<p>New</p>", lock_version: 0 } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal 1, JSON.parse(response.body)["page"]["lock_version"]
+    assert_equal [ "<p>New</p>", 1 ], [ @page.reload.content, @page.lock_version ]
+  end
+
+  test "update with a stale version returns EDIT_CONFLICT with the latest page" do
+    @page.update!(content: "<p>Theirs</p>")
+
+    patch "/teams/#{@team.code}/pages/#{@page.id}", params: { page: { content: "<p>Mine</p>", lock_version: 0 } }, headers: @headers, as: :json
+
+    assert_response :conflict
+    body = JSON.parse(response.body)
+    assert_equal "EDIT_CONFLICT", body["code"]
+    assert_equal [ "<p>Theirs</p>", 1 ], [ body["page"]["content"], body["page"]["lock_version"] ]
+    assert_equal "<p>Theirs</p>", @page.reload.content
+  end
+
+  test "update of the content without a version returns LOCK_VERSION_REQUIRED" do
+    patch "/teams/#{@team.code}/pages/#{@page.id}", params: { page: { content: "<p>Mine</p>" } }, headers: @headers, as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal "LOCK_VERSION_REQUIRED", JSON.parse(response.body)["code"]
+    assert_equal "", @page.reload.content
+  end
+
+  test "moving into a folder needs no version" do
+    @page.update!(title: "Renamed")
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Root")
+
+    patch "/teams/#{@team.code}/pages/#{@page.id}", params: { page: { folder_id: folder.id } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal folder.id, @page.reload.folder_id
+  end
+
+  test "index includes each page's version" do
+    @page.update!(title: "Renamed")
+
+    get "/teams/#{@team.code}/pages", headers: @headers
+
+    assert_equal 1, JSON.parse(response.body)["pages"][0]["lock_version"]
+  end
+
   test "create returns TITLE_TOO_LONG for an over-limit title" do
     post "/teams/#{@team.code}/pages", params: { page: { title: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1) } }, headers: @headers, as: :json
 
@@ -221,7 +267,7 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "update returns CONTENT_TOO_LARGE for over-limit content" do
-    patch "/teams/#{@team.code}/pages/#{@page.id}", params: { page: { content: "a" * (ContentLimits::CONTENT_MAX_BYTES + 1) } }, headers: @headers, as: :json
+    patch "/teams/#{@team.code}/pages/#{@page.id}", params: { page: { content: "a" * (ContentLimits::CONTENT_MAX_BYTES + 1), lock_version: 0 } }, headers: @headers, as: :json
 
     assert_response :unprocessable_entity
     assert_equal({ "code" => "CONTENT_TOO_LARGE" }, JSON.parse(response.body))

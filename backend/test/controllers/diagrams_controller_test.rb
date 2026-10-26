@@ -26,11 +26,11 @@ class DiagramsControllerTest < ActionDispatch::IntegrationTest
     attach_avatar(@user)
     @diagram.diagram_contributors.create!(user: @user)
     show_one = query_count { get "/teams/#{@team.code}/diagrams/#{@diagram.id}", headers: @headers }
-    update_one = query_count { patch "/teams/#{@team.code}/diagrams/#{@diagram.id}", params: { diagram: { title: "Flow" } }, headers: @headers, as: :json }
+    update_one = query_count { patch "/teams/#{@team.code}/diagrams/#{@diagram.id}", params: { diagram: { title: "Flow", lock_version: @diagram.reload.lock_version } }, headers: @headers, as: :json }
 
     9.times { |index| @diagram.diagram_contributors.create!(user: create_member(@team, nickname_for(index), with_avatar: index.zero?)) }
     show_ten = query_count { get "/teams/#{@team.code}/diagrams/#{@diagram.id}", headers: @headers }
-    update_ten = query_count { patch "/teams/#{@team.code}/diagrams/#{@diagram.id}", params: { diagram: { title: "Flow" } }, headers: @headers, as: :json }
+    update_ten = query_count { patch "/teams/#{@team.code}/diagrams/#{@diagram.id}", params: { diagram: { title: "Flow", lock_version: @diagram.reload.lock_version } }, headers: @headers, as: :json }
 
     assert_equal 10, JSON.parse(response.body)["diagram"]["contributors"].length
     assert_equal show_one, show_ten
@@ -149,6 +149,44 @@ class DiagramsControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ nil, project.id ], [ @diagram.reload.folder_id, @diagram.project_id ]
   end
 
+  test "update with the current version saves and increments it" do
+    patch "/teams/#{@team.code}/diagrams/#{@diagram.id}", params: { diagram: { content: "{}", lock_version: 0 } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal 1, JSON.parse(response.body)["diagram"]["lock_version"]
+    assert_equal [ "{}", 1 ], [ @diagram.reload.content, @diagram.lock_version ]
+  end
+
+  test "update with a stale version returns EDIT_CONFLICT with the latest diagram" do
+    @diagram.update!(title: "Theirs")
+
+    patch "/teams/#{@team.code}/diagrams/#{@diagram.id}", params: { diagram: { title: "Mine", lock_version: 0 } }, headers: @headers, as: :json
+
+    assert_response :conflict
+    body = JSON.parse(response.body)
+    assert_equal "EDIT_CONFLICT", body["code"]
+    assert_equal [ "Theirs", 1 ], [ body["diagram"]["title"], body["diagram"]["lock_version"] ]
+    assert_equal "Theirs", @diagram.reload.title
+  end
+
+  test "update of the title without a version returns LOCK_VERSION_REQUIRED" do
+    patch "/teams/#{@team.code}/diagrams/#{@diagram.id}", params: { diagram: { title: "Mine" } }, headers: @headers, as: :json
+
+    assert_response :unprocessable_entity
+    assert_equal "LOCK_VERSION_REQUIRED", JSON.parse(response.body)["code"]
+    assert_equal "Flow", @diagram.reload.title
+  end
+
+  test "moving into a folder needs no version" do
+    @diagram.update!(title: "Renamed")
+    folder = Folder.create!(team: @team, creator: @user, item_type: "Diagram", title: "Root")
+
+    patch "/teams/#{@team.code}/diagrams/#{@diagram.id}", params: { diagram: { folder_id: folder.id } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal folder.id, @diagram.reload.folder_id
+  end
+
   test "create returns TITLE_TOO_LONG for an over-limit title" do
     post "/teams/#{@team.code}/diagrams", params: { diagram: { title: "a" * (ContentLimits::TITLE_MAX_LENGTH + 1) } }, headers: @headers, as: :json
 
@@ -157,7 +195,7 @@ class DiagramsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "update returns CONTENT_TOO_LARGE for over-limit content" do
-    patch "/teams/#{@team.code}/diagrams/#{@diagram.id}", params: { diagram: { content: "a" * (ContentLimits::CONTENT_MAX_BYTES + 1) } }, headers: @headers, as: :json
+    patch "/teams/#{@team.code}/diagrams/#{@diagram.id}", params: { diagram: { content: "a" * (ContentLimits::CONTENT_MAX_BYTES + 1), lock_version: 0 } }, headers: @headers, as: :json
 
     assert_response :unprocessable_entity
     assert_equal({ "code" => "CONTENT_TOO_LARGE" }, JSON.parse(response.body))

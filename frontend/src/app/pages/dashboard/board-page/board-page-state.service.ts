@@ -149,6 +149,7 @@ export class BoardPageStateService {
       position: ticket.position,
       columnId: ticket.columnId,
       priorityId: ticket.priorityId,
+      lockVersion: ticket.lockVersion,
       assignees: ticket.assignees,
       createdAt: ticket.createdAt,
       updatedAt: ticket.updatedAt,
@@ -163,6 +164,7 @@ export class BoardPageStateService {
     if (ticket) {
       ticket.title = updated.title;
       ticket.priorityId = updated.priorityId;
+      ticket.lockVersion = updated.lockVersion;
       ticket.assignees = updated.assignees;
       ticket.updatedAt = updated.updatedAt;
     }

@@ -37,6 +37,7 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
   alertMessage = '';
   showDeleteConfirm = false;
   showDiscardConfirm = false;
+  editConflict: FolderedItemDetail | null = null;
   isCreating = false;
 
   private readonly teamCode: string;
@@ -167,19 +168,32 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.itemService.save(this.teamCode, this.item.id, {title: this.draftTitle, content: this.draftContent})
-      .then((response) => {
-        if (!response.success) {
-          this.alertMessage = errorPhrase(response.code);
-          return;
-        }
+    this.saveDraft(this.item.id, this.item.lockVersion);
+  }
 
-        this.alertMessage = '';
-        this.item = response.item;
-        this.favoriteService.renameItem(this.favoriteType, response.item.id, response.item.title);
-        this.mode = 'view';
-        this.editingService.stopEditing();
-      });
+  handleConflictLoadLatest() {
+    if (!this.editConflict) {
+      return;
+    }
+
+    this.item = this.editConflict;
+    this.editConflict = null;
+    this.favoriteService.renameItem(this.favoriteType, this.item.id, this.item.title);
+    this.leaveEditMode();
+  }
+
+  handleConflictOverwrite() {
+    if (!this.editConflict) {
+      return;
+    }
+
+    const latest = this.editConflict;
+    this.editConflict = null;
+    this.saveDraft(latest.id, latest.lockVersion);
+  }
+
+  handleConflictCancel() {
+    this.editConflict = null;
   }
 
   handleCreate() {
@@ -248,6 +262,7 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
         }
 
         item.projectId = response.item.projectId;
+        item.lockVersion = response.item.lockVersion;
         this.toastService.show({type: ToastType.SUCCESS, message: PHRASES.PROJECT_UPDATED});
       });
   }
@@ -286,6 +301,27 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
 
         this.draftProjectId = folder.projectId;
         this.initialDraftProjectId = folder.projectId;
+      });
+  }
+
+  private saveDraft(id: number, lockVersion: number) {
+    this.itemService.save(this.teamCode, id, {title: this.draftTitle, content: this.draftContent, lockVersion})
+      .then((response) => {
+        if ('latest' in response) {
+          this.editConflict = response.latest;
+          return;
+        }
+
+        if (!response.success) {
+          this.alertMessage = errorPhrase(response.code);
+          return;
+        }
+
+        this.alertMessage = '';
+        this.item = response.item;
+        this.favoriteService.renameItem(this.favoriteType, response.item.id, response.item.title);
+        this.mode = 'view';
+        this.editingService.stopEditing();
       });
   }
 

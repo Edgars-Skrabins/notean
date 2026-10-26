@@ -38,7 +38,7 @@ module ActiveSupport
     end
 
     def ticket_broadcast_json(ticket_json)
-      ticket_json.slice("id", "title", "position", "column_id", "priority_id", "assignees", "created_at", "updated_at", "description")
+      ticket_json.slice("id", "title", "position", "column_id", "priority_id", "lock_version", "assignees", "created_at", "updated_at", "description")
     end
 
     def nickname_for(index)

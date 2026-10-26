@@ -20,6 +20,7 @@ import {TeamMember} from "@models/team.model";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {ButtonComponent} from "@components/button/button.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
+import {EditConflictDialogComponent} from "@components/edit-conflict-dialog/edit-conflict-dialog.component";
 import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
 import {MoveToBoardDialogComponent} from "@components/move-to-board-dialog/move-to-board-dialog.component";
 import {TicketAssigneesComponent} from "@components/ticket-assignees/ticket-assignees.component";
@@ -40,6 +41,7 @@ import {EscapeService} from "@services/escape.service";
     IconButtonComponent,
     ButtonComponent,
     ConfirmDialogComponent,
+    EditConflictDialogComponent,
     FavoriteStarComponent,
     MoveToBoardDialogComponent,
     TicketAssigneesComponent,
@@ -59,6 +61,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   isLoading = true;
   alertMessage = '';
   showDeleteConfirm = false;
+  editConflict: { changes: { title: string } | { description: string }; latest: TicketDetail } | null = null;
   isMoveDialogOpen = false;
   members: TeamMember[] = [];
   isUpdatingAssignees = false;
@@ -226,7 +229,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   }
 
   commitTitle() {
-    if (!this.ticket) {
+    if (!this.ticket || this.editConflict) {
       return;
     }
 
@@ -241,30 +244,18 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.ticketService.updateTicket(this.teamCode, this.boardId, this.ticketId, {title})
-      .then((response) => {
-        if (!response.success) {
-          this.alertMessage = errorPhrase(response.code);
-          return;
-        }
-
-        this.alertMessage = '';
-        this.ticket = response.ticket;
-        this.titleDraft = response.ticket.title;
-        this.favoriteService.renameItem('Ticket', response.ticket.id, response.ticket.title);
-        this.state.updateTicket(response.ticket);
-      });
+    this.saveText({title}, this.ticket.lockVersion);
   }
 
   cancelTitleEdit(event: Event) {
-    if (this.ticket && this.titleDraft !== this.ticket.title) {
+    if (this.ticket && !this.editConflict && this.titleDraft !== this.ticket.title) {
       this.titleDraft = this.ticket.title;
       event.preventDefault();
     }
   }
 
   commitDescription() {
-    if (!this.ticket) {
+    if (!this.ticket || this.editConflict) {
       return;
     }
 
@@ -272,24 +263,42 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.ticketService.updateTicket(this.teamCode, this.boardId, this.ticketId, {description: this.descriptionDraft})
-      .then((response) => {
-        if (!response.success) {
-          this.alertMessage = errorPhrase(response.code);
-          return;
-        }
-
-        this.alertMessage = '';
-        this.ticket = response.ticket;
-        this.descriptionDraft = response.ticket.description;
-      });
+    this.saveText({description: this.descriptionDraft}, this.ticket.lockVersion);
   }
 
   cancelDescriptionEdit(event: Event) {
-    if (this.ticket && this.descriptionDraft !== this.ticket.description) {
+    if (this.ticket && !this.editConflict && this.descriptionDraft !== this.ticket.description) {
       this.descriptionDraft = this.ticket.description;
       event.preventDefault();
     }
+  }
+
+  handleConflictLoadLatest() {
+    if (!this.editConflict) {
+      return;
+    }
+
+    const latest = this.editConflict.latest;
+    this.editConflict = null;
+    this.ticket = latest;
+    this.titleDraft = latest.title;
+    this.descriptionDraft = latest.description;
+    this.favoriteService.renameItem('Ticket', latest.id, latest.title);
+    this.state.updateTicket(latest);
+  }
+
+  handleConflictOverwrite() {
+    if (!this.editConflict) {
+      return;
+    }
+
+    const {changes, latest} = this.editConflict;
+    this.editConflict = null;
+    this.saveText(changes, latest.lockVersion);
+  }
+
+  handleConflictCancel() {
+    this.editConflict = null;
   }
 
   handlePriorityChange(value: string | number | null) {
@@ -303,6 +312,32 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
 
         this.alertMessage = '';
         this.ticket = response.ticket;
+        this.state.updateTicket(response.ticket);
+      });
+  }
+
+  private saveText(changes: { title: string } | { description: string }, lockVersion: number) {
+    this.ticketService.updateTicket(this.teamCode, this.boardId, this.ticketId, {...changes, lockVersion})
+      .then((response) => {
+        if ('latest' in response) {
+          this.editConflict = {changes, latest: response.latest};
+          return;
+        }
+
+        if (!response.success) {
+          this.alertMessage = errorPhrase(response.code);
+          return;
+        }
+
+        this.alertMessage = '';
+        this.ticket = response.ticket;
+        if ('description' in changes) {
+          this.descriptionDraft = response.ticket.description;
+          return;
+        }
+
+        this.titleDraft = response.ticket.title;
+        this.favoriteService.renameItem('Ticket', response.ticket.id, response.ticket.title);
         this.state.updateTicket(response.ticket);
       });
   }
