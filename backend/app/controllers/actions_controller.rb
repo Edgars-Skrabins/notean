@@ -10,13 +10,15 @@ class ActionsController < ApplicationController
     end
 
     if @team.authenticate(team_params[:password])
-      membership = @team.memberships.find_or_initialize_by(user: current_user) do |m|
+      membership = @team.all_memberships.find_or_initialize_by(user: current_user) do |m|
         m.role = "user"
         m.nickname = team_params[:nickname]
       end
       membership.last_active_at = Time.current
 
-      unless membership.save
+      begin
+        membership.removed? ? membership.restore!(nickname: team_params[:nickname]) : membership.save!
+      rescue ActiveRecord::RecordInvalid
         render_nickname_error(membership)
         return
       end

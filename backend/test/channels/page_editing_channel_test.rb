@@ -25,6 +25,15 @@ class PageEditingChannelTest < ActionCable::Channel::TestCase
     assert subscription.rejected?
   end
 
+  test "a removed member is rejected" do
+    @user.all_memberships.first.update!(removed_at: Time.current)
+    stub_connection current_user: @user
+
+    subscribe page_id: @page.id
+
+    assert subscription.rejected?
+  end
+
   test "a missing page is rejected" do
     stub_connection current_user: @user
 
