@@ -1,6 +1,7 @@
 require "test_helper"
 
 class BoardsControllerTest < ActionDispatch::IntegrationTest
+  include ActionCable::TestHelper
   setup do
     @team = Team.create!(name: "Engineering", password: "supersecret")
     @user = User.create!(email: "alice@example.com", password: "supersecret")
@@ -252,5 +253,34 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     post "/teams/#{@team.code}/boards", params: { board: { title: "New" } }, headers: @headers, as: :json
     assert_response :forbidden
     assert_equal 1, @team.boards.count
+  end
+
+  test "update broadcasts the renamed board" do
+    board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
+
+    patch "/teams/#{@team.code}/boards/#{board.id}", params: { board: { title: "Sprint 13" } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal [ { "type" => "board_updated", "board" => { "id" => board.id, "title" => "Sprint 13", "project_id" => nil } } ], board_broadcasts(board)
+  end
+
+  test "moving the board to another project also broadcasts access_changed" do
+    board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
+    project = Project.create!(team: @team, name: "Secret", owner: @user, creator: @user)
+
+    patch "/teams/#{@team.code}/boards/#{board.id}", params: { board: { project_id: project.id } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal [ "board_updated", "access_changed" ], board_broadcasts(board).map { |message| message["type"] }
+    assert_equal project.id, board_broadcasts(board).first["board"]["project_id"]
+  end
+
+  test "destroy broadcasts board_deleted" do
+    board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
+
+    delete "/teams/#{@team.code}/boards/#{board.id}", headers: @headers
+
+    assert_response :no_content
+    assert_broadcast_on(BoardChannel.stream_name(board), type: "board_deleted")
   end
 end

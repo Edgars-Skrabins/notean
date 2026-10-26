@@ -16,6 +16,7 @@ class ColumnsController < ApplicationController
 
     if @column.save
       render json: { column: column_json(@column) }, status: :created
+      broadcast_columns
     else
       render_error(ErrorCodes::Boards::COLUMN_CREATE_FAILED, :unprocessable_entity)
     end
@@ -26,6 +27,7 @@ class ColumnsController < ApplicationController
 
     if @column.save
       render json: { column: column_json(@column) }
+      broadcast_columns
     else
       render_error(ErrorCodes::Boards::COLUMN_UPDATE_FAILED, :unprocessable_entity)
     end
@@ -34,6 +36,7 @@ class ColumnsController < ApplicationController
   def destroy
     @column.destroy
     head :no_content
+    broadcast_columns
   end
 
   private
@@ -42,6 +45,10 @@ class ColumnsController < ApplicationController
     @column = @board.columns.find_by(id: params[:id])
 
     render_error(ErrorCodes::Boards::COLUMN_NOT_FOUND, :not_found) if @column.nil?
+  end
+
+  def broadcast_columns
+    BoardBroadcast.columns_changed(@board, @board.columns.reload.map { |column| column_json(column) })
   end
 
   def column_json(column)

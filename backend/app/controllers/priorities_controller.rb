@@ -1,6 +1,7 @@
 class PrioritiesController < ApplicationController
   include BoardScoped
   include PriorityJson
+  include TicketJson
   include FeatureGated
 
   before_action :authenticate_user!
@@ -17,6 +18,7 @@ class PrioritiesController < ApplicationController
 
     if priority.save
       render json: { priority: priority_json(priority, 0) }, status: :created
+      BoardBroadcast.priorities_changed(@board, priorities_json(@board.reload))
     else
       render_priority_error(priority)
     end
@@ -36,9 +38,11 @@ class PrioritiesController < ApplicationController
     end
 
     render json: { priorities: priorities_json(@board.reload) }
+    BoardBroadcast.priorities_changed(@board, priorities_json(@board))
   end
 
   def destroy
+    cleared_ticket_ids = @priority.tickets.pluck(:id)
     BoardPriority.transaction do
       @priority.destroy!
       @board.priorities.reload.each_with_index do |priority, index|
@@ -47,9 +51,16 @@ class PrioritiesController < ApplicationController
     end
 
     render json: { priorities: priorities_json(@board.reload) }
+    BoardBroadcast.priorities_changed(@board, priorities_json(@board), tickets: cleared_tickets_json(cleared_ticket_ids))
   end
 
   private
+
+  def cleared_tickets_json(ticket_ids)
+    return nil if ticket_ids.empty?
+
+    @board.tickets.includes(TicketJson::ASSIGNEES_PRELOAD).where(id: ticket_ids).map { |ticket| ticket_summary_json(ticket) }
+  end
 
   def set_priority
     @priority = @board.priorities.find_by(id: params[:id])
