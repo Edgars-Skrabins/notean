@@ -1,6 +1,6 @@
 class SessionsController < ApplicationController
   def create
-    @user = User.find_by(email: user_params[:email]&.downcase)
+    @user = User.active.find_by(email: user_params[:email]&.downcase)
 
     if @user&.authenticate(user_params[:password])
       token = JsonWebToken.encode(user_id: @user.id)
