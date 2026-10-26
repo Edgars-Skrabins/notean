@@ -131,7 +131,8 @@ src/environments/             environment.ts (apiUrl)
 - The header's project selector is backed by `ProjectFilterService`, which stores the choice per team (`selectedProject:<team>`, falling back to All). Lists, the sidebar boards, Favorites and My Work follow it; pass its value to the API with `projectQuery` from `@utils/projectQuery`, and new items default to the selected project.
 - The header's `GlobalSearchComponent` searches the whole team through `SearchService` (`GET /teams/:team_code/search`). It follows the project selector, opens with `/`, and shows its results in a CDK overlay panel grouped by type.
 - Esc goes through `EscapeService`, a stack of layers with one `document` keydown listener. Dialogs, the item and ticket popups, and the Settings, Profile, Manage team, Switch team and project pages `push` a handler in `ngOnInit` (dialogs cancel, popups close, pages go back) and call the returned unregister function in `ngOnDestroy`; only the top one runs. An inner control that uses Esc (an inline rename, an open dropdown, a diagram selection) calls `event.preventDefault()`, and the service then does nothing. CDK connected overlays already do this. Specs that build components with `new` pass `escapeServiceStub()` from `testing/`.
-- Realtime features open an ActionCable consumer at `ws://…/cable?token=<jwt>` from a dedicated service and subscribe to the matching backend channel.
+- Realtime goes through `CableService`, which owns the app's single ActionCable consumer at `ws://…/cable?token=<jwt>` (created on first use). Feature services subscribe with `CableService.subscribe(params, callbacks)` and only unsubscribe their own subscription on `disconnect()`; `SessionService.clear()` calls `CableService.disconnect()` on logout and 401.
+- Boards update live: `BoardChannelService`, provided by `BoardPageComponent` next to `BoardPageStateService`, subscribes to `BoardChannel` once the board loads and applies each message to the shared board (`applyTickets` plus a re-sort by position, `removeTickets`, `setColumns`, `setPriorities`, `setBoardMeta`). `board_deleted`, or an `access_changed` reload that returns `BOARD_NOT_FOUND`, sends the user Home with a toast. `BoardPageStateService.remoteChanges$` tells the ticket popup about remote changes (with any ticket descriptions); the popup refreshes fields that aren't being edited and closes with a toast when its ticket disappears.
 - Team feature flags (`pagesEnabled`, `diagramsEnabled`, `boardsEnabled` on `Team`, mapped by `mapTeam`) are read through `TeamService.features$` and `isFeatureEnabled`. `TeamChannelService`, connected from `DashboardComponent`, applies `features_changed` broadcasts, and the dashboard sends members on a just-disabled feature's screen to Home with a toast. A `FEATURE_DISABLED` 403 reloads the session (`setFeatureDisabledHandler`). Hide a disabled feature's UI with `features$`.
 
 #### Themes
@@ -173,7 +174,7 @@ app/
 ├── controllers/   one controller per resource
 ├── models/        ActiveRecord models plus cache-backed *EditingStatus classes (on EditingStatus)
 ├── errors/        error_codes/, one ErrorCodes module per domain
-└── channels/      ActionCable connection, editing presence channels (on EditingChannel) and TeamChannel
+└── channels/      ActionCable connection, editing presence channels (on EditingChannel), TeamChannel and BoardChannel
 config/
 ├── routes.rb
 └── initializers/  cors.rb, rack_attack.rb
@@ -221,6 +222,7 @@ test/              controllers/, models/, channels/, lib/, fixtures/
 - `ApplicationCable::Connection` authenticates with the JWT passed as the `?token=` query param.
 - Editing channels only subscribe members of the item's team who can see the item's project, and only while the item's feature is on.
 - `TeamChannel` (`team_code` param, members only) streams `team:<id>` and carries `{ type: "features_changed", team }` broadcasts.
+- `BoardChannel` (`board_id` param) only subscribes members of the board's team who can see its project, while boards are on, and streams `board:<id>`. Board-scoped controllers broadcast through `BoardBroadcast` on a separate line after their render: `tickets_upserted` (changed tickets plus reindexed siblings; tickets changed by create, update or an assignee action also carry `description`), `tickets_removed`, `columns_changed`, `priorities_changed` (plus the tickets a delete cleared), `board_updated`, `board_deleted` and `access_changed` (the board's project changed). Payloads reuse the controllers' JSON helpers.
 
 #### Security
 - rack-attack throttles the auth and join-team endpoints. A throttled request gets a 429 with `{ code: "RATE_LIMITED" }`.
