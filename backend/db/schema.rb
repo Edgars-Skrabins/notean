@@ -79,7 +79,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["diagram_id", "user_id"], name: "index_diagram_contributors_on_diagram_id_and_user_id", unique: true
-    t.index ["diagram_id"], name: "index_diagram_contributors_on_diagram_id"
     t.index ["user_id"], name: "index_diagram_contributors_on_user_id"
   end
 
@@ -153,7 +152,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["page_id", "user_id"], name: "index_page_contributors_on_page_id_and_user_id", unique: true
-    t.index ["page_id"], name: "index_page_contributors_on_page_id"
     t.index ["user_id"], name: "index_page_contributors_on_user_id"
   end
 
@@ -215,7 +213,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["ticket_id", "user_id"], name: "index_ticket_assignees_on_ticket_id_and_user_id", unique: true
-    t.index ["ticket_id"], name: "index_ticket_assignees_on_ticket_id"
     t.index ["user_id"], name: "index_ticket_assignees_on_user_id"
   end
 
@@ -232,7 +229,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
     t.bigint "priority_id"
     t.integer "lock_version", default: 0, null: false
     t.index ["board_id", "column_id", "position"], name: "index_tickets_on_board_id_and_column_id_and_position"
-    t.index ["board_id"], name: "index_tickets_on_board_id"
     t.index ["column_id"], name: "index_tickets_on_column_id"
     t.index ["created_by_user_id"], name: "index_tickets_on_created_by_user_id"
     t.index ["priority_id"], name: "index_tickets_on_priority_id"
