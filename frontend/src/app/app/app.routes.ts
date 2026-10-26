@@ -12,6 +12,7 @@ import {authGuard} from "../guards/auth.guard";
 import {teamGuard} from "../guards/team.guard";
 import {teamRoleGuard} from "../guards/team-role.guard";
 import {unsavedChangesGuard} from "../guards/unsaved-changes.guard";
+import {unknownRouteRedirect} from "../guards/unknown-route.redirect";
 import {AppRoutes} from "./app-routes.enum";
 
 export const routes: Routes = [
@@ -31,4 +32,5 @@ export const routes: Routes = [
     canActivate: [authGuard, teamGuard],
     loadChildren: () => import('./dashboard.routes').then((m) => m.dashboardRoutes),
   },
+  {path: '**', redirectTo: unknownRouteRedirect},
 ];
