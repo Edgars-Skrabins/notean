@@ -37,6 +37,31 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ 0, 1, 2 ], columns.map { |column| column["position"] }
   end
 
+  test "create from a board template uses its columns and priorities" do
+    content = { columns: [ "Ideas", "Shipped" ], priorities: [ { name: "Hot", color: "red" }, { name: "Cold", color: "blue" } ] }.to_json
+    template = Template.create!(team: @team, creator: @user, kind: "board", title: "Product", content: content)
+
+    post "/teams/#{@team.code}/boards", params: { board: { title: "Roadmap", template_id: template.id } }, headers: @headers, as: :json
+
+    assert_response :created
+    board = JSON.parse(response.body)["board"]
+    assert_equal [ "Ideas", "Shipped" ], board["columns"].map { |column| column["title"] }
+    assert_equal [ [ "Hot", "red", 0 ], [ "Cold", "blue", 1 ] ], board["priorities"].map { |priority| priority.values_at("name", "color", "position") }
+    assert_equal 2, BoardPriority.where(board_id: board["id"]).count
+  end
+
+  test "create from a missing or non-board template fails without creating a board" do
+    page_template = Template.create!(team: @team, creator: @user, kind: "page", title: "Notes", content: "")
+
+    [ page_template.id, 0 ].each do |template_id|
+      assert_no_difference "Board.count" do
+        post "/teams/#{@team.code}/boards", params: { board: { title: "Roadmap", template_id: template_id } }, headers: @headers, as: :json
+      end
+      assert_response :not_found
+      assert_equal({ "code" => "TEMPLATE_NOT_FOUND" }, JSON.parse(response.body))
+    end
+  end
+
   test "show includes ticket summaries nested under each column" do
     board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
     column = Column.create!(board: board, title: "To Do", position: 0)

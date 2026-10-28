@@ -20,15 +20,21 @@ class BoardsController < ApplicationController
   end
 
   def create
+    template = board_template(create_board_params[:template_id])
+    return if performed?
+
     @board = @team.boards.new(created_by_user_id: current_user.id)
     @board.title = title_or_default(create_board_params[:title])
     return unless assign_project(@board, create_board_params[:project_id])
 
-    if @board.save
-      Board::DEFAULT_COLUMN_TITLES.each_with_index do |title, index|
-        @board.columns.create!(title: title, position: index)
-      end
+    saved = Board.transaction do
+      next false unless @board.save
 
+      template ? apply_template(@board, template) : create_default_columns(@board)
+      true
+    end
+
+    if saved
       render json: { board: board_json(@board) }, status: :created
     else
       render_error(limit_error_code(@board) || ErrorCodes::Boards::BOARD_CREATE_FAILED, :unprocessable_entity)
@@ -98,6 +104,31 @@ class BoardsController < ApplicationController
       created_at: board.created_at,
       updated_at: board.updated_at
     }
+  end
+
+  def board_template(template_id)
+    return if template_id.blank?
+
+    template = @team.templates.find_by(id: template_id, kind: "board")
+    render_error(ErrorCodes::Templates::TEMPLATE_NOT_FOUND, :not_found) if template.nil?
+    template
+  end
+
+  def create_default_columns(board)
+    Board::DEFAULT_COLUMN_TITLES.each_with_index do |title, index|
+      board.columns.create!(title: title, position: index)
+    end
+  end
+
+  def apply_template(board, template)
+    board.priorities.delete_all
+    template.board_priorities.each_with_index do |priority, index|
+      board.priorities.create!(name: priority["name"], color: priority["color"], position: index)
+    end
+    template.board_columns.each_with_index do |title, index|
+      board.columns.create!(title: title, position: index)
+    end
+    board.priorities.reset
   end
 
   def board_json(board)

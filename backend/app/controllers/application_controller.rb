@@ -60,7 +60,7 @@ class ApplicationController < ActionController::API
   end
 
   def create_board_params
-    params.fetch(:board, {}).permit(:title, :project_id)
+    params.fetch(:board, {}).permit(:title, :project_id, :template_id)
   end
 
   def update_board_params
