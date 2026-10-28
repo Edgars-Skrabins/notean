@@ -309,6 +309,21 @@
   "THEME_PAPER": "Paber",
   "THEME_WINTER_FOREST": "Talvine mets",
   "THEME_NATURE": "Loodus",
+  "COMMENTS": "Kommentaarid",
+  "NO_COMMENTS_YET": "Kommentaare veel pole",
+  "POST_COMMENT": "Kommenteeri",
+  "REPLY": "Vasta",
+  "COMMENT_EDITED": "(muudetud)",
+  "EDIT_COMMENT": "Muuda kommentaari",
+  "DELETE_COMMENT": "Kustuta kommentaar",
+  "CONFIRM_DELETE_COMMENT": "Kas kustutada see kommentaar?",
+  "ADD_COMMENT": "Lisa kommentaar",
+  "COMMENT_PLACE_HINT": "Klõpsa diagrammil, et kommentaar paigutada",
+  "SHOW_RESOLVED": "Näita lahendatuid",
+  "RESOLVE": "Lahenda",
+  "REOPEN": "Ava uuesti",
+  "COMMENT_REPLIES": "Vastuseid: {{count}}",
+  "COMMENT_ACTIONS": "Kommentaari toimingud",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Sinu seanss on aegunud. Palun logi uuesti sisse",
@@ -412,6 +427,14 @@
     "SEARCH": {
       "QUERY_TOO_SHORT": "Otsimiseks sisesta vähemalt 2 märki",
       "INVALID_TYPE": "Otsing ebaõnnestus"
+    },
+    "COMMENTS": {
+      "COMMENT_NOT_FOUND": "Kommentaari ei leitud",
+      "COMMENT_PIN_NOT_FOUND": "Kommentaari ei leitud",
+      "COMMENT_BODY_REQUIRED": "Kirjuta enne postitamist midagi",
+      "COMMENT_CREATE_FAILED": "Kommentaari postitamine ebaõnnestus",
+      "COMMENT_UPDATE_FAILED": "Kommentaari salvestamine ebaõnnestus",
+      "COMMENT_PIN_UPDATE_FAILED": "Kommentaari uuendamine ebaõnnestus"
     }
   }
 }

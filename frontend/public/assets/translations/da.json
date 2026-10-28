@@ -309,6 +309,21 @@
   "THEME_PAPER": "Papir",
   "THEME_WINTER_FOREST": "Vinterskov",
   "THEME_NATURE": "Natur",
+  "COMMENTS": "Kommentarer",
+  "NO_COMMENTS_YET": "Ingen kommentarer endnu",
+  "POST_COMMENT": "Kommentér",
+  "REPLY": "Svar",
+  "COMMENT_EDITED": "(redigeret)",
+  "EDIT_COMMENT": "Redigér kommentar",
+  "DELETE_COMMENT": "Slet kommentar",
+  "CONFIRM_DELETE_COMMENT": "Slet denne kommentar?",
+  "ADD_COMMENT": "Tilføj kommentar",
+  "COMMENT_PLACE_HINT": "Klik på diagrammet for at placere din kommentar",
+  "SHOW_RESOLVED": "Vis løste",
+  "RESOLVE": "Løs",
+  "REOPEN": "Genåbn",
+  "COMMENT_REPLIES": "{{count}} svar",
+  "COMMENT_ACTIONS": "Kommentarhandlinger",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Din session er udløbet. Log ind igen",
@@ -412,6 +427,14 @@
     "SEARCH": {
       "QUERY_TOO_SHORT": "Skriv mindst 2 tegn for at søge",
       "INVALID_TYPE": "Søgningen mislykkedes"
+    },
+    "COMMENTS": {
+      "COMMENT_NOT_FOUND": "Kommentaren blev ikke fundet",
+      "COMMENT_PIN_NOT_FOUND": "Kommentaren blev ikke fundet",
+      "COMMENT_BODY_REQUIRED": "Skriv noget, før du slår op",
+      "COMMENT_CREATE_FAILED": "Kunne ikke slå kommentaren op",
+      "COMMENT_UPDATE_FAILED": "Kunne ikke gemme kommentaren",
+      "COMMENT_PIN_UPDATE_FAILED": "Kunne ikke opdatere kommentaren"
     }
   }
 }

@@ -309,6 +309,21 @@
   "THEME_PAPER": "Бумага",
   "THEME_WINTER_FOREST": "Зимний лес",
   "THEME_NATURE": "Природа",
+  "COMMENTS": "Комментарии",
+  "NO_COMMENTS_YET": "Комментариев пока нет",
+  "POST_COMMENT": "Комментировать",
+  "REPLY": "Ответить",
+  "COMMENT_EDITED": "(изменено)",
+  "EDIT_COMMENT": "Изменить комментарий",
+  "DELETE_COMMENT": "Удалить комментарий",
+  "CONFIRM_DELETE_COMMENT": "Удалить этот комментарий?",
+  "ADD_COMMENT": "Добавить комментарий",
+  "COMMENT_PLACE_HINT": "Нажмите на диаграмму, чтобы разместить комментарий",
+  "SHOW_RESOLVED": "Показать решённые",
+  "RESOLVE": "Решить",
+  "REOPEN": "Открыть снова",
+  "COMMENT_REPLIES": "Ответов: {{count}}",
+  "COMMENT_ACTIONS": "Действия с комментарием",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Сеанс истёк. Пожалуйста, войдите снова",
@@ -412,6 +427,14 @@
     "SEARCH": {
       "QUERY_TOO_SHORT": "Введите не менее 2 символов для поиска",
       "INVALID_TYPE": "Не удалось выполнить поиск"
+    },
+    "COMMENTS": {
+      "COMMENT_NOT_FOUND": "Комментарий не найден",
+      "COMMENT_PIN_NOT_FOUND": "Комментарий не найден",
+      "COMMENT_BODY_REQUIRED": "Напишите что-нибудь перед отправкой",
+      "COMMENT_CREATE_FAILED": "Не удалось опубликовать комментарий",
+      "COMMENT_UPDATE_FAILED": "Не удалось сохранить комментарий",
+      "COMMENT_PIN_UPDATE_FAILED": "Не удалось обновить комментарий"
     }
   }
 }

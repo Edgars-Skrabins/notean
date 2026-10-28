@@ -309,6 +309,21 @@
   "THEME_PAPER": "Paper",
   "THEME_WINTER_FOREST": "Winter forest",
   "THEME_NATURE": "Nature",
+  "COMMENTS": "Comments",
+  "NO_COMMENTS_YET": "No comments yet",
+  "POST_COMMENT": "Comment",
+  "REPLY": "Reply",
+  "COMMENT_EDITED": "(edited)",
+  "EDIT_COMMENT": "Edit comment",
+  "DELETE_COMMENT": "Delete comment",
+  "CONFIRM_DELETE_COMMENT": "Delete this comment?",
+  "ADD_COMMENT": "Add comment",
+  "COMMENT_PLACE_HINT": "Click on the diagram to place your comment",
+  "SHOW_RESOLVED": "Show resolved",
+  "RESOLVE": "Resolve",
+  "REOPEN": "Reopen",
+  "COMMENT_REPLIES": "Replies: {{count}}",
+  "COMMENT_ACTIONS": "Comment actions",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Your session has expired. Please log in again",
@@ -412,6 +427,14 @@
     "SEARCH": {
       "QUERY_TOO_SHORT": "Type at least 2 characters to search",
       "INVALID_TYPE": "Could not search"
+    },
+    "COMMENTS": {
+      "COMMENT_NOT_FOUND": "Comment not found",
+      "COMMENT_PIN_NOT_FOUND": "Comment not found",
+      "COMMENT_BODY_REQUIRED": "Write something before posting",
+      "COMMENT_CREATE_FAILED": "Could not post the comment",
+      "COMMENT_UPDATE_FAILED": "Could not save the comment",
+      "COMMENT_PIN_UPDATE_FAILED": "Could not update the comment"
     }
   }
 }

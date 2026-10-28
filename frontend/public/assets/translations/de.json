@@ -309,6 +309,21 @@
   "THEME_PAPER": "Papier",
   "THEME_WINTER_FOREST": "Winterwald",
   "THEME_NATURE": "Natur",
+  "COMMENTS": "Kommentare",
+  "NO_COMMENTS_YET": "Noch keine Kommentare",
+  "POST_COMMENT": "Kommentieren",
+  "REPLY": "Antworten",
+  "COMMENT_EDITED": "(bearbeitet)",
+  "EDIT_COMMENT": "Kommentar bearbeiten",
+  "DELETE_COMMENT": "Kommentar löschen",
+  "CONFIRM_DELETE_COMMENT": "Diesen Kommentar löschen?",
+  "ADD_COMMENT": "Kommentar hinzufügen",
+  "COMMENT_PLACE_HINT": "Klicke auf das Diagramm, um deinen Kommentar zu platzieren",
+  "SHOW_RESOLVED": "Erledigte anzeigen",
+  "RESOLVE": "Erledigen",
+  "REOPEN": "Wieder öffnen",
+  "COMMENT_REPLIES": "Antworten: {{count}}",
+  "COMMENT_ACTIONS": "Kommentaraktionen",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an",
@@ -412,6 +427,14 @@
     "SEARCH": {
       "QUERY_TOO_SHORT": "Gib mindestens 2 Zeichen ein, um zu suchen",
       "INVALID_TYPE": "Suche fehlgeschlagen"
+    },
+    "COMMENTS": {
+      "COMMENT_NOT_FOUND": "Kommentar nicht gefunden",
+      "COMMENT_PIN_NOT_FOUND": "Kommentar nicht gefunden",
+      "COMMENT_BODY_REQUIRED": "Schreibe etwas, bevor du postest",
+      "COMMENT_CREATE_FAILED": "Kommentar konnte nicht gepostet werden",
+      "COMMENT_UPDATE_FAILED": "Kommentar konnte nicht gespeichert werden",
+      "COMMENT_PIN_UPDATE_FAILED": "Kommentar konnte nicht aktualisiert werden"
     }
   }
 }

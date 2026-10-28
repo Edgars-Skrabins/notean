@@ -309,6 +309,21 @@
   "THEME_PAPER": "Papier",
   "THEME_WINTER_FOREST": "Forêt d'hiver",
   "THEME_NATURE": "Nature",
+  "COMMENTS": "Commentaires",
+  "NO_COMMENTS_YET": "Aucun commentaire pour le moment",
+  "POST_COMMENT": "Commenter",
+  "REPLY": "Répondre",
+  "COMMENT_EDITED": "(modifié)",
+  "EDIT_COMMENT": "Modifier le commentaire",
+  "DELETE_COMMENT": "Supprimer le commentaire",
+  "CONFIRM_DELETE_COMMENT": "Supprimer ce commentaire ?",
+  "ADD_COMMENT": "Ajouter un commentaire",
+  "COMMENT_PLACE_HINT": "Cliquez sur le diagramme pour placer votre commentaire",
+  "SHOW_RESOLVED": "Afficher les résolus",
+  "RESOLVE": "Résoudre",
+  "REOPEN": "Rouvrir",
+  "COMMENT_REPLIES": "Réponses : {{count}}",
+  "COMMENT_ACTIONS": "Actions du commentaire",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Votre session a expiré. Veuillez vous reconnecter",
@@ -412,6 +427,14 @@
     "SEARCH": {
       "QUERY_TOO_SHORT": "Saisissez au moins 2 caractères pour rechercher",
       "INVALID_TYPE": "La recherche a échoué"
+    },
+    "COMMENTS": {
+      "COMMENT_NOT_FOUND": "Commentaire introuvable",
+      "COMMENT_PIN_NOT_FOUND": "Commentaire introuvable",
+      "COMMENT_BODY_REQUIRED": "Écrivez quelque chose avant de publier",
+      "COMMENT_CREATE_FAILED": "Impossible de publier le commentaire",
+      "COMMENT_UPDATE_FAILED": "Impossible d'enregistrer le commentaire",
+      "COMMENT_PIN_UPDATE_FAILED": "Impossible de mettre à jour le commentaire"
     }
   }
 }

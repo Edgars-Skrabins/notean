@@ -309,6 +309,21 @@
   "THEME_PAPER": "Popierius",
   "THEME_WINTER_FOREST": "Žiemos miškas",
   "THEME_NATURE": "Gamta",
+  "COMMENTS": "Komentarai",
+  "NO_COMMENTS_YET": "Komentarų dar nėra",
+  "POST_COMMENT": "Komentuoti",
+  "REPLY": "Atsakyti",
+  "COMMENT_EDITED": "(redaguota)",
+  "EDIT_COMMENT": "Redaguoti komentarą",
+  "DELETE_COMMENT": "Ištrinti komentarą",
+  "CONFIRM_DELETE_COMMENT": "Ištrinti šį komentarą?",
+  "ADD_COMMENT": "Pridėti komentarą",
+  "COMMENT_PLACE_HINT": "Spustelėkite diagramą, kad padėtumėte komentarą",
+  "SHOW_RESOLVED": "Rodyti išspręstus",
+  "RESOLVE": "Išspręsti",
+  "REOPEN": "Atidaryti iš naujo",
+  "COMMENT_REPLIES": "Atsakymų: {{count}}",
+  "COMMENT_ACTIONS": "Komentaro veiksmai",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Jūsų sesija baigėsi. Prisijunkite iš naujo",
@@ -412,6 +427,14 @@
     "SEARCH": {
       "QUERY_TOO_SHORT": "Paieškai įveskite bent 2 simbolius",
       "INVALID_TYPE": "Nepavyko atlikti paieškos"
+    },
+    "COMMENTS": {
+      "COMMENT_NOT_FOUND": "Komentaras nerastas",
+      "COMMENT_PIN_NOT_FOUND": "Komentaras nerastas",
+      "COMMENT_BODY_REQUIRED": "Prieš skelbdami ką nors parašykite",
+      "COMMENT_CREATE_FAILED": "Nepavyko paskelbti komentaro",
+      "COMMENT_UPDATE_FAILED": "Nepavyko išsaugoti komentaro",
+      "COMMENT_PIN_UPDATE_FAILED": "Nepavyko atnaujinti komentaro"
     }
   }
 }
