@@ -309,6 +309,29 @@
   "THEME_PAPER": "Бумага",
   "THEME_WINTER_FOREST": "Зимний лес",
   "THEME_NATURE": "Природа",
+  "TEMPLATES": "Шаблоны",
+  "NEW_TEMPLATE": "Новый шаблон",
+  "BLANK": "Пустой",
+  "FROM_TEMPLATE": "Из шаблона",
+  "FROM_EXISTING_BOARD": "Из существующей доски",
+  "USE_TEMPLATE": "Использовать шаблон",
+  "DUPLICATE": "Дублировать",
+  "BUILT_IN": "Встроенные",
+  "BOARD_TEMPLATES": "Шаблоны досок",
+  "TEMPLATE": "Шаблон",
+  "DEFAULT_BOARD_TEMPLATE": "По умолчанию (Сделать, В работе, Готово)",
+  "NO_TEMPLATES_YET": "Шаблонов пока нет",
+  "NO_BOARD_TEMPLATES_YET": "Шаблонов досок пока нет",
+  "SEARCH_TEMPLATES": "Поиск шаблонов…",
+  "CONFIRM_DELETE_TEMPLATE": "Удалить этот шаблон? Это действие нельзя отменить. Созданные из него элементы не изменятся.",
+  "CHOOSE_TEMPLATE": "Выберите шаблон",
+  "CHOOSE_BOARD": "Выберите доску",
+  "TEMPLATE_NAME_PLACEHOLDER": "Название шаблона",
+  "UNTITLED_TEMPLATE": "Шаблон без названия",
+  "CONFIRM_DISCARD_NEW_TEMPLATE": "Отменить создание шаблона?",
+  "COLUMNS": "Колонки",
+  "REMOVE_COLUMN": "Удалить колонку",
+  "REORDER_COLUMN": "Перетащите, чтобы изменить порядок",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Сеанс истёк. Пожалуйста, войдите снова",
@@ -412,6 +435,13 @@
     "SEARCH": {
       "QUERY_TOO_SHORT": "Введите не менее 2 символов для поиска",
       "INVALID_TYPE": "Не удалось выполнить поиск"
+    },
+    "TEMPLATES": {
+      "TEMPLATE_NOT_FOUND": "Этот шаблон больше не существует",
+      "TEMPLATE_CREATE_FAILED": "Не удалось создать шаблон",
+      "TEMPLATE_UPDATE_FAILED": "Не удалось сохранить шаблон",
+      "TEMPLATE_KIND_INVALID": "Неизвестный тип шаблона",
+      "TEMPLATE_CONTENT_INVALID": "Недопустимое содержимое шаблона"
     }
   }
 }

@@ -309,6 +309,29 @@
   "THEME_PAPER": "Paper",
   "THEME_WINTER_FOREST": "Winter forest",
   "THEME_NATURE": "Nature",
+  "TEMPLATES": "Templates",
+  "NEW_TEMPLATE": "New template",
+  "BLANK": "Blank",
+  "FROM_TEMPLATE": "From template",
+  "FROM_EXISTING_BOARD": "From existing board",
+  "USE_TEMPLATE": "Use template",
+  "DUPLICATE": "Duplicate",
+  "BUILT_IN": "Built-in",
+  "BOARD_TEMPLATES": "Board templates",
+  "TEMPLATE": "Template",
+  "DEFAULT_BOARD_TEMPLATE": "Default (To Do, Doing, Done)",
+  "NO_TEMPLATES_YET": "No templates yet",
+  "NO_BOARD_TEMPLATES_YET": "No board templates yet",
+  "SEARCH_TEMPLATES": "Search templates…",
+  "CONFIRM_DELETE_TEMPLATE": "Delete this template? This cannot be undone. Items created from it are not affected.",
+  "CHOOSE_TEMPLATE": "Choose a template",
+  "CHOOSE_BOARD": "Choose a board",
+  "TEMPLATE_NAME_PLACEHOLDER": "Template name",
+  "UNTITLED_TEMPLATE": "Untitled template",
+  "CONFIRM_DISCARD_NEW_TEMPLATE": "Discard this new template?",
+  "COLUMNS": "Columns",
+  "REMOVE_COLUMN": "Remove column",
+  "REORDER_COLUMN": "Drag to reorder",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Your session has expired. Please log in again",
@@ -412,6 +435,13 @@
     "SEARCH": {
       "QUERY_TOO_SHORT": "Type at least 2 characters to search",
       "INVALID_TYPE": "Could not search"
+    },
+    "TEMPLATES": {
+      "TEMPLATE_NOT_FOUND": "This template no longer exists",
+      "TEMPLATE_CREATE_FAILED": "Could not create the template",
+      "TEMPLATE_UPDATE_FAILED": "Could not save the template",
+      "TEMPLATE_KIND_INVALID": "Unknown template type",
+      "TEMPLATE_CONTENT_INVALID": "The template content is not valid"
     }
   }
 }

@@ -309,6 +309,29 @@
   "THEME_PAPER": "Paperi",
   "THEME_WINTER_FOREST": "Talvimetsä",
   "THEME_NATURE": "Luonto",
+  "TEMPLATES": "Mallit",
+  "NEW_TEMPLATE": "Uusi malli",
+  "BLANK": "Tyhjä",
+  "FROM_TEMPLATE": "Mallista",
+  "FROM_EXISTING_BOARD": "Olemassa olevasta taulusta",
+  "USE_TEMPLATE": "Käytä mallia",
+  "DUPLICATE": "Monista",
+  "BUILT_IN": "Sisäänrakennetut",
+  "BOARD_TEMPLATES": "Taulumallit",
+  "TEMPLATE": "Malli",
+  "DEFAULT_BOARD_TEMPLATE": "Oletus (Tehtävä, Työn alla, Valmis)",
+  "NO_TEMPLATES_YET": "Ei vielä malleja",
+  "NO_BOARD_TEMPLATES_YET": "Ei vielä taulumalleja",
+  "SEARCH_TEMPLATES": "Hae malleja…",
+  "CONFIRM_DELETE_TEMPLATE": "Poistetaanko tämä malli? Toimintoa ei voi kumota. Mallista luotuihin kohteisiin se ei vaikuta.",
+  "CHOOSE_TEMPLATE": "Valitse malli",
+  "CHOOSE_BOARD": "Valitse taulu",
+  "TEMPLATE_NAME_PLACEHOLDER": "Mallin nimi",
+  "UNTITLED_TEMPLATE": "Nimetön malli",
+  "CONFIRM_DISCARD_NEW_TEMPLATE": "Hylätäänkö tämä uusi malli?",
+  "COLUMNS": "Sarakkeet",
+  "REMOVE_COLUMN": "Poista sarake",
+  "REORDER_COLUMN": "Järjestä vetämällä",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Istuntosi on vanhentunut. Kirjaudu sisään uudelleen",
@@ -412,6 +435,13 @@
     "SEARCH": {
       "QUERY_TOO_SHORT": "Kirjoita vähintään 2 merkkiä hakeaksesi",
       "INVALID_TYPE": "Haku epäonnistui"
+    },
+    "TEMPLATES": {
+      "TEMPLATE_NOT_FOUND": "Tätä mallia ei enää ole",
+      "TEMPLATE_CREATE_FAILED": "Mallin luominen epäonnistui",
+      "TEMPLATE_UPDATE_FAILED": "Mallin tallentaminen epäonnistui",
+      "TEMPLATE_KIND_INVALID": "Tuntematon mallityyppi",
+      "TEMPLATE_CONTENT_INVALID": "Mallin sisältö ei kelpaa"
     }
   }
 }

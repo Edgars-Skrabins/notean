@@ -309,6 +309,29 @@
   "THEME_PAPER": "Papir",
   "THEME_WINTER_FOREST": "Vinterskov",
   "THEME_NATURE": "Natur",
+  "TEMPLATES": "Skabeloner",
+  "NEW_TEMPLATE": "Ny skabelon",
+  "BLANK": "Tom",
+  "FROM_TEMPLATE": "Fra skabelon",
+  "FROM_EXISTING_BOARD": "Fra eksisterende tavle",
+  "USE_TEMPLATE": "Brug skabelon",
+  "DUPLICATE": "Dupliker",
+  "BUILT_IN": "Indbyggede",
+  "BOARD_TEMPLATES": "Tavleskabeloner",
+  "TEMPLATE": "Skabelon",
+  "DEFAULT_BOARD_TEMPLATE": "Standard (To do, I gang, Færdig)",
+  "NO_TEMPLATES_YET": "Ingen skabeloner endnu",
+  "NO_BOARD_TEMPLATES_YET": "Ingen tavleskabeloner endnu",
+  "SEARCH_TEMPLATES": "Søg i skabeloner…",
+  "CONFIRM_DELETE_TEMPLATE": "Slet denne skabelon? Det kan ikke fortrydes. Elementer oprettet ud fra den påvirkes ikke.",
+  "CHOOSE_TEMPLATE": "Vælg en skabelon",
+  "CHOOSE_BOARD": "Vælg en tavle",
+  "TEMPLATE_NAME_PLACEHOLDER": "Skabelonens navn",
+  "UNTITLED_TEMPLATE": "Unavngivet skabelon",
+  "CONFIRM_DISCARD_NEW_TEMPLATE": "Kassér denne nye skabelon?",
+  "COLUMNS": "Kolonner",
+  "REMOVE_COLUMN": "Fjern kolonne",
+  "REORDER_COLUMN": "Træk for at ændre rækkefølge",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Din session er udløbet. Log ind igen",
@@ -412,6 +435,13 @@
     "SEARCH": {
       "QUERY_TOO_SHORT": "Skriv mindst 2 tegn for at søge",
       "INVALID_TYPE": "Søgningen mislykkedes"
+    },
+    "TEMPLATES": {
+      "TEMPLATE_NOT_FOUND": "Skabelonen findes ikke længere",
+      "TEMPLATE_CREATE_FAILED": "Skabelonen kunne ikke oprettes",
+      "TEMPLATE_UPDATE_FAILED": "Skabelonen kunne ikke gemmes",
+      "TEMPLATE_KIND_INVALID": "Ukendt skabelontype",
+      "TEMPLATE_CONTENT_INVALID": "Skabelonens indhold er ugyldigt"
     }
   }
 }
