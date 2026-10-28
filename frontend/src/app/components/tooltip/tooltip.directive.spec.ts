@@ -24,6 +24,11 @@ describe('TooltipDirective', () => {
     fixture.detectChanges();
   }
 
+  function focusWith(focusVisible: boolean) {
+    spyOn(button, 'matches').and.returnValue(focusVisible);
+    dispatch('focusin');
+  }
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({imports: [HostComponent]}).compileComponents();
     fixture = TestBed.createComponent(HostComponent);
@@ -59,23 +64,26 @@ describe('TooltipDirective', () => {
   }));
 
   it('shows at once on keyboard focus', () => {
-    button.focus();
-    fixture.detectChanges();
+    focusWith(true);
 
     expect(tooltip()?.textContent?.trim()).toBe('Delete');
   });
 
+  it('does not show on pointer focus', () => {
+    focusWith(false);
+
+    expect(tooltip()).toBeNull();
+  });
+
   it('hides on click', () => {
-    button.focus();
-    fixture.detectChanges();
+    focusWith(true);
     dispatch('click');
 
     expect(tooltip()).toBeNull();
   });
 
   it('hides on Esc without preventing its default', () => {
-    button.focus();
-    fixture.detectChanges();
+    focusWith(true);
     const event = new KeyboardEvent('keydown', {key: 'Escape', bubbles: true, cancelable: true});
     button.dispatchEvent(event);
     fixture.detectChanges();
@@ -99,8 +107,7 @@ describe('TooltipDirective', () => {
     fixture.detectChanges();
     dispatch('mouseenter');
     tick(500);
-    button.focus();
-    fixture.detectChanges();
+    focusWith(true);
 
     expect(tooltip()).toBeNull();
   }));
