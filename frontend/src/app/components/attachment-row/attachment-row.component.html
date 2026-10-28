@@ -1,0 +1,22 @@
+<li class="attachmentRow">
+  <button type="button" class="attachmentRow__open" (click)="opened.emit(attachment)">
+    <span class="attachmentRow__thumb">
+      <img *ngIf="previewUrl; else fileIcon" class="attachmentRow__image" [src]="previewUrl" [alt]="attachment.filename">
+      <ng-template #fileIcon>
+        <app-icon [name]="isImage ? 'image' : 'file'" class="attachmentRow__icon"></app-icon>
+      </ng-template>
+    </span>
+    <span class="attachmentRow__text">
+      <span class="attachmentRow__name">{{ attachment.filename }}</span>
+      <span class="attachmentRow__details">{{ details }}</span>
+    </span>
+  </button>
+  <app-icon-button
+    *ngIf="canDelete"
+    icon="trash"
+    variant="danger"
+    [size]="28"
+    [tooltip]="PHRASES.DELETE_ATTACHMENT | translate"
+    (pressed)="deleteRequested.emit(attachment)"
+  ></app-icon-button>
+</li>
