@@ -59,7 +59,7 @@ class PrioritiesController < ApplicationController
   def cleared_tickets_json(ticket_ids)
     return nil if ticket_ids.empty?
 
-    @board.tickets.includes(TicketJson::ASSIGNEES_PRELOAD).where(id: ticket_ids).map { |ticket| ticket_summary_json(ticket) }
+    @board.tickets.includes(TicketJson::ASSIGNEES_PRELOAD, TicketJson::TAGS_PRELOAD).where(id: ticket_ids).map { |ticket| ticket_summary_json(ticket) }
   end
 
   def set_priority

@@ -9,6 +9,7 @@ import {BoardService} from "@services/board.service";
 import {BoardOverview, RecentTicket} from "@models/board.model";
 import {PieChartComponent, PieSlice} from "@components/pie-chart/pie-chart.component";
 import {PriorityListComponent} from "@components/priority-list/priority-list.component";
+import {TagListComponent} from "@components/tag-list/tag-list.component";
 import {errorPhrase} from "@utils/errorPhrase";
 import {relativeDate} from "@utils/relativeDate";
 import {ticketRoute} from "@utils/ticketRoute";
@@ -21,7 +22,8 @@ import {BoardPageStateService} from "../board-page/board-page-state.service";
     NgIf,
     TranslatePipe,
     PieChartComponent,
-    PriorityListComponent
+    PriorityListComponent,
+    TagListComponent
   ],
   templateUrl: './board-overview-tab.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,

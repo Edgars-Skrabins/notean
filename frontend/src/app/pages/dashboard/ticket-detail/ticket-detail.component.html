@@ -57,6 +57,15 @@
           ></app-dropdown>
         </div>
 
+        <app-ticket-tags
+          [tags]="boardTags"
+          [tagIds]="ticket.tagIds"
+          [busy]="isUpdatingTags"
+          (add)="handleAddTag($event)"
+          (remove)="handleRemoveTag($event)"
+          (create)="handleCreateTag($event)"
+        ></app-ticket-tags>
+
         <app-ticket-assignees
           [assignees]="ticket.assignees"
           [members]="members"

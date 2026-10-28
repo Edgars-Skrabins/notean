@@ -7,6 +7,8 @@ import {MENU_POSITIONS} from '@config/overlayPositions';
 import {TicketFilters, TicketStatus} from '@models/ticket.model';
 import {TeamMember} from '@models/team.model';
 import {CheckboxComponent} from '@components/checkbox/checkbox.component';
+import {TagChipComponent} from '@components/tag-chip/tag-chip.component';
+import {Tag} from '@models/tag.model';
 
 @Component({
   selector: 'app-ticket-filter',
@@ -15,7 +17,8 @@ import {CheckboxComponent} from '@components/checkbox/checkbox.component';
     NgIf,
     OverlayModule,
     TranslatePipe,
-    CheckboxComponent
+    CheckboxComponent,
+    TagChipComponent
   ],
   templateUrl: './ticket-filter.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -27,6 +30,7 @@ export class TicketFilterComponent {
 
   @Input({required: true}) members: TeamMember[] = [];
   @Input({required: true}) statuses: TicketStatus[] = [];
+  @Input() tags: Tag[] = [];
   @Input({required: true}) filters!: TicketFilters;
   @Output() filtersChange = new EventEmitter<TicketFilters>();
 
@@ -36,7 +40,7 @@ export class TicketFilterComponent {
   }
 
   get activeCount(): number {
-    return this.filters.assigneeIds.size + this.filters.columnIds.size;
+    return this.filters.assigneeIds.size + this.filters.tagIds.size + this.filters.columnIds.size;
   }
 
   trackByStatus(_index: number, status: TicketStatus): number | null {
@@ -61,6 +65,16 @@ export class TicketFilterComponent {
     this.emit({...this.filters, assigneeIds});
   }
 
+  toggleTag(id: number | 'none', checked: boolean) {
+    const tagIds = new Set(this.filters.tagIds);
+    if (checked) {
+      tagIds.add(id);
+    } else {
+      tagIds.delete(id);
+    }
+    this.emit({...this.filters, tagIds});
+  }
+
   toggleStatus(columnId: number | null, checked: boolean) {
     const columnIds = new Set(this.filters.columnIds);
     if (checked) {
@@ -72,7 +86,7 @@ export class TicketFilterComponent {
   }
 
   clear() {
-    this.emit({assigneeIds: new Set(), columnIds: new Set()});
+    this.emit({assigneeIds: new Set(), tagIds: new Set(), columnIds: new Set()});
   }
 
   handleOutsideClick(event: MouseEvent) {

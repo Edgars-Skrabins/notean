@@ -83,6 +83,14 @@ class ApplicationController < ActionController::API
     params.require(:priority).permit(:name, :color, :position)
   end
 
+  def create_tag_params
+    params.require(:tag).permit(:name, :color)
+  end
+
+  def update_tag_params
+    params.require(:tag).permit(:name, :color)
+  end
+
   def create_ticket_params
     params.fetch(:ticket, {}).permit(:title, :column_id)
   end
@@ -97,6 +105,10 @@ class ApplicationController < ActionController::API
 
   def create_assignee_params
     params.require(:assignee).permit(:user_id)
+  end
+
+  def create_ticket_tag_params
+    params.require(:tag).permit(:tag_id)
   end
 
   def project_params

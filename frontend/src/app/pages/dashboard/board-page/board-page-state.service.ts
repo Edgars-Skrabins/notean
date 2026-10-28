@@ -5,6 +5,7 @@ import {TeamService} from "@services/team.service";
 import {BoardColumn, BoardDetail, BoardSummary} from "@models/board.model";
 import {TicketChange, TicketShift, TicketStatus, TicketStatusGroup, TicketSummary} from "@models/ticket.model";
 import {BoardPriority} from "@models/priority.model";
+import {Tag} from "@models/tag.model";
 import {ErrorCode} from "@config/errorCodes";
 import {PHRASES} from "@config/phrases";
 import {shiftedPosition} from "@utils/ticketShifts";
@@ -78,6 +79,21 @@ export class BoardPageStateService {
       return null;
     }
     return this.board.priorities.find((priority) => priority.id === id) ?? null;
+  }
+
+  setTags(tags: Tag[]) {
+    if (!this.board) {
+      return;
+    }
+    this.board.tags = tags;
+    const ids = new Set(tags.map((tag) => tag.id));
+    this.ticketsByStatus().forEach((group) => group.tickets.forEach((ticket) => {
+      ticket.tagIds = ticket.tagIds.filter((id) => ids.has(id));
+    }));
+  }
+
+  tagById(id: number): Tag | null {
+    return this.board?.tags.find((tag) => tag.id === id) ?? null;
   }
 
   get statuses(): TicketStatus[] {
@@ -161,6 +177,7 @@ export class BoardPageStateService {
       priorityId: ticket.priorityId,
       lockVersion: ticket.lockVersion,
       assignees: ticket.assignees,
+      tagIds: ticket.tagIds,
       createdAt: ticket.createdAt,
       updatedAt: ticket.updatedAt,
     };
@@ -177,6 +194,7 @@ export class BoardPageStateService {
       ticket.priorityId = updated.priorityId;
       ticket.lockVersion = updated.lockVersion;
       ticket.assignees = updated.assignees;
+      ticket.tagIds = updated.tagIds;
       ticket.updatedAt = updated.updatedAt;
       this.ticketChanges$.next({upserted: [{...ticket}], removedIds: []});
     }
