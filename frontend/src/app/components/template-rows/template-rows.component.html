@@ -28,6 +28,8 @@
       [attr.aria-label]="label | translate"
     />
 
+    <app-tag-chip *ngIf="chipPreview && row.color && row.name.trim()" [tag]="{name: row.name, color: row.color}"></app-tag-chip>
+
     <app-icon-button
       *ngIf="!readonly"
       icon="trash"

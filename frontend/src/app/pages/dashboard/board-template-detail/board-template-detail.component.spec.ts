@@ -23,7 +23,7 @@ describe('BoardTemplateDetailComponent', () => {
     component.ngOnInit();
   }
 
-  function createdContent(): { columns: string[]; priorities: { name: string; color: string }[] } {
+  function createdContent(): { columns: string[]; priorities: { name: string; color: string }[]; tags: { name: string; color: string }[] } {
     return JSON.parse(templateService.create.calls.mostRecent().args[3]);
   }
 
@@ -43,11 +43,14 @@ describe('BoardTemplateDetailComponent', () => {
     expect(templateService.create.calls.mostRecent().args[2]).toBe('UNTITLED_TEMPLATE');
     expect(createdContent().columns).toEqual(['To Do', 'Doing', 'Done']);
     expect(createdContent().priorities.length).toBe(5);
+    expect(createdContent().tags).toEqual([]);
     expect(router.navigate).toHaveBeenCalledWith(['dashboard', 'board-templates', 8], {replaceUrl: true});
   }));
 
   it('copies the columns, priorities and title of an existing board, including later edits', fakeAsync(() => {
-    boardService.getBoard.and.returnValue(Promise.resolve({success: true, board: boardDetail()}));
+    const board = boardDetail();
+    board.tags = [{id: 30, name: 'Bug', color: 'red', ticketCount: 2}];
+    boardService.getBoard.and.returnValue(Promise.resolve({success: true, board}));
     createComponent({}, {board: '9'});
     tick();
 
@@ -56,11 +59,18 @@ describe('BoardTemplateDetailComponent', () => {
     component.handleAddColumn();
     component.columns[2].name = 'Review';
     component.priorities.splice(0, 1);
+    component.handleAddTag();
+    component.tags[1].name = 'UX';
+    component.tags[1].color = 'purple';
     component.handleCreate();
     tick();
 
     expect(boardService.getBoard).toHaveBeenCalledWith('abc', 9);
-    expect(createdContent()).toEqual({columns: ['To Do', 'Done', 'Review'], priorities: [{name: 'High', color: 'orange'}]});
+    expect(createdContent()).toEqual({
+      columns: ['To Do', 'Done', 'Review'],
+      priorities: [{name: 'High', color: 'orange'}],
+      tags: [{name: 'Bug', color: 'red'}, {name: 'UX', color: 'purple'}],
+    });
   }));
 
   it('shows a template of someone else read-only', fakeAsync(() => {

@@ -11,6 +11,7 @@ import {TeamService} from '@services/team.service';
 import {EscapeService} from '@services/escape.service';
 import {BoardTemplateContent, TemplateDetail} from '@models/template.model';
 import {PriorityColor} from '@models/priority.model';
+import {TAG_NAME_MAX_LENGTH} from '@models/tag.model';
 import {errorPhrase} from '@utils/errorPhrase';
 import {templateRoute, templatesRoute} from '@utils/templateRoute';
 import {
@@ -47,6 +48,7 @@ export class BoardTemplateDetailComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
   protected readonly TITLE_MAX_LENGTH = TITLE_MAX_LENGTH;
   protected readonly PRIORITY_NAME_MAX_LENGTH = PRIORITY_NAME_MAX_LENGTH;
+  protected readonly TAG_NAME_MAX_LENGTH = TAG_NAME_MAX_LENGTH;
 
   template: TemplateDetail | null = null;
   isNew = false;
@@ -55,6 +57,7 @@ export class BoardTemplateDetailComponent implements OnInit, OnDestroy {
   title = '';
   columns: TemplateRow[] = [];
   priorities: TemplateRow[] = [];
+  tags: TemplateRow[] = [];
   alertMessage = '';
   showDeleteConfirm = false;
   editConflict: TemplateDetail | null = null;
@@ -110,6 +113,10 @@ export class BoardTemplateDetailComponent implements OnInit, OnDestroy {
 
   handleAddPriority() {
     this.priorities.push(this.row('', 'grey'));
+  }
+
+  handleAddTag() {
+    this.tags.push(this.row('', 'grey'));
   }
 
   handleCreate() {
@@ -252,12 +259,14 @@ export class BoardTemplateDetailComponent implements OnInit, OnDestroy {
   private applyContent(content: BoardTemplateContent) {
     this.columns = content.columns.map((title) => this.row(title, null));
     this.priorities = content.priorities.map((priority) => this.row(priority.name, priority.color));
+    this.tags = content.tags.map((tag) => this.row(tag.name, tag.color));
   }
 
   private serializedContent(): string {
     return serializeBoardTemplateContent({
       columns: this.columns.map((column) => column.name),
       priorities: this.priorities.map((priority) => ({name: priority.name, color: priority.color ?? 'grey'})),
+      tags: this.tags.map((tag) => ({name: tag.name, color: tag.color ?? 'grey'})),
     });
   }
 

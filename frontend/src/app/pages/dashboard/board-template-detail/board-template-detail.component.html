@@ -43,6 +43,16 @@
       [readonly]="!canEdit"
       (added)="handleAddPriority()"
     ></app-template-rows>
+    <app-template-rows
+      [rows]="tags"
+      [label]="PHRASES.TAGS"
+      [addLabel]="PHRASES.ADD_TAG"
+      [removeLabel]="PHRASES.DELETE_TAG"
+      [maxLength]="TAG_NAME_MAX_LENGTH"
+      [readonly]="!canEdit"
+      [chipPreview]="true"
+      (added)="handleAddTag()"
+    ></app-template-rows>
   </div>
 </div>
 

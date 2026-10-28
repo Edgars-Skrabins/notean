@@ -20,14 +20,15 @@ export interface TemplateDetail extends TemplateSummary {
   content: string;
 }
 
-export interface BoardTemplatePriority {
+export interface BoardTemplateLabel {
   name: string;
   color: PriorityColor;
 }
 
 export interface BoardTemplateContent {
   columns: string[];
-  priorities: BoardTemplatePriority[];
+  priorities: BoardTemplateLabel[];
+  tags: BoardTemplateLabel[];
 }
 
 export interface BuiltInTemplate {

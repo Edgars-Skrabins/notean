@@ -9,6 +9,7 @@ import {IconComponent} from '@components/icon/icon.component';
 import {IconButtonComponent} from '@components/icon-button/icon-button.component';
 import {PriorityColorPickerComponent} from '@components/priority-color-picker/priority-color-picker.component';
 import {TooltipDirective} from '@components/tooltip/tooltip.directive';
+import {TagChipComponent} from '@components/tag-chip/tag-chip.component';
 
 export interface TemplateRow {
   key: number;
@@ -29,7 +30,8 @@ export interface TemplateRow {
     IconComponent,
     IconButtonComponent,
     PriorityColorPickerComponent,
-    TooltipDirective
+    TooltipDirective,
+    TagChipComponent
   ],
   templateUrl: './template-rows.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -44,6 +46,7 @@ export class TemplateRowsComponent {
   @Input({required: true}) removeLabel!: string;
   @Input() maxLength = 200;
   @Input() readonly = false;
+  @Input() chipPreview = false;
   @Output() added = new EventEmitter<void>();
 
   trackByKey(_index: number, row: TemplateRow): number {
