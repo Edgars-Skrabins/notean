@@ -174,6 +174,7 @@
   "ITEM_TYPE_DIAGRAM": "Kaavio",
   "ITEM_TYPE_BOARD": "Taulu",
   "ITEM_TYPE_TICKET": "Tiketti",
+  "ITEM_TYPE_PROJECT": "Projekti",
   "SHOW_FAVORITES_ON_HOME": "Näytä suosikit etusivulla",
   "SHOW_FAVORITES_IN_SIDEBAR": "Näytä suosikit sivupalkissa",
   "SETTINGS_SAVED": "Asetukset tallennettu",
@@ -395,6 +396,10 @@
   "ACTIVITY_FIELD_CONTENT": "sisältö",
   "ACTIVITY_FIELD_STATUS": "tila",
   "ACTIVITY_FIELD_PRIORITY": "prioriteetti",
+  "MENTION_NO_MATCHES": "Ei osumia",
+  "MENTION_PRIVATE_ITEM": "Yksityinen kohde",
+  "MENTION_DELETED_ITEM": "Poistettu kohde",
+  "MENTION_SEARCHING": "Haetaan…",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Istuntosi on vanhentunut. Kirjaudu sisään uudelleen",
@@ -528,6 +533,10 @@
     },
     "NOTIFICATIONS": {
       "NOTIFICATION_NOT_FOUND": "Ilmoitusta ei löytynyt"
+    },
+    "MENTIONS": {
+      "TOO_MANY_MENTIONS": "Liikaa mainintoja",
+      "INVALID_MENTION": "Virheellinen maininta"
     }
   }
 }

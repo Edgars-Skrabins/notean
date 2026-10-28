@@ -174,6 +174,7 @@
   "ITEM_TYPE_DIAGRAM": "Diagram",
   "ITEM_TYPE_BOARD": "Tavla",
   "ITEM_TYPE_TICKET": "Ärende",
+  "ITEM_TYPE_PROJECT": "Projekt",
   "SHOW_FAVORITES_ON_HOME": "Visa favoriter på Hem",
   "SHOW_FAVORITES_IN_SIDEBAR": "Visa favoriter i sidofältet",
   "SETTINGS_SAVED": "Inställningarna har sparats",
@@ -395,6 +396,10 @@
   "ACTIVITY_FIELD_CONTENT": "innehåll",
   "ACTIVITY_FIELD_STATUS": "status",
   "ACTIVITY_FIELD_PRIORITY": "prioritet",
+  "MENTION_NO_MATCHES": "Inga träffar",
+  "MENTION_PRIVATE_ITEM": "Privat objekt",
+  "MENTION_DELETED_ITEM": "Borttaget objekt",
+  "MENTION_SEARCHING": "Söker…",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Din session har gått ut. Logga in igen",
@@ -528,6 +533,10 @@
     },
     "NOTIFICATIONS": {
       "NOTIFICATION_NOT_FOUND": "Aviseringen hittades inte"
+    },
+    "MENTIONS": {
+      "TOO_MANY_MENTIONS": "För många omnämnanden",
+      "INVALID_MENTION": "Ogiltigt omnämnande"
     }
   }
 }

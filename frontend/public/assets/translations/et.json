@@ -174,6 +174,7 @@
   "ITEM_TYPE_DIAGRAM": "Diagramm",
   "ITEM_TYPE_BOARD": "Tahvel",
   "ITEM_TYPE_TICKET": "Pilet",
+  "ITEM_TYPE_PROJECT": "Projekt",
   "SHOW_FAVORITES_ON_HOME": "Näita lemmikuid avalehel",
   "SHOW_FAVORITES_IN_SIDEBAR": "Näita lemmikuid külgribal",
   "SETTINGS_SAVED": "Seaded salvestatud",
@@ -395,6 +396,10 @@
   "ACTIVITY_FIELD_CONTENT": "sisu",
   "ACTIVITY_FIELD_STATUS": "olek",
   "ACTIVITY_FIELD_PRIORITY": "prioriteet",
+  "MENTION_NO_MATCHES": "Vasteid pole",
+  "MENTION_PRIVATE_ITEM": "Privaatne üksus",
+  "MENTION_DELETED_ITEM": "Kustutatud üksus",
+  "MENTION_SEARCHING": "Otsin…",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Sinu seanss on aegunud. Palun logi uuesti sisse",
@@ -528,6 +533,10 @@
     },
     "NOTIFICATIONS": {
       "NOTIFICATION_NOT_FOUND": "Teavitust ei leitud"
+    },
+    "MENTIONS": {
+      "TOO_MANY_MENTIONS": "Liiga palju mainimisi",
+      "INVALID_MENTION": "Vigane mainimine"
     }
   }
 }

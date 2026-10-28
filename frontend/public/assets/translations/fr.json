@@ -174,6 +174,7 @@
   "ITEM_TYPE_DIAGRAM": "Diagramme",
   "ITEM_TYPE_BOARD": "Tableau",
   "ITEM_TYPE_TICKET": "Ticket",
+  "ITEM_TYPE_PROJECT": "Projet",
   "SHOW_FAVORITES_ON_HOME": "Afficher les favoris sur l'accueil",
   "SHOW_FAVORITES_IN_SIDEBAR": "Afficher les favoris dans la barre latérale",
   "SETTINGS_SAVED": "Paramètres enregistrés",
@@ -395,6 +396,10 @@
   "ACTIVITY_FIELD_CONTENT": "contenu",
   "ACTIVITY_FIELD_STATUS": "statut",
   "ACTIVITY_FIELD_PRIORITY": "priorité",
+  "MENTION_NO_MATCHES": "Aucun résultat",
+  "MENTION_PRIVATE_ITEM": "Élément privé",
+  "MENTION_DELETED_ITEM": "Élément supprimé",
+  "MENTION_SEARCHING": "Recherche…",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Votre session a expiré. Veuillez vous reconnecter",
@@ -528,6 +533,10 @@
     },
     "NOTIFICATIONS": {
       "NOTIFICATION_NOT_FOUND": "Notification introuvable"
+    },
+    "MENTIONS": {
+      "TOO_MANY_MENTIONS": "Trop de mentions",
+      "INVALID_MENTION": "Mention invalide"
     }
   }
 }
