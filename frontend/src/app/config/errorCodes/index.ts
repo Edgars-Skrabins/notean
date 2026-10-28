@@ -14,6 +14,7 @@ import {PROJECTS_ERROR_CODES, ProjectsErrorCode} from "./projects";
 import {SEARCH_ERROR_CODES, SearchErrorCode} from "./search";
 import {TRASH_ERROR_CODES, TrashErrorCode} from "./trash";
 import {COMMENTS_ERROR_CODES, CommentsErrorCode} from "./comments";
+import {ATTACHMENTS_ERROR_CODES, AttachmentsErrorCode} from "./attachments";
 
 export const ERROR_CODES_BY_DOMAIN = {
   COMMON: COMMON_ERROR_CODES,
@@ -32,6 +33,7 @@ export const ERROR_CODES_BY_DOMAIN = {
   SEARCH: SEARCH_ERROR_CODES,
   TRASH: TRASH_ERROR_CODES,
   COMMENTS: COMMENTS_ERROR_CODES,
+  ATTACHMENTS: ATTACHMENTS_ERROR_CODES,
 } as const;
 
 export type ErrorDomain = keyof typeof ERROR_CODES_BY_DOMAIN;
@@ -52,7 +54,8 @@ export type ErrorCode =
   | ProjectsErrorCode
   | SearchErrorCode
   | TrashErrorCode
-  | CommentsErrorCode;
+  | CommentsErrorCode
+  | AttachmentsErrorCode;
 
 export type {
   CommonErrorCode,
@@ -72,4 +75,5 @@ export type {
   SearchErrorCode,
   TrashErrorCode,
   CommentsErrorCode,
+  AttachmentsErrorCode,
 };

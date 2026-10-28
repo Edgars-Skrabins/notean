@@ -364,6 +364,18 @@
   "TRASH_TYPE_ALL": "Visi veidi",
   "TRASH_TYPE_FOLDERS": "Mapes",
   "SEARCH_TRASH": "Meklēt miskastē pēc nosaukuma",
+  "ATTACHMENTS": "Pielikumi",
+  "UPLOAD_FILES": "Augšupielādēt",
+  "NO_ATTACHMENTS": "Pielikumu vēl nav",
+  "DELETE_ATTACHMENT": "Dzēst pielikumu",
+  "CONFIRM_DELETE_ATTACHMENT": "Dzēst šo pielikumu?",
+  "INSERT_IMAGE": "Ievietot attēlu",
+  "DOWNLOAD": "Lejupielādēt",
+  "STORAGE_USAGE": "Krātuve: izmantoti {{used}} no {{quota}}",
+  "UPLOADING": "Augšupielādē {{progress}}%",
+  "CLOSE_PREVIEW": "Aizvērt priekšskatījumu",
+  "ATTACHMENT_COUNT": "{{count}} pielikumi",
+  "DROP_FILES_HERE": "Nometiet failus, lai pievienotu",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Jūsu sesija ir beigusies. Lūdzu, piesakieties vēlreiz",
@@ -486,6 +498,14 @@
     "TRASH": {
       "TRASH_ENTRY_NOT_FOUND": "Šis vienums vairs nav miskastē",
       "TRASH_BOARD_IN_TRASH": "Vispirms atjaunojiet dēli"
+    },
+    "ATTACHMENTS": {
+      "ATTACHMENT_NOT_FOUND": "Pielikums nav atrasts",
+      "FILE_REQUIRED": "Izvēlieties failu augšupielādei",
+      "FILE_TOO_LARGE": "Failiem jābūt ne lielākiem par 25 MB",
+      "INLINE_IMAGE_TYPE_INVALID": "Attēliem tekstā jābūt PNG, JPEG, GIF vai WebP",
+      "STORAGE_QUOTA_EXCEEDED": "Jūsu komanda ir izmantojusi visus 500 MB krātuves",
+      "ATTACHMENT_UPLOAD_FAILED": "Neizdevās augšupielādēt failu"
     }
   }
 }

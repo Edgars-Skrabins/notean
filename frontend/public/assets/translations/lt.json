@@ -364,6 +364,18 @@
   "TRASH_TYPE_ALL": "Visi tipai",
   "TRASH_TYPE_FOLDERS": "Aplankai",
   "SEARCH_TRASH": "Ieškoti šiukšlinėje pagal pavadinimą",
+  "ATTACHMENTS": "Priedai",
+  "UPLOAD_FILES": "Įkelti",
+  "NO_ATTACHMENTS": "Priedų dar nėra",
+  "DELETE_ATTACHMENT": "Ištrinti priedą",
+  "CONFIRM_DELETE_ATTACHMENT": "Ištrinti šį priedą?",
+  "INSERT_IMAGE": "Įterpti paveikslėlį",
+  "DOWNLOAD": "Atsisiųsti",
+  "STORAGE_USAGE": "Saugykla: panaudota {{used}} iš {{quota}}",
+  "UPLOADING": "Įkeliama {{progress}}%",
+  "CLOSE_PREVIEW": "Uždaryti peržiūrą",
+  "ATTACHMENT_COUNT": "Priedų: {{count}}",
+  "DROP_FILES_HERE": "Numeskite failus, kad pridėtumėte",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Jūsų sesija baigėsi. Prisijunkite iš naujo",
@@ -486,6 +498,14 @@
     "TRASH": {
       "TRASH_ENTRY_NOT_FOUND": "Šio elemento šiukšlinėje nebėra",
       "TRASH_BOARD_IN_TRASH": "Pirmiausia atkurkite lentą"
+    },
+    "ATTACHMENTS": {
+      "ATTACHMENT_NOT_FOUND": "Priedas nerastas",
+      "FILE_REQUIRED": "Pasirinkite failą įkėlimui",
+      "FILE_TOO_LARGE": "Failai turi būti ne didesni nei 25 MB",
+      "INLINE_IMAGE_TYPE_INVALID": "Paveikslėliai tekste turi būti PNG, JPEG, GIF arba WebP",
+      "STORAGE_QUOTA_EXCEEDED": "Jūsų komanda išnaudojo visus 500 MB saugyklos",
+      "ATTACHMENT_UPLOAD_FAILED": "Nepavyko įkelti failo"
     }
   }
 }
