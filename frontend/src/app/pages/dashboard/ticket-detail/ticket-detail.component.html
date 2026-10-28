@@ -13,6 +13,7 @@
           [tooltip]="PHRASES.DELETE_TICKET | translate"
           (pressed)="handleDelete()"
         ></app-icon-button>
+        <app-icon-button icon="link" [tooltip]="PHRASES.COPY_LINK | translate" (pressed)="handleCopyLink()"></app-icon-button>
         <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE | translate" (pressed)="handleGoBack()"></app-icon-button>
       </div>
     </div>
@@ -42,6 +43,8 @@
           (focus)="handleDescriptionFocus()"
           (blur)="handleDescriptionBlur()"
         ></textarea>
+
+        <app-comment-list *ngIf="commentTarget" [target]="commentTarget"></app-comment-list>
       </div>
 
       <div class="ticketDetail__side">
@@ -55,6 +58,15 @@
             (valueChange)="handlePriorityChange($event)"
           ></app-dropdown>
         </div>
+
+        <app-ticket-tags
+          [tags]="boardTags"
+          [tagIds]="ticket.tagIds"
+          [busy]="isUpdatingTags"
+          (add)="handleAddTag($event)"
+          (remove)="handleRemoveTag($event)"
+          (create)="handleCreateTag($event)"
+        ></app-ticket-tags>
 
         <app-ticket-assignees
           [assignees]="ticket.assignees"

@@ -823,6 +823,26 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ "For Bob", "Nobody" ], listed_titles(status: "backlog", assignee_ids: [ "none", bob.id ])
   end
 
+  test "index filters by any of the given tags and by untagged, combined with the assignee filter" do
+    bob = create_member(@team, "Bob")
+    bug = BoardTag.create!(board: @board, name: "bug", color: "red")
+    api = BoardTag.create!(board: @board, name: "api", color: "blue")
+    bug_ticket = ticket_in(nil, "Bug", 0)
+    api_ticket = ticket_in(nil, "Api", 1)
+    untagged = ticket_in(nil, "Untagged", 2)
+    TicketTag.create!(ticket: bug_ticket, tag: bug)
+    TicketTag.create!(ticket: api_ticket, tag: api)
+    TicketTag.create!(ticket: api_ticket, tag: bug)
+    TicketAssignee.create!(ticket: api_ticket, user: bob)
+    TicketAssignee.create!(ticket: untagged, user: bob)
+
+    assert_equal [ "Bug", "Api" ], listed_titles(status: "backlog", tag_ids: [ bug.id ])
+    assert_equal [ "Api" ], listed_titles(status: "backlog", tag_ids: [ api.id ])
+    assert_equal [ "Untagged" ], listed_titles(status: "backlog", tag_ids: [ "none" ])
+    assert_equal [ "Api", "Untagged" ], listed_titles(status: "backlog", tag_ids: [ "none", api.id ])
+    assert_equal [ "Api" ], listed_titles(status: "backlog", tag_ids: [ bug.id ], assignee_ids: [ bob.id ])
+  end
+
   test "index pages by 50 and flips has_more at the end" do
     55.times { |index| ticket_in(nil, "Ticket #{index}", index) }
 
@@ -855,10 +875,17 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
   test "index runs the same number of queries for 1 and 10 tickets" do
     attach_avatar(@user)
     members = 3.times.map { |index| create_member(@team, nickname_for(index), with_avatar: index.zero?) }
-    TicketAssignee.create!(ticket: ticket_in(nil, "Ticket 0", 0), user: members.first)
+    tags = 3.times.map { |index| BoardTag.create!(board: @board, name: "tag #{index}", color: "grey") }
+    first = ticket_in(nil, "Ticket 0", 0)
+    TicketAssignee.create!(ticket: first, user: members.first)
+    TicketTag.create!(ticket: first, tag: tags.first)
     one = query_count { get tickets_url, params: { status: "backlog" }, headers: @headers }
 
-    9.times { |index| TicketAssignee.create!(ticket: ticket_in(nil, "Ticket #{index + 1}", index + 1), user: members[index % 3]) }
+    9.times do |index|
+      ticket = ticket_in(nil, "Ticket #{index + 1}", index + 1)
+      TicketAssignee.create!(ticket: ticket, user: members[index % 3])
+      TicketTag.create!(ticket: ticket, tag: tags[index % 3])
+    end
     ten = query_count { get tickets_url, params: { status: "backlog" }, headers: @headers }
 
     assert_equal 10, JSON.parse(response.body)["tickets"].length

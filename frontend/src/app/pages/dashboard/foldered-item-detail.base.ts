@@ -13,6 +13,7 @@ import {TrashService} from "@services/trash.service";
 import {ToastService} from "@services/toast.service";
 import {ProjectFilterService} from "@services/project-filter.service";
 import {FolderService} from "@services/folder.service";
+import {CopyLinkService} from "@services/copy-link.service";
 import {ToastType} from "@models/toast.model";
 import {FavoritableType} from "@models/favorite.model";
 import {FolderItemType} from "@models/folder.model";
@@ -27,6 +28,7 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
   protected abstract readonly itemType: FolderItemType;
   protected abstract readonly listRoute: AppRoutes;
   protected abstract readonly untitledItemPhrase: string;
+  protected abstract readonly notFoundCode: ErrorCode;
 
   item: FolderedItemDetail | null = null;
   mode: 'view' | 'edit' | 'create' = 'view';
@@ -58,6 +60,7 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
     private projectFilterService: ProjectFilterService,
     private folderService: FolderService,
     private translateService: TranslateService,
+    private copyLinkService: CopyLinkService,
     private trashService: TrashService
   ) {
     this.teamCode = teamService.getCurrentTeamCode();
@@ -138,6 +141,10 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
 
   handleDelete() {
     this.showDeleteConfirm = true;
+  }
+
+  handleCopyLink() {
+    this.copyLinkService.copyCurrentLink();
   }
 
   handleCancelDelete() {
@@ -352,6 +359,10 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
         this.isLoading = false;
 
         if (!response.success) {
+          if (response.code === this.notFoundCode) {
+            this.navigationService.navigateReplacingUrl(AppRoutes.UNAVAILABLE);
+            return;
+          }
           this.alertMessage = errorPhrase(response.code);
           return;
         }

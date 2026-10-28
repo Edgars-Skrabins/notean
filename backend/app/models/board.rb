@@ -15,6 +15,7 @@ class Board < ApplicationRecord
   has_many :backlog_tickets, -> { where(column_id: nil).order(:position) }, class_name: "Ticket"
   has_many :columns, -> { order(:position) }, dependent: :destroy
   has_many :priorities, -> { order(:position) }, class_name: "BoardPriority", dependent: :destroy
+  has_many :tags, -> { order(Arel.sql("LOWER(name)"), :id) }, class_name: "BoardTag", dependent: :delete_all
   has_many :favorites, as: :favoritable, dependent: :destroy
 
   validates :title, presence: true, length: { maximum: TITLE_MAX_LENGTH }

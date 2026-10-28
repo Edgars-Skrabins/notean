@@ -8,10 +8,12 @@ import {FOLDERS_ERROR_CODES, FoldersErrorCode} from "./folders";
 import {BOARDS_ERROR_CODES, BoardsErrorCode} from "./boards";
 import {TICKETS_ERROR_CODES, TicketsErrorCode} from "./tickets";
 import {PRIORITIES_ERROR_CODES, PrioritiesErrorCode} from "./priorities";
+import {TAGS_ERROR_CODES, TagsErrorCode} from "./tags";
 import {FAVORITES_ERROR_CODES, FavoritesErrorCode} from "./favorites";
 import {PROJECTS_ERROR_CODES, ProjectsErrorCode} from "./projects";
 import {SEARCH_ERROR_CODES, SearchErrorCode} from "./search";
 import {TRASH_ERROR_CODES, TrashErrorCode} from "./trash";
+import {COMMENTS_ERROR_CODES, CommentsErrorCode} from "./comments";
 
 export const ERROR_CODES_BY_DOMAIN = {
   COMMON: COMMON_ERROR_CODES,
@@ -24,10 +26,12 @@ export const ERROR_CODES_BY_DOMAIN = {
   BOARDS: BOARDS_ERROR_CODES,
   TICKETS: TICKETS_ERROR_CODES,
   PRIORITIES: PRIORITIES_ERROR_CODES,
+  TAGS: TAGS_ERROR_CODES,
   FAVORITES: FAVORITES_ERROR_CODES,
   PROJECTS: PROJECTS_ERROR_CODES,
   SEARCH: SEARCH_ERROR_CODES,
   TRASH: TRASH_ERROR_CODES,
+  COMMENTS: COMMENTS_ERROR_CODES,
 } as const;
 
 export type ErrorDomain = keyof typeof ERROR_CODES_BY_DOMAIN;
@@ -43,10 +47,12 @@ export type ErrorCode =
   | BoardsErrorCode
   | TicketsErrorCode
   | PrioritiesErrorCode
+  | TagsErrorCode
   | FavoritesErrorCode
   | ProjectsErrorCode
   | SearchErrorCode
-  | TrashErrorCode;
+  | TrashErrorCode
+  | CommentsErrorCode;
 
 export type {
   CommonErrorCode,
@@ -60,8 +66,10 @@ export type {
   BoardsErrorCode,
   TicketsErrorCode,
   PrioritiesErrorCode,
+  TagsErrorCode,
   FavoritesErrorCode,
   ProjectsErrorCode,
   SearchErrorCode,
   TrashErrorCode,
+  CommentsErrorCode,
 };

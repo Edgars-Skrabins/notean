@@ -8,8 +8,10 @@ import {SwitchTeamComponent} from "../pages/switch-team/switch-team.component";
 import {ManageTeamComponent} from "../pages/manage-team/manage-team.component";
 import {ProfileComponent} from "../pages/dashboard/profile/profile.component";
 import {SettingsComponent} from "../pages/dashboard/settings/settings.component";
+import {UnavailableComponent} from "../pages/unavailable/unavailable.component";
 import {authGuard} from "../guards/auth.guard";
 import {teamGuard} from "../guards/team.guard";
+import {teamLinkGuard} from "../guards/team-link.guard";
 import {teamRoleGuard} from "../guards/team-role.guard";
 import {unsavedChangesGuard} from "../guards/unsaved-changes.guard";
 import {unknownRouteRedirect} from "../guards/unknown-route.redirect";
@@ -29,8 +31,10 @@ export const routes: Routes = [
   {
     path: AppRoutes.DASHBOARD,
     loadComponent: () => import('../pages/dashboard/dashboard.component').then((m) => m.DashboardComponent),
-    canActivate: [authGuard, teamGuard],
+    canActivate: [authGuard, teamLinkGuard, teamGuard],
+    runGuardsAndResolvers: 'always',
     loadChildren: () => import('./dashboard.routes').then((m) => m.dashboardRoutes),
   },
+  {path: AppRoutes.UNAVAILABLE, component: UnavailableComponent, canActivate: [authGuard]},
   {path: '**', redirectTo: unknownRouteRedirect},
 ];

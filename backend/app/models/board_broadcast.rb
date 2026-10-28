@@ -19,6 +19,10 @@ class BoardBroadcast
     broadcast(board, { type: "priorities_changed", priorities: priorities, tickets: tickets }.compact)
   end
 
+  def self.tags_changed(board, tags, tickets: nil)
+    broadcast(board, { type: "tags_changed", tags: tags, tickets: tickets }.compact)
+  end
+
   def self.board_updated(board)
     broadcast(board, type: "board_updated", board: { id: board.id, title: board.title, project_id: board.project_id })
   end

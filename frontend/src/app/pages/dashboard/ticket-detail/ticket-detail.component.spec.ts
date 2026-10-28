@@ -3,9 +3,11 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {provideTranslateService} from "@ngx-translate/core";
 import {TicketDetailComponent} from "./ticket-detail.component";
 import {TicketService} from "@services/ticket.service";
+import {TagService} from "@services/tag.service";
 import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
 import {TeamService} from "@services/team.service";
+import {CommentService} from "@services/comment.service";
 import {AuthService} from "@services/auth.service";
 import {ProjectService} from "@services/project.service";
 import {ProjectDetail} from "@models/project.model";
@@ -15,6 +17,8 @@ import {PHRASES} from "@config/phrases";
 import {DESCRIPTION_MAX_LENGTH, TITLE_MAX_LENGTH} from "@config/contentLimits";
 import {EscapeService} from "@services/escape.service";
 import {TrashService} from "@services/trash.service";
+import {CopyLinkService} from "@services/copy-link.service";
+import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 import {createBoardState, ticketDetail} from "../../../testing/boardFixtures";
 import {escapeServiceStub, EscapeServiceStub} from "../../../testing/escapeServiceStub";
@@ -23,6 +27,7 @@ import {trashServiceStub} from "../../../testing/trashServiceStub";
 describe('TicketDetailComponent editing', () => {
   let component: TicketDetailComponent;
   let ticketService: jasmine.SpyObj<TicketService>;
+  let tagService: jasmine.SpyObj<TagService>;
   let favoriteService: jasmine.SpyObj<FavoriteService>;
   let toastService: jasmine.SpyObj<ToastService>;
   let router: jasmine.SpyObj<Router>;
@@ -35,6 +40,7 @@ describe('TicketDetailComponent editing', () => {
 
   beforeEach(() => {
     ticketService = jasmine.createSpyObj('TicketService', ['updateTicket', 'getTicket', 'moveToBacklog', 'moveTicket', 'deleteTicket', 'addAssignee', 'removeAssignee']);
+    tagService = jasmine.createSpyObj<TagService>('TagService', ['create', 'addToTicket', 'removeFromTicket']);
     favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem', 'renameItem']);
     ticketService.getTicket.and.returnValue(new Promise(() => undefined));
     toastService = jasmine.createSpyObj<ToastService>('ToastService', ['show']);
@@ -46,7 +52,7 @@ describe('TicketDetailComponent editing', () => {
     authService.getCurrentUser.and.returnValue({id: 1, email: 'alice@example.com'});
     state = createBoardState();
     escape = escapeServiceStub();
-    component = new TicketDetailComponent(route, router, state, ticketService, favoriteService, toastService, teamService, projectService, authService, escape.service, trashServiceStub().service);
+    component = new TicketDetailComponent(route, router, state, ticketService, tagService, favoriteService, toastService, teamService, projectService, authService, escape.service, {} as CopyLinkService, trashServiceStub().service);
 
     ticket = {...ticketDetail(1, 10), title: 'My Ticket'};
     component.ticket = ticket;
@@ -95,6 +101,16 @@ describe('TicketDetailComponent editing', () => {
     expect(component.alertMessage).toBe('ERRORS.TICKETS.TICKET_UPDATE_FAILED');
     expect(component.ticket?.title).toBe('My Ticket');
     expect(component.titleDraft).toBe('Renamed');
+  }));
+
+  it('sends a missing or hidden ticket to the unavailable screen', fakeAsync(() => {
+    ticketService.getTicket.and.returnValue(Promise.resolve({success: false, code: 'TICKET_NOT_FOUND'}));
+
+    component.ngOnInit();
+    flushMicrotasks();
+
+    expect(router.navigate).toHaveBeenCalledOnceWith([AppRoutes.UNAVAILABLE], {replaceUrl: true});
+    component.ngOnDestroy();
   }));
 
   it('closes the popup on Escape', () => {
@@ -324,6 +340,34 @@ describe('TicketDetailComponent editing', () => {
     expect(component.isUpdatingAssignees).toBeFalse();
   }));
 
+  it('creates a tag inline, adds it to the board in name order and tags the ticket', fakeAsync(() => {
+    const created = {id: 32, name: 'Bravo', color: 'green' as const, ticketCount: 0};
+    tagService.create.and.returnValue(Promise.resolve({success: true, tag: created}));
+    tagService.addToTicket.and.returnValue(Promise.resolve({success: true, ticket: {...ticket, tagIds: [32]}}));
+    component.ngOnInit();
+
+    component.handleCreateTag('Bravo');
+    flushMicrotasks();
+
+    expect(tagService.create).toHaveBeenCalledWith('abc', 9, 'Bravo');
+    expect(state.board!.tags.map((tag) => tag.name)).toEqual(['api', 'Bravo', 'bug']);
+    expect(tagService.addToTicket).toHaveBeenCalledWith('abc', 9, 1, 32);
+    expect(state.findTicket(1)?.tagIds).toEqual([32]);
+    expect(component.isUpdatingTags).toBeFalse();
+  }));
+
+  it('shows the translated error in a toast when a tag name is taken', fakeAsync(() => {
+    tagService.create.and.returnValue(Promise.resolve({success: false, code: 'TAG_NAME_TAKEN'}));
+    component.ngOnInit();
+
+    component.handleCreateTag('bug');
+    flushMicrotasks();
+
+    expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: 'ERRORS.TAGS.TAG_NAME_TAKEN'});
+    expect(tagService.addToTicket).not.toHaveBeenCalled();
+    expect(component.isUpdatingTags).toBeFalse();
+  }));
+
   it('keeps the assignees and shows a toast when removing fails', fakeAsync(() => {
     ticketService.removeAssignee.and.returnValue(Promise.resolve({success: false, code: 'ASSIGNEE_NOT_FOUND'}));
     component.ngOnInit();
@@ -481,9 +525,11 @@ describe('TicketDetailComponent input limits', () => {
   it('limits the title input and the description textarea to the content limits', async () => {
     const ticketService = jasmine.createSpyObj<TicketService>('TicketService', ['getTicket']);
     ticketService.getTicket.and.returnValue(Promise.resolve({success: true, ticket: ticketDetail(1, 10)}));
-    const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['fetchTeamMembers', 'getCurrentTeamCode']);
+    const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['fetchTeamMembers', 'getCurrentTeamCode', 'getCurrentRole']);
     teamService.fetchTeamMembers.and.returnValue(Promise.resolve([]));
     teamService.getCurrentTeamCode.and.returnValue('abc');
+    const commentService = jasmine.createSpyObj<CommentService>('CommentService', ['list']);
+    commentService.list.and.resolveTo({success: true, comments: [], hasMore: false});
     const authService = jasmine.createSpyObj<AuthService>('AuthService', ['getCurrentUser']);
     authService.getCurrentUser.and.returnValue({id: 1, email: 'alice@example.com'});
 
@@ -502,6 +548,7 @@ describe('TicketDetailComponent input limits', () => {
         {provide: AuthService, useValue: authService},
         {provide: EscapeService, useValue: escapeServiceStub().service},
         {provide: TrashService, useValue: trashServiceStub().service},
+        {provide: CommentService, useValue: commentService},
       ],
     }).compileComponents();
 

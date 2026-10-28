@@ -10,6 +10,7 @@ export interface TicketSummary {
   priorityId: number | null;
   lockVersion: number;
   assignees: BoardUser[];
+  tagIds: number[];
   createdAt: string;
   updatedAt: string;
 }
@@ -32,6 +33,7 @@ export interface TicketStatusGroup {
 
 export interface TicketFilters {
   assigneeIds: Set<number | 'none'>;
+  tagIds: Set<number | 'none'>;
   columnIds: Set<number | null>;
 }
 
@@ -51,6 +53,7 @@ export interface ListTicketsParams {
   status: number | 'backlog';
   search?: string;
   assigneeIds?: (number | 'none')[];
+  tagIds?: (number | 'none')[];
   offset?: number;
 }
 

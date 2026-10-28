@@ -22,6 +22,7 @@
   (cancelRequested)="handleCancel()"
   (saveRequested)="handleSave()"
   (deleteRequested)="handleDelete()"
+  (copyLinkRequested)="handleCopyLink()"
   (deleteConfirmed)="handleConfirmDelete()"
   (deleteCancelled)="handleCancelDelete()"
   (projectChange)="handleProjectChange($event)"
@@ -34,6 +35,7 @@
   (draftProjectChange)="handleDraftProjectChange($event)"
 >
   <div class="pageDetail__content" *ngIf="mode === 'view' && item" [innerHTML]="item.content"></div>
+  <app-comment-list class="pageDetail__comments" *ngIf="mode === 'view' && commentTarget" [target]="commentTarget"></app-comment-list>
   @defer {
     <app-rich-text-editor
       *ngIf="mode === 'edit' || mode === 'create'"

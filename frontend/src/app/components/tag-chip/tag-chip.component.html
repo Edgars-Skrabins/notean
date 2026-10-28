@@ -1,0 +1,14 @@
+<span class="tagChip" [attr.data-color]="tag.color">
+  <span class="tagChip__name">{{ tag.name }}</span>
+  <button
+    *ngIf="removable"
+    type="button"
+    class="tagChip__remove"
+    [disabled]="disabled"
+    [appTooltip]="PHRASES.REMOVE_TAG | translate"
+    [attr.aria-label]="PHRASES.REMOVE_TAG | translate"
+    (click)="remove.emit()"
+  >
+    <app-icon name="x"></app-icon>
+  </button>
+</span>

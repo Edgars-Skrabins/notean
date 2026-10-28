@@ -1,0 +1,26 @@
+:host {
+  display: inline-flex;
+  min-width: 0;
+}
+
+.tagChip__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tagChip__remove {
+  display: inline-flex;
+  width: 14px;
+  height: 14px;
+  margin-right: -4px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  color: inherit;
+  cursor: pointer;
+}
+
+.tagChip__remove:hover {
+  background: color-mix(in srgb, var(--color-tint) 14%, transparent);
+}

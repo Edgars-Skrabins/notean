@@ -19,6 +19,7 @@ const ticket = (id: number, title: string, position: number, columnId: number | 
   priorityId: null,
   lockVersion: 2,
   assignees: [],
+  tagIds: [],
   createdAt: '2024-01-01T00:00:00Z',
   updatedAt: '2024-01-02T00:00:00Z',
 });
@@ -117,6 +118,18 @@ describe('mapBoardDetail', () => {
     expect(result.priorities).toEqual([{id: 7, name: 'High', color: 'orange', position: 3, ticketCount: 1}]);
     expect(result.backlog[0].priorityId).toBe(7);
     expect(mapBoardDetail(raw).priorities).toEqual([]);
+  });
+
+  it('maps the tags and each ticket tag ids', () => {
+    const result = mapBoardDetail({
+      ...raw,
+      backlog: [{...rawTicket(6, 'Idea', 0, null), tag_ids: [8, 2]}],
+      tags: [{id: 8, name: 'api', color: 'teal', ticket_count: 1}],
+    });
+
+    expect(result.tags).toEqual([{id: 8, name: 'api', color: 'teal', ticketCount: 1}]);
+    expect(result.backlog[0].tagIds).toEqual([8, 2]);
+    expect(mapBoardDetail(raw).tags).toEqual([]);
   });
 });
 

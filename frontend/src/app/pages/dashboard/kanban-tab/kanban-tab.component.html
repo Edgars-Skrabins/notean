@@ -4,6 +4,7 @@
   <app-kanban-column
     *ngFor="let column of board.columns"
     [column]="column"
+    [tags]="board.tags"
     (renameColumn)="handleRenameColumn(column, $event.title)"
     (deleteColumn)="requestDeleteColumn(column)"
     (openTicket)="handleOpenTicket($event)"

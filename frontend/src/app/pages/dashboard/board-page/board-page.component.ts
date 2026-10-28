@@ -21,6 +21,7 @@ import {errorPhrase} from "@utils/errorPhrase";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "./board-page-state.service";
 import {BoardChannelService} from "@services/board-channel.service";
+import {CopyLinkService} from "@services/copy-link.service";
 
 @Component({
   selector: 'app-board-page',
@@ -62,6 +63,7 @@ export class BoardPageComponent implements OnInit, OnDestroy {
     private navigationService: NavigationService,
     private toastService: ToastService,
     private boardChannelService: BoardChannelService,
+    private copyLinkService: CopyLinkService,
     private trashService: TrashService
   ) {
   }
@@ -72,6 +74,10 @@ export class BoardPageComponent implements OnInit, OnDestroy {
       this.alertMessage = '';
       this.boardChannelService.disconnect();
       this.state.load(Number(params.get('id'))).then(() => {
+        if (this.state.errorCode === 'BOARD_NOT_FOUND') {
+          this.navigationService.navigateReplacingUrl(AppRoutes.UNAVAILABLE);
+          return;
+        }
         this.alertMessage = this.state.errorCode ? errorPhrase(this.state.errorCode) : '';
         if (this.state.board) {
           this.boardChannelService.connect(this.state.board.id);
@@ -141,6 +147,10 @@ export class BoardPageComponent implements OnInit, OnDestroy {
         this.boardListService.load();
         this.toastService.show({type: ToastType.SUCCESS, message: PHRASES.PROJECT_UPDATED});
       });
+  }
+
+  handleCopyLink() {
+    this.copyLinkService.copyCurrentLink();
   }
 
   handleDelete() {

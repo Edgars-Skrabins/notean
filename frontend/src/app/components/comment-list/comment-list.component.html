@@ -1,0 +1,25 @@
+<section class="commentList">
+  <h3 class="commentList__title capsLabel" *ngIf="title">{{ title | translate }}</h3>
+
+  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+
+  <app-load-more *ngIf="hasMore" [loading]="isLoadingMore" (pressed)="loadMore()"></app-load-more>
+
+  <p class="commentList__empty" *ngIf="isLoaded && comments.length === 0 && !alertMessage">{{ PHRASES.NO_COMMENTS_YET | translate }}</p>
+
+  <app-comment-item
+    *ngFor="let comment of comments; trackBy: trackById"
+    [comment]="comment"
+    [teamCode]="teamCode"
+    [canEdit]="canEdit(comment)"
+    [canDelete]="canDelete(comment)"
+    (updated)="handleUpdated($event)"
+    (deleted)="handleDeleted(comment, $event)"
+    (failed)="showError($event)"
+  ></app-comment-item>
+
+  <div class="commentList__new" *ngIf="isLoaded">
+    <app-rich-text-editor [content]="draft" [compact]="true" (contentChange)="draft = $event"></app-rich-text-editor>
+    <app-button class="commentList__submit" [disabled]="!canPost" (pressed)="post()">{{ submitLabel | translate }}</app-button>
+  </div>
+</section>

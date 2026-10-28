@@ -41,6 +41,15 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.index [ "board_id" ], name: "index_board_priorities_on_board_id"
     end
 
+    create_table "board_tags" do |t|
+      t.bigint "board_id", null: false
+      t.string "name", null: false
+      t.string "color", null: false
+      t.datetime "created_at", null: false
+      t.datetime "updated_at", null: false
+      t.index "board_id, lower((name)::text)", name: "index_board_tags_on_board_id_and_lower_name", unique: true
+    end
+
     create_table "boards" do |t|
       t.integer "team_id", null: false
       t.integer "created_by_user_id", null: false
@@ -63,6 +72,34 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.datetime "created_at", null: false
       t.datetime "updated_at", null: false
       t.index [ "board_id" ], name: "index_columns_on_board_id"
+    end
+
+    create_table "comments" do |t|
+      t.integer "team_id", null: false
+      t.string "commentable_type", null: false
+      t.integer "commentable_id", null: false
+      t.integer "created_by_user_id", null: false
+      t.text "body", null: false
+      t.datetime "edited_at"
+      t.datetime "created_at", null: false
+      t.datetime "updated_at", null: false
+      t.index [ "commentable_type", "commentable_id", "id" ], name: "index_comments_on_commentable_and_id"
+      t.index [ "created_by_user_id" ], name: "index_comments_on_created_by_user_id"
+      t.index [ "team_id" ], name: "index_comments_on_team_id"
+    end
+
+    create_table "diagram_comment_pins" do |t|
+      t.integer "team_id", null: false
+      t.integer "diagram_id", null: false
+      t.integer "created_by_user_id", null: false
+      t.float "x", null: false
+      t.float "y", null: false
+      t.datetime "resolved_at"
+      t.integer "resolved_by_user_id"
+      t.datetime "created_at", null: false
+      t.datetime "updated_at", null: false
+      t.index [ "diagram_id" ], name: "index_diagram_comment_pins_on_diagram_id"
+      t.index [ "team_id" ], name: "index_diagram_comment_pins_on_team_id"
     end
 
     create_table "diagram_contributors" do |t|
@@ -370,6 +407,14 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.index [ "user_id" ], name: "index_ticket_assignees_on_user_id"
     end
 
+    create_table "ticket_tags" do |t|
+      t.bigint "ticket_id", null: false
+      t.bigint "board_tag_id", null: false
+      t.datetime "created_at", null: false
+      t.index [ "board_tag_id" ], name: "index_ticket_tags_on_board_tag_id"
+      t.index [ "ticket_id", "board_tag_id" ], name: "index_ticket_tags_on_ticket_id_and_board_tag_id", unique: true
+    end
+
     create_table "tickets" do |t|
       t.integer "column_id"
       t.integer "team_id", null: false
@@ -435,11 +480,18 @@ class CreateSchema < ActiveRecord::Migration[8.1]
     add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
     add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
     add_foreign_key "board_priorities", "boards"
+    add_foreign_key "board_tags", "boards"
     add_foreign_key "boards", "projects"
     add_foreign_key "boards", "teams"
     add_foreign_key "boards", "trash_entries"
     add_foreign_key "boards", "users", column: "created_by_user_id"
     add_foreign_key "columns", "boards"
+    add_foreign_key "comments", "teams"
+    add_foreign_key "comments", "users", column: "created_by_user_id"
+    add_foreign_key "diagram_comment_pins", "diagrams"
+    add_foreign_key "diagram_comment_pins", "teams"
+    add_foreign_key "diagram_comment_pins", "users", column: "created_by_user_id"
+    add_foreign_key "diagram_comment_pins", "users", column: "resolved_by_user_id"
     add_foreign_key "diagram_contributors", "diagrams"
     add_foreign_key "diagram_contributors", "users"
     add_foreign_key "diagrams", "folders"
@@ -478,6 +530,8 @@ class CreateSchema < ActiveRecord::Migration[8.1]
     add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
     add_foreign_key "ticket_assignees", "tickets"
     add_foreign_key "ticket_assignees", "users"
+    add_foreign_key "ticket_tags", "board_tags", on_delete: :cascade
+    add_foreign_key "ticket_tags", "tickets", on_delete: :cascade
     add_foreign_key "tickets", "board_priorities", column: "priority_id", on_delete: :nullify
     add_foreign_key "tickets", "boards"
     add_foreign_key "tickets", "columns"

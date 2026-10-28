@@ -9,6 +9,7 @@
     <div class="itemDetail__header">
       <div class="itemDetail__actions" *ngIf="mode === 'view' && item">
         <app-favorite-star [type]="favoriteType" [itemId]="item.id" [title]="item.title" [size]="36"></app-favorite-star>
+        <app-icon-button icon="link" [tooltip]="PHRASES.COPY_LINK | translate" (pressed)="copyLinkRequested.emit()"></app-icon-button>
         <app-button variant="ghost" (pressed)="deleteRequested.emit()">{{ PHRASES.DELETE | translate }}</app-button>
         <app-button variant="primary" (pressed)="editRequested.emit()">{{ PHRASES.EDIT | translate }}</app-button>
       </div>

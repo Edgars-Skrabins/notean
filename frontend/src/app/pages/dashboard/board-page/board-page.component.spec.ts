@@ -12,6 +12,8 @@ import {PHRASES} from "@config/phrases";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "./board-page-state.service";
 import {BoardChannelService} from "@services/board-channel.service";
+import {CopyLinkService} from "@services/copy-link.service";
+import {errorPhrase} from "@utils/errorPhrase";
 import {boardDetail, createBoardState} from "../../../testing/boardFixtures";
 import {trashServiceStub} from "../../../testing/trashServiceStub";
 
@@ -30,11 +32,11 @@ describe('BoardPageComponent', () => {
     boardService = jasmine.createSpyObj<BoardService>('BoardService', ['renameBoard', 'deleteBoard', 'setBoardProject']);
     boardListService = jasmine.createSpyObj<BoardListService>('BoardListService', ['rename', 'remove', 'load']);
     favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['renameItem', 'forgetItem']);
-    navigationService = jasmine.createSpyObj<NavigationService>('NavigationService', ['navigate']);
+    navigationService = jasmine.createSpyObj<NavigationService>('NavigationService', ['navigate', 'navigateReplacingUrl']);
     toastService = jasmine.createSpyObj<ToastService>('ToastService', ['show']);
     boardChannelService = jasmine.createSpyObj<BoardChannelService>('BoardChannelService', ['connect', 'disconnect']);
     const route = {paramMap: of(convertToParamMap({id: '9'}))} as unknown as ActivatedRoute;
-    component = new BoardPageComponent(route, state, boardService, boardListService, favoriteService, navigationService, toastService, boardChannelService, trashServiceStub().service);
+    component = new BoardPageComponent(route, state, boardService, boardListService, favoriteService, navigationService, toastService, boardChannelService, {} as CopyLinkService, trashServiceStub().service);
   });
 
   it('loads the board from the route and follows its live updates until destroyed', fakeAsync(() => {
@@ -49,7 +51,7 @@ describe('BoardPageComponent', () => {
     expect(boardChannelService.disconnect).toHaveBeenCalled();
   }));
 
-  it('does not follow live updates of a board that failed to load', fakeAsync(() => {
+  it('sends a missing or hidden board to the unavailable screen without following it', fakeAsync(() => {
     spyOn(state, 'load').and.callFake(async () => {
       state.board = null;
       state.errorCode = 'BOARD_NOT_FOUND';
@@ -58,6 +60,22 @@ describe('BoardPageComponent', () => {
     component.ngOnInit();
     flushMicrotasks();
 
+    expect(navigationService.navigateReplacingUrl).toHaveBeenCalledOnceWith(AppRoutes.UNAVAILABLE);
+    expect(boardChannelService.connect).not.toHaveBeenCalled();
+    component.ngOnDestroy();
+  }));
+
+  it('shows other load errors on the board page', fakeAsync(() => {
+    spyOn(state, 'load').and.callFake(async () => {
+      state.board = null;
+      state.errorCode = 'NETWORK_ERROR';
+    });
+
+    component.ngOnInit();
+    flushMicrotasks();
+
+    expect(navigationService.navigateReplacingUrl).not.toHaveBeenCalled();
+    expect(component.alertMessage).toBe(errorPhrase('NETWORK_ERROR'));
     expect(boardChannelService.connect).not.toHaveBeenCalled();
     component.ngOnDestroy();
   }));

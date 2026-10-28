@@ -1,0 +1,81 @@
+<div class="commentLayer__toolbar">
+  <app-button *ngIf="!isPlacing" variant="ghost" icon="plus" (pressed)="startPlacing()">{{ PHRASES.ADD_COMMENT | translate }}</app-button>
+  <ng-container *ngIf="isPlacing">
+    <span class="commentLayer__hint">{{ PHRASES.COMMENT_PLACE_HINT | translate }}</span>
+    <app-button variant="ghost" (pressed)="stopPlacing()">{{ PHRASES.CANCEL | translate }}</app-button>
+  </ng-container>
+  <label class="commentLayer__toggle">
+    <app-checkbox [checked]="showResolved" [ariaLabel]="PHRASES.SHOW_RESOLVED | translate" (checkedChange)="showResolved = $event"></app-checkbox>
+    {{ PHRASES.SHOW_RESOLVED | translate }}
+  </label>
+</div>
+
+<div class="commentLayer__placement" *ngIf="isPlacing" (click)="handlePlacementClick($event)"></div>
+
+<div
+  class="commentLayer__pin"
+  *ngFor="let pin of visiblePins; trackBy: trackById"
+  [class.commentLayer__pin--resolved]="pin.resolvedAt !== null"
+  [style.left.px]="position(pin).x"
+  [style.top.px]="position(pin).y"
+>
+  <button
+    #marker
+    type="button"
+    class="commentLayer__marker"
+    [attr.aria-label]="excerpt(pin)"
+    (click)="openPinPanel(pin, marker)"
+  >
+    <app-avatar [avatar]="pin.createdBy.avatar" [nickname]="pin.createdBy.nickname"></app-avatar>
+  </button>
+  <div class="commentLayer__card popupPanel" *ngIf="openPinId !== pin.id && pin.firstComment">
+    <strong>{{ pin.firstComment.author.nickname }}</strong>
+    <span>{{ excerpt(pin) }}</span>
+    <span class="commentLayer__replies" *ngIf="pin.commentCount > 1">{{ PHRASES.COMMENT_REPLIES | translate: {count: pin.commentCount - 1} }}</span>
+  </div>
+</div>
+
+<div class="commentLayer__pin" *ngIf="draft" [style.left.px]="position(draft).x" [style.top.px]="position(draft).y">
+  <span class="commentLayer__marker"></span>
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="panelOrigin!"
+  [cdkConnectedOverlayOpen]="panelOrigin !== null"
+  [cdkConnectedOverlayPositions]="SIDE_POSITIONS"
+  [cdkConnectedOverlayPush]="true"
+  [cdkConnectedOverlayViewportMargin]="8"
+  [cdkConnectedOverlayDisableClose]="true"
+  (overlayOutsideClick)="closePanel()"
+  (detach)="closePanel()"
+>
+  <div class="commentLayer__panel popupPanel">
+    <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+
+    <ng-container *ngIf="openPin as pin">
+      <app-button class="commentLayer__resolve" variant="ghost" (pressed)="toggleResolved(pin)">
+        {{ (pin.resolvedAt === null ? PHRASES.RESOLVE : PHRASES.REOPEN) | translate }}
+      </app-button>
+      <app-comment-list
+        *ngIf="openTarget"
+        [target]="openTarget"
+        [title]="null"
+        [submitLabel]="PHRASES.REPLY"
+        (commentAdded)="handleCommentAdded(pin)"
+        (commentUpdated)="handleCommentUpdated(pin, $event)"
+        (commentRemoved)="handleCommentRemoved(pin, $event)"
+        (emptied)="removePin(pin.id)"
+        (loaded)="refreshAfterRender()"
+      ></app-comment-list>
+    </ng-container>
+
+    <div class="commentLayer__new" *ngIf="draft">
+      <app-rich-text-editor [content]="draftBody" [compact]="true" (contentChange)="draftBody = $event"></app-rich-text-editor>
+      <div class="commentLayer__actions">
+        <app-button variant="ghost" (pressed)="closePanel()">{{ PHRASES.CANCEL | translate }}</app-button>
+        <app-button [disabled]="!canPostDraft" (pressed)="postDraft()">{{ PHRASES.POST_COMMENT | translate }}</app-button>
+      </div>
+    </div>
+  </div>
+</ng-template>

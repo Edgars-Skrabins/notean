@@ -87,7 +87,7 @@ export class ListTabComponent implements OnInit, OnDestroy {
   ticketPendingDeletion: TicketSummary | null = null;
   members: TeamMember[] = [];
   searchQuery = '';
-  filters: TicketFilters = {assigneeIds: new Set(), columnIds: new Set()};
+  filters: TicketFilters = {assigneeIds: new Set(), tagIds: new Set(), columnIds: new Set()};
   collapsedStatuses = new Set<number | null>();
   selectedIds = new Set<number>();
   isBulkBusy = false;
@@ -144,7 +144,7 @@ export class ListTabComponent implements OnInit, OnDestroy {
   }
 
   get isFiltering(): boolean {
-    return this.activeSearch.length > 0 || this.filters.assigneeIds.size > 0;
+    return this.activeSearch.length > 0 || this.filters.assigneeIds.size > 0 || this.filters.tagIds.size > 0;
   }
 
   get selectedTickets(): TicketSummary[] {
@@ -435,6 +435,7 @@ export class ListTabComponent implements OnInit, OnDestroy {
       status: columnId ?? 'backlog',
       search: this.activeSearch,
       assigneeIds: [...this.filters.assigneeIds],
+      tagIds: [...this.filters.tagIds],
       offset: data.tickets.length - data.extraIds.size,
     }).then((response) => {
       if (generation !== this.loadGeneration) {
@@ -463,6 +464,11 @@ export class ListTabComponent implements OnInit, OnDestroy {
 
     change.upserted.forEach((ticket) => {
       const current = [...this.groupData.entries()].find(([, data]) => data.tickets.some((item) => item.id === ticket.id));
+      if (current && !this.matchesTagFilter(ticket)) {
+        this.dropFrom(current[1], new Set([ticket.id]));
+        this.selectedIds.delete(ticket.id);
+        return;
+      }
       if (current && current[0] === ticket.columnId) {
         const data = current[1];
         data.tickets = data.tickets.map((item) => item.id === ticket.id ? {...ticket} : item);
@@ -485,6 +491,14 @@ export class ListTabComponent implements OnInit, OnDestroy {
       data.tickets.forEach((ticket) => ticket.position = shiftedPosition(ticket.position, columnId, shifts));
       data.tickets.sort(byPosition);
     });
+  }
+
+  private matchesTagFilter(ticket: TicketSummary): boolean {
+    const tagIds = this.filters.tagIds;
+    if (!tagIds.size) {
+      return true;
+    }
+    return (tagIds.has('none') && !ticket.tagIds.length) || ticket.tagIds.some((id) => tagIds.has(id));
   }
 
   private isInLoadedRange(data: GroupData, ticket: TicketSummary): boolean {

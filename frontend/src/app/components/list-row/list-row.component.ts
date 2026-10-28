@@ -8,6 +8,8 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
 import {FavoriteStarComponent} from '@components/favorite-star/favorite-star.component';
 import {AvatarStackComponent} from '@components/avatar-stack/avatar-stack.component';
 import {CheckboxComponent} from '@components/checkbox/checkbox.component';
+import {TagChipsComponent} from '@components/tag-chips/tag-chips.component';
+import {Tag} from '@models/tag.model';
 
 @Component({
   selector: 'app-list-row',
@@ -18,7 +20,8 @@ import {CheckboxComponent} from '@components/checkbox/checkbox.component';
     IconButtonComponent,
     FavoriteStarComponent,
     AvatarStackComponent,
-    CheckboxComponent
+    CheckboxComponent,
+    TagChipsComponent
   ],
   templateUrl: './list-row.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -30,6 +33,7 @@ export class ListRowComponent {
   @Input({required: true}) ticket!: TicketSummary;
   @Input({required: true}) statusTitle = '';
   @Input() priority: BoardPriority | null = null;
+  @Input() tags: Tag[] = [];
   @Input() selected = false;
   @Output() opened = new EventEmitter<void>();
   @Output() selectedChange = new EventEmitter<boolean>();

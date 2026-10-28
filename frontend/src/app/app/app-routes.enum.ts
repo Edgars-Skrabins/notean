@@ -21,4 +21,5 @@ export enum AppRoutes {
   PROFILE = 'profile',
   SETTINGS = 'settings',
   TRASH = 'trash',
+  UNAVAILABLE = 'unavailable',
 }

@@ -139,6 +139,21 @@ describe('BoardChannelService', () => {
     expect(state.findTicket(1)?.priorityId).toBeNull();
   });
 
+  it('tags_changed replaces the tags and applies the cleared tickets', async () => {
+    state.findTicket(1)!.tagIds = [30, 31];
+    state.findTicket(2)!.tagIds = [31];
+
+    await service.handleMessage({
+      type: 'tags_changed',
+      tags: [{id: 30, name: 'api', color: 'blue', ticket_count: 1}],
+      tickets: [rawTicket(1, 10, 0, {tag_ids: [30]})],
+    });
+
+    expect(state.board!.tags.map((tag) => tag.id)).toEqual([30]);
+    expect(state.findTicket(1)?.tagIds).toEqual([30]);
+    expect(state.findTicket(2)?.tagIds).toEqual([]);
+  });
+
   it('board_updated sets the title and project', async () => {
     await service.handleMessage({type: 'board_updated', board: {id: 9, title: 'Sprint 13', project_id: 4}});
 

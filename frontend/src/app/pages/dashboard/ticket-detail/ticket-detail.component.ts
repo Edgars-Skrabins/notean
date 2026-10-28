@@ -13,6 +13,8 @@ import {TeamService} from "@services/team.service";
 import {ProjectService} from "@services/project.service";
 import {assignableMembers} from "@utils/assignableMembers";
 import {AuthService} from "@services/auth.service";
+import {CommentListComponent} from "@components/comment-list/comment-list.component";
+import {CommentTarget} from "@models/comment.model";
 import {ToastService} from "@services/toast.service";
 import {TrashService} from "@services/trash.service";
 import {ToastType} from "@models/toast.model";
@@ -25,11 +27,17 @@ import {EditConflictDialogComponent} from "@components/edit-conflict-dialog/edit
 import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
 import {MoveToBoardDialogComponent} from "@components/move-to-board-dialog/move-to-board-dialog.component";
 import {TicketAssigneesComponent} from "@components/ticket-assignees/ticket-assignees.component";
+import {TicketTagsComponent} from "@components/ticket-tags/ticket-tags.component";
+import {TagService} from "@services/tag.service";
+import {Tag, TicketTagResponse} from "@models/tag.model";
+import {sortTags} from "@utils/tagOrder";
 import {DropdownComponent} from "@components/dropdown/dropdown.component";
 import {DropdownOption} from "@models/dropdown.model";
 import {errorPhrase} from "@utils/errorPhrase";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 import {EscapeService} from "@services/escape.service";
+import {CopyLinkService} from "@services/copy-link.service";
+import {AppRoutes} from "../../../app/app-routes.enum";
 
 @Component({
   selector: 'app-ticket-detail',
@@ -45,7 +53,9 @@ import {EscapeService} from "@services/escape.service";
     FavoriteStarComponent,
     MoveToBoardDialogComponent,
     TicketAssigneesComponent,
-    DropdownComponent
+    TicketTagsComponent,
+    DropdownComponent,
+    CommentListComponent
   ],
   templateUrl: './ticket-detail.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -66,11 +76,13 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   isMoveDialogOpen = false;
   members: TeamMember[] = [];
   isUpdatingAssignees = false;
+  isUpdatingTags = false;
   isTitleFocused = false;
   isDescriptionFocused = false;
   readonly currentUserId: number;
 
   private ticketId = 0;
+  commentTarget: CommentTarget | null = null;
   private isDeleting = false;
   private remoteChangesSubscription: Subscription | null = null;
 
@@ -81,12 +93,14 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     protected state: BoardPageStateService,
     private ticketService: TicketService,
+    private tagService: TagService,
     private favoriteService: FavoriteService,
     private toastService: ToastService,
     private teamService: TeamService,
     private projectService: ProjectService,
     authService: AuthService,
     private escapeService: EscapeService,
+    private copyLinkService: CopyLinkService,
     private trashService: TrashService
   ) {
     this.currentUserId = authService.getCurrentUser()?.id ?? 0;
@@ -100,6 +114,10 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     return this.state.boardId;
   }
 
+  get boardTags(): Tag[] {
+    return this.state.board?.tags ?? [];
+  }
+
   get priorityOptions(): DropdownOption[] {
     return [
       {value: null, labelKey: PHRASES.NO_PRIORITY},
@@ -110,6 +128,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.unregisterEscape = this.escapeService.push(() => this.handleGoBack());
     this.ticketId = Number(this.route.snapshot.paramMap.get('ticketId'));
+    this.commentTarget = {type: 'ticket', boardId: this.boardId, ticketId: this.ticketId};
     this.remoteChangesSubscription = this.state.remoteChanges$.subscribe((descriptions) => this.applyRemoteChange(descriptions));
     this.loadTicket();
     this.loadAssignableMembers();
@@ -144,6 +163,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
       columnId: summary.columnId,
       priorityId: summary.priorityId,
       assignees: summary.assignees,
+      tagIds: summary.tagIds,
       updatedAt: summary.updatedAt,
       lockVersion: keepTitleDraft || keepDescriptionDraft ? ticket.lockVersion : summary.lockVersion,
       description,
@@ -203,6 +223,10 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     this.isMoveDialogOpen = false;
     this.ticketService.moveTicket(this.teamCode, this.boardId, this.ticketId, {columnId: event.columnId})
       .then((response) => this.applyMove(response));
+  }
+
+  handleCopyLink() {
+    this.copyLinkService.copyCurrentLink();
   }
 
   handleDelete() {
@@ -305,6 +329,29 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     this.editConflict = null;
   }
 
+  handleAddTag(tagId: number) {
+    this.updateTags(this.tagService.addToTicket(this.teamCode, this.boardId, this.ticketId, tagId));
+  }
+
+  handleRemoveTag(tagId: number) {
+    this.updateTags(this.tagService.removeFromTicket(this.teamCode, this.boardId, this.ticketId, tagId));
+  }
+
+  handleCreateTag(name: string) {
+    this.isUpdatingTags = true;
+    this.tagService.create(this.teamCode, this.boardId, name)
+      .then((response) => {
+        if (!response.success) {
+          this.isUpdatingTags = false;
+          this.toastService.show({type: ToastType.ERROR, message: errorPhrase(response.code)});
+          return;
+        }
+
+        this.state.setTags(sortTags([...this.boardTags.filter((tag) => tag.id !== response.tag.id), response.tag]));
+        this.handleAddTag(response.tag.id);
+      });
+  }
+
   handlePriorityChange(value: string | number | null) {
     const priorityId = value === null ? null : Number(value);
     this.ticketService.updateTicket(this.teamCode, this.boardId, this.ticketId, {priorityId})
@@ -375,6 +422,24 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
       });
   }
 
+  private updateTags(request: Promise<TicketTagResponse>) {
+    this.isUpdatingTags = true;
+
+    request
+      .then((response) => {
+        if (!response.success) {
+          this.toastService.show({type: ToastType.ERROR, message: errorPhrase(response.code)});
+          return;
+        }
+
+        this.ticket = response.ticket;
+        this.state.updateTicket(response.ticket);
+      })
+      .finally(() => {
+        this.isUpdatingTags = false;
+      });
+  }
+
   private applyMove(response: TicketResponse) {
     if (!response.success) {
       this.toastService.show({type: ToastType.ERROR, message: PHRASES.TICKET_MOVE_FAILED});
@@ -393,6 +458,10 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
         this.isLoading = false;
 
         if (!response.success) {
+          if (response.code === 'TICKET_NOT_FOUND') {
+            this.router.navigate([AppRoutes.UNAVAILABLE], {replaceUrl: true});
+            return;
+          }
           this.alertMessage = errorPhrase(response.code);
           return;
         }
