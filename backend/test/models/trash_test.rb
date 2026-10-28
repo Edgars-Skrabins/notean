@@ -153,6 +153,27 @@ class TrashTest < ActiveSupport::TestCase
     assert_equal 0, Favorite.count
   end
 
+  test "purging removes comments, diagram comment pins and ticket tags" do
+    page = create_page("Notes")
+    diagram = Diagram.create!(team: @team, creator: @user, title: "Flow", content: "")
+    pin = DiagramCommentPin.create!(team: @team, diagram: diagram, creator: @user, x: 1, y: 2)
+    tag = BoardTag.create!(board: @board, name: "bug", color: "red")
+    tickets = create_tickets(@column, 2)
+    tickets.each { |ticket| TicketTag.create!(ticket: ticket, tag: tag) }
+    [ page, pin, tickets[0] ].each { |commentable| Comment.create!(team: @team, commentable: commentable, creator: @user, body: "<p>Hi</p>") }
+    ticket_entries, = Trash.move_tickets(@board, [ tickets[0] ], @user)
+    entries = [ Trash.move(page, @user), Trash.move(diagram, @user) ]
+
+    Trash.purge(ticket_entries.first)
+    assert_equal [ tickets[1].id ], TicketTag.pluck(:ticket_id)
+
+    (entries + [ Trash.move(@board, @user) ]).each { |entry| Trash.purge(entry) }
+    assert_equal 0, Comment.count
+    assert_equal 0, DiagramCommentPin.count
+    assert_equal 0, TicketTag.count
+    assert_equal 0, BoardTag.count
+  end
+
   test "purging a folder removes its tree and pages trashed inside it earlier" do
     root = create_folder("Root")
     child = create_folder("Child", parent: root)
