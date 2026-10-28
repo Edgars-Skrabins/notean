@@ -4,6 +4,7 @@ import {NavigationService} from "@services/navigation.service";
 import {ToastService} from "@services/toast.service";
 import {mapBoardColumn, mapTicketSummary, RawBoardColumn, RawTicketSummary} from "@services/board.service";
 import {mapBoardPriority, RawBoardPriority} from "@services/priority.service";
+import {mapTag, RawTag} from "@services/tag.service";
 import {ToastType} from "@models/toast.model";
 import {TicketShift} from "@models/ticket.model";
 import {PHRASES} from "@config/phrases";
@@ -27,6 +28,7 @@ export type BoardChannelMessage =
   | { type: 'tickets_removed'; ticket_ids: number[] }
   | { type: 'columns_changed'; columns: RawBoardColumn[]; tickets?: RawTicketSummary[] }
   | { type: 'priorities_changed'; priorities: RawBoardPriority[]; tickets?: RawTicketSummary[] }
+  | { type: 'tags_changed'; tags: RawTag[]; tickets?: RawTicketSummary[] }
   | { type: 'board_updated'; board: { id: number; title: string; project_id: number | null } }
   | { type: 'board_deleted' }
   | { type: 'access_changed' };
@@ -81,6 +83,10 @@ export class BoardChannelService {
         break;
       case 'priorities_changed':
         this.state.setPriorities(message.priorities.map(mapBoardPriority));
+        this.applyTickets(message.tickets ?? []);
+        break;
+      case 'tags_changed':
+        this.state.setTags(message.tags.map(mapTag));
         this.applyTickets(message.tickets ?? []);
         break;
       case 'board_updated':

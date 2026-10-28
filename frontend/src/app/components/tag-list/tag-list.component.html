@@ -1,0 +1,65 @@
+<div class="tagList__rows">
+  <div class="tagList__row" *ngFor="let tag of tags; trackBy: trackById">
+    <app-priority-color-picker [color]="tag.color" (colorChange)="changeColor(tag, $event)"></app-priority-color-picker>
+
+    <input
+      *ngIf="editingId === tag.id"
+      type="text"
+      class="tagList__input tagList__nameInput"
+      [maxlength]="TAG_NAME_MAX_LENGTH"
+      [(ngModel)]="nameDraft"
+      [attr.aria-label]="PHRASES.RENAME_TAG | translate"
+      (keydown.enter)="commitRename(tag)"
+      (keydown.escape)="cancelRename(); $event.preventDefault()"
+      (blur)="commitRename(tag)"
+    />
+    <button
+      *ngIf="editingId !== tag.id"
+      type="button"
+      class="tagList__name"
+      [appTooltip]="PHRASES.RENAME_TAG | translate"
+      (click)="startRename(tag)"
+    >
+      <app-tag-chip [tag]="tag"></app-tag-chip>
+    </button>
+
+    <span class="tagList__count">{{ ticketCount(tag) }}</span>
+
+    <app-icon-button
+      icon="trash"
+      variant="danger"
+      [size]="28"
+      [tooltip]="PHRASES.DELETE_TAG | translate"
+      (pressed)="requestDelete(tag)"
+    ></app-icon-button>
+  </div>
+
+  <div class="tagList__row" *ngIf="isCreating">
+    <app-priority-color-picker [color]="newColor" (colorChange)="newColor = $event"></app-priority-color-picker>
+    <input
+      type="text"
+      class="tagList__input tagList__newInput"
+      [maxlength]="TAG_NAME_MAX_LENGTH"
+      [(ngModel)]="newName"
+      [attr.aria-label]="PHRASES.NEW_TAG | translate"
+      [placeholder]="PHRASES.NEW_TAG | translate"
+      (keydown.enter)="commitCreate()"
+      (keydown.escape)="cancelCreate(); $event.preventDefault()"
+      (blur)="commitCreate()"
+    />
+  </div>
+</div>
+
+<p class="tagList__empty" *ngIf="!tags.length && !isCreating">{{ PHRASES.NO_TAGS_YET | translate }}</p>
+
+<button type="button" class="tagList__add" (click)="startCreate()">
+  <app-icon name="plus" class="tagList__addIcon"></app-icon>
+  {{ PHRASES.NEW_TAG | translate }}
+</button>
+
+<app-confirm-dialog
+  *ngIf="pendingDeletion"
+  [message]="deleteMessage"
+  (confirmed)="handleConfirmDelete()"
+  (cancelled)="handleCancelDelete()"
+></app-confirm-dialog>

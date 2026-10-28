@@ -21,41 +21,70 @@
   --priority-purple: #9C6BFF;
 }
 
+.priorityDot,
+.tagChip {
+  --swatch-color: var(--priority-grey);
+}
+
+.priorityDot[data-color="blue"],
+.tagChip[data-color="blue"] {
+  --swatch-color: var(--priority-blue);
+}
+
+.priorityDot[data-color="teal"],
+.tagChip[data-color="teal"] {
+  --swatch-color: var(--priority-teal);
+}
+
+.priorityDot[data-color="green"],
+.tagChip[data-color="green"] {
+  --swatch-color: var(--priority-green);
+}
+
+.priorityDot[data-color="yellow"],
+.tagChip[data-color="yellow"] {
+  --swatch-color: var(--priority-yellow);
+}
+
+.priorityDot[data-color="orange"],
+.tagChip[data-color="orange"] {
+  --swatch-color: var(--priority-orange);
+}
+
+.priorityDot[data-color="red"],
+.tagChip[data-color="red"] {
+  --swatch-color: var(--priority-red);
+}
+
+.priorityDot[data-color="purple"],
+.tagChip[data-color="purple"] {
+  --swatch-color: var(--priority-purple);
+}
+
 .priorityDot {
   display: inline-block;
   width: 8px;
   height: 8px;
   flex-shrink: 0;
   border-radius: 50%;
-  background: var(--priority-grey);
+  background: var(--swatch-color);
 }
 
-.priorityDot[data-color="blue"] {
-  background: var(--priority-blue);
-}
-
-.priorityDot[data-color="teal"] {
-  background: var(--priority-teal);
-}
-
-.priorityDot[data-color="green"] {
-  background: var(--priority-green);
-}
-
-.priorityDot[data-color="yellow"] {
-  background: var(--priority-yellow);
-}
-
-.priorityDot[data-color="orange"] {
-  background: var(--priority-orange);
-}
-
-.priorityDot[data-color="red"] {
-  background: var(--priority-red);
-}
-
-.priorityDot[data-color="purple"] {
-  background: var(--priority-purple);
+.tagChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  max-width: 100%;
+  min-width: 0;
+  padding: 1px 8px;
+  border: 1px solid color-mix(in srgb, var(--swatch-color) 75%, transparent);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--swatch-color) 40%, transparent);
+  color: var(--color-text-heading);
+  font-size: var(--font-xs);
+  font-weight: 500;
+  line-height: 18px;
+  white-space: nowrap;
 }
 
 body {

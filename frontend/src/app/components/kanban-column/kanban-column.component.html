@@ -41,6 +41,7 @@
       cdkDrag
       [cdkDragData]="ticket"
       [ticket]="ticket"
+      [tags]="tags"
       (opened)="openTicket.emit(ticket)"
       (moveToBacklog)="moveTicketToBacklog.emit(ticket)"
       (deleteTicket)="deleteTicket.emit(ticket)"

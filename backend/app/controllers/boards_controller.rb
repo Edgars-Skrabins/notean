@@ -1,6 +1,7 @@
 class BoardsController < ApplicationController
   include TicketJson
   include PriorityJson
+  include TagJson
   include FeatureGated
 
   RECENT_TICKETS_LIMIT = 5
@@ -83,7 +84,7 @@ class BoardsController < ApplicationController
 
   def set_board
     boards = project_access.scope(@team.boards)
-    boards = boards.includes(creator: User::AVATAR_PRELOAD, columns: [], priorities: []) if action_name.in?(%w[show update])
+    boards = boards.includes(creator: User::AVATAR_PRELOAD, columns: [], priorities: [], tags: []) if action_name.in?(%w[show update])
     @board = boards.find_by(id: params[:id])
 
     render_error(ErrorCodes::Boards::BOARD_NOT_FOUND, :not_found) if @board.nil?
@@ -101,12 +102,13 @@ class BoardsController < ApplicationController
   end
 
   def board_json(board)
-    tickets = board.tickets.without_description.includes(TicketJson::ASSIGNEES_PRELOAD).order(:position).group_by(&:column_id)
+    tickets = board.tickets.without_description.includes(TicketJson::ASSIGNEES_PRELOAD, TicketJson::TAGS_PRELOAD).order(:position).group_by(&:column_id)
 
     board_summary_json(board).merge(
       columns: board.columns.map { |column| column_json(column, tickets.fetch(column.id, [])) },
       backlog: tickets.fetch(nil, []).map { |ticket| ticket_summary_json(ticket) },
-      priorities: priorities_json(board)
+      priorities: priorities_json(board),
+      tags: tags_json(board)
     )
   end
 

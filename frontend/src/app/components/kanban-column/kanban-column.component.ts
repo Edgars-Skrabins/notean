@@ -10,6 +10,7 @@ import {TicketSummary} from '@models/ticket.model';
 import {IconButtonComponent} from '@components/icon-button/icon-button.component';
 import {ButtonComponent} from '@components/button/button.component';
 import {KanbanTicketComponent} from '@components/kanban-ticket/kanban-ticket.component';
+import {Tag} from '@models/tag.model';
 
 @Component({
   selector: 'app-kanban-column',
@@ -33,6 +34,7 @@ export class KanbanColumnComponent {
   protected readonly TITLE_MAX_LENGTH = TITLE_MAX_LENGTH;
 
   @Input({required: true}) column!: BoardColumn;
+  @Input() tags: Tag[] = [];
   @Output() renameColumn = new EventEmitter<{ title: string }>();
   @Output() deleteColumn = new EventEmitter<void>();
   @Output() openTicket = new EventEmitter<TicketSummary>();

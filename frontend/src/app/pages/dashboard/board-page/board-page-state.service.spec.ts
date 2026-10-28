@@ -143,6 +143,28 @@ describe('BoardPageStateService', () => {
     expect(state.findTicket(4)?.priorityId).toBe(21);
   });
 
+  it('replaces the tags, drops deleted ones from tickets and finds tags by id', () => {
+    const state = createBoardState();
+    state.board!.backlog[0].tagIds = [30, 31];
+
+    state.setTags([{id: 31, name: 'bug', color: 'red', ticketCount: 1}]);
+
+    expect(state.board!.backlog[0].tagIds).toEqual([31]);
+    expect(state.tagById(31)?.name).toBe('bug');
+    expect(state.tagById(30)).toBeNull();
+  });
+
+  it('keeps ticket tags in sync when the ticket is updated', () => {
+    const state = createBoardState();
+    const changes: number[][] = [];
+    state.ticketChanges$.subscribe((change) => changes.push(change.upserted[0].tagIds));
+
+    state.updateTicket({...ticketSummary(4, null, 1), tagIds: [31]});
+
+    expect(state.findTicket(4)?.tagIds).toEqual([31]);
+    expect(changes).toEqual([[31]]);
+  });
+
   it('replaces the columns in the given order, keeping tickets of known columns and dropping removed ones', () => {
     const state = createBoardState();
 

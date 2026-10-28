@@ -1,0 +1,55 @@
+<h3 class="capsLabel ticketTags__title">{{ PHRASES.TAGS | translate }}</h3>
+
+<div class="ticketTags__chips">
+  <app-tag-chip
+    *ngFor="let tag of ticketTags; trackBy: trackById"
+    [tag]="tag"
+    [removable]="true"
+    [disabled]="busy"
+    (remove)="remove.emit(tag.id)"
+  ></app-tag-chip>
+  <app-icon-button
+    class="ticketTags__trigger"
+    icon="plus"
+    cdkOverlayOrigin
+    #origin="cdkOverlayOrigin"
+    [size]="28"
+    [disabled]="busy"
+    [tooltip]="PHRASES.ADD_TAG | translate"
+    (pressed)="togglePicker()"
+  ></app-icon-button>
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  #overlay="cdkConnectedOverlay"
+  [cdkConnectedOverlayOrigin]="origin"
+  [cdkConnectedOverlayOpen]="isPickerOpen"
+  [cdkConnectedOverlayPositions]="DROPDOWN_POSITIONS"
+  [cdkConnectedOverlayPush]="true"
+  [cdkConnectedOverlayViewportMargin]="4"
+  (overlayOutsideClick)="handleOutsideClick($event)"
+  (attach)="focusSearch(overlay)"
+  (detach)="closePicker()"
+>
+  <div class="popupPanel ticketTags__dropdown" (keydown.escape)="closePicker(); $event.preventDefault()">
+    <input
+      type="text"
+      class="textInput ticketTags__search"
+      [maxlength]="TAG_NAME_MAX_LENGTH"
+      [(ngModel)]="searchQuery"
+      [placeholder]="PHRASES.SEARCH_TAGS | translate"
+      (keydown.enter)="handleCreate()"
+    />
+    <app-checkbox
+      *ngFor="let tag of matchingTags; trackBy: trackById"
+      [checked]="isTagged(tag)"
+      [disabled]="busy"
+      (checkedChange)="handleToggle(tag, $event)"
+    ><app-tag-chip [tag]="tag"></app-tag-chip></app-checkbox>
+    <button type="button" class="ticketTags__create" *ngIf="createName !== null" [disabled]="busy" (click)="handleCreate()">
+      {{ PHRASES.CREATE_TAG | translate: {name: createName} }}
+    </button>
+    <p class="ticketTags__empty" *ngIf="!matchingTags.length && createName === null">{{ PHRASES.NO_TAGS_YET | translate }}</p>
+  </div>
+</ng-template>

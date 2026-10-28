@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {provideTranslateService} from "@ngx-translate/core";
 import {TicketDetailComponent} from "./ticket-detail.component";
 import {TicketService} from "@services/ticket.service";
+import {TagService} from "@services/tag.service";
 import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
 import {TeamService} from "@services/team.service";
@@ -24,6 +25,7 @@ import {escapeServiceStub, EscapeServiceStub} from "../../../testing/escapeServi
 describe('TicketDetailComponent editing', () => {
   let component: TicketDetailComponent;
   let ticketService: jasmine.SpyObj<TicketService>;
+  let tagService: jasmine.SpyObj<TagService>;
   let favoriteService: jasmine.SpyObj<FavoriteService>;
   let toastService: jasmine.SpyObj<ToastService>;
   let router: jasmine.SpyObj<Router>;
@@ -36,6 +38,7 @@ describe('TicketDetailComponent editing', () => {
 
   beforeEach(() => {
     ticketService = jasmine.createSpyObj('TicketService', ['updateTicket', 'getTicket', 'moveToBacklog', 'moveTicket', 'deleteTicket', 'addAssignee', 'removeAssignee']);
+    tagService = jasmine.createSpyObj<TagService>('TagService', ['create', 'addToTicket', 'removeFromTicket']);
     favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem', 'renameItem']);
     ticketService.getTicket.and.returnValue(new Promise(() => undefined));
     toastService = jasmine.createSpyObj<ToastService>('ToastService', ['show']);
@@ -47,7 +50,7 @@ describe('TicketDetailComponent editing', () => {
     authService.getCurrentUser.and.returnValue({id: 1, email: 'alice@example.com'});
     state = createBoardState();
     escape = escapeServiceStub();
-    component = new TicketDetailComponent(route, router, state, ticketService, favoriteService, toastService, teamService, projectService, authService, escape.service, {} as CopyLinkService);
+    component = new TicketDetailComponent(route, router, state, ticketService, tagService, favoriteService, toastService, teamService, projectService, authService, escape.service, {} as CopyLinkService);
 
     ticket = {...ticketDetail(1, 10), title: 'My Ticket'};
     component.ticket = ticket;
@@ -333,6 +336,34 @@ describe('TicketDetailComponent editing', () => {
     expect(component.ticket?.assignees).toEqual([bob]);
     expect(state.findTicket(1)?.assignees).toEqual([bob]);
     expect(component.isUpdatingAssignees).toBeFalse();
+  }));
+
+  it('creates a tag inline, adds it to the board in name order and tags the ticket', fakeAsync(() => {
+    const created = {id: 32, name: 'Bravo', color: 'green' as const, ticketCount: 0};
+    tagService.create.and.returnValue(Promise.resolve({success: true, tag: created}));
+    tagService.addToTicket.and.returnValue(Promise.resolve({success: true, ticket: {...ticket, tagIds: [32]}}));
+    component.ngOnInit();
+
+    component.handleCreateTag('Bravo');
+    flushMicrotasks();
+
+    expect(tagService.create).toHaveBeenCalledWith('abc', 9, 'Bravo');
+    expect(state.board!.tags.map((tag) => tag.name)).toEqual(['api', 'Bravo', 'bug']);
+    expect(tagService.addToTicket).toHaveBeenCalledWith('abc', 9, 1, 32);
+    expect(state.findTicket(1)?.tagIds).toEqual([32]);
+    expect(component.isUpdatingTags).toBeFalse();
+  }));
+
+  it('shows the translated error in a toast when a tag name is taken', fakeAsync(() => {
+    tagService.create.and.returnValue(Promise.resolve({success: false, code: 'TAG_NAME_TAKEN'}));
+    component.ngOnInit();
+
+    component.handleCreateTag('bug');
+    flushMicrotasks();
+
+    expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: 'ERRORS.TAGS.TAG_NAME_TAKEN'});
+    expect(tagService.addToTicket).not.toHaveBeenCalled();
+    expect(component.isUpdatingTags).toBeFalse();
   }));
 
   it('keeps the assignees and shows a toast when removing fails', fakeAsync(() => {

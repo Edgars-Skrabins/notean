@@ -26,6 +26,10 @@ import {EditConflictDialogComponent} from "@components/edit-conflict-dialog/edit
 import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
 import {MoveToBoardDialogComponent} from "@components/move-to-board-dialog/move-to-board-dialog.component";
 import {TicketAssigneesComponent} from "@components/ticket-assignees/ticket-assignees.component";
+import {TicketTagsComponent} from "@components/ticket-tags/ticket-tags.component";
+import {TagService} from "@services/tag.service";
+import {Tag, TicketTagResponse} from "@models/tag.model";
+import {sortTags} from "@utils/tagOrder";
 import {DropdownComponent} from "@components/dropdown/dropdown.component";
 import {DropdownOption} from "@models/dropdown.model";
 import {errorPhrase} from "@utils/errorPhrase";
@@ -48,6 +52,7 @@ import {AppRoutes} from "../../../app/app-routes.enum";
     FavoriteStarComponent,
     MoveToBoardDialogComponent,
     TicketAssigneesComponent,
+    TicketTagsComponent,
     DropdownComponent,
     CommentListComponent
   ],
@@ -70,6 +75,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   isMoveDialogOpen = false;
   members: TeamMember[] = [];
   isUpdatingAssignees = false;
+  isUpdatingTags = false;
   isTitleFocused = false;
   isDescriptionFocused = false;
   readonly currentUserId: number;
@@ -86,6 +92,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     protected state: BoardPageStateService,
     private ticketService: TicketService,
+    private tagService: TagService,
     private favoriteService: FavoriteService,
     private toastService: ToastService,
     private teamService: TeamService,
@@ -103,6 +110,10 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
 
   private get boardId(): number {
     return this.state.boardId;
+  }
+
+  get boardTags(): Tag[] {
+    return this.state.board?.tags ?? [];
   }
 
   get priorityOptions(): DropdownOption[] {
@@ -150,6 +161,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
       columnId: summary.columnId,
       priorityId: summary.priorityId,
       assignees: summary.assignees,
+      tagIds: summary.tagIds,
       updatedAt: summary.updatedAt,
       lockVersion: keepTitleDraft || keepDescriptionDraft ? ticket.lockVersion : summary.lockVersion,
       description,
@@ -314,6 +326,29 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     this.editConflict = null;
   }
 
+  handleAddTag(tagId: number) {
+    this.updateTags(this.tagService.addToTicket(this.teamCode, this.boardId, this.ticketId, tagId));
+  }
+
+  handleRemoveTag(tagId: number) {
+    this.updateTags(this.tagService.removeFromTicket(this.teamCode, this.boardId, this.ticketId, tagId));
+  }
+
+  handleCreateTag(name: string) {
+    this.isUpdatingTags = true;
+    this.tagService.create(this.teamCode, this.boardId, name)
+      .then((response) => {
+        if (!response.success) {
+          this.isUpdatingTags = false;
+          this.toastService.show({type: ToastType.ERROR, message: errorPhrase(response.code)});
+          return;
+        }
+
+        this.state.setTags(sortTags([...this.boardTags.filter((tag) => tag.id !== response.tag.id), response.tag]));
+        this.handleAddTag(response.tag.id);
+      });
+  }
+
   handlePriorityChange(value: string | number | null) {
     const priorityId = value === null ? null : Number(value);
     this.ticketService.updateTicket(this.teamCode, this.boardId, this.ticketId, {priorityId})
@@ -381,6 +416,24 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
       })
       .finally(() => {
         this.isUpdatingAssignees = false;
+      });
+  }
+
+  private updateTags(request: Promise<TicketTagResponse>) {
+    this.isUpdatingTags = true;
+
+    request
+      .then((response) => {
+        if (!response.success) {
+          this.toastService.show({type: ToastType.ERROR, message: errorPhrase(response.code)});
+          return;
+        }
+
+        this.ticket = response.ticket;
+        this.state.updateTicket(response.ticket);
+      })
+      .finally(() => {
+        this.isUpdatingTags = false;
       });
   }
 

@@ -4,6 +4,8 @@ class Ticket < ApplicationRecord
 
   text_searchable :title, :description
 
+  MAX_TAGS = 10
+
   belongs_to :board
   belongs_to :column, optional: true
   belongs_to :team
@@ -14,6 +16,8 @@ class Ticket < ApplicationRecord
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :ticket_assignees, -> { order(:created_at, :id) }, dependent: :destroy
   has_many :assignees, through: :ticket_assignees, source: :user
+  has_many :ticket_tags, dependent: :delete_all
+  has_many :tags, through: :ticket_tags
 
   scope :without_description, -> { select(column_names - %w[description]) }
 
