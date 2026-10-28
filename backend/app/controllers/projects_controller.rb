@@ -81,7 +81,8 @@ class ProjectsController < ApplicationController
     member_ids = ([ owner_id ] + Array(project_params[:member_ids]).map(&:to_i)).uniq
     return render_error(ErrorCodes::Projects::PROJECT_INVALID_MEMBERS, :unprocessable_entity) unless team_member_ids?(member_ids)
 
-    project.assign_attributes(name: project_params[:name].to_s.strip, description: project_params[:description].to_s, owner_user_id: owner_id)
+    previous_description = project.description.to_s
+    project.assign_attributes(name: project_params[:name].to_s.strip, description: Mentions.strip_item_labels(project_params[:description].to_s, html: false), owner_user_id: owner_id)
 
     saved = Project.transaction do
       raise ActiveRecord::Rollback unless project.save
@@ -94,6 +95,7 @@ class ProjectsController < ApplicationController
 
     ProjectAccessCleanup.for_project(project)
     render json: { project: project_json(project.reload) }, status: status
+    MentionNotifications.call(item: project, before: previous_description, after: project.description, actor: current_user, html: false)
   end
 
   def team_member_ids?(user_ids)

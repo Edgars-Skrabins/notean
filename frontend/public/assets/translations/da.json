@@ -174,6 +174,7 @@
   "ITEM_TYPE_DIAGRAM": "Diagram",
   "ITEM_TYPE_BOARD": "Tavle",
   "ITEM_TYPE_TICKET": "Opgave",
+  "ITEM_TYPE_PROJECT": "Projekt",
   "SHOW_FAVORITES_ON_HOME": "Vis favoritter på Hjem",
   "SHOW_FAVORITES_IN_SIDEBAR": "Vis favoritter i sidepanelet",
   "SETTINGS_SAVED": "Indstillinger gemt",
@@ -395,6 +396,10 @@
   "ACTIVITY_FIELD_CONTENT": "indhold",
   "ACTIVITY_FIELD_STATUS": "status",
   "ACTIVITY_FIELD_PRIORITY": "prioritet",
+  "MENTION_NO_MATCHES": "Ingen resultater",
+  "MENTION_PRIVATE_ITEM": "Privat element",
+  "MENTION_DELETED_ITEM": "Slettet element",
+  "MENTION_SEARCHING": "Søger…",
   "TEMPLATES": "Skabeloner",
   "NEW_TEMPLATE": "Ny skabelon",
   "BLANK": "Tom",
@@ -551,6 +556,10 @@
     },
     "NOTIFICATIONS": {
       "NOTIFICATION_NOT_FOUND": "Notifikationen blev ikke fundet"
+    },
+    "MENTIONS": {
+      "TOO_MANY_MENTIONS": "For mange omtaler",
+      "INVALID_MENTION": "Ugyldig omtale"
     },
     "TEMPLATES": {
       "TEMPLATE_NOT_FOUND": "Skabelonen findes ikke længere",

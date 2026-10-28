@@ -9,6 +9,7 @@ import {ToastType} from '@models/toast.model';
 import {ProjectDetail, ProjectSummary} from '@models/project.model';
 import {AppRoutes} from '../../../app/app-routes.enum';
 import {projectFilterStub, ProjectFilterStub} from '../../../testing/projectFilterStub';
+import {TranslateService} from '@ngx-translate/core';
 
 const params = {name: 'Game', description: '', ownerUserId: 1, memberIds: [1]};
 
@@ -31,7 +32,7 @@ describe('ProjectsComponent', () => {
     const authService = jasmine.createSpyObj<AuthService>('AuthService', ['getCurrentUser']);
     authService.getCurrentUser.and.returnValue({id: 1, email: 'alice@example.com'});
     projectFilter = projectFilterStub();
-    component = new ProjectsComponent(router, projectFilter.service, projectService, teamService, toastService, authService);
+    component = new ProjectsComponent(router, projectFilter.service, projectService, teamService, toastService, authService, {instant: (key: string) => key} as unknown as TranslateService);
   });
 
   function project(id: number): ProjectSummary {

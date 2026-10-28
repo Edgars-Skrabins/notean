@@ -12,6 +12,8 @@ import {ButtonComponent} from '@components/button/button.component';
 import {ConfirmDialogComponent} from '@components/confirm-dialog/confirm-dialog.component';
 import {MenuButtonComponent} from '@components/menu-button/menu-button.component';
 import {RichTextEditorComponent} from '@components/rich-text-editor/rich-text-editor.component';
+import {MentionContentComponent} from '@components/mention-content/mention-content.component';
+import {MentionContext} from '@models/mention.model';
 import {TooltipDirective} from '@components/tooltip/tooltip.directive';
 import {relativeDate} from '@utils/relativeDate';
 import {hasCommentText} from '@utils/commentText';
@@ -28,6 +30,7 @@ export type CommentAction = 'edit' | 'delete';
     ConfirmDialogComponent,
     MenuButtonComponent,
     RichTextEditorComponent,
+    MentionContentComponent,
     TooltipDirective
   ],
   templateUrl: './comment-item.component.html',
@@ -42,6 +45,7 @@ export class CommentItemComponent {
   @Input({required: true}) teamCode!: string;
   @Input() canEdit = false;
   @Input() canDelete = false;
+  @Input() mentionContext: MentionContext = {};
   @Output() updated = new EventEmitter<Comment>();
   @Output() deleted = new EventEmitter<boolean>();
   @Output() failed = new EventEmitter<ErrorCode>();

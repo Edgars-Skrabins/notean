@@ -31,8 +31,11 @@ class CommentsController < ApplicationController
   def update
     return render_error(ErrorCodes::Common::FORBIDDEN, :forbidden) unless @comment.created_by_user_id == current_user.id
 
+    previous_body = @comment.body
+
     if @comment.update(body: CommentBody.sanitize(update_comment_params[:body]))
       render json: { comment: comment_json(@comment) }
+      MentionNotifications.call(item: commented_item(@comment.commentable), before: previous_body, after: @comment.body, actor: current_user, html: true)
     else
       render_error(comment_error_code(@comment, ErrorCodes::Comments::COMMENT_UPDATE_FAILED), :unprocessable_entity)
     end
@@ -91,8 +94,10 @@ class CommentsController < ApplicationController
   end
 
   def notify_commented(comment)
+    item = commented_item(@commentable)
+    mentioned = MentionNotifications.call(item: item, before: "", after: comment.body, actor: current_user, html: true)
     earlier_commenters = @commentable.comments.where.not(id: comment.id).distinct.pluck(:created_by_user_id)
-    Notifier.commented(commented_item(@commentable), current_user, recipients: earlier_commenters, excerpt: SearchText.from_html(comment.body))
+    Notifier.commented(item, current_user, recipients: earlier_commenters, excerpt: SearchText.from_html(comment.body), except: mentioned)
   end
 
   def commented_item(commentable)

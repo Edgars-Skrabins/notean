@@ -107,19 +107,6 @@
 
 .ticketDetail__descriptionInput {
   flex: 1;
-  min-height: 160px;
-  resize: vertical;
-  background: var(--color-input-bg);
-  border: 1px solid var(--color-input-border);
-  border-radius: var(--radius-sm);
-  padding: 10px;
-  color: var(--color-text-heading);
-  font-size: var(--font-md);
-  font-family: var(--font-body);
-  line-height: 1.5;
-  outline: none;
+  --mention-editor-min-height: 160px;
 }
 
-.ticketDetail__descriptionInput:focus {
-  border-color: var(--color-input-border-focus);
-}

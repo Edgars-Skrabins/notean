@@ -989,4 +989,24 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 10, Notification.where(user: bob).count
     assert_equal one, ten
   end
+
+  test "update notifies people newly mentioned in the description" do
+    bob = create_member(@team, "Bob")
+    carol = create_member(@team, "Carol")
+    ticket = Ticket.create!(column: @todo, team: @team, created_by_user_id: @user.id, title: "Bug", description: "@[user:#{bob.id}|Bob]", position: 0)
+
+    patch tickets_url(ticket.id), params: { ticket: { description: "@[user:#{bob.id}|Bob] @[user:#{carol.id}|Carol] look", lock_version: 0 } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal [ [ carol.id, "@Bob @Carol look" ] ], Notification.where(kind: "mentioned").pluck(:user_id, :excerpt)
+  end
+
+  test "update stores item mentions in the description without their title" do
+    ticket = Ticket.create!(column: @todo, team: @team, created_by_user_id: @user.id, title: "Bug", position: 0)
+
+    patch tickets_url(ticket.id), params: { ticket: { description: "See @[page:4|Secret plan] with @[user:#{@user.id}|alice]", lock_version: 0 } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal "See @[page:4] with @[user:#{@user.id}|alice]", ticket.reload.description
+  end
 end

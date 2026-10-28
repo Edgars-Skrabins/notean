@@ -16,10 +16,10 @@
       ></app-menu-button>
     </div>
 
-    <div class="commentItem__body" *ngIf="!isEditing" [innerHTML]="comment.body"></div>
+    <app-mention-content class="commentItem__body" *ngIf="!isEditing" [html]="comment.body"></app-mention-content>
 
     <div *ngIf="isEditing" (keydown.escape)="cancelEdit($event)">
-      <app-rich-text-editor [content]="draft" [compact]="true" (contentChange)="draft = $event"></app-rich-text-editor>
+      <app-rich-text-editor [content]="draft" [compact]="true" [mentionContext]="mentionContext" (contentChange)="draft = $event"></app-rich-text-editor>
       <div class="commentItem__editActions">
         <app-button variant="ghost" (pressed)="cancelEdit()">{{ PHRASES.CANCEL | translate }}</app-button>
         <app-button [disabled]="!canSave" (pressed)="save()">{{ PHRASES.SAVE | translate }}</app-button>

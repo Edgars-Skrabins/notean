@@ -29,6 +29,7 @@ import {boardRoute} from "@utils/ticketRoute";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {EscapeService} from "@services/escape.service";
 import {CopyLinkService} from "@services/copy-link.service";
+import {MentionContentComponent} from "@components/mention-content/mention-content.component";
 
 export interface ProjectItem {
   id: number;
@@ -67,7 +68,8 @@ function newestFirst(items: ProjectItem[]): ProjectItem[] {
     IconButtonComponent,
     LoadMoreComponent,
     ProjectItemRowComponent,
-    ProjectSettingsDialogComponent
+    ProjectSettingsDialogComponent,
+    MentionContentComponent
   ],
   templateUrl: './project-detail.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,

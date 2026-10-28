@@ -1,0 +1,51 @@
+.mentionPicker {
+  width: 280px;
+  max-height: 320px;
+}
+
+.mentionPicker__message {
+  margin: var(--space-2) var(--space-3);
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+}
+
+.mentionPicker__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  height: var(--row-height);
+  padding: 0 var(--space-2);
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-heading);
+  font: inherit;
+  font-size: var(--font-sm);
+  text-align: left;
+  cursor: pointer;
+}
+
+.mentionPicker__row--active {
+  background: color-mix(in srgb, var(--color-tint) 8%, transparent);
+}
+
+.mentionPicker__icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--color-text-muted);
+}
+
+.mentionPicker__title,
+.mentionPicker__subtitle {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mentionPicker__subtitle {
+  margin-left: auto;
+  color: var(--color-text-muted);
+  font-size: var(--font-xs);
+}

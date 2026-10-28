@@ -239,4 +239,18 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_response :no_content
     assert_equal [ [ @member.id, "item_deleted", "Notes" ] ], Notification.pluck(:user_id, :kind, :item_title)
   end
+
+  test "saving a description notifies newly mentioned people who can see the project" do
+    patch projects_url(@game), params: { project: { name: "Game", description: "@[user:#{@member.id}|Bob] @[user:#{@admin.id}|Adam]", member_ids: [ @member.id ] } }, headers: headers_for(@owner), as: :json
+
+    assert_response :success
+    assert_equal [ @admin.id, @member.id ].sort, Notification.where(kind: "mentioned", item_type: "Project").pluck(:user_id).sort
+  end
+
+  test "saving a description stores item mentions without their title" do
+    patch projects_url(@game), params: { project: { name: "Game", description: "@[page:1|Secret plan]", member_ids: [ @member.id ] } }, headers: headers_for(@owner), as: :json
+
+    assert_response :success
+    assert_equal "@[page:1]", @game.reload.description
+  end
 end

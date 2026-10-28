@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, ViewEncapsulation, ChangeDetectionStrategy} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Injector, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, ViewEncapsulation, ChangeDetectionStrategy} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
@@ -10,6 +10,8 @@ import {IconComponent} from "@components/icon/icon.component";
 import {TooltipDirective} from "@components/tooltip/tooltip.directive";
 import {droppedFiles, isImageFile, pastedFiles} from "@utils/fileDrop";
 import {AttachmentImage} from "./attachmentImage";
+import {MentionContext} from "@models/mention.model";
+import {createMentionExtension} from "@utils/mentionExtension";
 
 @Component({
   selector: 'app-rich-text-editor',
@@ -33,6 +35,7 @@ export class RichTextEditorComponent implements AfterViewInit, OnChanges, OnDest
   @Input() compact = false;
   @Input() teamCode = '';
   @Input() uploadImage: ((file: File) => Promise<number | null>) | null = null;
+  @Input() mentionContext: MentionContext | null = null;
   @Output() contentChange = new EventEmitter<string>();
   @Output() filesDropped = new EventEmitter<File[]>();
 
@@ -43,7 +46,7 @@ export class RichTextEditorComponent implements AfterViewInit, OnChanges, OnDest
 
   private uploadKey = 0;
 
-  constructor(private attachmentService: AttachmentService) {
+  constructor(private attachmentService: AttachmentService, private injector: Injector) {
   }
 
   ngAfterViewInit() {
@@ -54,6 +57,7 @@ export class RichTextEditorComponent implements AfterViewInit, OnChanges, OnDest
         AttachmentImage.configure({
           resolveUrl: (attachmentId) => this.attachmentService.objectUrl(this.teamCode, attachmentId).then((response) => response.success ? response.url : null),
         }),
+        ...(this.mentionContext ? [createMentionExtension(this.injector, () => this.mentionContext ?? {})] : []),
       ],
       content: this.content,
       editable: this.editable,

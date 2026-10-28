@@ -10,6 +10,9 @@ import {DropdownOption} from '@models/dropdown.model';
 import {AvatarComponent} from '@components/avatar/avatar.component';
 import {CheckboxComponent} from '@components/checkbox/checkbox.component';
 import {DropdownComponent} from '@components/dropdown/dropdown.component';
+import {MentionTextEditorComponent} from '@components/mention-text-editor/mention-text-editor.component';
+import {MentionContentComponent} from '@components/mention-content/mention-content.component';
+import {MentionContext} from '@models/mention.model';
 
 @Component({
   selector: 'app-project-form',
@@ -20,7 +23,9 @@ import {DropdownComponent} from '@components/dropdown/dropdown.component';
     TranslatePipe,
     AvatarComponent,
     CheckboxComponent,
-    DropdownComponent
+    DropdownComponent,
+    MentionTextEditorComponent,
+    MentionContentComponent
   ],
   templateUrl: './project-form.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -35,6 +40,7 @@ export class ProjectFormComponent {
   @Input({required: true}) members: TeamMember[] = [];
   @Input() readonly = false;
   @Input() nameError = '';
+  @Input() mentionContext: MentionContext = {};
   @Output() paramsChange = new EventEmitter<ProjectParams>();
 
   get ownerNickname(): string {
