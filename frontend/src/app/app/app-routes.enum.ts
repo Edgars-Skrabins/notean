@@ -12,6 +12,7 @@ export enum AppRoutes {
   DOCUMENT_PAGES = 'pages',
   DIAGRAMS = 'diagrams',
   BOARDS = 'boards',
+  CHAT = 'chat',
   OVERVIEW = 'overview',
   KANBAN = 'kanban',
   LIST = 'list',

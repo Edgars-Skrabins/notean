@@ -73,6 +73,7 @@ export class ManageTeamComponent implements OnInit, OnDestroy {
     {feature: 'pages', label: PHRASES.FEATURE_PAGES},
     {feature: 'diagrams', label: PHRASES.FEATURE_DIAGRAMS},
     {feature: 'boards', label: PHRASES.FEATURE_BOARDS},
+    {feature: 'chat', label: PHRASES.FEATURE_CHAT},
   ];
 
   teamName: string;
@@ -107,6 +108,7 @@ export class ManageTeamComponent implements OnInit, OnDestroy {
       pages: this.teamService.isFeatureEnabled('pages'),
       diagrams: this.teamService.isFeatureEnabled('diagrams'),
       boards: this.teamService.isFeatureEnabled('boards'),
+      chat: this.teamService.isFeatureEnabled('chat'),
     };
   }
 

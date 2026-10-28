@@ -34,6 +34,7 @@ export interface RawTeam {
   pages_enabled: boolean;
   diagrams_enabled: boolean;
   boards_enabled: boolean;
+  chat_enabled: boolean;
 }
 
 export interface RawActiveTeam {
@@ -54,7 +55,7 @@ interface RawTeamMember {
   avatar: RawAvatar;
 }
 
-export const ALL_FEATURES_ENABLED: TeamFeatures = {pages: true, diagrams: true, boards: true};
+export const ALL_FEATURES_ENABLED: TeamFeatures = {pages: true, diagrams: true, boards: true, chat: true};
 
 export function mapTeam(raw: RawTeam): Team {
   return {
@@ -64,6 +65,7 @@ export function mapTeam(raw: RawTeam): Team {
     pagesEnabled: raw.pages_enabled,
     diagramsEnabled: raw.diagrams_enabled,
     boardsEnabled: raw.boards_enabled,
+    chatEnabled: raw.chat_enabled,
   };
 }
 
@@ -84,6 +86,7 @@ function featuresOf(team: Team | null): TeamFeatures {
     pages: team.pagesEnabled !== false,
     diagrams: team.diagramsEnabled !== false,
     boards: team.boardsEnabled !== false,
+    chat: team.chatEnabled !== false,
   };
 }
 
@@ -269,6 +272,9 @@ export class TeamService {
     }
     if (features.boards !== undefined) {
       payload.boards_enabled = features.boards;
+    }
+    if (features.chat !== undefined) {
+      payload.chat_enabled = features.chat;
     }
 
     return apiRequest<UpdateFeaturesResponse>(

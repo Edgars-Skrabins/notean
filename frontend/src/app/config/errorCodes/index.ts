@@ -18,6 +18,7 @@ import {COMMENTS_ERROR_CODES, CommentsErrorCode} from "./comments";
 import {ATTACHMENTS_ERROR_CODES, AttachmentsErrorCode} from "./attachments";
 import {NOTIFICATIONS_ERROR_CODES, NotificationsErrorCode} from "./notifications";
 import {MENTIONS_ERROR_CODES, MentionsErrorCode} from "./mentions";
+import {CHAT_ERROR_CODES, ChatErrorCode} from "./chat";
 
 export const ERROR_CODES_BY_DOMAIN = {
   COMMON: COMMON_ERROR_CODES,
@@ -40,6 +41,7 @@ export const ERROR_CODES_BY_DOMAIN = {
   ATTACHMENTS: ATTACHMENTS_ERROR_CODES,
   NOTIFICATIONS: NOTIFICATIONS_ERROR_CODES,
   MENTIONS: MENTIONS_ERROR_CODES,
+  CHAT: CHAT_ERROR_CODES,
 } as const;
 
 export type ErrorDomain = keyof typeof ERROR_CODES_BY_DOMAIN;
@@ -64,7 +66,8 @@ export type ErrorCode =
   | CommentsErrorCode
   | AttachmentsErrorCode
   | NotificationsErrorCode
-  | MentionsErrorCode;
+  | MentionsErrorCode
+  | ChatErrorCode;
 
 export type {
   CommonErrorCode,
@@ -88,4 +91,5 @@ export type {
   AttachmentsErrorCode,
   NotificationsErrorCode,
   MentionsErrorCode,
+  ChatErrorCode,
 };
