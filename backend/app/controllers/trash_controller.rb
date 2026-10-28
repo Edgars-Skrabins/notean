@@ -1,7 +1,7 @@
 class TrashController < ApplicationController
   include TicketJson
 
-  TYPES = { "page" => "Page", "diagram" => "Diagram", "board" => "Board", "ticket" => "Ticket", "folder" => "Folder" }.freeze
+  TYPES = { "page" => "Page", "diagram" => "Diagram", "board" => "Board", "ticket" => "Ticket", "folder" => "Folder", "chat_channel" => "ChatChannel" }.freeze
 
   before_action :authenticate_user!
   before_action :set_team
@@ -28,6 +28,7 @@ class TrashController < ApplicationController
 
     render json: { restored: entries.map { |entry| { item_type: entry.item_type, item_id: entry.item_id } } }
     broadcast_restored_tickets(entries)
+    broadcast_restored_chat_channels(entries)
   rescue Trash::BoardInTrash
     render_error(ErrorCodes::Trash::TRASH_BOARD_IN_TRASH, :unprocessable_entity)
   end
@@ -47,7 +48,15 @@ class TrashController < ApplicationController
   private
 
   def visible_entries
-    project_access.scope(@team.trash_entries).of_features(enabled_features)
+    manageable_chat_entries(project_access.scope(@team.trash_entries).of_features(enabled_features))
+  end
+
+  def manageable_chat_entries(entries)
+    return entries if project_access.manager?
+
+    channels = ChatChannel.unscoped.where(team_id: @team.id)
+    managed = channels.where(created_by_user_id: current_user.id).or(channels.where(project_id: ChatAccess.new(current_user, @team, project_access).owned_project_ids)).select(:id)
+    entries.where.not(item_type: "ChatChannel").or(entries.where(item_type: "ChatChannel", item_id: managed))
   end
 
   def enabled_features
@@ -89,6 +98,11 @@ class TrashController < ApplicationController
       deleted_at: entry.created_at,
       purge_at: entry.purge_at
     }
+  end
+
+  def broadcast_restored_chat_channels(entries)
+    channel_ids = entries.select { |entry| entry.item_type == "ChatChannel" }.map(&:item_id)
+    ChatChannel.where(id: channel_ids).find_each { |channel| ChatBroadcast.channel_upserted(channel) }
   end
 
   def broadcast_restored_tickets(entries)

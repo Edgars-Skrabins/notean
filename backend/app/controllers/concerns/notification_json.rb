@@ -20,6 +20,7 @@ module NotificationJson
       item_id: notification.item_id,
       item_title: notification.item_title,
       board_id: notification.board_id,
+      chat_channel_id: notification.chat_channel_id,
       in_backlog: notification.item_type == "Ticket" && backlog_ticket_ids.include?(notification.item_id),
       changed_fields: notification.changed_fields,
       excerpt: notification.excerpt,
