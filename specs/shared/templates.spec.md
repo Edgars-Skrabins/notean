@@ -1,7 +1,7 @@
 # Templates — Spec
 
 **Type:** feature
-**Status:** ready for implementation
+**Status:** in progress
 **Last updated:** 2026-10-28
 
 # Part 1 — Business logic and usage
@@ -157,47 +157,48 @@ Strong params `create_template_params` and `update_template_params` go in `Appli
 16. **Visibility elsewhere?** Templates appear only in their tabs, screens and pickers: not in global search, favourites, My Work or Home.
 17. **Empty board templates?** A board template may have zero columns or zero priorities (the board then starts with only the backlog, or no priorities), matching boards today, where every column and priority can be deleted. Decided by the coordinator under the user's delegation on 2026-10-28.
 18. **Trash and attachments specs' assumptions?** The trash spec assumed templates are trashable items, and the attachments spec assumed templates could own inline images. Both conflict with decisions 8, 12 and 13, which the user made directly, so templates stay out of the trash and `Attachment::TEMPLATE_TYPES` stays empty. The coordinator's later request to put templates in the trash and share template images was set aside because the user's own answers take precedence (2026-10-28).
+19. **Implementation deviations (2026-10-28, during implementation):** one `TemplatesComponent` (kind from route data) serves the pages, diagrams and board templates screens instead of three classes; one `TemplateDetailComponent` handles page and diagram templates instead of a base plus two classes; board template rows are a reusable `TemplateRowsComponent`. The create board dialog stays `CreateNamedItemDialogComponent`, which gains projected content and an `errorMessage` input, with a new `BoardTemplateSelectComponent` inside (its search box appears only when there are more than 50 board templates). `MenuButtonComponent` gains a `customTrigger` mode for the New buttons and the folder "+". Page template HTML is sanitised in `TemplatesController` like pages, not in the model. The templates list reloads when you return to it instead of placing the created template from navigation state. The frontend's blank board template defaults (`DEFAULT_BOARD_TEMPLATE_CONTENT`) mirror `Board::DEFAULT_COLUMN_TITLES` and `BoardPriority::DEFAULTS`. The create board dialog now stays open until the request succeeds and shows any error. Found in the manual check: the rich text editor reads its content only once, so the create popup keeps `isLoading` until a template's content is resolved before rendering the editor; the template popup hides its empty sidebar in create mode; the Simple flowchart's loop connector got a bend point so it doesn't overlap another line.
 
 # Part 3 — Implementation TODO
 
 Read Part 1 and Part 2 before starting. Work through the tasks in order and tick each one when it is done.
 
-Baseline before starting: record the backend (`bin/rails test`) and frontend (`npm test`) test counts here.
+Baseline before starting: backend 620 runs, 1545 assertions; frontend 756 specs; all passing (2026-10-28).
 
 ### A. Data model
-- [ ] A1. Add the `templates` table to the `create_schema` migration (columns, `[team_id, kind]` index, trigram index on `LOWER(title)`), rebuild the database and update `db/schema.rb` with only this table's changes.
-- [ ] A2. `app/models/template.rb` with associations, `KINDS`, `ContentLimits`, `TitleSearchable`, page content sanitising, board content validation, `board_columns` / `board_priorities`, `Template.board_content_from(board)`; `Team has_many :templates, dependent: :delete_all`. Fixtures in `test/fixtures/templates.yml` (a page, a diagram and a board template).
-- [ ] A3. `test/models/template_test.rb`: kind validation, limits, page sanitising, board content validation (bad shape, bad colour, duplicate priority names, too-long titles), `board_content_from`.
+- [x] A1. Add the `templates` table to the `create_schema` migration (columns, `[team_id, kind]` index, trigram index on `LOWER(title)`), rebuild the database and update `db/schema.rb` with only this table's changes.
+- [x] A2. `app/models/template.rb` with associations, `KINDS`, `ContentLimits`, `TitleSearchable`, page content sanitising, board content validation, `board_columns` / `board_priorities`, `Template.board_content_from(board)`; `Team has_many :templates, dependent: :delete_all`. Tests build their own records (the project has no YAML fixtures).
+- [x] A3. `test/models/template_test.rb`: kind validation, limits, page sanitising, board content validation (bad shape, bad colour, duplicate priority names, too-long titles), `board_content_from`.
 
 ### B. API
-- [ ] B1. `ErrorCodes::Templates` module; `create_template_params` / `update_template_params` in `ApplicationController`; routes.
-- [ ] B2. `TemplatesController` index, show, create, update, destroy with the team chain, `FeatureGated` per kind, `can_manage`, `paginate`, search, `assign_lock_version` and 409 handling.
-- [ ] B3. `test/controllers/templates_controller_test.rb`: listing per kind with search and paging, a query-count test (1 vs 10 templates), another team's template 404, feature off 403, create defaults, `can_manage` for creator / admin / owner / other member (403 on update and delete), lock conflict 409, `LOCK_VERSION_REQUIRED`, invalid board content 422.
-- [ ] B4. `BoardsController#create` with `template_id`: copies columns and priorities in one transaction; unknown or other-kind template 404 `TEMPLATE_NOT_FOUND`. Tests in `boards_controller_test.rb` for both paths and that the default path is unchanged.
+- [x] B1. `ErrorCodes::Templates` module; `create_template_params` / `update_template_params` in `ApplicationController`; routes.
+- [x] B2. `TemplatesController` index, show, create, update, destroy with the team chain, `FeatureGated` per kind, `can_manage`, `paginate`, search, `assign_lock_version` and 409 handling.
+- [x] B3. `test/controllers/templates_controller_test.rb`: listing per kind with search and paging, a query-count test (1 vs 10 templates), another team's template 404, feature off 403, create defaults, `can_manage` for creator / admin / owner / other member (403 on update and delete), lock conflict 409, `LOCK_VERSION_REQUIRED`, invalid board content 422.
+- [x] B4. `BoardsController#create` with `template_id`: copies columns and priorities in one transaction; unknown or other-kind template 404 `TEMPLATE_NOT_FOUND`. Tests in `boards_controller_test.rb` for both paths and that the default path is unchanged.
 
 ### C. Frontend data layer
-- [ ] C1. `models/template.model.ts`, `config/errorCodes/templates.ts` (exported from `index.ts`), `ERRORS.TEMPLATES.*` in every translation file.
-- [ ] C2. `TemplateService` with mappers and `resolve`; `BoardService.createBoard` optional `templateId`. Specs for the mappers, `resolve` (team id, built-in key, unknown key) and the conflict result.
-- [ ] C3. `config/builtInTemplates.ts` with the seven built-ins; a spec checking every diagram built-in parses as JSON with cells and every page built-in is non-empty HTML. Load each one in the running editors to check it renders.
+- [x] C1. `models/template.model.ts`, `config/errorCodes/templates.ts` (exported from `index.ts`), `ERRORS.TEMPLATES.*` in every translation file.
+- [x] C2. `TemplateService` with mappers and `resolve`; `BoardService.createBoard` optional `templateId`. Specs for the mappers, `resolve` (team id, built-in key, unknown key) and the conflict result.
+- [x] C3. `config/builtInTemplates.ts` with the seven built-ins; a spec checking every diagram built-in parses as JSON with cells and every page built-in is non-empty HTML. Load each one in the running editors to check it renders.
 
 ### D. Pages and diagrams templates UI
-- [ ] D1. `AppRoutes` entries and the template routes in `dashboardRoutes` with `featureGuard`.
-- [ ] D2. `ItemTabsComponent` and its use on the Pages, Diagrams and templates screens.
-- [ ] D3. `TemplateListComponent`, `PageTemplatesComponent`, `DiagramTemplatesComponent`: search, built-in group, paging, delete confirm, Use template. Specs for search filtering of built-ins and placing a created template.
-- [ ] D4. `TemplateDetailBase`, `PageTemplateDetailComponent`, `DiagramTemplateDetailComponent` (create, view, edit, read-only when not `canManage`, built-in read-only with Duplicate, conflict dialog, Esc); any new `ItemDetailLayoutComponent` inputs to hide project, favourite and folder. Specs for the manage rules and Duplicate.
-- [ ] D5. `TemplatePickerDialogComponent`; Blank / From template menus on the toolbar buttons and the item tree's folder +; navigation to `…/new?template=…&folder=…`. Specs.
-- [ ] D6. `FolderedItemDetailComponent` create mode prefill from `?template=` with the failure path. Specs.
-- [ ] D7. `PHRASES` and all 11 translation files for the D block strings.
+- [x] D1. `AppRoutes` entries and the template routes in `dashboardRoutes` with `featureGuard`.
+- [x] D2. `ItemTabsComponent` and its use on the Pages, Diagrams and templates screens.
+- [x] D3. `TemplateListComponent`, `PageTemplatesComponent`, `DiagramTemplatesComponent`: search, built-in group, paging, delete confirm, Use template. Specs for search filtering of built-ins and placing a created template.
+- [x] D4. `TemplateDetailBase`, `PageTemplateDetailComponent`, `DiagramTemplateDetailComponent` (create, view, edit, read-only when not `canManage`, built-in read-only with Duplicate, conflict dialog, Esc); any new `ItemDetailLayoutComponent` inputs to hide project, favourite and folder. Specs for the manage rules and Duplicate.
+- [x] D5. `TemplatePickerDialogComponent`; Blank / From template menus on the toolbar buttons and the item tree's folder +; navigation to `…/new?template=…&folder=…`. Specs.
+- [x] D6. `FolderedItemDetailComponent` create mode prefill from `?template=` with the failure path. Specs.
+- [x] D7. `PHRASES` and all 11 translation files for the D block strings.
 
 ### E. Board templates UI
-- [ ] E1. `BoardTemplatesComponent` (list via `TemplateListComponent`, New template → Blank / From existing board) and the sidebar **Board templates** row (hidden with boards off).
-- [ ] E2. `BoardTemplateDetailComponent`: name, column drag list, priority editor, create / save / delete, read-only, conflict dialog, Esc; board picker dialog for From existing board. Specs for building content from a board and from blank defaults.
-- [ ] E3. `CreateBoardDialogComponent` with the template select and server search; `SidebarBoardsComponent` uses it and passes `templateId`; handle `TEMPLATE_NOT_FOUND` in the dialog. Update `sidebar-boards.component.spec.ts`.
-- [ ] E4. `PHRASES` and all 11 translation files for the E block strings.
+- [x] E1. `BoardTemplatesComponent` (list via `TemplateListComponent`, New template → Blank / From existing board) and the sidebar **Board templates** row (hidden with boards off).
+- [x] E2. `BoardTemplateDetailComponent`: name, column drag list, priority editor, create / save / delete, read-only, conflict dialog, Esc; board picker dialog for From existing board. Specs for building content from a board and from blank defaults.
+- [x] E3. `CreateBoardDialogComponent` with the template select and server search; `SidebarBoardsComponent` uses it and passes `templateId`; handle `TEMPLATE_NOT_FOUND` in the dialog. Update `sidebar-boards.component.spec.ts`.
+- [x] E4. `PHRASES` and all 11 translation files for the E block strings.
 
 ### F. Docs and related specs
-- [ ] F1. Update the root `CLAUDE.md`: the templates table and endpoints, board create `template_id`, template routes, `TemplateService`, built-ins in `config/builtInTemplates.ts`.
+- [x] F1. Update the root `CLAUDE.md`: the templates table and endpoints, board create `template_id`, template routes, `TemplateService`, built-ins in `config/builtInTemplates.ts`.
 
 ### Z. Wrap-up
-- [ ] Z1. Full test runs, build and lint: `bin/rails test`, `bin/rubocop`, `bin/brakeman` in `backend/`; `npm test`, `npm run build` (style budgets) in `frontend/`.
-- [ ] Z2. Manual check in the running app: create a page template, use it from the toolbar and from a folder +, use a built-in, duplicate a built-in, edit as another member (read-only) and as admin; same for diagrams; build a board template from an existing board, create a board from it and check columns and priorities; turn a feature off and check the tab, row and select disappear.
+- [x] Z1. Full test runs, build and lint: `bin/rails test`, `bin/rubocop`, `bin/brakeman` in `backend/`; `npm test`, `npm run build` (style budgets) in `frontend/`.
+- [x] Z2. Manual check in the running app: create a page template, use it from the toolbar and from a folder +, use a built-in, duplicate a built-in, edit as another member (read-only) and as admin; same for diagrams; build a board template from an existing board, create a board from it and check columns and priorities; turn a feature off and check the tab, row and select disappear.
