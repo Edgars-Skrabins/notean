@@ -1,6 +1,6 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_team, only: [ :activate, :members, :update_nickname, :update, :update_features, :destroy ]
+  before_action :set_team, only: [ :activate, :members, :update_nickname, :update, :update_features, :storage_usage, :destroy ]
 
   def mine
     membership = active_membership(current_user)
@@ -79,6 +79,12 @@ class TeamsController < ApplicationController
     @team.update!(update_team_features_params)
     ActionCable.server.broadcast(TeamChannel.stream_name(@team), { type: "features_changed", team: team_json(@team) })
     render json: { team: team_json(@team) }
+  end
+
+  def storage_usage
+    return unless require_team_role!(@team, :admin, :owner)
+
+    render json: { storage: { used_bytes: Attachment.team_usage(@team), quota_bytes: Attachment::TEAM_QUOTA_BYTES } }
   end
 
   def destroy

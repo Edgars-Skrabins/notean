@@ -1,0 +1,12 @@
+<div class="attachmentPreview">
+  <div class="attachmentPreview__backdrop" (click)="closed.emit()"></div>
+
+  <div class="attachmentPreview__panel">
+    <div class="attachmentPreview__header">
+      <span class="attachmentPreview__name">{{ attachment.filename }}</span>
+      <app-button variant="ghost" icon="download" (pressed)="downloadRequested.emit(attachment)">{{ PHRASES.DOWNLOAD | translate }}</app-button>
+      <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE_PREVIEW | translate" (pressed)="closed.emit()"></app-icon-button>
+    </div>
+    <img *ngIf="imageUrl" class="attachmentPreview__image" [src]="imageUrl" [alt]="attachment.filename">
+  </div>
+</div>

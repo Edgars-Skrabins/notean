@@ -364,6 +364,18 @@
   "TRASH_TYPE_ALL": "Alla typer",
   "TRASH_TYPE_FOLDERS": "Mappar",
   "SEARCH_TRASH": "Sök i papperskorgen efter titel",
+  "ATTACHMENTS": "Bilagor",
+  "UPLOAD_FILES": "Ladda upp",
+  "NO_ATTACHMENTS": "Inga bilagor än",
+  "DELETE_ATTACHMENT": "Ta bort bilaga",
+  "CONFIRM_DELETE_ATTACHMENT": "Ta bort den här bilagan?",
+  "INSERT_IMAGE": "Infoga bild",
+  "DOWNLOAD": "Ladda ner",
+  "STORAGE_USAGE": "Lagring: {{used}} av {{quota}} använt",
+  "UPLOADING": "Laddar upp {{progress}} %",
+  "CLOSE_PREVIEW": "Stäng förhandsvisning",
+  "ATTACHMENT_COUNT": "{{count}} bilagor",
+  "DROP_FILES_HERE": "Släpp filer för att bifoga",
   "TEMPLATES": "Mallar",
   "NEW_TEMPLATE": "Ny mall",
   "BLANK": "Tom",
@@ -509,6 +521,14 @@
     "TRASH": {
       "TRASH_ENTRY_NOT_FOUND": "Objektet finns inte längre i papperskorgen",
       "TRASH_BOARD_IN_TRASH": "Återställ tavlan först"
+    },
+    "ATTACHMENTS": {
+      "ATTACHMENT_NOT_FOUND": "Bilagan hittades inte",
+      "FILE_REQUIRED": "Välj en fil att ladda upp",
+      "FILE_TOO_LARGE": "Filer får vara högst 25 MB",
+      "INLINE_IMAGE_TYPE_INVALID": "Infogade bilder måste vara PNG, JPEG, GIF eller WebP",
+      "STORAGE_QUOTA_EXCEEDED": "Ditt team har använt alla 500 MB lagring",
+      "ATTACHMENT_UPLOAD_FAILED": "Kunde inte ladda upp filen"
     },
     "TEMPLATES": {
       "TEMPLATE_NOT_FOUND": "Mallen finns inte längre",

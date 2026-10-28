@@ -29,6 +29,7 @@ export function templateAsItem(template: TemplateDetail | BuiltInTemplate): Fold
     createdAt: builtIn ? '' : template.createdAt,
     updatedAt: builtIn ? '' : template.updatedAt,
     contributors: [],
+    attachments: [],
     currentlyEditing: null,
   };
 }

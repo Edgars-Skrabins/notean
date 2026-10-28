@@ -1,6 +1,8 @@
 module TicketJson
   extend ActiveSupport::Concern
 
+  include AttachmentJson
+
   ASSIGNEES_PRELOAD = { ticket_assignees: { user: User::AVATAR_PRELOAD } }.freeze
   TAGS_PRELOAD = { ticket_tags: :tag }.freeze
 
@@ -19,6 +21,8 @@ module TicketJson
       creator: member_json(ticket.creator),
       assignees: assignees_json(ticket),
       tag_ids: tag_ids_json(ticket),
+      attachments: attachments_json(ticket),
+      attachment_count: ticket.attachments_count,
       created_at: ticket.created_at,
       updated_at: ticket.updated_at
     }
@@ -34,6 +38,7 @@ module TicketJson
       lock_version: ticket.lock_version,
       assignees: assignees_json(ticket),
       tag_ids: tag_ids_json(ticket),
+      attachment_count: ticket.attachments_count,
       created_at: ticket.created_at,
       updated_at: ticket.updated_at
     }

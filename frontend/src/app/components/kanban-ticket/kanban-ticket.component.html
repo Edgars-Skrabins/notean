@@ -4,6 +4,16 @@
     <app-tag-chips class="kanbanTicket__tags" [tags]="tags" [tagIds]="ticket.tagIds" [max]="3"></app-tag-chips>
   </button>
 
+  <span
+    *ngIf="ticket.attachmentCount > 0"
+    class="kanbanTicket__attachments"
+    [appTooltip]="PHRASES.ATTACHMENT_COUNT | translate: {count: ticket.attachmentCount}"
+    [attr.aria-label]="PHRASES.ATTACHMENT_COUNT | translate: {count: ticket.attachmentCount}"
+  >
+    <app-icon name="paperclip" class="kanbanTicket__attachmentsIcon"></app-icon>
+    {{ ticket.attachmentCount }}
+  </span>
+
   <app-avatar-stack class="kanbanTicket__assignees" [users]="ticket.assignees"></app-avatar-stack>
 
   <div class="kanbanTicket__actions">

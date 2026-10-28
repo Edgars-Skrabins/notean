@@ -21,6 +21,7 @@ function rawTicket(id: number, columnId: number | null, position: number, change
     priority_id: null,
     lock_version: ticket.lockVersion,
     assignees: [],
+    attachment_count: 0,
     created_at: ticket.createdAt,
     updated_at: ticket.updatedAt,
     ...changes,

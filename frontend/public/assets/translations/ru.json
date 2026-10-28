@@ -364,6 +364,18 @@
   "TRASH_TYPE_ALL": "Все типы",
   "TRASH_TYPE_FOLDERS": "Папки",
   "SEARCH_TRASH": "Искать в корзине по названию",
+  "ATTACHMENTS": "Вложения",
+  "UPLOAD_FILES": "Загрузить",
+  "NO_ATTACHMENTS": "Вложений пока нет",
+  "DELETE_ATTACHMENT": "Удалить вложение",
+  "CONFIRM_DELETE_ATTACHMENT": "Удалить это вложение?",
+  "INSERT_IMAGE": "Вставить изображение",
+  "DOWNLOAD": "Скачать",
+  "STORAGE_USAGE": "Хранилище: использовано {{used}} из {{quota}}",
+  "UPLOADING": "Загрузка {{progress}}%",
+  "CLOSE_PREVIEW": "Закрыть просмотр",
+  "ATTACHMENT_COUNT": "Вложений: {{count}}",
+  "DROP_FILES_HERE": "Перетащите файлы, чтобы прикрепить",
   "TEMPLATES": "Шаблоны",
   "NEW_TEMPLATE": "Новый шаблон",
   "BLANK": "Пустой",
@@ -509,6 +521,14 @@
     "TRASH": {
       "TRASH_ENTRY_NOT_FOUND": "Этого элемента больше нет в корзине",
       "TRASH_BOARD_IN_TRASH": "Сначала восстановите доску"
+    },
+    "ATTACHMENTS": {
+      "ATTACHMENT_NOT_FOUND": "Вложение не найдено",
+      "FILE_REQUIRED": "Выберите файл для загрузки",
+      "FILE_TOO_LARGE": "Файлы должны быть не больше 25 МБ",
+      "INLINE_IMAGE_TYPE_INVALID": "Изображения в тексте должны быть PNG, JPEG, GIF или WebP",
+      "STORAGE_QUOTA_EXCEEDED": "Ваша команда использовала все 500 МБ хранилища",
+      "ATTACHMENT_UPLOAD_FAILED": "Не удалось загрузить файл"
     },
     "TEMPLATES": {
       "TEMPLATE_NOT_FOUND": "Этот шаблон больше не существует",

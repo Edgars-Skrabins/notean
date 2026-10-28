@@ -2,6 +2,9 @@ default: &default
   purge_trash:
     class: PurgeTrashJob
     schedule: every day at 3am
+  purge_pending_attachments:
+    class: PurgePendingAttachmentsJob
+    schedule: every hour
 
 development:
   <<: *default

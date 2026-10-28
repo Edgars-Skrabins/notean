@@ -364,6 +364,18 @@
   "TRASH_TYPE_ALL": "All types",
   "TRASH_TYPE_FOLDERS": "Folders",
   "SEARCH_TRASH": "Search trash by title",
+  "ATTACHMENTS": "Attachments",
+  "UPLOAD_FILES": "Upload",
+  "NO_ATTACHMENTS": "No attachments yet",
+  "DELETE_ATTACHMENT": "Delete attachment",
+  "CONFIRM_DELETE_ATTACHMENT": "Delete this attachment?",
+  "INSERT_IMAGE": "Insert image",
+  "DOWNLOAD": "Download",
+  "STORAGE_USAGE": "Storage: {{used}} of {{quota}} used",
+  "UPLOADING": "Uploading {{progress}}%",
+  "CLOSE_PREVIEW": "Close preview",
+  "ATTACHMENT_COUNT": "{{count}} attachments",
+  "DROP_FILES_HERE": "Drop files to attach",
   "TEMPLATES": "Templates",
   "NEW_TEMPLATE": "New template",
   "BLANK": "Blank",
@@ -509,6 +521,14 @@
     "TRASH": {
       "TRASH_ENTRY_NOT_FOUND": "This item is no longer in the trash",
       "TRASH_BOARD_IN_TRASH": "Restore the board first"
+    },
+    "ATTACHMENTS": {
+      "ATTACHMENT_NOT_FOUND": "Attachment not found",
+      "FILE_REQUIRED": "Choose a file to upload",
+      "FILE_TOO_LARGE": "Files must be 25 MB or smaller",
+      "INLINE_IMAGE_TYPE_INVALID": "Inline images must be PNG, JPEG, GIF or WebP",
+      "STORAGE_QUOTA_EXCEEDED": "Your team has used all 500 MB of storage",
+      "ATTACHMENT_UPLOAD_FAILED": "Could not upload the file"
     },
     "TEMPLATES": {
       "TEMPLATE_NOT_FOUND": "This template no longer exists",

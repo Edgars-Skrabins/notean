@@ -38,6 +38,11 @@ import {BoardPageStateService} from "../board-page/board-page-state.service";
 import {EscapeService} from "@services/escape.service";
 import {CopyLinkService} from "@services/copy-link.service";
 import {AppRoutes} from "../../../app/app-routes.enum";
+import {AttachmentService} from "@services/attachment.service";
+import {Attachment, AttachmentUpload} from "@models/attachment.model";
+import {AttachmentListComponent} from "@components/attachment-list/attachment-list.component";
+import {ATTACHMENT_MAX_BYTES} from "@config/attachmentLimits";
+import {droppedFiles, hasDraggedFiles, pastedFiles} from "@utils/fileDrop";
 
 @Component({
   selector: 'app-ticket-detail',
@@ -55,7 +60,8 @@ import {AppRoutes} from "../../../app/app-routes.enum";
     TicketAssigneesComponent,
     TicketTagsComponent,
     DropdownComponent,
-    CommentListComponent
+    CommentListComponent,
+    AttachmentListComponent
   ],
   templateUrl: './ticket-detail.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -79,11 +85,15 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   isUpdatingTags = false;
   isTitleFocused = false;
   isDescriptionFocused = false;
+  uploads: AttachmentUpload[] = [];
+  isDraggingFiles = false;
   readonly currentUserId: number;
 
   private ticketId = 0;
   commentTarget: CommentTarget | null = null;
   private isDeleting = false;
+  private uploadKey = 0;
+  private dragDepth = 0;
   private remoteChangesSubscription: Subscription | null = null;
 
   private unregisterEscape = () => {};
@@ -101,7 +111,8 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     authService: AuthService,
     private escapeService: EscapeService,
     private copyLinkService: CopyLinkService,
-    private trashService: TrashService
+    private trashService: TrashService,
+    private attachmentService: AttachmentService
   ) {
     this.currentUserId = authService.getCurrentUser()?.id ?? 0;
   }
@@ -165,6 +176,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
       assignees: summary.assignees,
       tagIds: summary.tagIds,
       updatedAt: summary.updatedAt,
+      attachmentCount: summary.attachmentCount,
       lockVersion: keepTitleDraft || keepDescriptionDraft ? ticket.lockVersion : summary.lockVersion,
       description,
     };
@@ -174,6 +186,62 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     if (!keepDescriptionDraft) {
       this.descriptionDraft = description;
     }
+    if (summary.attachmentCount !== ticket.attachments.length) {
+      this.reloadAttachments();
+    }
+  }
+
+  handleDragEnter(event: DragEvent) {
+    if (hasDraggedFiles(event)) {
+      this.dragDepth++;
+      this.isDraggingFiles = true;
+    }
+  }
+
+  handleDragOver(event: DragEvent) {
+    if (hasDraggedFiles(event)) {
+      event.preventDefault();
+    }
+  }
+
+  handleDragLeave(event: DragEvent) {
+    if (hasDraggedFiles(event)) {
+      this.dragDepth = Math.max(0, this.dragDepth - 1);
+      this.isDraggingFiles = this.dragDepth > 0;
+    }
+  }
+
+  handleDrop(event: DragEvent) {
+    const files = droppedFiles(event);
+    this.dragDepth = 0;
+    this.isDraggingFiles = false;
+    if (files.length) {
+      event.preventDefault();
+      this.uploadFiles(files);
+    }
+  }
+
+  handlePaste(event: ClipboardEvent) {
+    const files = pastedFiles(event);
+    if (files.length) {
+      event.preventDefault();
+      this.uploadFiles(files);
+    }
+  }
+
+  uploadFiles(files: File[]) {
+    files.forEach((file) => this.uploadFile(file));
+  }
+
+  handleDeleteAttachment(attachment: Attachment) {
+    this.attachmentService.deleteFromTicket(this.teamCode, this.boardId, this.ticketId, attachment.id)
+      .then((response) => {
+        if (!response.success) {
+          this.toastService.show({type: ToastType.ERROR, message: errorPhrase(response.code)});
+          return;
+        }
+        this.setAttachments((this.ticket?.attachments ?? []).filter((item) => item.id !== attachment.id));
+      });
   }
 
   handleTitleFocus() {
@@ -390,6 +458,43 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
         this.titleDraft = response.ticket.title;
         this.favoriteService.renameItem('Ticket', response.ticket.id, response.ticket.title);
         this.state.updateTicket(response.ticket);
+      });
+  }
+
+  private async uploadFile(file: File) {
+    if (file.size > ATTACHMENT_MAX_BYTES) {
+      this.toastService.show({type: ToastType.ERROR, message: errorPhrase('FILE_TOO_LARGE')});
+      return;
+    }
+
+    const upload: AttachmentUpload = {key: ++this.uploadKey, filename: file.name, progress: 0};
+    this.uploads = [...this.uploads, upload];
+    const response = await this.attachmentService.uploadToTicket(this.teamCode, this.boardId, this.ticketId, file, (progress) => {
+      upload.progress = progress;
+    });
+    this.uploads = this.uploads.filter((item) => item !== upload);
+
+    if (!response.success) {
+      this.toastService.show({type: ToastType.ERROR, message: errorPhrase(response.code)});
+      return;
+    }
+    this.setAttachments([response.attachment, ...(this.ticket?.attachments ?? [])]);
+  }
+
+  private setAttachments(attachments: Attachment[]) {
+    if (!this.ticket) {
+      return;
+    }
+    this.ticket = {...this.ticket, attachments, attachmentCount: attachments.length};
+    this.state.setAttachmentCount(this.ticket.id, attachments.length);
+  }
+
+  private reloadAttachments() {
+    this.ticketService.getTicket(this.teamCode, this.boardId, this.ticketId)
+      .then((response) => {
+        if (response.success && this.ticket) {
+          this.ticket = {...this.ticket, attachments: response.ticket.attachments, attachmentCount: response.ticket.attachments.length};
+        }
       });
   }
 

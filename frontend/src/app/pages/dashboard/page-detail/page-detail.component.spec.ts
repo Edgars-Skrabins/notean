@@ -12,6 +12,8 @@ import {ToastService} from "@services/toast.service";
 import {FolderService} from "@services/folder.service";
 import {CopyLinkService} from "@services/copy-link.service";
 import {TemplateService} from "@services/template.service";
+import {AttachmentService} from "@services/attachment.service";
+import {Attachment} from "@models/attachment.model";
 import {FolderedItemDetail} from "@models/foldered-item.model";
 import {errorPhrase} from "@utils/errorPhrase";
 import {projectFilterStub, ProjectFilterStub} from "../../../testing/projectFilterStub";
@@ -32,6 +34,7 @@ function createdPage(): FolderedItemDetail {
     content: '<p>Hi</p>',
     contributors: [],
     currentlyEditing: null,
+    attachments: [],
   };
 }
 
@@ -44,6 +47,7 @@ describe('PageDetailComponent', () => {
   let folderService: jasmine.SpyObj<FolderService>;
   let copyLinkService: jasmine.SpyObj<CopyLinkService>;
   let templateService: jasmine.SpyObj<TemplateService>;
+  let attachmentService: jasmine.SpyObj<AttachmentService>;
 
   function createComponent(queryParams: Record<string, string> = {}, params: Record<string, string> = {}) {
     const route = {
@@ -67,6 +71,7 @@ describe('PageDetailComponent', () => {
       {instant: (key: string) => key} as unknown as TranslateService,
       copyLinkService,
       trashServiceStub().service,
+      attachmentService,
       templateService,
     );
     component.ngOnInit();
@@ -80,6 +85,8 @@ describe('PageDetailComponent', () => {
     projectFilter = projectFilterStub(4);
     folderService = jasmine.createSpyObj<FolderService>('FolderService', ['listFolders']);
     templateService = jasmine.createSpyObj<TemplateService>('TemplateService', ['resolve']);
+    attachmentService = jasmine.createSpyObj<AttachmentService>('AttachmentService', ['uploadPending', 'uploadToPage', 'deletePending', 'deleteFromPage']);
+    attachmentService.deletePending.and.returnValue(Promise.resolve({success: true}));
     folderService.listFolders.and.returnValue(Promise.resolve({
       success: true,
       folders: [{id: 3, title: 'Plans', parentId: null, projectId: 8, creator: {id: 1, nickname: 'alice'}, createdAt: '', updatedAt: ''}],
@@ -107,7 +114,7 @@ describe('PageDetailComponent', () => {
     expect(component.isCreating).toBeTrue();
     tick();
 
-    expect(pageService.create).toHaveBeenCalledOnceWith('abc', {title: 'Plan', content: '<p>Hi</p>', projectId: 8, folderId: 3});
+    expect(pageService.create).toHaveBeenCalledOnceWith('abc', {title: 'Plan', content: '<p>Hi</p>', projectId: 8, folderId: 3, attachmentIds: []});
     const createdItem = {id: 9, title: 'Plan', folderId: 3, projectId: 4, lockVersion: 0, creator: createdPage().creator, createdAt: '', updatedAt: ''};
     expect(navigationService.navigateWithState).toHaveBeenCalledOnceWith({createdItem}, AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES);
     expect(component.isCreating).toBeFalse();
@@ -177,7 +184,7 @@ describe('PageDetailComponent', () => {
     component.handleCreate();
     tick();
 
-    expect(pageService.create).toHaveBeenCalledOnceWith('abc', {title: 'UNTITLED_PAGE', content: '', projectId: 4, folderId: null});
+    expect(pageService.create).toHaveBeenCalledOnceWith('abc', {title: 'UNTITLED_PAGE', content: '', projectId: 4, folderId: null, attachmentIds: []});
   }));
 
   it('keeps the popup open with the draft when Create fails', fakeAsync(() => {
@@ -393,4 +400,90 @@ describe('PageDetailComponent', () => {
 
     expect(component.item?.lockVersion).toBe(1);
   }));
+
+  describe('attachments', () => {
+    function attachment(id: number, kind: 'file' | 'inline' = 'file'): Attachment {
+      return {id, filename: `file${id}`, contentType: 'text/plain', byteSize: 1, kind, uploader: {id: 1, nickname: 'alice', avatar: {color: 'blue', imageUrl: null}}, createdAt: ''};
+    }
+
+    it('uploads files as pending before Create and sends their ids with it', fakeAsync(() => {
+      attachmentService.uploadPending.and.returnValue(Promise.resolve({success: true, attachment: attachment(5)}));
+      pageService.create.and.returnValue(Promise.resolve({success: true, item: createdPage()}));
+      createComponent();
+
+      component.uploadFiles([new File(['x'], 'a.txt')]);
+      tick();
+      expect(attachmentService.uploadPending).toHaveBeenCalledWith('abc', jasmine.any(File), 'file', jasmine.any(Function));
+      expect(component.attachments.map((item) => item.id)).toEqual([5]);
+      expect(component.hasCreateDraftChanges).toBeTrue();
+
+      component.handleCreate();
+      tick();
+      component.ngOnDestroy();
+
+      expect(pageService.create.calls.mostRecent().args[1].attachmentIds).toEqual([5]);
+      expect(attachmentService.deletePending).not.toHaveBeenCalled();
+    }));
+
+    it('deletes pending uploads when the new page is discarded', fakeAsync(() => {
+      attachmentService.uploadPending.and.returnValues(
+        Promise.resolve({success: true, attachment: attachment(5)}),
+        Promise.resolve({success: true, attachment: attachment(6, 'inline')}),
+      );
+      createComponent();
+      component.uploadFiles([new File(['x'], 'a.txt')]);
+      tick();
+      component.uploadImage(new File(['x'], 'a.png', {type: 'image/png'}));
+      tick();
+
+      component.ngOnDestroy();
+
+      expect(attachmentService.deletePending.calls.allArgs()).toEqual([['abc', 5], ['abc', 6]]);
+    }));
+
+    it('uploads files of an existing page straight to it', fakeAsync(() => {
+      pageService.get.and.returnValue(Promise.resolve({success: true, item: createdPage()}));
+      attachmentService.uploadToPage.and.returnValue(Promise.resolve({success: true, attachment: attachment(7)}));
+      createComponent({}, {id: '9'});
+      tick();
+
+      component.uploadFiles([new File(['x'], 'a.txt')]);
+      tick();
+
+      expect(attachmentService.uploadToPage).toHaveBeenCalledWith('abc', 9, jasmine.any(File), 'file', jasmine.any(Function));
+      expect(component.item?.attachments.map((item) => item.id)).toEqual([7]);
+    }));
+
+    it('drops pending images that the saved content no longer uses', fakeAsync(() => {
+      pageService.get.and.returnValue(Promise.resolve({success: true, item: createdPage()}));
+      attachmentService.uploadPending.and.returnValues(
+        Promise.resolve({success: true, attachment: attachment(11, 'inline')}),
+        Promise.resolve({success: true, attachment: attachment(12, 'inline')}),
+      );
+      pageService.save.and.returnValue(Promise.resolve({success: true, item: {...createdPage(), content: '<img data-attachment-id="11">'}}));
+      createComponent({}, {id: '9'});
+      tick();
+      component.handleEdit();
+      component.uploadImage(new File(['x'], 'a.png', {type: 'image/png'}));
+      component.uploadImage(new File(['x'], 'b.png', {type: 'image/png'}));
+      tick();
+
+      component.handleSave();
+      tick();
+
+      expect(attachmentService.deletePending.calls.allArgs()).toEqual([['abc', 12]]);
+    }));
+
+    it('leaves drops and pastes the editor already handled', () => {
+      createComponent();
+      const data = new DataTransfer();
+      data.items.add(new File(['x'], 'a.txt'));
+      const event = new DragEvent('drop', {dataTransfer: data, cancelable: true});
+      event.preventDefault();
+
+      component.handleDrop(event);
+
+      expect(attachmentService.uploadPending).not.toHaveBeenCalled();
+    });
+  });
 });

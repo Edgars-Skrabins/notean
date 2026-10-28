@@ -47,12 +47,19 @@ module ActiveSupport
       user.avatar_image.attach(io: file_fixture("avatar.png").open, filename: "avatar.png", content_type: "image/png")
     end
 
+    def create_attachment(attachable, user, kind: "file", fixture: "avatar.png", content_type: "image/png", team: attachable.team)
+      attachment = Attachment.new(team: team, attachable: attachable, kind: kind, creator: user)
+      attachment.file.attach(io: file_fixture(fixture).open, filename: fixture, content_type: content_type)
+      attachment.save!
+      attachment
+    end
+
     def board_broadcasts(board)
       broadcasts(BoardChannel.stream_name(board)).map { |message| ::JSON.parse(message) }
     end
 
     def ticket_broadcast_json(ticket_json)
-      ticket_json.slice("id", "title", "position", "column_id", "priority_id", "lock_version", "assignees", "tag_ids", "created_at", "updated_at", "description")
+      ticket_json.slice("id", "title", "position", "column_id", "priority_id", "lock_version", "assignees", "tag_ids", "attachment_count", "created_at", "updated_at", "description")
     end
 
     def nickname_for(index)

@@ -40,6 +40,20 @@
   margin-top: 6px;
 }
 
+.kanbanTicket__attachments {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 2px;
+  color: var(--color-text-faint);
+  font-size: var(--font-xs);
+}
+
+.kanbanTicket__attachmentsIcon {
+  width: 14px;
+  height: 14px;
+}
+
 .kanbanTicket__assignees {
   flex-shrink: 0;
 }

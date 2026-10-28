@@ -16,6 +16,7 @@ class Team < ApplicationRecord
   has_many :projects, dependent: :destroy
   has_many :templates, dependent: :delete_all
   has_many :trash_entries
+  has_many :attachments, dependent: :destroy
 
   validates :name, presence: true, length: { maximum: TITLE_MAX_LENGTH }
   validates :code, presence: true, uniqueness: true

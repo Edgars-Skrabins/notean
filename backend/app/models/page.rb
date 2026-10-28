@@ -17,6 +17,8 @@ class Page < ApplicationRecord
   has_many :contributors, through: :page_contributors, source: :user
   has_many :favorites, as: :favoritable, dependent: :destroy
   has_many :comments, as: :commentable, dependent: :destroy
+  has_many :attachments, as: :attachable, dependent: :destroy
+  has_many :attachment_references, dependent: :delete_all
 
   validates :title, presence: true, length: { maximum: TITLE_MAX_LENGTH }
   validate :folder_matches_item

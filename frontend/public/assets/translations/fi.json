@@ -364,6 +364,18 @@
   "TRASH_TYPE_ALL": "Kaikki tyypit",
   "TRASH_TYPE_FOLDERS": "Kansiot",
   "SEARCH_TRASH": "Hae roskakorista otsikolla",
+  "ATTACHMENTS": "Liitteet",
+  "UPLOAD_FILES": "Lataa",
+  "NO_ATTACHMENTS": "Ei vielä liitteitä",
+  "DELETE_ATTACHMENT": "Poista liite",
+  "CONFIRM_DELETE_ATTACHMENT": "Poistetaanko tämä liite?",
+  "INSERT_IMAGE": "Lisää kuva",
+  "DOWNLOAD": "Lataa itsellesi",
+  "STORAGE_USAGE": "Tallennustila: {{used}} / {{quota}} käytetty",
+  "UPLOADING": "Ladataan {{progress}} %",
+  "CLOSE_PREVIEW": "Sulje esikatselu",
+  "ATTACHMENT_COUNT": "{{count}} liitettä",
+  "DROP_FILES_HERE": "Pudota tiedostot liittääksesi",
   "TEMPLATES": "Mallit",
   "NEW_TEMPLATE": "Uusi malli",
   "BLANK": "Tyhjä",
@@ -509,6 +521,14 @@
     "TRASH": {
       "TRASH_ENTRY_NOT_FOUND": "Kohde ei ole enää roskakorissa",
       "TRASH_BOARD_IN_TRASH": "Palauta ensin taulu"
+    },
+    "ATTACHMENTS": {
+      "ATTACHMENT_NOT_FOUND": "Liitettä ei löytynyt",
+      "FILE_REQUIRED": "Valitse ladattava tiedosto",
+      "FILE_TOO_LARGE": "Tiedostot saavat olla enintään 25 Mt",
+      "INLINE_IMAGE_TYPE_INVALID": "Tekstin kuvien on oltava PNG, JPEG, GIF tai WebP",
+      "STORAGE_QUOTA_EXCEEDED": "Tiimisi on käyttänyt kaikki 500 Mt tallennustilaa",
+      "ATTACHMENT_UPLOAD_FAILED": "Tiedoston lataus epäonnistui"
     },
     "TEMPLATES": {
       "TEMPLATE_NOT_FOUND": "Tätä mallia ei enää ole",

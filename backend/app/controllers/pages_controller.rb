@@ -1,5 +1,6 @@
 class PagesController < ApplicationController
   include FeatureGated
+  include AttachmentJson
 
   before_action :authenticate_user!
   before_action :set_team
@@ -21,13 +22,13 @@ class PagesController < ApplicationController
   def create
     @page = @team.pages.new(created_by_user_id: current_user.id)
     @page.title = title_or_default(create_page_params[:title])
-    @page.content = Rails::Html::SafeListSanitizer.new.sanitize(create_page_params[:content].to_s)
+    @page.content = PageContent.sanitize(create_page_params[:content])
     return unless place_in_folder(@page, create_page_params, :folder_id)
 
-    if @page.save
-      render json: { page: page_json(@page) }, status: :created
-    else
-      render_error(limit_error_code(@page) || ErrorCodes::Pages::PAGE_CREATE_FAILED, :unprocessable_entity)
+    case save_page(PageAttachments.new(@page, current_user, project_access, pending_file_ids: create_page_params[:attachment_ids]))
+    when :saved then render json: { page: page_json(@page) }, status: :created
+    when :quota_exceeded then render_error(ErrorCodes::Attachments::STORAGE_QUOTA_EXCEEDED, :unprocessable_entity)
+    else render_error(limit_error_code(@page) || ErrorCodes::Pages::PAGE_CREATE_FAILED, :unprocessable_entity)
     end
   end
 
@@ -39,13 +40,16 @@ class PagesController < ApplicationController
     return unless assign_lock_version(@page, update_page_params, :title, :content)
 
     @page.title = update_page_params[:title] if update_page_params[:title].present?
-    @page.content = Rails::Html::SafeListSanitizer.new.sanitize(update_page_params[:content].to_s) if update_page_params.key?(:content)
+    @page.content = PageContent.sanitize(update_page_params[:content]) if update_page_params.key?(:content)
     return unless place_in_folder(@page, update_page_params, :folder_id)
 
-    if @page.save
+    case save_page(update_page_params.key?(:content) ? PageAttachments.new(@page, current_user, project_access) : nil)
+    when :saved
       @page.page_contributors.find_or_create_by!(user: current_user)
       PageEditingStatus.stop(@page.id, current_user)
       render json: { page: page_json(find_page(@page.id)) }
+    when :quota_exceeded
+      render_error(ErrorCodes::Attachments::STORAGE_QUOTA_EXCEEDED, :unprocessable_entity)
     else
       render_error(limit_error_code(@page) || ErrorCodes::Pages::PAGE_UPDATE_FAILED, :unprocessable_entity)
     end
@@ -59,6 +63,22 @@ class PagesController < ApplicationController
   end
 
   private
+
+  def save_page(attachments)
+    result = nil
+    Page.transaction do
+      result = if attachments && !attachments.prepare
+        :quota_exceeded
+      elsif @page.save
+        attachments&.finish
+        :saved
+      else
+        :invalid
+      end
+      raise ActiveRecord::Rollback unless result == :saved
+    end
+    result
+  end
 
   def find_page(id)
     project_access.scope(@team.pages).includes(creator: User::AVATAR_PRELOAD, contributors: User::AVATAR_PRELOAD).find_by(id: id)
@@ -95,6 +115,7 @@ class PagesController < ApplicationController
       lock_version: page.lock_version,
       creator: member_json(page.creator),
       contributors: page.contributors.map { |user| member_json(user) },
+      attachments: attachments_json(page),
       created_at: page.created_at,
       updated_at: page.updated_at,
       currently_editing: editing && { id: editing[:user_id], nickname: editing[:nickname] }

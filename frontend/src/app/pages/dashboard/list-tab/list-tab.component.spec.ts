@@ -323,7 +323,7 @@ describe('ListTabComponent', () => {
 
     function raw(id: number, columnId: number | null, position: number) {
       const ticket = ticketSummary(id, columnId, position);
-      return {id, title: ticket.title, position, column_id: columnId, priority_id: null, lock_version: 0, assignees: [], created_at: ticket.createdAt, updated_at: ticket.updatedAt};
+      return {id, title: ticket.title, position, column_id: columnId, priority_id: null, lock_version: 0, assignees: [], attachment_count: 0, created_at: ticket.createdAt, updated_at: ticket.updatedAt};
     }
 
     beforeEach(fakeAsync(() => {

@@ -364,6 +364,18 @@
   "TRASH_TYPE_ALL": "Kõik tüübid",
   "TRASH_TYPE_FOLDERS": "Kaustad",
   "SEARCH_TRASH": "Otsi prügikastist pealkirja järgi",
+  "ATTACHMENTS": "Manused",
+  "UPLOAD_FILES": "Laadi üles",
+  "NO_ATTACHMENTS": "Manuseid veel pole",
+  "DELETE_ATTACHMENT": "Kustuta manus",
+  "CONFIRM_DELETE_ATTACHMENT": "Kas kustutada see manus?",
+  "INSERT_IMAGE": "Lisa pilt",
+  "DOWNLOAD": "Laadi alla",
+  "STORAGE_USAGE": "Salvestusruum: kasutatud {{used}} / {{quota}}",
+  "UPLOADING": "Üleslaadimine {{progress}}%",
+  "CLOSE_PREVIEW": "Sulge eelvaade",
+  "ATTACHMENT_COUNT": "{{count}} manust",
+  "DROP_FILES_HERE": "Lohista failid siia, et lisada",
   "TEMPLATES": "Mallid",
   "NEW_TEMPLATE": "Uus mall",
   "BLANK": "Tühi",
@@ -509,6 +521,14 @@
     "TRASH": {
       "TRASH_ENTRY_NOT_FOUND": "Seda üksust pole enam prügikastis",
       "TRASH_BOARD_IN_TRASH": "Taasta kõigepealt tahvel"
+    },
+    "ATTACHMENTS": {
+      "ATTACHMENT_NOT_FOUND": "Manust ei leitud",
+      "FILE_REQUIRED": "Vali üleslaaditav fail",
+      "FILE_TOO_LARGE": "Failid peavad olema kuni 25 MB",
+      "INLINE_IMAGE_TYPE_INVALID": "Tekstisisesed pildid peavad olema PNG, JPEG, GIF või WebP",
+      "STORAGE_QUOTA_EXCEEDED": "Teie meeskond on kasutanud kõik 500 MB salvestusruumi",
+      "ATTACHMENT_UPLOAD_FAILED": "Faili üleslaadimine ebaõnnestus"
     },
     "TEMPLATES": {
       "TEMPLATE_NOT_FOUND": "Seda malli enam ei ole",
