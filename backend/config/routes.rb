@@ -65,6 +65,16 @@ Rails.application.routes.draw do
     get :search, to: "search#index"
     get "mentions/search", to: "mentions#search"
     post "mentions/resolve", to: "mentions#resolve"
+    resources :chat_channels, only: [ :index, :create, :show, :update, :destroy ] do
+      member do
+        post :leave
+        post :read
+      end
+      resources :gifs, only: [ :index ], controller: "chat_gifs"
+      resources :messages, only: [ :index, :create, :update, :destroy ], controller: "chat_messages" do
+        resource :reactions, only: [ :create, :destroy ], controller: "chat_reactions"
+      end
+    end
     resources :projects, only: [ :index, :create, :show, :update, :destroy ] do
       get :options, on: :collection
     end

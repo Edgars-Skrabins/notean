@@ -41,6 +41,10 @@ class Rack::Attack
     end
   end
 
+  throttle("chat/gifs", limit: 30, period: 1.minute) do |req|
+    (req.get_header("HTTP_AUTHORIZATION").presence || req.ip) if req.get? && req.path.match?(%r{\A/teams/[^/]+/chat_channels/\d+/gifs\z})
+  end
+
   self.throttled_responder = lambda do |_request|
     [ 429, { "Content-Type" => "application/json" }, [ { code: ErrorCodes::Common::RATE_LIMITED }.to_json ] ]
   end
