@@ -71,6 +71,16 @@ class TagsControllerTest < ActionDispatch::IntegrationTest
     assert_broadcast_on(BoardChannel.stream_name(@board), type: "tags_changed", tags: tags)
   end
 
+  test "tag counts leave out trashed tickets" do
+    bug = create_tag("bug")
+    tagged_ticket(bug, "Live")
+    Trash.move_tickets(@board, [ tagged_ticket(bug, "Trashed") ], @user)
+
+    patch tags_url(bug.id), params: { tag: { name: "bug" } }, headers: @headers, as: :json
+
+    assert_equal [ 1 ], JSON.parse(response.body)["tags"].map { |tag| tag["ticket_count"] }
+  end
+
   test "destroy removes the tag from its tickets and broadcasts them" do
     bug = create_tag("bug")
     ticket = tagged_ticket(bug)

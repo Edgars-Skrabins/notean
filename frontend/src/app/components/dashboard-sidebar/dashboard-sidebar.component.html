@@ -26,6 +26,11 @@
 
   <app-favorites-list *ngIf="!collapsed && (settingsService.settings$ | async)?.showFavoritesInSidebar"></app-favorites-list>
 
+  <a class="dashboardSidebar__item dashboardSidebar__trash" [routerLink]="AppRoutes.TRASH" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="collapsed ? (PHRASES.TRASH | translate) : ''" [attr.aria-label]="PHRASES.TRASH | translate">
+    <app-icon name="trash" class="dashboardSidebar__icon"></app-icon>
+    <span class="dashboardSidebar__label">{{ PHRASES.TRASH | translate }}</span>
+  </a>
+
   <button
     type="button"
     class="dashboardSidebar__toggle"

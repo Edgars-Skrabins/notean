@@ -153,12 +153,12 @@ describe('TicketService', () => {
     expect(response).toEqual({success: false, code: 'TICKET_NOT_FOUND'});
   });
 
-  it('bulk deletes tickets by id', async () => {
-    const remove = spyOn(axiosInstance, 'delete').and.returnValue(Promise.resolve({data: null}));
+  it('bulk deletes tickets by id and returns their trash entries', async () => {
+    const remove = spyOn(axiosInstance, 'delete').and.returnValue(Promise.resolve({data: {trash_entry_ids: [5, 6]}}));
 
     const response = await service.bulkDelete('abc', 9, [1, 2]);
 
     expect(remove).toHaveBeenCalledWith(`${url}/bulk`, {data: {bulk: {ticket_ids: [1, 2]}}});
-    expect(response.success).toBeTrue();
+    expect(response).toEqual({success: true, trashEntryIds: [5, 6]});
   });
 });

@@ -46,13 +46,19 @@ class ColumnsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 0, column.position
   end
 
-  test "destroy removes the column" do
+  test "destroy removes the column and moves each of its tickets to the trash" do
     column = Column.create!(board: @board, title: "To Do", position: 0)
+    tickets = Array.new(2) { |index| Ticket.create!(board: @board, column: column, team: @team, creator: @user, title: "Ticket #{index}", position: index) }
 
     delete "/teams/#{@team.code}/boards/#{@board.id}/columns/#{column.id}", headers: @headers
 
-    assert_response :no_content
+    assert_response :success
     assert_nil Column.find_by(id: column.id)
+    entries = TrashEntry.where(item_type: "Ticket").order(:id)
+    assert_equal entries.map(&:id), JSON.parse(response.body)["trash_entry_ids"]
+    assert_equal tickets.map(&:id), entries.map(&:item_id)
+    assert_equal [ nil, nil ], Ticket.unscoped.where(id: tickets.map(&:id)).pluck(:column_id)
+    assert_equal [ "tickets_removed", "columns_changed" ], board_broadcasts(@board).map { |message| message["type"] }
   end
 
   test "returns FEATURE_DISABLED when boards are turned off" do

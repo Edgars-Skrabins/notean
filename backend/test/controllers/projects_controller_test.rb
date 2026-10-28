@@ -183,30 +183,25 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ root.id, child.id, nil ], [ child.parent_id, page.reload.folder_id, page.project_id ]
   end
 
-  test "delete with delete_items also removes the project's folders" do
+  test "delete with delete_items moves each top-level item to the trash without a project" do
     root = Folder.create!(team: @team, creator: @owner, item_type: "Page", title: "Root", project: @game)
     child = Folder.create!(team: @team, creator: @owner, item_type: "Page", title: "Child", parent: root, project: @game)
-    Page.create!(team: @team, creator: @owner, title: "Notes", content: "", folder: child, project: @game)
+    nested = Page.create!(team: @team, creator: @owner, title: "Nested", content: "", folder: child, project: @game)
+    page = Page.create!(team: @team, creator: @owner, title: "Notes", content: "", project: @game)
+    board = Board.create!(team: @team, creator: @owner, title: "Game board", project: @game)
+    ticket = Ticket.create!(board: board, team: @team, created_by_user_id: @owner.id, title: "Bug", position: 0)
     open_folder = Folder.create!(team: @team, creator: @owner, item_type: "Page", title: "Open")
 
     delete projects_url(@game), params: { project: { mode: "delete_items", confirm_name: "Game" } }, headers: headers_for(@owner), as: :json
 
     assert_response :no_content
     assert_equal [ open_folder.id ], Folder.pluck(:id)
-  end
-
-  test "delete with delete_items removes items, tickets and favorites" do
-    page = Page.create!(team: @team, creator: @owner, title: "Notes", content: "", project: @game)
-    board = Board.create!(team: @team, creator: @owner, title: "Game board", project: @game)
-    ticket = Ticket.create!(board: board, team: @team, created_by_user_id: @owner.id, title: "Bug", position: 0)
-    Favorite.create!(user: @owner, team: @team, favoritable: ticket, home_position: 0, sidebar_position: 0)
-
-    delete projects_url(@game), params: { project: { mode: "delete_items", confirm_name: "Game" } }, headers: headers_for(@owner), as: :json
-
-    assert_response :no_content
-    assert_not Page.exists?(page.id)
+    assert_empty Page.where(id: [ page.id, nested.id ])
     assert_not Ticket.exists?(ticket.id)
-    assert_equal 0, Favorite.count
+    assert_equal [ [ "Board", board.id ], [ "Folder", root.id ], [ "Page", page.id ] ], TrashEntry.order(:item_type).pluck(:item_type, :item_id)
+    assert_equal [ nil ], TrashEntry.distinct.pluck(:project_id)
+    assert_equal [ nil ], Page.unscoped.where(id: [ page.id, nested.id ]).distinct.pluck(:project_id)
+    assert_equal [ nil ], Folder.unscoped.where(id: [ root.id, child.id ]).distinct.pluck(:project_id)
   end
 
   test "index runs the same number of queries for 1 and 10 projects" do

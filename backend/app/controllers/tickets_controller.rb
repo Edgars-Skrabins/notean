@@ -83,11 +83,8 @@ class TicketsController < ApplicationController
   end
 
   def destroy
-    shifts = Ticket.transaction do
-      @ticket.destroy!
-      TicketPositions.shift(@board, @ticket.column_id, from: @ticket.position + 1, delta: -1)
-    end
-    head :no_content
+    entries, shifts = Trash.move_tickets(@board, [ @ticket ], current_user)
+    render json: { trash_entry_ids: entries.map(&:id) }
     BoardBroadcast.tickets_shifted(@board, shifts)
     BoardBroadcast.tickets_removed(@board, [ @ticket.id ])
   end
@@ -126,12 +123,9 @@ class TicketsController < ApplicationController
     tickets = load_bulk_tickets
     return if tickets.nil?
 
-    Ticket.transaction do
-      tickets.each(&:destroy!)
-      close_source_gaps(tickets)
-    end
-    head :no_content
-    BoardBroadcast.tickets_shifted(@board, ticket_shifts)
+    entries, shifts = Trash.move_tickets(@board, tickets, current_user)
+    render json: { trash_entry_ids: entries.map(&:id) }
+    BoardBroadcast.tickets_shifted(@board, shifts)
     BoardBroadcast.tickets_removed(@board, bulk_ticket_ids)
   end
 

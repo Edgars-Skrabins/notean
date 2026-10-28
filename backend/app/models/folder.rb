@@ -1,6 +1,7 @@
 class Folder < ApplicationRecord
   include BelongsToProject
   include ContentLimits
+  include Trashable
 
   belongs_to :team
   belongs_to :creator, class_name: "User", foreign_key: :created_by_user_id
@@ -15,7 +16,14 @@ class Folder < ApplicationRecord
   validate :parent_is_not_self_or_descendant
   validate :project_matches_parent
 
+  before_destroy :release_trashed_contents
+
   private
+
+  def release_trashed_contents
+    [ Page, Diagram ].each { |klass| klass.unscoped.where(folder_id: id).where.not(trash_entry_id: nil).update_all(folder_id: nil) }
+    Folder.unscoped.where(parent_id: id).where.not(trash_entry_id: nil).update_all(parent_id: nil)
+  end
 
   def parent_has_same_item_type
     errors.add(:parent_id, :type_mismatch, message: "must be a folder of the same type") if parent && parent.item_type != item_type

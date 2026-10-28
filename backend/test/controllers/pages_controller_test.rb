@@ -30,6 +30,19 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Former", JSON.parse(response.body)["page"]["creator"]["nickname"]
   end
 
+  test "destroy moves the page to the trash" do
+    delete "/teams/#{@team.code}/pages/#{@page.id}", headers: @headers
+
+    assert_response :success
+    entry = TrashEntry.find_by!(item_type: "Page", item_id: @page.id)
+    assert_equal({ "trash_entry_ids" => [ entry.id ] }, JSON.parse(response.body))
+    assert_equal "Notes", entry.title
+    assert_equal @user, entry.deleted_by
+
+    get "/teams/#{@team.code}/pages/#{@page.id}", headers: @headers
+    assert_response :not_found
+  end
+
   test "show returns only the payload without a message" do
     get "/teams/#{@team.code}/pages/#{@page.id}", headers: @headers
 

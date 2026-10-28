@@ -85,7 +85,7 @@ export class FolderService {
   async deleteFolder(teamCode: string, id: number, mode: FolderDeleteMode): Promise<DeleteFolderResponse> {
     return apiRequest<DeleteFolderResponse>(
       axiosInstance.delete(`${this.foldersUrl(teamCode)}/${id}`, {params: {mode}}),
-      () => ({success: true}),
+      (data) => ({success: true, trashEntryIds: data.trash_entry_ids ?? []}),
     );
   }
 

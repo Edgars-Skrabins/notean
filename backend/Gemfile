@@ -34,6 +34,7 @@ gem "rack-cors"
 
 # Rate limit auth-related endpoints to mitigate brute-force attempts
 gem "rack-attack"
+gem "solid_queue", "~> 1.2"
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

@@ -56,4 +56,4 @@ export type FolderedItemResponse<E extends ErrorCode> = Result<{ item: FolderedI
 
 export type SaveFolderedItemResponse<E extends ErrorCode> = FolderedItemResponse<E> | EditConflict<FolderedItemDetail>;
 
-export type DeleteFolderedItemResponse<E extends ErrorCode> = Result<object, TeamAccessErrorCode | E>;
+export type DeleteFolderedItemResponse<E extends ErrorCode> = Result<{ trashEntryIds: number[] }, TeamAccessErrorCode | E>;

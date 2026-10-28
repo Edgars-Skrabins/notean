@@ -16,6 +16,7 @@ import {AuthService} from "@services/auth.service";
 import {CommentListComponent} from "@components/comment-list/comment-list.component";
 import {CommentTarget} from "@models/comment.model";
 import {ToastService} from "@services/toast.service";
+import {TrashService} from "@services/trash.service";
 import {ToastType} from "@models/toast.model";
 import {TicketDetail, TicketResponse} from "@models/ticket.model";
 import {TeamMember} from "@models/team.model";
@@ -99,7 +100,8 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     private projectService: ProjectService,
     authService: AuthService,
     private escapeService: EscapeService,
-    private copyLinkService: CopyLinkService
+    private copyLinkService: CopyLinkService,
+    private trashService: TrashService
   ) {
     this.currentUserId = authService.getCurrentUser()?.id ?? 0;
   }
@@ -249,6 +251,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
 
         this.favoriteService.forgetItem('Ticket', this.ticketId);
         this.state.removeTicket(this.ticketId);
+        this.trashService.notifyTrashed(this.teamCode, response.trashEntryIds);
         this.handleGoBack();
       });
   }

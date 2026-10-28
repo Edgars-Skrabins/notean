@@ -10,6 +10,7 @@ import {TITLE_MAX_LENGTH} from "@config/contentLimits";
 import {TicketService} from "@services/ticket.service";
 import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
+import {TrashService} from "@services/trash.service";
 import {TeamService} from "@services/team.service";
 import {ProjectService} from "@services/project.service";
 import {ToastType} from "@models/toast.model";
@@ -106,7 +107,8 @@ export class ListTabComponent implements OnInit, OnDestroy {
     private favoriteService: FavoriteService,
     private toastService: ToastService,
     private teamService: TeamService,
-    private projectService: ProjectService
+    private projectService: ProjectService,
+    private trashService: TrashService
   ) {
   }
 
@@ -334,6 +336,7 @@ export class ListTabComponent implements OnInit, OnDestroy {
         this.favoriteService.forgetItem('Ticket', ticket.id);
         this.selectedIds.delete(ticket.id);
         this.state.removeTicket(ticket.id);
+        this.trashService.notifyTrashed(this.state.teamCode, response.trashEntryIds);
       });
   }
 
@@ -376,6 +379,7 @@ export class ListTabComponent implements OnInit, OnDestroy {
         ids.forEach((id) => this.favoriteService.forgetItem('Ticket', id));
         this.state.removeTickets(ids);
         this.clearSelection();
+        this.trashService.notifyTrashed(this.state.teamCode, response.trashEntryIds);
       });
   }
 

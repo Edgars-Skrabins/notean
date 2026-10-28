@@ -11,6 +11,7 @@ import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
 import {ProjectFilterService} from "@services/project-filter.service";
 import {FolderService} from "@services/folder.service";
+import {TrashService} from "@services/trash.service";
 import {CopyLinkService} from "@services/copy-link.service";
 import {PHRASES} from "@config/phrases";
 import {AppRoutes} from "../../../app/app-routes.enum";
@@ -50,8 +51,9 @@ export class DiagramDetailComponent extends FolderedItemDetailComponent {
     projectFilterService: ProjectFilterService,
     folderService: FolderService,
     translateService: TranslateService,
-    copyLinkService: CopyLinkService
+    copyLinkService: CopyLinkService,
+    trashService: TrashService
   ) {
-    super(route, diagramService, diagramEditingService, teamService, authService, navigationService, favoriteService, toastService, projectFilterService, folderService, translateService, copyLinkService);
+    super(route, diagramService, diagramEditingService, teamService, authService, navigationService, favoriteService, toastService, projectFilterService, folderService, translateService, copyLinkService, trashService);
   }
 }

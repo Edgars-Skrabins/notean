@@ -104,6 +104,24 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "COMMENT_NOT_FOUND", json["code"]
   end
 
+  test "comments of trashed tickets, pages and diagrams are not found" do
+    comments = [ add_comment(@ticket), add_comment(@page), add_comment(@pin) ]
+    Trash.move_tickets(@board, [ @ticket ], @user)
+    Trash.move(@page, @user)
+    Trash.move(@diagram, @user)
+
+    get "/teams/#{@team.code}/boards/#{@board.id}/tickets/#{@ticket.id}/comments", headers: @headers
+    assert_response :not_found
+    post page_comments_url, params: { comment: { body: "<p>Hi</p>" } }, headers: @headers, as: :json
+    assert_response :not_found
+    get "/teams/#{@team.code}/comment_pins/#{@pin.id}/comments", headers: @headers
+    assert_response :not_found
+    comments.each do |comment|
+      patch comment_url(comment), params: { comment: { body: "<p>Edit</p>" } }, headers: @headers, as: :json
+      assert_response :not_found
+    end
+  end
+
   test "non-members are rejected" do
     outsider = User.create!(email: "mallory@example.com", password: "supersecret")
 

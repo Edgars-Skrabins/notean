@@ -84,7 +84,7 @@ class CommentsController < ApplicationController
       render_error(ErrorCodes::Comments::COMMENT_NOT_FOUND, :not_found)
     elsif !@team.feature_enabled?(FEATURES[@comment.commentable_type])
       render_error(ErrorCodes::Teams::FEATURE_DISABLED, :forbidden)
-    elsif !project_access.visible?(commented_item(@comment.commentable))
+    elsif (item = commented_item(@comment.commentable)).nil? || !project_access.visible?(item)
       render_error(ErrorCodes::Comments::COMMENT_NOT_FOUND, :not_found)
     end
   end

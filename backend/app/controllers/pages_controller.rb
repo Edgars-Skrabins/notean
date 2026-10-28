@@ -54,8 +54,8 @@ class PagesController < ApplicationController
   end
 
   def destroy
-    @page.destroy
-    head :no_content
+    entry = Trash.move(@page, current_user)
+    render json: { trash_entry_ids: [ entry.id ] }
   end
 
   private

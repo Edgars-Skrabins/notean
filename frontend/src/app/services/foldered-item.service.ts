@@ -131,7 +131,7 @@ export abstract class FolderedItemService<E extends ErrorCode> {
   async delete(teamCode: string, id: number): Promise<DeleteFolderedItemResponse<E>> {
     return apiRequest<DeleteFolderedItemResponse<E>>(
       axiosInstance.delete(this.itemsUrl(teamCode, id)),
-      () => ({success: true}),
+      (data) => ({success: true, trashEntryIds: data.trash_entry_ids ?? []}),
     );
   }
 

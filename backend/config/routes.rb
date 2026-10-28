@@ -44,6 +44,12 @@ Rails.application.routes.draw do
       end
     end
     resources :favorites, only: [ :index, :create, :update, :destroy ]
+    resources :trash, only: [ :index, :destroy ], controller: "trash" do
+      collection do
+        post :restore
+        delete "/", action: :empty
+      end
+    end
     get :my_work, to: "my_work#index"
     get :search, to: "search#index"
     resources :projects, only: [ :index, :create, :show, :update, :destroy ] do

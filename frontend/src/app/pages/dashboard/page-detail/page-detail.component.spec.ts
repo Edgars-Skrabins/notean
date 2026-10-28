@@ -16,6 +16,7 @@ import {errorPhrase} from "@utils/errorPhrase";
 import {projectFilterStub, ProjectFilterStub} from "../../../testing/projectFilterStub";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {PageDetailComponent} from "./page-detail.component";
+import {trashServiceStub} from "../../../testing/trashServiceStub";
 
 function createdPage(): FolderedItemDetail {
   return {
@@ -63,6 +64,7 @@ describe('PageDetailComponent', () => {
       folderService,
       {instant: (key: string) => key} as unknown as TranslateService,
       copyLinkService,
+      trashServiceStub().service,
     );
     component.ngOnInit();
   }

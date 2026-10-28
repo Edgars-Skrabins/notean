@@ -57,10 +57,12 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.datetime "created_at", null: false
       t.datetime "updated_at", null: false
       t.integer "project_id"
+      t.bigint "trash_entry_id"
       t.index [ "created_by_user_id" ], name: "index_boards_on_created_by_user_id"
       t.index [ "project_id" ], name: "index_boards_on_project_id"
       t.index [ "team_id" ], name: "index_boards_on_team_id"
       t.index "lower((title)::text) gin_trgm_ops", using: :gin, name: "index_boards_on_lower_title_trgm"
+      t.index [ "trash_entry_id" ], name: "index_boards_on_trash_entry_id"
     end
 
     create_table "columns" do |t|
@@ -120,12 +122,14 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.integer "project_id"
       t.text "search_text", default: "", null: false
       t.integer "lock_version", default: 0, null: false
+      t.bigint "trash_entry_id"
       t.index [ "created_by_user_id" ], name: "index_diagrams_on_created_by_user_id"
       t.index [ "folder_id" ], name: "index_diagrams_on_folder_id"
       t.index [ "project_id" ], name: "index_diagrams_on_project_id"
       t.index [ "team_id" ], name: "index_diagrams_on_team_id"
       t.index "lower((title)::text) gin_trgm_ops", using: :gin, name: "index_diagrams_on_lower_title_trgm"
       t.index "lower(search_text) gin_trgm_ops", using: :gin, name: "index_diagrams_on_lower_search_text_trgm"
+      t.index [ "trash_entry_id" ], name: "index_diagrams_on_trash_entry_id"
     end
 
     create_table "favorites" do |t|
@@ -152,10 +156,12 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.datetime "created_at", null: false
       t.datetime "updated_at", null: false
       t.bigint "project_id"
+      t.bigint "trash_entry_id"
       t.index [ "created_by_user_id" ], name: "index_folders_on_created_by_user_id"
       t.index [ "parent_id" ], name: "index_folders_on_parent_id"
       t.index [ "project_id" ], name: "index_folders_on_project_id"
       t.index [ "team_id" ], name: "index_folders_on_team_id"
+      t.index [ "trash_entry_id" ], name: "index_folders_on_trash_entry_id"
     end
 
     create_table "memberships" do |t|
@@ -195,12 +201,14 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.integer "project_id"
       t.text "search_text", default: "", null: false
       t.integer "lock_version", default: 0, null: false
+      t.bigint "trash_entry_id"
       t.index [ "created_by_user_id" ], name: "index_pages_on_created_by_user_id"
       t.index [ "folder_id" ], name: "index_pages_on_folder_id"
       t.index [ "project_id" ], name: "index_pages_on_project_id"
       t.index [ "team_id" ], name: "index_pages_on_team_id"
       t.index "lower((title)::text) gin_trgm_ops", using: :gin, name: "index_pages_on_lower_title_trgm"
       t.index "lower(search_text) gin_trgm_ops", using: :gin, name: "index_pages_on_lower_search_text_trgm"
+      t.index [ "trash_entry_id" ], name: "index_pages_on_trash_entry_id"
     end
 
     create_table "project_members" do |t|
@@ -225,6 +233,156 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.index [ "team_id" ], name: "index_projects_on_team_id"
       t.index "lower((name)::text) gin_trgm_ops", using: :gin, name: "index_projects_on_lower_name_trgm"
       t.index "lower(description) gin_trgm_ops", using: :gin, name: "index_projects_on_lower_description_trgm"
+    end
+
+    create_table "solid_queue_batch_executions" do |t|
+      t.bigint "job_id", null: false
+      t.bigint "batch_id", null: false
+      t.datetime "created_at", null: false
+      t.index [ "job_id" ], name: "index_solid_queue_batch_executions_on_job_id", unique: true
+      t.index [ "batch_id" ], name: "index_solid_queue_batch_executions_on_batch_id"
+    end
+
+    create_table "solid_queue_batches" do |t|
+      t.string "active_job_batch_id"
+      t.string "description"
+      t.text "on_finish"
+      t.text "on_success"
+      t.text "on_failure"
+      t.text "metadata"
+      t.integer "total_jobs", default: 0, null: false
+      t.integer "completed_jobs", default: 0, null: false
+      t.integer "failed_jobs", default: 0, null: false
+      t.datetime "enqueued_at"
+      t.datetime "finished_at"
+      t.datetime "failed_at"
+      t.datetime "created_at", null: false
+      t.datetime "updated_at", null: false
+      t.index [ "active_job_batch_id" ], name: "index_solid_queue_batches_on_active_job_batch_id", unique: true
+      t.index [ "finished_at" ], name: "index_solid_queue_batches_on_finished_at"
+    end
+
+    create_table "solid_queue_blocked_executions" do |t|
+      t.bigint "job_id", null: false
+      t.string "queue_name", null: false
+      t.integer "priority", default: 0, null: false
+      t.string "concurrency_key", null: false
+      t.datetime "expires_at", null: false
+      t.datetime "created_at", null: false
+      t.index [ "concurrency_key", "priority", "job_id" ], name: "index_solid_queue_blocked_executions_for_release"
+      t.index [ "expires_at", "concurrency_key" ], name: "index_solid_queue_blocked_executions_for_maintenance"
+      t.index [ "job_id" ], name: "index_solid_queue_blocked_executions_on_job_id", unique: true
+    end
+
+    create_table "solid_queue_claimed_executions" do |t|
+      t.bigint "job_id", null: false
+      t.bigint "process_id"
+      t.datetime "created_at", null: false
+      t.index [ "job_id" ], name: "index_solid_queue_claimed_executions_on_job_id", unique: true
+      t.index [ "process_id", "job_id" ], name: "index_solid_queue_claimed_executions_on_process_id_and_job_id"
+    end
+
+    create_table "solid_queue_failed_executions" do |t|
+      t.bigint "job_id", null: false
+      t.text "error"
+      t.datetime "created_at", null: false
+      t.index [ "job_id" ], name: "index_solid_queue_failed_executions_on_job_id", unique: true
+    end
+
+    create_table "solid_queue_jobs" do |t|
+      t.string "queue_name", null: false
+      t.string "class_name", null: false
+      t.text "arguments"
+      t.integer "priority", default: 0, null: false
+      t.string "active_job_id"
+      t.datetime "scheduled_at"
+      t.datetime "finished_at"
+      t.string "concurrency_key"
+      t.datetime "created_at", null: false
+      t.datetime "updated_at", null: false
+      t.bigint "batch_id"
+      t.index [ "active_job_id" ], name: "index_solid_queue_jobs_on_active_job_id"
+      t.index [ "batch_id" ], name: "index_solid_queue_jobs_on_batch_id"
+      t.index [ "class_name" ], name: "index_solid_queue_jobs_on_class_name"
+      t.index [ "finished_at" ], name: "index_solid_queue_jobs_on_finished_at"
+      t.index [ "queue_name", "finished_at" ], name: "index_solid_queue_jobs_for_filtering"
+      t.index [ "scheduled_at", "finished_at" ], name: "index_solid_queue_jobs_for_alerting"
+    end
+
+    create_table "solid_queue_pauses" do |t|
+      t.string "queue_name", null: false
+      t.datetime "created_at", null: false
+      t.index [ "queue_name" ], name: "index_solid_queue_pauses_on_queue_name", unique: true
+    end
+
+    create_table "solid_queue_processes" do |t|
+      t.string "kind", null: false
+      t.datetime "last_heartbeat_at", null: false
+      t.bigint "supervisor_id"
+      t.integer "pid", null: false
+      t.string "hostname"
+      t.text "metadata"
+      t.datetime "created_at", null: false
+      t.string "name", null: false
+      t.index [ "last_heartbeat_at" ], name: "index_solid_queue_processes_on_last_heartbeat_at"
+      t.index [ "name", "supervisor_id" ], name: "index_solid_queue_processes_on_name_and_supervisor_id", unique: true
+      t.index [ "supervisor_id" ], name: "index_solid_queue_processes_on_supervisor_id"
+    end
+
+    create_table "solid_queue_ready_executions" do |t|
+      t.bigint "job_id", null: false
+      t.string "queue_name", null: false
+      t.integer "priority", default: 0, null: false
+      t.datetime "created_at", null: false
+      t.index [ "job_id" ], name: "index_solid_queue_ready_executions_on_job_id", unique: true
+      t.index [ "priority", "job_id" ], name: "index_solid_queue_poll_all"
+      t.index [ "queue_name", "priority", "job_id" ], name: "index_solid_queue_poll_by_queue"
+    end
+
+    create_table "solid_queue_recurring_executions" do |t|
+      t.bigint "job_id", null: false
+      t.string "task_key", null: false
+      t.datetime "run_at", null: false
+      t.datetime "created_at", null: false
+      t.index [ "job_id" ], name: "index_solid_queue_recurring_executions_on_job_id", unique: true
+      t.index [ "task_key", "run_at" ], name: "index_solid_queue_recurring_executions_on_task_key_and_run_at", unique: true
+    end
+
+    create_table "solid_queue_recurring_tasks" do |t|
+      t.string "key", null: false
+      t.string "schedule", null: false
+      t.string "command", limit: 2048
+      t.string "class_name"
+      t.text "arguments"
+      t.string "queue_name"
+      t.integer "priority", default: 0
+      t.boolean "static", default: true, null: false
+      t.text "description"
+      t.datetime "created_at", null: false
+      t.datetime "updated_at", null: false
+      t.index [ "key" ], name: "index_solid_queue_recurring_tasks_on_key", unique: true
+      t.index [ "static" ], name: "index_solid_queue_recurring_tasks_on_static"
+    end
+
+    create_table "solid_queue_scheduled_executions" do |t|
+      t.bigint "job_id", null: false
+      t.string "queue_name", null: false
+      t.integer "priority", default: 0, null: false
+      t.datetime "scheduled_at", null: false
+      t.datetime "created_at", null: false
+      t.index [ "job_id" ], name: "index_solid_queue_scheduled_executions_on_job_id", unique: true
+      t.index [ "scheduled_at", "priority", "job_id" ], name: "index_solid_queue_dispatch_all"
+    end
+
+    create_table "solid_queue_semaphores" do |t|
+      t.string "key", null: false
+      t.integer "value", default: 1, null: false
+      t.datetime "expires_at", null: false
+      t.datetime "created_at", null: false
+      t.datetime "updated_at", null: false
+      t.index [ "expires_at" ], name: "index_solid_queue_semaphores_on_expires_at"
+      t.index [ "key", "value" ], name: "index_solid_queue_semaphores_on_key_and_value"
+      t.index [ "key" ], name: "index_solid_queue_semaphores_on_key", unique: true
     end
 
     create_table "teams" do |t|
@@ -269,6 +427,7 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.integer "board_id", null: false
       t.bigint "priority_id"
       t.integer "lock_version", default: 0, null: false
+      t.bigint "trash_entry_id"
       t.index [ "board_id", "column_id", "position" ], name: "index_tickets_on_board_id_and_column_id_and_position"
       t.index [ "column_id" ], name: "index_tickets_on_column_id"
       t.index [ "created_by_user_id" ], name: "index_tickets_on_created_by_user_id"
@@ -276,6 +435,23 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.index [ "team_id" ], name: "index_tickets_on_team_id"
       t.index "lower((title)::text) gin_trgm_ops", using: :gin, name: "index_tickets_on_lower_title_trgm"
       t.index "lower(description) gin_trgm_ops", using: :gin, name: "index_tickets_on_lower_description_trgm"
+      t.index [ "trash_entry_id" ], name: "index_tickets_on_trash_entry_id"
+    end
+
+    create_table "trash_entries" do |t|
+      t.bigint "team_id", null: false
+      t.string "item_type", null: false
+      t.bigint "item_id", null: false
+      t.string "title", null: false
+      t.bigint "project_id"
+      t.bigint "deleted_by_user_id", null: false
+      t.datetime "created_at", null: false
+      t.index [ "team_id", "created_at" ], name: "index_trash_entries_on_team_id_and_created_at"
+      t.index [ "item_type", "item_id" ], name: "index_trash_entries_on_item_type_and_item_id", unique: true
+      t.index [ "created_at" ], name: "index_trash_entries_on_created_at"
+      t.index [ "project_id" ], name: "index_trash_entries_on_project_id"
+      t.index [ "deleted_by_user_id" ], name: "index_trash_entries_on_deleted_by_user_id"
+      t.index "lower((title)::text) gin_trgm_ops", using: :gin, name: "index_trash_entries_on_lower_title_trgm"
     end
 
     create_table "user_sessions" do |t|
@@ -307,6 +483,7 @@ class CreateSchema < ActiveRecord::Migration[8.1]
     add_foreign_key "board_tags", "boards"
     add_foreign_key "boards", "projects"
     add_foreign_key "boards", "teams"
+    add_foreign_key "boards", "trash_entries"
     add_foreign_key "boards", "users", column: "created_by_user_id"
     add_foreign_key "columns", "boards"
     add_foreign_key "comments", "teams"
@@ -320,12 +497,14 @@ class CreateSchema < ActiveRecord::Migration[8.1]
     add_foreign_key "diagrams", "folders"
     add_foreign_key "diagrams", "projects"
     add_foreign_key "diagrams", "teams"
+    add_foreign_key "diagrams", "trash_entries"
     add_foreign_key "diagrams", "users", column: "created_by_user_id"
     add_foreign_key "favorites", "teams"
     add_foreign_key "favorites", "users"
     add_foreign_key "folders", "folders", column: "parent_id"
     add_foreign_key "folders", "projects"
     add_foreign_key "folders", "teams"
+    add_foreign_key "folders", "trash_entries"
     add_foreign_key "folders", "users", column: "created_by_user_id"
     add_foreign_key "memberships", "teams"
     add_foreign_key "memberships", "users"
@@ -334,12 +513,21 @@ class CreateSchema < ActiveRecord::Migration[8.1]
     add_foreign_key "pages", "folders"
     add_foreign_key "pages", "projects"
     add_foreign_key "pages", "teams"
+    add_foreign_key "pages", "trash_entries"
     add_foreign_key "pages", "users", column: "created_by_user_id"
     add_foreign_key "project_members", "projects"
     add_foreign_key "project_members", "users"
     add_foreign_key "projects", "teams"
     add_foreign_key "projects", "users", column: "created_by_user_id"
     add_foreign_key "projects", "users", column: "owner_user_id"
+    add_foreign_key "solid_queue_batch_executions", "solid_queue_batches", column: "batch_id", on_delete: :cascade
+    add_foreign_key "solid_queue_batch_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+    add_foreign_key "solid_queue_blocked_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+    add_foreign_key "solid_queue_claimed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+    add_foreign_key "solid_queue_failed_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+    add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+    add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+    add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
     add_foreign_key "ticket_assignees", "tickets"
     add_foreign_key "ticket_assignees", "users"
     add_foreign_key "ticket_tags", "board_tags", on_delete: :cascade
@@ -348,7 +536,11 @@ class CreateSchema < ActiveRecord::Migration[8.1]
     add_foreign_key "tickets", "boards"
     add_foreign_key "tickets", "columns"
     add_foreign_key "tickets", "teams"
+    add_foreign_key "tickets", "trash_entries"
     add_foreign_key "tickets", "users", column: "created_by_user_id"
+    add_foreign_key "trash_entries", "projects", on_delete: :nullify
+    add_foreign_key "trash_entries", "teams"
+    add_foreign_key "trash_entries", "users", column: "deleted_by_user_id"
     add_foreign_key "user_sessions", "users"
   end
 end

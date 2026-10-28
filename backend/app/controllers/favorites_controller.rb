@@ -15,7 +15,7 @@ class FavoritesController < ApplicationController
     preload_favoritables(favorites)
     tickets = favorites.map(&:favoritable).grep(Ticket)
     ActiveRecord::Associations::Preloader.new(records: tickets, associations: :board).call
-    favorites = favorites.select { |favorite| project_access.in_selection?(favorite.favoritable, project_id) }
+    favorites = favorites.select { |favorite| favorite.favoritable && project_access.in_selection?(favorite.favoritable, project_id) }
 
     render json: { favorites: favorites.map { |favorite| favorite_json(favorite) } }
   end

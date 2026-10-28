@@ -30,7 +30,7 @@ export class ColumnService {
   async deleteColumn(teamCode: string, boardId: number, id: number): Promise<DeleteColumnResponse> {
     return apiRequest<DeleteColumnResponse>(
       axiosInstance.delete(`${this.columnsUrl(teamCode, boardId)}/${id}`),
-      () => ({success: true}),
+      (data) => ({success: true, trashEntryIds: data.trash_entry_ids ?? []}),
     );
   }
 }

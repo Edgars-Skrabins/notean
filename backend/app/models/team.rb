@@ -14,17 +14,23 @@ class Team < ApplicationRecord
   has_many :boards, dependent: :destroy
   has_many :favorites, dependent: :destroy
   has_many :projects, dependent: :destroy
+  has_many :trash_entries
 
   validates :name, presence: true, length: { maximum: TITLE_MAX_LENGTH }
   validates :code, presence: true, uniqueness: true
 
   before_validation :generate_code, on: :create
+  before_destroy :purge_trash, prepend: true
 
   def feature_enabled?(feature)
     FEATURES.include?(feature.to_s) && self["#{feature}_enabled"]
   end
 
   private
+
+  def purge_trash
+    trash_entries.find_each { |entry| Trash.purge(entry) }
+  end
 
   def generate_code
     self.code ||= loop do

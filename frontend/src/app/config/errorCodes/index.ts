@@ -12,6 +12,7 @@ import {TAGS_ERROR_CODES, TagsErrorCode} from "./tags";
 import {FAVORITES_ERROR_CODES, FavoritesErrorCode} from "./favorites";
 import {PROJECTS_ERROR_CODES, ProjectsErrorCode} from "./projects";
 import {SEARCH_ERROR_CODES, SearchErrorCode} from "./search";
+import {TRASH_ERROR_CODES, TrashErrorCode} from "./trash";
 import {COMMENTS_ERROR_CODES, CommentsErrorCode} from "./comments";
 
 export const ERROR_CODES_BY_DOMAIN = {
@@ -29,6 +30,7 @@ export const ERROR_CODES_BY_DOMAIN = {
   FAVORITES: FAVORITES_ERROR_CODES,
   PROJECTS: PROJECTS_ERROR_CODES,
   SEARCH: SEARCH_ERROR_CODES,
+  TRASH: TRASH_ERROR_CODES,
   COMMENTS: COMMENTS_ERROR_CODES,
 } as const;
 
@@ -49,6 +51,7 @@ export type ErrorCode =
   | FavoritesErrorCode
   | ProjectsErrorCode
   | SearchErrorCode
+  | TrashErrorCode
   | CommentsErrorCode;
 
 export type {
@@ -67,5 +70,6 @@ export type {
   FavoritesErrorCode,
   ProjectsErrorCode,
   SearchErrorCode,
+  TrashErrorCode,
   CommentsErrorCode,
 };

@@ -9,6 +9,7 @@ import {TeamService} from "@services/team.service";
 import {AuthService} from "@services/auth.service";
 import {NavigationService} from "@services/navigation.service";
 import {FavoriteService} from "@services/favorite.service";
+import {TrashService} from "@services/trash.service";
 import {ToastService} from "@services/toast.service";
 import {ProjectFilterService} from "@services/project-filter.service";
 import {FolderService} from "@services/folder.service";
@@ -59,7 +60,8 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
     private projectFilterService: ProjectFilterService,
     private folderService: FolderService,
     private translateService: TranslateService,
-    private copyLinkService: CopyLinkService
+    private copyLinkService: CopyLinkService,
+    private trashService: TrashService
   ) {
     this.teamCode = teamService.getCurrentTeamCode();
   }
@@ -166,6 +168,7 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
         }
 
         this.favoriteService.forgetItem(this.favoriteType, itemId);
+        this.trashService.notifyTrashed(this.teamCode, response.trashEntryIds);
         this.handleGoBack();
       });
   }

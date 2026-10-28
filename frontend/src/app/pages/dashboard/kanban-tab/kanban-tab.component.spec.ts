@@ -11,6 +11,7 @@ import {TicketSummary} from "@models/ticket.model";
 import {PHRASES} from "@config/phrases";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 import {createBoardState, ticketDetail} from "../../../testing/boardFixtures";
+import {trashServiceStub} from "../../../testing/trashServiceStub";
 
 function dropEvent(previousData: TicketSummary[], data: TicketSummary[], previousIndex: number, currentIndex: number): CdkDragDrop<TicketSummary[]> {
   const container = {data};
@@ -35,7 +36,7 @@ describe('KanbanTabComponent', () => {
     favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem']);
     toastService = jasmine.createSpyObj<ToastService>('ToastService', ['show']);
     router = jasmine.createSpyObj<Router>('Router', ['navigate']);
-    component = new KanbanTabComponent(route, router, state, columnService, ticketService, favoriteService, toastService);
+    component = new KanbanTabComponent(route, router, state, columnService, ticketService, favoriteService, toastService, trashServiceStub().service);
   });
 
   function columnIds(index: number): number[] {
@@ -111,7 +112,7 @@ describe('KanbanTabComponent', () => {
   }));
 
   it('deletes a ticket and forgets its favorite', fakeAsync(() => {
-    ticketService.deleteTicket.and.returnValue(Promise.resolve({success: true}));
+    ticketService.deleteTicket.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
     const todo = state.board!.columns[0];
     component.requestDeleteTicket(todo.tickets[1], todo);
 
@@ -135,7 +136,7 @@ describe('KanbanTabComponent', () => {
   }));
 
   it('deletes a column and forgets the favorites of its tickets', fakeAsync(() => {
-    columnService.deleteColumn.and.returnValue(Promise.resolve({success: true}));
+    columnService.deleteColumn.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
     component.requestDeleteColumn(state.board!.columns[0]);
 
     component.handleConfirmDeleteColumn();

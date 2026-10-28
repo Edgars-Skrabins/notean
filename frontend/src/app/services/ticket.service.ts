@@ -78,7 +78,7 @@ export class TicketService {
   async deleteTicket(teamCode: string, boardId: number, id: number): Promise<DeleteTicketResponse> {
     return apiRequest<DeleteTicketResponse>(
       axiosInstance.delete(this.ticketsUrl(teamCode, boardId, id)),
-      () => ({success: true}),
+      (data) => ({success: true, trashEntryIds: data.trash_entry_ids ?? []}),
     );
   }
 
@@ -92,7 +92,7 @@ export class TicketService {
   async bulkDelete(teamCode: string, boardId: number, ticketIds: number[]): Promise<DeleteTicketResponse> {
     return apiRequest<DeleteTicketResponse>(
       axiosInstance.delete(this.bulkUrl(teamCode, boardId), {data: {bulk: {ticket_ids: ticketIds}}}),
-      () => ({success: true}),
+      (data) => ({success: true, trashEntryIds: data.trash_entry_ids ?? []}),
     );
   }
 

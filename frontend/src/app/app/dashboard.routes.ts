@@ -11,6 +11,7 @@ import {BoardOverviewTabComponent} from "../pages/dashboard/board-overview-tab/b
 import {KanbanTabComponent} from "../pages/dashboard/kanban-tab/kanban-tab.component";
 import {ListTabComponent} from "../pages/dashboard/list-tab/list-tab.component";
 import {TicketDetailComponent} from "../pages/dashboard/ticket-detail/ticket-detail.component";
+import {TrashComponent} from "../pages/dashboard/trash/trash.component";
 import {unsavedChangesGuard} from "../guards/unsaved-changes.guard";
 import {featureGuard} from "../guards/feature.guard";
 import {AppRoutes} from "./app-routes.enum";
@@ -19,6 +20,7 @@ export const dashboardRoutes: Routes = [
   {path: '', redirectTo: AppRoutes.DASHBOARD_HOME, pathMatch: 'full'},
   {path: AppRoutes.DASHBOARD_HOME, component: HomeComponent},
   {path: AppRoutes.PROJECTS, component: ProjectsComponent},
+  {path: AppRoutes.TRASH, component: TrashComponent},
   {path: `${AppRoutes.PROJECTS}/:id`, component: ProjectDetailComponent, canDeactivate: [unsavedChangesGuard]},
   {path: AppRoutes.DOCUMENT_PAGES, component: DocumentPagesComponent, canActivate: [featureGuard('pages')]},
   {path: `${AppRoutes.DOCUMENT_PAGES}/${AppRoutes.NEW}`, component: PageDetailComponent, canActivate: [featureGuard('pages')]},

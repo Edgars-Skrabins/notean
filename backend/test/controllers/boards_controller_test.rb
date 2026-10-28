@@ -67,15 +67,19 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Sprint 13", board.reload.title
   end
 
-  test "destroy removes the board and its columns" do
+  test "destroy moves the board and its tickets to the trash" do
     board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
     column = Column.create!(board: board, title: "To Do", position: 0)
+    ticket = Ticket.create!(board: board, column: column, team: @team, creator: @user, title: "Bug", position: 0)
 
     delete "/teams/#{@team.code}/boards/#{board.id}", headers: @headers
 
-    assert_response :no_content
+    assert_response :success
+    entry = TrashEntry.find_by!(item_type: "Board", item_id: board.id)
+    assert_equal({ "trash_entry_ids" => [ entry.id ] }, JSON.parse(response.body))
     assert_nil Board.find_by(id: board.id)
-    assert_nil Column.find_by(id: column.id)
+    assert_nil Ticket.find_by(id: ticket.id)
+    assert Column.exists?(column.id)
   end
 
   test "non-members cannot access a team's boards" do
@@ -339,7 +343,7 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
 
     delete "/teams/#{@team.code}/boards/#{board.id}", headers: @headers
 
-    assert_response :no_content
+    assert_response :success
     assert_broadcast_on(BoardChannel.stream_name(board), type: "board_deleted")
   end
 

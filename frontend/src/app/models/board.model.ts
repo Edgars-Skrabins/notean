@@ -70,8 +70,8 @@ export type BoardResponse = Result<{ board: BoardDetail }, TeamAccessErrorCode |
 
 export type BoardOverviewResponse = Result<{ overview: BoardOverview }, TeamAccessErrorCode | BoardsErrorCode>;
 
-export type DeleteBoardResponse = Result<object, TeamAccessErrorCode | BoardsErrorCode>;
+export type DeleteBoardResponse = Result<{ trashEntryIds: number[] }, TeamAccessErrorCode | BoardsErrorCode>;
 
 export type ColumnResponse = Result<{ column: BoardColumn }, TeamAccessErrorCode | BoardsErrorCode>;
 
-export type DeleteColumnResponse = Result<object, TeamAccessErrorCode | BoardsErrorCode>;
+export type DeleteColumnResponse = Result<{ trashEntryIds: number[] }, TeamAccessErrorCode | BoardsErrorCode>;

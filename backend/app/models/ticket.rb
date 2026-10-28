@@ -1,6 +1,7 @@
 class Ticket < ApplicationRecord
   include TextSearchable
   include ContentLimits
+  include Trashable
 
   text_searchable :title, :description
 

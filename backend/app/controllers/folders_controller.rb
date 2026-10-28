@@ -56,12 +56,14 @@ class FoldersController < ApplicationController
       return
     end
 
-    if params[:mode] == "promote"
-      @folder.children.update_all(parent_id: @folder.parent_id)
-      @folder.pages.update_all(folder_id: @folder.parent_id)
-      @folder.diagrams.update_all(folder_id: @folder.parent_id)
+    if params[:mode] == "cascade"
+      entry = Trash.move(@folder, current_user)
+      return render json: { trash_entry_ids: [ entry.id ] }
     end
 
+    @folder.children.update_all(parent_id: @folder.parent_id)
+    @folder.pages.update_all(folder_id: @folder.parent_id)
+    @folder.diagrams.update_all(folder_id: @folder.parent_id)
     @folder.destroy
     head :no_content
   end
