@@ -10,6 +10,7 @@ import {NavigationService} from "@services/navigation.service";
 import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
 import {FolderService} from "@services/folder.service";
+import {CopyLinkService} from "@services/copy-link.service";
 import {FolderedItemDetail} from "@models/foldered-item.model";
 import {errorPhrase} from "@utils/errorPhrase";
 import {projectFilterStub, ProjectFilterStub} from "../../../testing/projectFilterStub";
@@ -39,6 +40,7 @@ describe('PageDetailComponent', () => {
   let navigationService: jasmine.SpyObj<NavigationService>;
   let projectFilter: ProjectFilterStub;
   let folderService: jasmine.SpyObj<FolderService>;
+  let copyLinkService: jasmine.SpyObj<CopyLinkService>;
 
   function createComponent(queryParams: Record<string, string> = {}, params: Record<string, string> = {}) {
     const route = {
@@ -60,6 +62,7 @@ describe('PageDetailComponent', () => {
       projectFilter.service,
       folderService,
       {instant: (key: string) => key} as unknown as TranslateService,
+      copyLinkService,
     );
     component.ngOnInit();
   }
@@ -67,7 +70,8 @@ describe('PageDetailComponent', () => {
   beforeEach(() => {
     pageService = jasmine.createSpyObj<PageService>('PageService', ['get', 'create', 'save', 'setProject']);
     editingService = jasmine.createSpyObj<PageEditingService>('PageEditingService', ['connect', 'disconnect', 'startEditing', 'stopEditing']);
-    navigationService = jasmine.createSpyObj<NavigationService>('NavigationService', ['navigate', 'navigateWithState']);
+    navigationService = jasmine.createSpyObj<NavigationService>('NavigationService', ['navigate', 'navigateWithState', 'navigateReplacingUrl']);
+    copyLinkService = jasmine.createSpyObj<CopyLinkService>('CopyLinkService', ['copyCurrentLink']);
     projectFilter = projectFilterStub(4);
     folderService = jasmine.createSpyObj<FolderService>('FolderService', ['listFolders']);
     folderService.listFolders.and.returnValue(Promise.resolve({
@@ -188,6 +192,23 @@ describe('PageDetailComponent', () => {
 
     expect(component.showDiscardConfirm).toBeTrue();
   });
+
+  it('sends a missing or hidden page to the unavailable screen', fakeAsync(() => {
+    pageService.get.and.returnValue(Promise.resolve({success: false, code: 'PAGE_NOT_FOUND'}));
+    createComponent({}, {id: '9'});
+    tick();
+
+    expect(navigationService.navigateReplacingUrl).toHaveBeenCalledOnceWith(AppRoutes.UNAVAILABLE);
+  }));
+
+  it('keeps other load errors in the popup', fakeAsync(() => {
+    pageService.get.and.returnValue(Promise.resolve({success: false, code: 'NETWORK_ERROR'}));
+    createComponent({}, {id: '9'});
+    tick();
+
+    expect(navigationService.navigateReplacingUrl).not.toHaveBeenCalled();
+    expect(component.alertMessage).toBe(errorPhrase('NETWORK_ERROR'));
+  }));
 
   describe('on Escape', () => {
     function openPage() {
