@@ -39,7 +39,6 @@
   "TEAM_CODE": "Код команды",
   "CREATE": "Создать",
   "HOME": "Главная",
-  "HOME_STUB": "Всё готово — выберите что-нибудь на боковой панели, чтобы начать.",
   "PROJECTS": "Проекты",
   "DOCUMENT_PAGES": "Страницы",
   "DIAGRAMS": "Диаграммы",
@@ -376,6 +375,26 @@
   "CLOSE_PREVIEW": "Закрыть просмотр",
   "ATTACHMENT_COUNT": "Вложений: {{count}}",
   "DROP_FILES_HERE": "Перетащите файлы, чтобы прикрепить",
+  "ACTIVITY": "Активность",
+  "ACTIVITY_ALL": "Все",
+  "ACTIVITY_UNREAD": "Непрочитанные",
+  "ACTIVITY_MARK_ALL_READ": "Отметить все как прочитанные",
+  "ACTIVITY_MARK_READ": "Отметить как прочитанное",
+  "ACTIVITY_MARK_UNREAD": "Отметить как непрочитанное",
+  "ACTIVITY_EMPTY": "Активности пока нет",
+  "ACTIVITY_ALL_CAUGHT_UP": "Вы всё прочитали",
+  "ACTIVITY_ASSIGNED": "назначил(а) вас на",
+  "ACTIVITY_UNASSIGNED": "снял(а) вас с",
+  "ACTIVITY_CHANGED": "изменил(а)",
+  "ACTIVITY_TRASHED": "переместил(а) в корзину:",
+  "ACTIVITY_COMMENTED": "прокомментировал(а)",
+  "ACTIVITY_MENTIONED": "упомянул(а) вас в",
+  "ACTIVITY_EVENT_COUNT": "+ещё {{count}}",
+  "ACTIVITY_FIELD_TITLE": "название",
+  "ACTIVITY_FIELD_DESCRIPTION": "описание",
+  "ACTIVITY_FIELD_CONTENT": "содержимое",
+  "ACTIVITY_FIELD_STATUS": "статус",
+  "ACTIVITY_FIELD_PRIORITY": "приоритет",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Сеанс истёк. Пожалуйста, войдите снова",
@@ -506,6 +525,9 @@
       "INLINE_IMAGE_TYPE_INVALID": "Изображения в тексте должны быть PNG, JPEG, GIF или WebP",
       "STORAGE_QUOTA_EXCEEDED": "Ваша команда использовала все 500 МБ хранилища",
       "ATTACHMENT_UPLOAD_FAILED": "Не удалось загрузить файл"
+    },
+    "NOTIFICATIONS": {
+      "NOTIFICATION_NOT_FOUND": "Уведомление не найдено"
     }
   }
 }

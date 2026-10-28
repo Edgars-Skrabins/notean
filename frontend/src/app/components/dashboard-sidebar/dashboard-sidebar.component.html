@@ -5,6 +5,7 @@
       <path d="M5 10v10a1 1 0 0 0 1 1h3v-6h6v6h3a1 1 0 0 0 1-1V10"></path>
     </svg>
     <span class="dashboardSidebar__label">{{ PHRASES.HOME | translate }}</span>
+    <app-unread-badge *ngIf="notificationChannelService.unreadCount$ | async as unreadCount" [count]="unreadCount" [dot]="collapsed"></app-unread-badge>
   </a>
 
   <a class="dashboardSidebar__item" [routerLink]="AppRoutes.PROJECTS" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="collapsed ? (PHRASES.PROJECTS | translate) : ''" [attr.aria-label]="PHRASES.PROJECTS | translate">

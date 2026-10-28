@@ -39,7 +39,6 @@
   "TEAM_CODE": "Teamcode",
   "CREATE": "Erstellen",
   "HOME": "Startseite",
-  "HOME_STUB": "Alles bereit – wähle etwas in der Seitenleiste aus, um loszulegen.",
   "PROJECTS": "Projekte",
   "DOCUMENT_PAGES": "Seiten",
   "DIAGRAMS": "Diagramme",
@@ -376,6 +375,26 @@
   "CLOSE_PREVIEW": "Vorschau schließen",
   "ATTACHMENT_COUNT": "{{count}} Anhänge",
   "DROP_FILES_HERE": "Dateien zum Anhängen hier ablegen",
+  "ACTIVITY": "Aktivität",
+  "ACTIVITY_ALL": "Alle",
+  "ACTIVITY_UNREAD": "Ungelesen",
+  "ACTIVITY_MARK_ALL_READ": "Alle als gelesen markieren",
+  "ACTIVITY_MARK_READ": "Als gelesen markieren",
+  "ACTIVITY_MARK_UNREAD": "Als ungelesen markieren",
+  "ACTIVITY_EMPTY": "Noch keine Aktivität",
+  "ACTIVITY_ALL_CAUGHT_UP": "Du bist auf dem neuesten Stand",
+  "ACTIVITY_ASSIGNED": "hat dich zugewiesen zu",
+  "ACTIVITY_UNASSIGNED": "hat dich entfernt von",
+  "ACTIVITY_CHANGED": "hat geändert",
+  "ACTIVITY_TRASHED": "hat in den Papierkorb verschoben:",
+  "ACTIVITY_COMMENTED": "hat kommentiert",
+  "ACTIVITY_MENTIONED": "hat dich erwähnt in",
+  "ACTIVITY_EVENT_COUNT": "+{{count}} weitere",
+  "ACTIVITY_FIELD_TITLE": "Titel",
+  "ACTIVITY_FIELD_DESCRIPTION": "Beschreibung",
+  "ACTIVITY_FIELD_CONTENT": "Inhalt",
+  "ACTIVITY_FIELD_STATUS": "Status",
+  "ACTIVITY_FIELD_PRIORITY": "Priorität",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an",
@@ -506,6 +525,9 @@
       "INLINE_IMAGE_TYPE_INVALID": "Eingebettete Bilder müssen PNG, JPEG, GIF oder WebP sein",
       "STORAGE_QUOTA_EXCEEDED": "Dein Team hat alle 500 MB Speicher belegt",
       "ATTACHMENT_UPLOAD_FAILED": "Die Datei konnte nicht hochgeladen werden"
+    },
+    "NOTIFICATIONS": {
+      "NOTIFICATION_NOT_FOUND": "Benachrichtigung nicht gefunden"
     }
   }
 }

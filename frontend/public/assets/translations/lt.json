@@ -39,7 +39,6 @@
   "TEAM_CODE": "Komandos kodas",
   "CREATE": "Sukurti",
   "HOME": "Pradžia",
-  "HOME_STUB": "Viskas paruošta – norėdami pradėti, pasirinkite ką nors šoninėje juostoje.",
   "PROJECTS": "Projektai",
   "DOCUMENT_PAGES": "Puslapiai",
   "DIAGRAMS": "Diagramos",
@@ -376,6 +375,26 @@
   "CLOSE_PREVIEW": "Uždaryti peržiūrą",
   "ATTACHMENT_COUNT": "Priedų: {{count}}",
   "DROP_FILES_HERE": "Numeskite failus, kad pridėtumėte",
+  "ACTIVITY": "Veikla",
+  "ACTIVITY_ALL": "Visi",
+  "ACTIVITY_UNREAD": "Neskaityti",
+  "ACTIVITY_MARK_ALL_READ": "Pažymėti visus kaip skaitytus",
+  "ACTIVITY_MARK_READ": "Pažymėti kaip skaitytą",
+  "ACTIVITY_MARK_UNREAD": "Pažymėti kaip neskaitytą",
+  "ACTIVITY_EMPTY": "Veiklos dar nėra",
+  "ACTIVITY_ALL_CAUGHT_UP": "Viskas perskaityta",
+  "ACTIVITY_ASSIGNED": "priskyrė jus",
+  "ACTIVITY_UNASSIGNED": "pašalino jus iš",
+  "ACTIVITY_CHANGED": "pakeitė",
+  "ACTIVITY_TRASHED": "perkėlė į šiukšlinę:",
+  "ACTIVITY_COMMENTED": "pakomentavo",
+  "ACTIVITY_MENTIONED": "paminėjo jus",
+  "ACTIVITY_EVENT_COUNT": "+{{count}} daugiau",
+  "ACTIVITY_FIELD_TITLE": "pavadinimas",
+  "ACTIVITY_FIELD_DESCRIPTION": "aprašymas",
+  "ACTIVITY_FIELD_CONTENT": "turinys",
+  "ACTIVITY_FIELD_STATUS": "būsena",
+  "ACTIVITY_FIELD_PRIORITY": "prioritetas",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Jūsų sesija baigėsi. Prisijunkite iš naujo",
@@ -506,6 +525,9 @@
       "INLINE_IMAGE_TYPE_INVALID": "Paveikslėliai tekste turi būti PNG, JPEG, GIF arba WebP",
       "STORAGE_QUOTA_EXCEEDED": "Jūsų komanda išnaudojo visus 500 MB saugyklos",
       "ATTACHMENT_UPLOAD_FAILED": "Nepavyko įkelti failo"
+    },
+    "NOTIFICATIONS": {
+      "NOTIFICATION_NOT_FOUND": "Pranešimas nerastas"
     }
   }
 }

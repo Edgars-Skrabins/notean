@@ -1,0 +1,22 @@
+:host {
+  margin-left: auto;
+}
+
+.unreadBadge {
+  display: block;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: var(--font-xs);
+  font-weight: 600;
+}
+
+.unreadBadge--dot {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 8px;
+  height: 8px;
+  padding: 0;
+}
