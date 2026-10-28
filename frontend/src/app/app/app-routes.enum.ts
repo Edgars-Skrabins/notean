@@ -20,4 +20,5 @@ export enum AppRoutes {
   NEW = 'new',
   PROFILE = 'profile',
   SETTINGS = 'settings',
+  UNAVAILABLE = 'unavailable',
 }

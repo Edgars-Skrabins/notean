@@ -11,6 +11,7 @@ import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
 import {ProjectFilterService} from "@services/project-filter.service";
 import {FolderService} from "@services/folder.service";
+import {CopyLinkService} from "@services/copy-link.service";
 import {PHRASES} from "@config/phrases";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {FlowchartEditorComponent} from "@components/flowchart-editor/flowchart-editor.component";
@@ -35,6 +36,7 @@ export class DiagramDetailComponent extends FolderedItemDetailComponent {
   protected readonly itemType = 'Diagram';
   protected readonly listRoute = AppRoutes.DIAGRAMS;
   protected readonly untitledItemPhrase = PHRASES.UNTITLED_DIAGRAM;
+  protected readonly notFoundCode = 'DIAGRAM_NOT_FOUND';
 
   constructor(
     route: ActivatedRoute,
@@ -47,8 +49,9 @@ export class DiagramDetailComponent extends FolderedItemDetailComponent {
     toastService: ToastService,
     projectFilterService: ProjectFilterService,
     folderService: FolderService,
-    translateService: TranslateService
+    translateService: TranslateService,
+    copyLinkService: CopyLinkService
   ) {
-    super(route, diagramService, diagramEditingService, teamService, authService, navigationService, favoriteService, toastService, projectFilterService, folderService, translateService);
+    super(route, diagramService, diagramEditingService, teamService, authService, navigationService, favoriteService, toastService, projectFilterService, folderService, translateService, copyLinkService);
   }
 }

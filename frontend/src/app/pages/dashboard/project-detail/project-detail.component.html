@@ -27,7 +27,10 @@
   </div>
 
   <aside class="projectDetail__sidebar">
-    <app-button *ngIf="project.canManage" variant="ghost" (pressed)="handleOpenSettings()">{{ PHRASES.SETTINGS | translate }}</app-button>
+    <div class="projectDetail__actions">
+      <app-button *ngIf="project.canManage" variant="ghost" (pressed)="handleOpenSettings()">{{ PHRASES.SETTINGS | translate }}</app-button>
+      <app-icon-button icon="link" [tooltip]="PHRASES.COPY_LINK | translate" (pressed)="handleCopyLink()"></app-icon-button>
+    </div>
 
     <div>
       <h3 class="projectDetail__sidebarLabel">{{ PHRASES.PROJECT_MEMBERS | translate }}</h3>

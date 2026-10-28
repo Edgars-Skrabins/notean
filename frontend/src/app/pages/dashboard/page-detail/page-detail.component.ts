@@ -11,6 +11,7 @@ import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
 import {ProjectFilterService} from "@services/project-filter.service";
 import {FolderService} from "@services/folder.service";
+import {CopyLinkService} from "@services/copy-link.service";
 import {PHRASES} from "@config/phrases";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {RichTextEditorComponent} from "@components/rich-text-editor/rich-text-editor.component";
@@ -36,6 +37,7 @@ export class PageDetailComponent extends FolderedItemDetailComponent {
   protected readonly itemType = 'Page';
   protected readonly listRoute = AppRoutes.DOCUMENT_PAGES;
   protected readonly untitledItemPhrase = PHRASES.UNTITLED_PAGE;
+  protected readonly notFoundCode = 'PAGE_NOT_FOUND';
 
   private pageCommentTarget: Extract<CommentTarget, { type: 'page' }> | null = null;
 
@@ -61,8 +63,9 @@ export class PageDetailComponent extends FolderedItemDetailComponent {
     toastService: ToastService,
     projectFilterService: ProjectFilterService,
     folderService: FolderService,
-    translateService: TranslateService
+    translateService: TranslateService,
+    copyLinkService: CopyLinkService
   ) {
-    super(route, pageService, pageEditingService, teamService, authService, navigationService, favoriteService, toastService, projectFilterService, folderService, translateService);
+    super(route, pageService, pageEditingService, teamService, authService, navigationService, favoriteService, toastService, projectFilterService, folderService, translateService, copyLinkService);
   }
 }

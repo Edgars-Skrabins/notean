@@ -60,6 +60,7 @@ export class ItemDetailLayoutComponent implements OnInit, OnDestroy {
   @Output() cancelRequested = new EventEmitter<void>();
   @Output() saveRequested = new EventEmitter<void>();
   @Output() deleteRequested = new EventEmitter<void>();
+  @Output() copyLinkRequested = new EventEmitter<void>();
   @Output() deleteConfirmed = new EventEmitter<void>();
   @Output() deleteCancelled = new EventEmitter<void>();
   @Output() projectChange = new EventEmitter<number | null>();

@@ -15,6 +15,8 @@ import {TicketDetail} from "@models/ticket.model";
 import {PHRASES} from "@config/phrases";
 import {DESCRIPTION_MAX_LENGTH, TITLE_MAX_LENGTH} from "@config/contentLimits";
 import {EscapeService} from "@services/escape.service";
+import {CopyLinkService} from "@services/copy-link.service";
+import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 import {createBoardState, ticketDetail} from "../../../testing/boardFixtures";
 import {escapeServiceStub, EscapeServiceStub} from "../../../testing/escapeServiceStub";
@@ -45,7 +47,7 @@ describe('TicketDetailComponent editing', () => {
     authService.getCurrentUser.and.returnValue({id: 1, email: 'alice@example.com'});
     state = createBoardState();
     escape = escapeServiceStub();
-    component = new TicketDetailComponent(route, router, state, ticketService, favoriteService, toastService, teamService, projectService, authService, escape.service);
+    component = new TicketDetailComponent(route, router, state, ticketService, favoriteService, toastService, teamService, projectService, authService, escape.service, {} as CopyLinkService);
 
     ticket = {...ticketDetail(1, 10), title: 'My Ticket'};
     component.ticket = ticket;
@@ -94,6 +96,16 @@ describe('TicketDetailComponent editing', () => {
     expect(component.alertMessage).toBe('ERRORS.TICKETS.TICKET_UPDATE_FAILED');
     expect(component.ticket?.title).toBe('My Ticket');
     expect(component.titleDraft).toBe('Renamed');
+  }));
+
+  it('sends a missing or hidden ticket to the unavailable screen', fakeAsync(() => {
+    ticketService.getTicket.and.returnValue(Promise.resolve({success: false, code: 'TICKET_NOT_FOUND'}));
+
+    component.ngOnInit();
+    flushMicrotasks();
+
+    expect(router.navigate).toHaveBeenCalledOnceWith([AppRoutes.UNAVAILABLE], {replaceUrl: true});
+    component.ngOnDestroy();
   }));
 
   it('closes the popup on Escape', () => {

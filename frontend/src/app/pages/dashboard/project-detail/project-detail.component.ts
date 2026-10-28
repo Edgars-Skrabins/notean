@@ -20,6 +20,7 @@ import {HasUnsavedChanges} from "@models/unsaved-changes.model";
 import {IconName} from "@components/icon/icon.component";
 import {AvatarComponent} from "@components/avatar/avatar.component";
 import {ButtonComponent} from "@components/button/button.component";
+import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {LoadMoreComponent} from "@components/load-more/load-more.component";
 import {ProjectItemRowComponent} from "@components/project-item-row/project-item-row.component";
 import {ProjectSettingsDialogComponent} from "@components/project-settings-dialog/project-settings-dialog.component";
@@ -27,6 +28,7 @@ import {errorPhrase} from "@utils/errorPhrase";
 import {boardRoute} from "@utils/ticketRoute";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {EscapeService} from "@services/escape.service";
+import {CopyLinkService} from "@services/copy-link.service";
 
 export interface ProjectItem {
   id: number;
@@ -62,6 +64,7 @@ function newestFirst(items: ProjectItem[]): ProjectItem[] {
     TranslatePipe,
     AvatarComponent,
     ButtonComponent,
+    IconButtonComponent,
     LoadMoreComponent,
     ProjectItemRowComponent,
     ProjectSettingsDialogComponent
@@ -103,7 +106,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChan
     private teamService: TeamService,
     private toastService: ToastService,
     private navigationService: NavigationService,
-    private escapeService: EscapeService
+    private escapeService: EscapeService,
+    private copyLinkService: CopyLinkService
   ) {
   }
 
@@ -136,6 +140,10 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChan
     });
     this.projectService.getProject(this.teamCode, projectId).then((response) => {
       if (!response.success) {
+        if (response.code === 'PROJECT_NOT_FOUND') {
+          this.navigationService.navigateReplacingUrl(AppRoutes.UNAVAILABLE);
+          return;
+        }
         this.alertMessage = errorPhrase(response.code);
         return;
       }
@@ -183,6 +191,10 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChan
         isLoading: false,
       });
     });
+  }
+
+  handleCopyLink() {
+    this.copyLinkService.copyCurrentLink();
   }
 
   handleOpenSettings() {

@@ -6,7 +6,7 @@ export type IconName =
   | 'trash' | 'edit' | 'save' | 'x'
   | 'menu' | 'zoom-fit' | 'star' | 'star-filled'
   | 'flow-terminator' | 'flow-process' | 'flow-decision' | 'flow-io'
-  | 'inbox' | 'columns' | 'more'
+  | 'inbox' | 'columns' | 'link' | 'more'
   | 'project' | 'page' | 'diagram' | 'board' | 'ticket';
 
 @Component({
