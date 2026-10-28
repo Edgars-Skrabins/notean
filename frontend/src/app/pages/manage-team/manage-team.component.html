@@ -13,6 +13,11 @@
     <app-team-code-display [code]="teamCode"></app-team-code-display>
   </section>
 
+  <section class="manageTeam__section" *ngIf="storageParams">
+    <h3 class="manageTeam__sectionTitle">{{ PHRASES.ATTACHMENTS | translate }}</h3>
+    <p class="manageTeam__storage">{{ PHRASES.STORAGE_USAGE | translate: storageParams }}</p>
+  </section>
+
   <section class="manageTeam__section">
     <h3 class="manageTeam__sectionTitle">{{ PHRASES.RENAME_TEAM | translate }}</h3>
     <div class="authField">

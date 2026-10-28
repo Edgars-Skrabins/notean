@@ -8,6 +8,7 @@ import {NavigationService} from "@services/navigation.service";
 import {TeamService} from "@services/team.service";
 import {ToastService} from "@services/toast.service";
 import {TeamChannelService} from "@services/team-channel.service";
+import {AttachmentService} from "@services/attachment.service";
 import {TranslateService} from "@ngx-translate/core";
 import {ToastType} from "@models/toast.model";
 import {TeamMember, TeamRole} from "@models/team.model";
@@ -21,6 +22,12 @@ function teamServiceSpy() {
   teamService.fetchTeamMembers.and.returnValue(Promise.resolve([]));
   teamService.isFeatureEnabled.and.callFake((feature) => feature !== 'diagrams');
   return teamService;
+}
+
+function attachmentServiceStub() {
+  const service = jasmine.createSpyObj<AttachmentService>('AttachmentService', ['storageUsage']);
+  service.storageUsage.and.returnValue(Promise.resolve({success: true, storage: {usedBytes: 12.5 * 1024 * 1024, quotaBytes: 500 * 1024 * 1024}}));
+  return service;
 }
 
 function teamChannelServiceStub() {
@@ -39,7 +46,7 @@ describe('ManageTeamComponent.isOwner', () => {
 
   beforeEach(() => {
     teamService = teamServiceSpy();
-    component = new ManageTeamComponent({} as NavigationService, teamService, {} as TranslateService, {} as ToastService, escapeServiceStub().service, teamChannelServiceStub().service);
+    component = new ManageTeamComponent({} as NavigationService, teamService, {} as TranslateService, {} as ToastService, escapeServiceStub().service, teamChannelServiceStub().service, attachmentServiceStub());
   });
 
   it('returns false when the current role is user', () => {
@@ -83,10 +90,20 @@ describe('ManageTeamComponent features', () => {
         {provide: ToastService, useValue: toastService},
         {provide: NavigationService, useValue: {}},
         {provide: TeamChannelService, useValue: teamChannelServiceStub().service},
+        {provide: AttachmentService, useValue: attachmentServiceStub()},
       ],
     })
       .overrideComponent(ManageTeamComponent, {set: {imports: [NgFor, NgIf, TranslatePipe], schemas: [NO_ERRORS_SCHEMA]}})
       .compileComponents();
+  });
+
+  it('shows the team storage usage', async () => {
+    const fixture = render('admin');
+    await fixture.whenStable();
+    fixture.detectChanges();
+
+    expect(fixture.componentInstance.storageParams).toEqual({used: '13 MB', quota: '500 MB'});
+    expect(fixture.nativeElement.querySelector('.manageTeam__storage')).not.toBeNull();
   });
 
   it('shows the Features toggles with the current flags to the owner only', () => {
@@ -130,7 +147,7 @@ describe('ManageTeamComponent member actions', () => {
 
   function build(role: TeamRole) {
     teamService.getCurrentRole.and.returnValue(role);
-    component = new ManageTeamComponent({} as NavigationService, teamService, translateService, toastService, escapeServiceStub().service, channel.service);
+    component = new ManageTeamComponent({} as NavigationService, teamService, translateService, toastService, escapeServiceStub().service, channel.service, attachmentServiceStub());
     return component;
   }
 
