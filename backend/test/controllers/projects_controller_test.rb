@@ -230,4 +230,13 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_equal "DESCRIPTION_TOO_LONG", body["code"]
   end
+
+  test "delete with delete_items leaves an item deleted notice for creators of top-level pages" do
+    Page.create!(team: @team, creator: @member, title: "Notes", content: "", project: @game)
+
+    delete projects_url(@game), params: { project: { mode: "delete_items", confirm_name: "Game" } }, headers: headers_for(@owner), as: :json
+
+    assert_response :no_content
+    assert_equal [ [ @member.id, "item_deleted", "Notes" ] ], Notification.pluck(:user_id, :kind, :item_title)
+  end
 end

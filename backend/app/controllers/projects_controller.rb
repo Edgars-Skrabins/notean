@@ -68,7 +68,7 @@ class ProjectsController < ApplicationController
     items.each { |item| item.class.where(id: item.id).update_all(project_id: nil) }
     (folders + items).each do |item|
       item.project_id = nil
-      Trash.move(item, current_user)
+      Notifier.item_deleted(item, current_user) { Trash.move(item, current_user) }
     end
   end
 

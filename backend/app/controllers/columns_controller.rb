@@ -35,8 +35,10 @@ class ColumnsController < ApplicationController
 
   def destroy
     tickets = @board.tickets.where(column_id: @column.id).to_a
-    entries, = Column.transaction do
-      Trash.move_tickets(@board, tickets, current_user).tap { @column.destroy! }
+    entries, = Notifier.items_deleted(tickets, current_user) do
+      Column.transaction do
+        Trash.move_tickets(@board, tickets, current_user).tap { @column.destroy! }
+      end
     end
     render json: { trash_entry_ids: entries.map(&:id) }
     BoardBroadcast.tickets_removed(@board, tickets.map(&:id)) if tickets.any?

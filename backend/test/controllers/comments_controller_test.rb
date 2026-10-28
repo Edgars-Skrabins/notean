@@ -192,4 +192,13 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     assert json["comment_pin_deleted"]
     assert_not DiagramCommentPin.exists?(@pin.id)
   end
+
+  test "create notifies the owner and earlier commenters with a plain-text excerpt" do
+    add_comment(@page, user: @carol)
+
+    post page_comments_url, params: { comment: { body: "<p>Looks <strong>good</strong></p>" } }, headers: headers_for(@bob), as: :json
+
+    assert_response :created
+    assert_equal [ [ @user.id, "commented", "Looks good" ], [ @carol.id, "commented", "Looks good" ] ], Notification.order(:user_id).pluck(:user_id, :kind, :excerpt)
+  end
 end

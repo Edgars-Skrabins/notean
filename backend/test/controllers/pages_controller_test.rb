@@ -365,4 +365,27 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     get "/teams/#{@team.code}/pages", params: { folder_id: "root" }, headers: { "Authorization" => "Bearer #{session_token(bob)}" }
     assert_equal [ "Notes" ], JSON.parse(response.body)["pages"].map { |page| page["title"] }
   end
+
+  test "update notifies the creator about title and content changes but not moves" do
+    bob = create_member(@team, "Bob")
+    page = Page.create!(team: @team, creator: bob, title: "Plan", content: "")
+    folder = Folder.create!(team: @team, creator: @user, title: "Docs", item_type: "Page")
+
+    patch "/teams/#{@team.code}/pages/#{page.id}", params: { page: { folder_id: folder.id } }, headers: @headers, as: :json
+    assert_equal 0, Notification.count
+
+    patch "/teams/#{@team.code}/pages/#{page.id}", params: { page: { content: "<p>New</p>", lock_version: page.reload.lock_version } }, headers: @headers, as: :json
+    assert_response :ok
+    assert_equal [ [ bob.id, "item_changed", [ "content" ] ] ], Notification.pluck(:user_id, :kind, :changed_fields)
+  end
+
+  test "moving a page to the trash leaves an item deleted notice for the creator" do
+    bob = create_member(@team, "Bob")
+    page = Page.create!(team: @team, creator: bob, title: "Plan", content: "")
+
+    delete "/teams/#{@team.code}/pages/#{page.id}", headers: @headers
+
+    assert_response :ok
+    assert_equal [ [ bob.id, "item_deleted", "Plan" ] ], Notification.pluck(:user_id, :kind, :item_title)
+  end
 end
