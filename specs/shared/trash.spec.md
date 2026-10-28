@@ -47,7 +47,7 @@ Today deleting a page, diagram, board, ticket or folder removes it at once and f
 - **attachments:** the attachments spec's `Attachment.purge_stale_pending` runs as a second recurring Solid Queue job next to `PurgeTrashJob`; whichever spec is merged second adds it.
 - **mentions:** `@item` mentions of a trashed item render as unavailable; the mention dropdown never offers trashed items (the default scope does this).
 - **copy-link:** a copied link to a trashed item gives the normal not-found handling.
-- **templates:** templates are pages, diagrams or boards; if they are deleted they go to the trash like any other item.
+- **templates:** templates live in their own table and are not trashable; deleting one is permanent (decided in the templates spec, 2026-10-28). Items created from a template go to the trash as usual.
 - **chat:** chat messages and channels are not covered by this spec.
 
 # Part 2 — Technical details
