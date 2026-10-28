@@ -28,6 +28,8 @@ The frontend won't work without the backend running.
 
 `backend/config/master.key` decrypts `backend/config/credentials.yml.enc`, which is needed for JWT signing. It is committed to the repo for early development convenience, so no extra setup is needed. This must be addressed before any deployment: rotate the key and credentials, and gitignore `config/master.key` again.
 
+Chat's `/gif` search uses the Giphy API. Add a Giphy API key to the Rails credentials as `giphy: { api_key: ... }` (`bin/rails credentials:edit` in `backend/`); without it the app runs normally and the GIF picker says GIFs are unavailable.
+
 The database URLs in `backend/config/database.yml` use dev-only credentials (user and password `notean`, matching `docker-compose.yml`), committed for the same reason. Before any deployment, create an env file that provides `DATABASE_URL` with real credentials. Production reads only `DATABASE_URL` and must never use the committed dev credentials.
 
 ## Setup
