@@ -49,8 +49,9 @@ class TicketsController < ApplicationController
   def update
     return unless assign_lock_version(@ticket, update_ticket_params, :title, :description)
 
+    previous_description = @ticket.description
     @ticket.title = update_ticket_params[:title] if update_ticket_params[:title].present?
-    @ticket.description = update_ticket_params[:description] if update_ticket_params.key?(:description)
+    @ticket.description = Mentions.strip_item_labels(update_ticket_params[:description], html: false) if update_ticket_params.key?(:description)
 
     if update_ticket_params.key?(:priority_id)
       priority_id = update_ticket_params[:priority_id]
@@ -77,6 +78,7 @@ class TicketsController < ApplicationController
       BoardBroadcast.tickets_shifted(@board, ticket_shifts) if ticket_shifts.any?
       BoardBroadcast.tickets_upserted(@board, [ ticket_broadcast_json(@ticket) ])
       Notifier.item_changed(@ticket, current_user, notified_fields)
+      MentionNotifications.call(item: @ticket, before: previous_description, after: @ticket.description, actor: current_user, html: false)
     else
       render_error(limit_error_code(@ticket) || ErrorCodes::Tickets::TICKET_UPDATE_FAILED, :unprocessable_entity)
     end

@@ -31,6 +31,7 @@ const ITEM_ICONS: Record<NotificationItemType, IconName> = {
   Page: 'page',
   Diagram: 'diagram',
   Project: 'project',
+  ChatMessage: 'chat',
 };
 
 @Component({

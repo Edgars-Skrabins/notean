@@ -388,4 +388,32 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :ok
     assert_equal [ [ bob.id, "item_deleted", "Plan" ] ], Notification.pluck(:user_id, :kind, :item_title)
   end
+
+  test "create and update notify people newly mentioned in the content" do
+    bob = create_member(@team, "Bob")
+    carol = create_member(@team, "Carol")
+    mention = ->(user, name) { %(<span data-type="mention" data-mention-type="user" data-id="#{user.id}" data-label="#{name}">@#{name}</span>) }
+
+    post "/teams/#{@team.code}/pages", params: { page: { title: "Plan", content: "<p>#{mention.(bob, "Bob")}</p>" } }, headers: @headers, as: :json
+    assert_response :created
+    page = JSON.parse(response.body)["page"]
+    patch "/teams/#{@team.code}/pages/#{page["id"]}", params: { page: { content: "<p>#{mention.(bob, "Bob")} #{mention.(carol, "Carol")}</p>", lock_version: page["lock_version"] } }, headers: @headers, as: :json
+
+    assert_response :success
+    assert_equal [ bob.id, carol.id ], Notification.where(kind: "mentioned").order(:id).pluck(:user_id)
+  end
+
+  test "saved content keeps no title of mentioned items" do
+    html = '<p><span data-type="mention" data-mention-type="page" data-id="99" data-label="Secret plan">@Secret plan</span> ' \
+      '<span data-type="mention" data-mention-type="user" data-id="1" data-label="Alice">@Alice</span></p>'
+
+    patch "/teams/#{@team.code}/pages/#{@page.id}", params: { page: { content: html, lock_version: @page.lock_version } }, headers: @headers, as: :json
+
+    assert_response :success
+    content = JSON.parse(response.body)["page"]["content"]
+    assert_not_includes content, "Secret plan"
+    assert_includes content, 'data-label="Alice"'
+    assert_not_includes @page.reload.search_text, "Secret plan"
+    assert_includes @page.search_text, "@Alice"
+  end
 end

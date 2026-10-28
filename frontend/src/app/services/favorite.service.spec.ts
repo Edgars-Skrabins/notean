@@ -67,7 +67,7 @@ describe('FavoriteService', () => {
   }
 
   beforeEach(() => {
-    features = new BehaviorSubject<TeamFeatures>({pages: true, diagrams: true, boards: true});
+    features = new BehaviorSubject<TeamFeatures>({pages: true, diagrams: true, boards: true, chat: true});
     const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeam', 'isFeatureEnabled'], {features$: features});
     teamService.isFeatureEnabled.and.callFake((feature) => features.value[feature]);
     teamService.getCurrentTeam.and.returnValue(testTeam({id: 1, name: 'Team A', code: 'aaa'}));
@@ -213,12 +213,12 @@ describe('FavoriteService', () => {
       rawFavorite({id: 3, favoritable_type: 'Ticket', favoritable_id: 12, home_position: 2, sidebar_position: 2}),
     ]);
 
-    features.next({pages: true, diagrams: true, boards: false});
+    features.next({pages: true, diagrams: true, boards: false, chat: true});
 
     expect((await firstValueFrom(service.homeFavorites$)).map((favorite) => favorite.id)).toEqual([1]);
     expect((await firstValueFrom(service.sidebarFavorites$)).map((favorite) => favorite.id)).toEqual([1]);
 
-    features.next({pages: true, diagrams: true, boards: true});
+    features.next({pages: true, diagrams: true, boards: true, chat: true});
 
     expect((await firstValueFrom(service.homeFavorites$)).map((favorite) => favorite.id)).toEqual([1, 2, 3]);
   });

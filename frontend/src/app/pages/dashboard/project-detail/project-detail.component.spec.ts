@@ -63,7 +63,7 @@ describe('ProjectDetailComponent', () => {
   }
 
   beforeEach(async () => {
-    features = new BehaviorSubject<TeamFeatures>({pages: true, diagrams: true, boards: true});
+    features = new BehaviorSubject<TeamFeatures>({pages: true, diagrams: true, boards: true, chat: true});
     projectService = jasmine.createSpyObj<ProjectService>('ProjectService', ['getProject', 'updateProject', 'deleteProject']);
     pageService = jasmine.createSpyObj<PageService>('PageService', ['list']);
     pageService.list.and.returnValue(Promise.resolve({success: true, items: [item(1, 'Old page', '2026-10-01T10:00:00Z'), item(2, 'New page', '2026-10-20T10:00:00Z')], hasMore: false}));
@@ -142,13 +142,13 @@ describe('ProjectDetailComponent', () => {
   });
 
   it('skips and hides the items of disabled features', async () => {
-    features.next({pages: true, diagrams: true, boards: false});
+    features.next({pages: true, diagrams: true, boards: false, chat: true});
     await render();
 
     expect(boardService.listBoards).not.toHaveBeenCalled();
     expect(texts('.projectDetail__groupTitle')).toEqual([PHRASES.DOCUMENT_PAGES]);
 
-    features.next({pages: false, diagrams: true, boards: false});
+    features.next({pages: false, diagrams: true, boards: false, chat: true});
     fixture.detectChanges();
 
     expect(texts('.projectDetail__empty')).toEqual([PHRASES.NO_PROJECT_ITEMS]);

@@ -24,6 +24,8 @@ import {BoardPageStateService} from "../board-page/board-page-state.service";
 import {createBoardState, ticketDetail} from "../../../testing/boardFixtures";
 import {escapeServiceStub, EscapeServiceStub} from "../../../testing/escapeServiceStub";
 import {trashServiceStub} from "../../../testing/trashServiceStub";
+import {By} from '@angular/platform-browser';
+import {MentionTextEditorComponent} from '@components/mention-text-editor/mention-text-editor.component';
 
 describe('TicketDetailComponent editing', () => {
   let component: TicketDetailComponent;
@@ -605,7 +607,7 @@ describe('TicketDetailComponent editing', () => {
 });
 
 describe('TicketDetailComponent input limits', () => {
-  it('limits the title input and the description textarea to the content limits', async () => {
+  it('limits the title input and the description editor to the content limits', async () => {
     const ticketService = jasmine.createSpyObj<TicketService>('TicketService', ['getTicket']);
     ticketService.getTicket.and.returnValue(Promise.resolve({success: true, ticket: ticketDetail(1, 10)}));
     const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['fetchTeamMembers', 'getCurrentTeamCode', 'getCurrentRole']);
@@ -641,7 +643,7 @@ describe('TicketDetailComponent input limits', () => {
     fixture.detectChanges();
 
     const title: HTMLInputElement = fixture.nativeElement.querySelector('.ticketDetail__titleInput');
-    const description: HTMLTextAreaElement = fixture.nativeElement.querySelector('.ticketDetail__descriptionInput');
+    const description = fixture.debugElement.query(By.directive(MentionTextEditorComponent)).componentInstance as MentionTextEditorComponent;
     expect(title.maxLength).toBe(TITLE_MAX_LENGTH);
     expect(description.maxLength).toBe(DESCRIPTION_MAX_LENGTH);
   });

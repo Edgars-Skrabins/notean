@@ -1,2 +1,3 @@
 export const TITLE_MAX_LENGTH = 200;
 export const DESCRIPTION_MAX_LENGTH = 10000;
+export const MESSAGE_MAX_LENGTH = 4000;

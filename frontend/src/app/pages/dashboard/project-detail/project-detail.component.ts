@@ -29,6 +29,7 @@ import {boardRoute} from "@utils/ticketRoute";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {EscapeService} from "@services/escape.service";
 import {CopyLinkService} from "@services/copy-link.service";
+import {MentionContentComponent} from "@components/mention-content/mention-content.component";
 
 export interface ProjectItem {
   id: number;
@@ -37,8 +38,10 @@ export interface ProjectItem {
   updatedAt: string;
 }
 
+export type ProjectItemFeature = Exclude<TeamFeature, 'chat'>;
+
 export interface ProjectItemGroup {
-  feature: TeamFeature;
+  feature: ProjectItemFeature;
   label: string;
   icon: IconName;
   items: ProjectItem[];
@@ -67,7 +70,8 @@ function newestFirst(items: ProjectItem[]): ProjectItem[] {
     IconButtonComponent,
     LoadMoreComponent,
     ProjectItemRowComponent,
-    ProjectSettingsDialogComponent
+    ProjectSettingsDialogComponent,
+    MentionContentComponent
   ],
   templateUrl: './project-detail.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -233,7 +237,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChan
       });
   }
 
-  private loadGroupPage(feature: TeamFeature, offset: number): Promise<ProjectItemPage | null> {
+  private loadGroupPage(feature: ProjectItemFeature, offset: number): Promise<ProjectItemPage | null> {
     const projectId = this.projectId;
     switch (feature) {
       case 'pages':

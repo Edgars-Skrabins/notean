@@ -1,0 +1,21 @@
+<div class="chatMessageList" #scroller (scroll)="handleScroll()">
+  <p class="chatMessageList__start" *ngIf="!hasMoreBefore">{{ PHRASES.CHANNEL_START | translate: {name: channelName} }}</p>
+
+  <ng-container *ngFor="let message of messages; let index = index; trackBy: trackById">
+    <div class="chatMessageList__divider" *ngIf="message.id === firstUnreadId">
+      <span class="chatMessageList__dividerLabel">{{ PHRASES.NEW_MESSAGES | translate }}</span>
+    </div>
+    <app-chat-message
+      [message]="message"
+      [grouped]="isGrouped(index)"
+      [currentUserId]="currentUserId"
+      [canModerate]="canModerate"
+      [language]="language"
+      [nicknames]="nicknames"
+      (updated)="updated.emit($event)"
+      (deleted)="deleted.emit($event)"
+      (reactionsChanged)="reactionsChanged.emit({messageId: message.id, reactions: $event})"
+    ></app-chat-message>
+  </ng-container>
+</div>
+<p class="chatMessageList__typing" aria-live="polite">{{ typingText }}</p>

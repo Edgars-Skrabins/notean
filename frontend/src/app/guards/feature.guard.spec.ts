@@ -19,7 +19,7 @@ describe('featureGuard', () => {
   }
 
   beforeEach(() => {
-    enabled = {pages: true, diagrams: true, boards: true};
+    enabled = {pages: true, diagrams: true, boards: true, chat: true};
     router = jasmine.createSpyObj<Router>('Router', ['navigate']);
     toastService = jasmine.createSpyObj<ToastService>('ToastService', ['show']);
     TestBed.configureTestingModule({

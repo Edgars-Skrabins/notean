@@ -41,11 +41,17 @@ class ProjectsController < ApplicationController
     return render_error(ErrorCodes::Projects::PROJECT_NAME_MISMATCH, :unprocessable_entity) unless destroy_project_params[:confirm_name] == @project.name
 
     Project.transaction do
-      trash_project_items if mode == "delete_items"
+      chat_channel_ids = ChatChannel.where(project_id: @project.id).pluck(:id)
+      ChatChannel.unscoped.where(project_id: @project.id).update_all(scope: "team", project_id: nil)
+      if mode == "delete_items"
+        trash_project_items
+        ChatChannel.where(id: chat_channel_ids).find_each { |channel| Trash.move(channel, current_user) }
+      end
       @project.destroy!
     end
 
     head :no_content
+    ChatBroadcast.channels_changed(@team)
   end
 
   private
@@ -81,7 +87,8 @@ class ProjectsController < ApplicationController
     member_ids = ([ owner_id ] + Array(project_params[:member_ids]).map(&:to_i)).uniq
     return render_error(ErrorCodes::Projects::PROJECT_INVALID_MEMBERS, :unprocessable_entity) unless team_member_ids?(member_ids)
 
-    project.assign_attributes(name: project_params[:name].to_s.strip, description: project_params[:description].to_s, owner_user_id: owner_id)
+    previous_description = project.description.to_s
+    project.assign_attributes(name: project_params[:name].to_s.strip, description: Mentions.strip_item_labels(project_params[:description].to_s, html: false), owner_user_id: owner_id)
 
     saved = Project.transaction do
       raise ActiveRecord::Rollback unless project.save
@@ -94,6 +101,8 @@ class ProjectsController < ApplicationController
 
     ProjectAccessCleanup.for_project(project)
     render json: { project: project_json(project.reload) }, status: status
+    ChatBroadcast.channels_changed(@team) if ChatChannel.exists?(project_id: project.id)
+    MentionNotifications.call(item: project, before: previous_description, after: project.description, actor: current_user, html: false)
   end
 
   def team_member_ids?(user_ids)

@@ -109,8 +109,8 @@ describe('ManageTeamComponent features', () => {
   it('shows the Features toggles with the current flags to the owner only', () => {
     const owner = render('owner');
     const checkboxes = Array.from(owner.nativeElement.querySelectorAll('app-checkbox')) as HTMLElement[];
-    expect(checkboxes.length).toBe(3);
-    expect(owner.componentInstance.features).toEqual({pages: true, diagrams: false, boards: true});
+    expect(checkboxes.length).toBe(4);
+    expect(owner.componentInstance.features).toEqual({pages: true, diagrams: false, boards: true, chat: true});
 
     expect(render('admin').nativeElement.querySelectorAll('app-checkbox').length).toBe(0);
     expect(render('user').nativeElement.querySelectorAll('app-checkbox').length).toBe(0);

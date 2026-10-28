@@ -1,0 +1,25 @@
+<app-create-named-item-dialog
+  [dialogTitle]="PHRASES.NEW_CHANNEL | translate"
+  [defaultValue]="defaultName"
+  [errorMessage]="errorMessage"
+  (confirmed)="handleConfirm($event)"
+  (cancelled)="cancelled.emit()"
+>
+  <div class="createChatChannelDialog__field" *ngIf="scopeOptions.length > 1">
+    <p class="capsLabel createChatChannelDialog__label">{{ PHRASES.CHANNEL_KIND | translate }}</p>
+    <app-dropdown [options]="scopeOptions" [value]="scope" [ariaLabel]="PHRASES.CHANNEL_KIND | translate" (valueChange)="handleScopeChange($event)"></app-dropdown>
+  </div>
+
+  <div class="createChatChannelDialog__field" *ngIf="scope === 'project'">
+    <p class="capsLabel createChatChannelDialog__label">{{ PHRASES.CHANNEL_SCOPE_PROJECT | translate }}</p>
+    <app-dropdown [options]="projectOptions" [value]="projectId" [ariaLabel]="PHRASES.CHANNEL_SCOPE_PROJECT | translate" (valueChange)="projectId = $any($event)"></app-dropdown>
+  </div>
+
+  <app-chat-member-picker
+    *ngIf="scope === 'users'"
+    [members]="members"
+    [selectedIds]="memberIds"
+    [lockedIds]="currentUserId ? [currentUserId] : []"
+    (selectedIdsChange)="memberIds = $event"
+  ></app-chat-member-picker>
+</app-create-named-item-dialog>

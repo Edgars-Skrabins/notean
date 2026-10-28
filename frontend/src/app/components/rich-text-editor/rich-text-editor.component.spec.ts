@@ -3,6 +3,8 @@ import {provideTranslateService} from '@ngx-translate/core';
 import {fakeAsync, flushMicrotasks} from '@angular/core/testing';
 import {RichTextEditorComponent} from './rich-text-editor.component';
 import {AttachmentService} from '@services/attachment.service';
+import {MentionService} from '@services/mention.service';
+import {TeamService} from '@services/team.service';
 
 describe('RichTextEditorComponent', () => {
   let fixture: ComponentFixture<RichTextEditorComponent>;
@@ -19,7 +21,7 @@ describe('RichTextEditorComponent', () => {
     attachmentService.objectUrl.and.returnValue(Promise.resolve({success: true, url: 'blob:image'}));
     await TestBed.configureTestingModule({
       imports: [RichTextEditorComponent],
-      providers: [provideTranslateService(), {provide: AttachmentService, useValue: attachmentService}],
+      providers: [provideTranslateService(), {provide: AttachmentService, useValue: attachmentService}, {provide: TeamService, useValue: {getCurrentTeamCode: () => 'T1'}}],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RichTextEditorComponent);
@@ -141,6 +143,38 @@ describe('RichTextEditorComponent', () => {
 
       expect(dropped).toHaveBeenCalledWith([file]);
       expect(component.uploadImage).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('mentions', () => {
+    const MENTION = '<span data-type="mention" data-id="4" data-label="Spec" data-mention-type="page">@Spec</span>';
+
+    function create(mentionContext: { projectId: number } | null): RichTextEditorComponent {
+      fixture.destroy();
+      fixture = TestBed.createComponent(RichTextEditorComponent);
+      fixture.componentInstance.content = `<p>See ${MENTION}</p>`;
+      fixture.componentInstance.mentionContext = mentionContext;
+      fixture.detectChanges();
+      return fixture.componentInstance;
+    }
+
+    beforeEach(() => {
+      const mentionService = TestBed.inject(MentionService);
+      spyOn(mentionService, 'resolve').and.returnValue(Promise.resolve({type: 'page', id: 4, status: 'ok', title: 'Spec v2'}));
+    });
+
+    it('keeps mention nodes and renders them as chips when a context is set', fakeAsync(() => {
+      const component = create({projectId: 1});
+      flushMicrotasks();
+
+      expect(component.editor!.getHTML()).toBe(`<p>See ${MENTION}</p>`);
+      expect(fixture.nativeElement.querySelector('.mentionChip').textContent).toContain('Spec v2');
+    }));
+
+    it('has no mention node without a context', () => {
+      const component = create(null);
+
+      expect(component.editor!.getHTML()).toBe('<p>See @Spec</p>');
     });
   });
 });

@@ -1,7 +1,7 @@
-<div class="sidebarBoards__header" [class.sidebarBoards__header--collapsed]="collapsed">
+<div class="sidebarList__header" [class.sidebarList__header--collapsed]="collapsed">
   <button
     type="button"
-    class="sidebarBoards__toggle"
+    class="sidebarList__toggle"
     [appTooltip]="collapsed ? (PHRASES.BOARDS | translate) : ''"
     [attr.aria-label]="PHRASES.BOARDS | translate"
     [attr.aria-expanded]="boardListService.isOpen"
@@ -12,44 +12,44 @@
       <rect x="7" y="7" width="3" height="9"></rect>
       <rect x="14" y="7" width="3" height="5"></rect>
     </svg>
-    <span class="sidebarBoards__label" *ngIf="!collapsed">{{ PHRASES.BOARDS | translate }}</span>
+    <span class="sidebarList__label" *ngIf="!collapsed">{{ PHRASES.BOARDS | translate }}</span>
     <app-icon
       *ngIf="!collapsed"
       name="chevron-right"
-      class="sidebarBoards__chevron"
-      [class.sidebarBoards__chevron--open]="boardListService.isOpen"
+      class="sidebarList__chevron"
+      [class.sidebarList__chevron--open]="boardListService.isOpen"
     ></app-icon>
   </button>
 </div>
 
 <ng-container *ngIf="!collapsed && boardListService.isOpen">
   <ng-container *ngIf="boardListService.boards$ | async as boards">
-    <div class="sidebarBoards__rows" cdkDropList [cdkDropListData]="boards" (cdkDropListDropped)="handleDrop($event)">
+    <div class="sidebarList__rows" cdkDropList [cdkDropListData]="boards" (cdkDropListDropped)="handleDrop($event)">
       <a
         *ngFor="let board of boards; trackBy: trackById"
-        class="sidebarBoards__row"
+        class="sidebarList__row"
         cdkDrag
         cdkDragLockAxis="y"
         [routerLink]="boardLink(board)"
-        routerLinkActive="sidebarBoards__row--active"
+        routerLinkActive="sidebarList__row--active"
         (click)="$event.preventDefault(); handleOpen(board)"
       >
-        <app-icon name="menu" class="sidebarBoards__icon"></app-icon>
-        <span class="sidebarBoards__rowTitle">{{ board.title }}</span>
+        <app-icon name="menu" class="sidebarList__icon"></app-icon>
+        <span class="sidebarList__rowTitle">{{ board.title }}</span>
       </a>
     </div>
-    <p class="sidebarBoards__empty" *ngIf="!boards.length">{{ PHRASES.NO_BOARDS_YET | translate }}</p>
-    <button type="button" class="sidebarBoards__row sidebarBoards__create" (click)="handleCreate()">
-      <span class="sidebarBoards__rowTitle">{{ PHRASES.CREATE_BOARD | translate }}</span>
-      <app-icon name="plus" class="sidebarBoards__icon"></app-icon>
+    <p class="sidebarList__empty" *ngIf="!boards.length">{{ PHRASES.NO_BOARDS_YET | translate }}</p>
+    <button type="button" class="sidebarList__row sidebarList__create" (click)="handleCreate()">
+      <span class="sidebarList__rowTitle">{{ PHRASES.CREATE_BOARD | translate }}</span>
+      <app-icon name="plus" class="sidebarList__icon"></app-icon>
     </button>
     <a
-      class="sidebarBoards__row sidebarBoards__create"
+      class="sidebarList__row sidebarList__create"
       [routerLink]="['/', AppRoutes.DASHBOARD, AppRoutes.BOARD_TEMPLATES]"
-      routerLinkActive="sidebarBoards__row--active"
+      routerLinkActive="sidebarList__row--active"
     >
-      <span class="sidebarBoards__rowTitle">{{ PHRASES.BOARD_TEMPLATES | translate }}</span>
-      <app-icon name="columns" class="sidebarBoards__icon"></app-icon>
+      <span class="sidebarList__rowTitle">{{ PHRASES.BOARD_TEMPLATES | translate }}</span>
+      <app-icon name="columns" class="sidebarList__icon"></app-icon>
     </a>
   </ng-container>
 </ng-container>

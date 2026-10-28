@@ -1,16 +1,29 @@
 class PageContent
   IMAGE_ATTRIBUTES = %w[data-attachment-id alt].freeze
+  MENTION_ATTRIBUTES = %w[data-type data-mention-type data-id data-label].freeze
 
   class Scrubber < Rails::Html::PermitScrubber
-    def initialize
-      super
-      self.tags = Rails::Html::SafeListSanitizer.allowed_tags
+    def initialize(images: true, tags: Rails::Html::SafeListSanitizer.allowed_tags)
+      super()
+      @images = images
+      self.tags = tags
       self.attributes = Rails::Html::SafeListSanitizer.allowed_attributes
     end
 
     def scrub(node)
-      return super unless node.element? && node.name == "img"
+      if Mentions.mention_node?(node)
+        node.attribute_nodes.each { |attribute| attribute.remove unless MENTION_ATTRIBUTES.include?(attribute.name) }
+        CONTINUE
+      elsif @images && node.element? && node.name == "img"
+        scrub_image(node)
+      else
+        super
+      end
+    end
 
+    private
+
+    def scrub_image(node)
       if node["data-attachment-id"].to_s.match?(/\A\d+\z/)
         node.attribute_nodes.each { |attribute| attribute.remove unless IMAGE_ATTRIBUTES.include?(attribute.name) }
         CONTINUE
@@ -22,6 +35,6 @@ class PageContent
   end
 
   def self.sanitize(html)
-    Rails::Html::SafeListSanitizer.new.sanitize(html.to_s, scrubber: Scrubber.new)
+    Mentions.strip_item_labels(Rails::Html::SafeListSanitizer.new.sanitize(html.to_s, scrubber: Scrubber.new), html: true)
   end
 end

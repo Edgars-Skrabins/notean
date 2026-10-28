@@ -8,6 +8,7 @@ export function testNotification(overrides: Partial<Notification> = {}): Notific
     itemId: 10,
     itemTitle: 'Fix login',
     boardId: 3,
+    chatChannelId: null,
     inBacklog: false,
     changedFields: [],
     excerpt: null,

@@ -5,7 +5,7 @@
 <div class="projectDetail" *ngIf="project">
   <div class="projectDetail__main">
     <h2 class="projectDetail__title">{{ project.name }}</h2>
-    <p class="projectDetail__description" *ngIf="project.description">{{ project.description }}</p>
+    <app-mention-content class="projectDetail__description" *ngIf="project.description" [text]="project.description"></app-mention-content>
 
     <section class="projectDetail__items">
       <h3 class="projectDetail__heading">{{ PHRASES.PROJECT_ITEMS | translate }}</h3>

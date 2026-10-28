@@ -20,6 +20,7 @@ export interface RawNotification {
   item_id: number | null;
   item_title: string;
   board_id: number | null;
+  chat_channel_id: number | null;
   in_backlog: boolean;
   changed_fields: NotificationChangedField[];
   excerpt: string | null;
@@ -37,6 +38,7 @@ export function mapNotification(raw: RawNotification): Notification {
     itemId: raw.item_id,
     itemTitle: raw.item_title,
     boardId: raw.board_id,
+    chatChannelId: raw.chat_channel_id,
     inBacklog: raw.in_backlog,
     changedFields: raw.changed_fields,
     excerpt: raw.excerpt,

@@ -18,7 +18,23 @@ class ApplicationController < ActionController::API
   end
 
   def update_team_features_params
-    params.require(:team).permit(:pages_enabled, :diagrams_enabled, :boards_enabled)
+    params.require(:team).permit(:pages_enabled, :diagrams_enabled, :boards_enabled, :chat_enabled)
+  end
+
+  def create_chat_channel_params
+    params.require(:chat_channel).permit(:name, :scope, :project_id, member_ids: [])
+  end
+
+  def update_chat_channel_params
+    params.require(:chat_channel).permit(:name, :gif_rating, member_ids: [])
+  end
+
+  def chat_message_params
+    params.require(:message).permit(:body, :gif_id)
+  end
+
+  def chat_reaction_params
+    params.require(:reaction).permit(:emoji)
   end
 
   def update_membership_params
@@ -175,6 +191,10 @@ class ApplicationController < ActionController::API
 
   def update_notification_params
     params.require(:notification).permit(:read)
+  end
+
+  def resolve_mentions_params
+    params.permit(mentions: [ :type, :id ]).fetch(:mentions, [])
   end
 
   def insert_and_reindex(siblings, record, requested_position, attribute)

@@ -1,0 +1,49 @@
+<div class="chatPage" *ngIf="channel">
+  <header class="chatPage__header">
+    <div class="chatPage__heading">
+      <h2 class="dashboardStub__title chatPage__title"># {{ channel.name }}</h2>
+      <span class="chatPage__scope" *ngIf="channel.scope === 'project'">{{ channel.project?.name }}</span>
+      <span class="chatPage__scope" *ngIf="channel.scope === 'team'">{{ PHRASES.CHANNEL_SCOPE_TEAM | translate }}</span>
+      <app-avatar-stack *ngIf="channel.scope === 'users'" [users]="channel.members" [max]="5"></app-avatar-stack>
+    </div>
+    <div class="chatPage__actions">
+      <app-button *ngIf="channel.scope === 'users' && isMember" variant="ghost" (pressed)="handleLeave()">{{ PHRASES.LEAVE_CHANNEL | translate }}</app-button>
+      <app-icon-button *ngIf="channel.canManage" icon="settings" [tooltip]="PHRASES.CHANNEL_SETTINGS | translate" (pressed)="isSettingsOpen = true"></app-icon-button>
+    </div>
+  </header>
+
+  <app-chat-message-list
+    class="chatPage__messages"
+    [messages]="messages"
+    [channelName]="channel.name"
+    [firstUnreadId]="firstUnreadId"
+    [hasMoreBefore]="hasMoreBefore"
+    [loadingOlder]="loadingOlder"
+    [typingText]="typingText"
+    [currentUserId]="currentUserId"
+    [canModerate]="canModerate"
+    [language]="language"
+    [nicknames]="nicknames"
+    (loadOlder)="loadOlder()"
+    (updated)="replaceMessage($event)"
+    (deleted)="removeMessage($event)"
+    (reactionsChanged)="setReactions($event)"
+  ></app-chat-message-list>
+
+  <app-button *ngIf="hasMoreAfter" class="chatPage__latest" variant="ghost" (pressed)="jumpToLatest()">{{ PHRASES.JUMP_TO_LATEST | translate }}</app-button>
+
+  <app-chat-composer
+    [channelId]="channel.id"
+    [channelName]="channel.name"
+    [mentionContext]="mentionContext"
+    (sent)="handleSent($event)"
+  ></app-chat-composer>
+</div>
+
+<app-chat-channel-settings-dialog
+  *ngIf="isSettingsOpen && channel"
+  [channel]="channel"
+  (saved)="handleSettingsSaved($event)"
+  (deleted)="handleSettingsDeleted()"
+  (cancelled)="isSettingsOpen = false"
+></app-chat-channel-settings-dialog>

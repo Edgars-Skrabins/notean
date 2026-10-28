@@ -1,0 +1,37 @@
+:host {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+:host:empty {
+  display: none;
+}
+
+.chatReactions__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  padding: 2px 8px;
+  border: 1px solid color-mix(in srgb, var(--color-tint) 14%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-tint) 6%, transparent);
+  color: var(--color-text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--font-sm);
+  cursor: pointer;
+}
+
+.chatReactions__chip:hover {
+  border-color: color-mix(in srgb, var(--color-tint) 30%, transparent);
+}
+
+.chatReactions__chip--mine {
+  border-color: var(--color-primary);
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  color: var(--color-text-heading);
+}
+
+.chatReactions__count {
+  font-weight: 600;
+}

@@ -112,7 +112,7 @@ describe('ActivityInboxComponent', () => {
     expect(notificationService.setRead).toHaveBeenCalledOnceWith('abc', 4, true);
     expect(channel.setUnreadCount).toHaveBeenCalledWith(0);
     expect(fixture.componentInstance.notifications[0].read).toBeTrue();
-    expect(router.navigate).toHaveBeenCalledOnceWith([AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES, 9]);
+    expect(router.navigate).toHaveBeenCalledOnceWith([AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES, 9], {queryParams: undefined});
   });
 
   it('opening a deleted item only marks it read', async () => {

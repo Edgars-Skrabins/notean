@@ -1,0 +1,29 @@
+<div
+  class="mentionPicker popupPanel"
+  role="listbox"
+  [attr.aria-busy]="loading"
+  [attr.aria-activedescendant]="results.length ? optionId(activeIndex) : null"
+>
+  <p class="mentionPicker__message" *ngIf="loading && !results.length">{{ PHRASES.MENTION_SEARCHING | translate }}</p>
+  <p class="mentionPicker__message" *ngIf="!loading && !results.length">{{ PHRASES.MENTION_NO_MATCHES | translate }}</p>
+
+  <button
+    type="button"
+    role="option"
+    class="mentionPicker__row"
+    *ngFor="let result of results; let index = index; trackBy: trackResult"
+    [id]="optionId(index)"
+    [attr.aria-selected]="index === activeIndex"
+    [class.mentionPicker__row--active]="index === activeIndex"
+    (mousedown)="$event.preventDefault()"
+    (mouseenter)="hover.emit(index)"
+    (click)="pick.emit(result)"
+  >
+    <app-avatar *ngIf="result.type === 'user'; else itemIcon" [avatar]="result.avatar ?? null" [nickname]="result.title"></app-avatar>
+    <ng-template #itemIcon>
+      <app-icon class="mentionPicker__icon" [name]="mentionIcon(result.type)"></app-icon>
+    </ng-template>
+    <span class="mentionPicker__title">{{ result.title }}</span>
+    <span class="mentionPicker__subtitle" *ngIf="result.subtitle">{{ result.subtitle }}</span>
+  </button>
+</div>

@@ -38,14 +38,6 @@ app-comment-item {
   overflow-wrap: anywhere;
 }
 
-.commentItem__body > :first-child {
-  margin-top: 0;
-}
-
-.commentItem__body > :last-child {
-  margin-bottom: 0;
-}
-
 .commentItem__editActions {
   display: flex;
   justify-content: flex-end;

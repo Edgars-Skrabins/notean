@@ -16,4 +16,26 @@ class PageContentTest < ActiveSupport::TestCase
 
     assert_equal '<p><strong>Bold</strong> <a href="/x">link</a></p>', PageContent.sanitize(html)
   end
+
+  test "keeps only the mention attributes on mention spans and strips item titles" do
+    html = '<p><span data-type="mention" data-mention-type="ticket" data-id="3" data-label="Bug" onclick="x()" style="color:red">@Bug</span> ' \
+      '<span data-type="mention" data-mention-type="user" data-id="4" data-label="Ann" style="x">@Ann</span></p>'
+
+    assert_equal '<p><span data-type="mention" data-mention-type="ticket" data-id="3">@</span> ' \
+      '<span data-type="mention" data-mention-type="user" data-id="4" data-label="Ann">@Ann</span></p>', PageContent.sanitize(html)
+  end
+
+  test "drops mention attributes from spans that are not valid mentions" do
+    html = '<p><span data-type="mention" data-mention-type="team" data-id="3">@x</span></p>'
+
+    assert_equal "<p><span>@x</span></p>", PageContent.sanitize(html)
+  end
+
+  test "comment bodies keep user mentions and strip item titles" do
+    html = '<p><span data-type="mention" data-mention-type="user" data-id="3" data-label="Ann">@Ann</span>' \
+      '<span data-type="mention" data-mention-type="page" data-id="5" data-label="Secret">@Secret</span></p>'
+
+    assert_equal '<p><span data-type="mention" data-mention-type="user" data-id="3" data-label="Ann">@Ann</span>' \
+      '<span data-type="mention" data-mention-type="page" data-id="5">@</span></p>', CommentBody.sanitize(html)
+  end
 end

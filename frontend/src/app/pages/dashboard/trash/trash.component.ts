@@ -30,6 +30,7 @@ const TYPE_ICONS: Record<TrashItemType, IconName> = {
   Board: 'board',
   Ticket: 'ticket',
   Folder: 'folder',
+  ChatChannel: 'chat',
 };
 
 @Component({
@@ -59,6 +60,7 @@ export class TrashComponent implements OnInit, OnDestroy {
     {value: 'board', labelKey: PHRASES.BOARDS},
     {value: 'ticket', labelKey: PHRASES.TICKETS},
     {value: 'folder', labelKey: PHRASES.TRASH_TYPE_FOLDERS},
+    {value: 'chat_channel', labelKey: PHRASES.TRASH_TYPE_CHANNELS},
   ];
 
   entries: TrashEntry[] | null = null;

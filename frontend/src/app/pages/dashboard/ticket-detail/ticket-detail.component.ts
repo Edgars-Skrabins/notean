@@ -43,6 +43,9 @@ import {Attachment, AttachmentUpload} from "@models/attachment.model";
 import {AttachmentListComponent} from "@components/attachment-list/attachment-list.component";
 import {ATTACHMENT_MAX_BYTES} from "@config/attachmentLimits";
 import {droppedFiles, hasDraggedFiles, pastedFiles} from "@utils/fileDrop";
+import {MentionTextEditorComponent} from "@components/mention-text-editor/mention-text-editor.component";
+import {MentionContext} from "@models/mention.model";
+import {stableMentionContext} from "@utils/mentionContext";
 
 @Component({
   selector: 'app-ticket-detail',
@@ -61,7 +64,8 @@ import {droppedFiles, hasDraggedFiles, pastedFiles} from "@utils/fileDrop";
     TicketTagsComponent,
     DropdownComponent,
     CommentListComponent,
-    AttachmentListComponent
+    AttachmentListComponent,
+    MentionTextEditorComponent
   ],
   templateUrl: './ticket-detail.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -94,6 +98,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   private isDeleting = false;
   private uploadKey = 0;
   private dragDepth = 0;
+  private cachedMentionContext: MentionContext = {};
   private remoteChangesSubscription: Subscription | null = null;
 
   private unregisterEscape = () => {};
@@ -119,6 +124,11 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
 
   private get teamCode(): string {
     return this.state.teamCode;
+  }
+
+  get mentionContext(): MentionContext {
+    this.cachedMentionContext = stableMentionContext(this.cachedMentionContext, {boardId: this.boardId, projectId: this.state.board?.projectId ?? null});
+    return this.cachedMentionContext;
   }
 
   private get boardId(): number {

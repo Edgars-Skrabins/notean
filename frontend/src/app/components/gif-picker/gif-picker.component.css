@@ -1,0 +1,44 @@
+:host {
+  display: block;
+}
+
+.gifPicker {
+  max-height: 320px;
+  overflow-y: auto;
+  padding: var(--space-3);
+}
+
+.gifPicker__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--space-2);
+}
+
+.gifPicker__gif {
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-tint) 6%, transparent);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.gifPicker__gif img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.gifPicker__message,
+.gifPicker__attribution {
+  margin: var(--space-2) 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+}
+
+.gifPicker__attribution {
+  margin-bottom: 0;
+  color: var(--color-text-faint);
+  font-size: var(--font-xs);
+  text-align: right;
+}

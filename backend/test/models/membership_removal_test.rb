@@ -79,4 +79,17 @@ class MembershipRemovalTest < ActiveSupport::TestCase
       MembershipRemoval.apply(@membership)
     end
   end
+
+  test "drops chat channel memberships and read states but keeps messages" do
+    channel = ChatChannel.create!(team: @team, creator: @owner, name: "Pair", scope: "users")
+    channel.chat_channel_members.create!(user: @alice)
+    message = ChatMessage.create!(chat_channel: channel, author: @alice, body: "Bye")
+    ChatReadState.advance(channel, @alice, message.id)
+
+    MembershipRemoval.apply(@membership)
+
+    assert_not ChatChannelMember.exists?(user: @alice)
+    assert_not ChatReadState.exists?(user: @alice)
+    assert ChatMessage.exists?(message.id)
+  end
 end

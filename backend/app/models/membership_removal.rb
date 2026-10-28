@@ -12,6 +12,9 @@ class MembershipRemoval
       ProjectMember.where(project: team.projects, user: user).destroy_all
       TicketAssignee.where(ticket: Ticket.unscoped.where(team: team), user: user).destroy_all
       team.favorites.where(user: user).destroy_all
+      team_channel_ids = ChatChannel.unscoped.where(team_id: team.id).select(:id)
+      ChatChannelMember.where(chat_channel_id: team_channel_ids, user: user).delete_all
+      ChatReadState.where(chat_channel_id: team_channel_ids, user: user).delete_all
     end
 
     EDITING_STATUSES.each do |status_class, items|

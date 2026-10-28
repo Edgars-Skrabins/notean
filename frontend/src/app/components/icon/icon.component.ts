@@ -9,7 +9,8 @@ export type IconName =
   | 'inbox' | 'columns' | 'link' | 'more'
   | 'project' | 'page' | 'diagram' | 'board' | 'ticket'
   | 'paperclip' | 'upload' | 'download' | 'file' | 'image'
-  | 'check' | 'dot';
+  | 'check' | 'dot' | 'lock'
+  | 'chat' | 'smile' | 'send' | 'settings';
 
 @Component({
   selector: 'app-icon',

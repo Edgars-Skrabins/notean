@@ -187,7 +187,7 @@ describe('TeamService features', () => {
   });
 
   it('derives the features from the stored team', () => {
-    expect(emitted).toEqual([{pages: true, diagrams: false, boards: true}]);
+    expect(emitted).toEqual([{pages: true, diagrams: false, boards: true, chat: true}]);
     expect(service.isFeatureEnabled('diagrams')).toBeFalse();
     expect(service.isFeatureEnabled('boards')).toBeTrue();
   });
@@ -213,7 +213,7 @@ describe('TeamService features', () => {
     expect(response).toEqual({success: true, team: testTeam({diagramsEnabled: false, boardsEnabled: false})});
     expect(service.isFeatureEnabled('boards')).toBeFalse();
     expect(JSON.parse(localStorage.getItem('currentTeam')!).boardsEnabled).toBeFalse();
-    expect(emitted).toEqual([{pages: true, diagrams: false, boards: true}, {pages: true, diagrams: false, boards: false}]);
+    expect(emitted).toEqual([{pages: true, diagrams: false, boards: true, chat: true}, {pages: true, diagrams: false, boards: false, chat: true}]);
   });
 
   it('updateFeatures returns the server code and keeps the features', async () => {
@@ -236,14 +236,14 @@ describe('TeamService features', () => {
     expect(emitted.length).toBe(1);
 
     service.applyFeatures(testTeam({pagesEnabled: false, diagramsEnabled: false}));
-    expect(emitted[emitted.length - 1]).toEqual({pages: false, diagrams: false, boards: true});
+    expect(emitted[emitted.length - 1]).toEqual({pages: false, diagrams: false, boards: true, chat: true});
     expect(emitted.length).toBe(2);
   });
 
   it('clearing the team turns every feature back on', () => {
     service.clearCurrentTeam();
 
-    expect(emitted[emitted.length - 1]).toEqual({pages: true, diagrams: true, boards: true});
+    expect(emitted[emitted.length - 1]).toEqual({pages: true, diagrams: true, boards: true, chat: true});
   });
 });
 

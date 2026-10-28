@@ -28,7 +28,9 @@ class PagesController < ApplicationController
     return unless place_in_folder(@page, create_page_params, :folder_id)
 
     case save_page(PageAttachments.new(@page, current_user, project_access, pending_file_ids: create_page_params[:attachment_ids]))
-    when :saved then render json: { page: page_json(@page) }, status: :created
+    when :saved
+      render json: { page: page_json(@page) }, status: :created
+      MentionNotifications.call(item: @page, before: "", after: @page.content, actor: current_user, html: true)
     when :quota_exceeded then render_error(ErrorCodes::Attachments::STORAGE_QUOTA_EXCEEDED, :unprocessable_entity)
     else render_error(limit_error_code(@page) || ErrorCodes::Pages::PAGE_CREATE_FAILED, :unprocessable_entity)
     end
@@ -41,6 +43,7 @@ class PagesController < ApplicationController
   def update
     return unless assign_lock_version(@page, update_page_params, :title, :content)
 
+    previous_content = @page.content
     @page.title = update_page_params[:title] if update_page_params[:title].present?
     @page.content = PageContent.sanitize(update_page_params[:content]) if update_page_params.key?(:content)
     return unless place_in_folder(@page, update_page_params, :folder_id)
@@ -51,6 +54,7 @@ class PagesController < ApplicationController
       PageEditingStatus.stop(@page.id, current_user)
       render json: { page: page_json(find_page(@page.id)) }
       Notifier.item_changed(@page, current_user, NOTIFIED_FIELDS.select { |field| @page.saved_change_to_attribute?(field) })
+      MentionNotifications.call(item: @page, before: previous_content, after: @page.content, actor: current_user, html: true)
     when :quota_exceeded
       render_error(ErrorCodes::Attachments::STORAGE_QUOTA_EXCEEDED, :unprocessable_entity)
     else
