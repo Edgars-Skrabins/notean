@@ -27,6 +27,16 @@
   padding: var(--space-5);
 }
 
+.ticketDetail--dropping {
+  border-color: var(--color-primary);
+}
+
+.ticketDetail__dropHint {
+  margin: 0 0 var(--space-3);
+  color: var(--color-primary);
+  text-align: center;
+}
+
 .ticketDetail__header {
   display: flex;
   align-items: center;

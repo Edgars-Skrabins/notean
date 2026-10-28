@@ -178,6 +178,7 @@ export class BoardPageStateService {
       lockVersion: ticket.lockVersion,
       assignees: ticket.assignees,
       tagIds: ticket.tagIds,
+      attachmentCount: ticket.attachmentCount,
       createdAt: ticket.createdAt,
       updatedAt: ticket.updatedAt,
     };
@@ -195,7 +196,16 @@ export class BoardPageStateService {
       ticket.lockVersion = updated.lockVersion;
       ticket.assignees = updated.assignees;
       ticket.tagIds = updated.tagIds;
+      ticket.attachmentCount = updated.attachmentCount;
       ticket.updatedAt = updated.updatedAt;
+      this.ticketChanges$.next({upserted: [{...ticket}], removedIds: []});
+    }
+  }
+
+  setAttachmentCount(ticketId: number, count: number) {
+    const ticket = this.findTicket(ticketId);
+    if (ticket) {
+      ticket.attachmentCount = count;
       this.ticketChanges$.next({upserted: [{...ticket}], removedIds: []});
     }
   }

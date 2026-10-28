@@ -12,6 +12,8 @@ const baseRaw = {
   lock_version: 1,
   creator: {id: 4, nickname: 'bob', avatar: {color: 'red' as const, image_url: null}},
   assignees: [],
+  attachment_count: 0,
+  attachments: [],
   created_at: '2024-01-01T00:00:00Z',
   updated_at: '2024-01-02T00:00:00Z',
 };
@@ -29,7 +31,9 @@ describe('mapTicketDetail', () => {
       tagIds: [],
       lockVersion: 1,
       assignees: [],
+      attachmentCount: 0,
       creator: {id: 4, nickname: 'bob', avatar: {color: 'red', imageUrl: null}},
+      attachments: [],
       createdAt: '2024-01-01T00:00:00Z',
       updatedAt: '2024-01-02T00:00:00Z',
     });

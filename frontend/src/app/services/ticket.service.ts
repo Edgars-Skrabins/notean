@@ -5,11 +5,13 @@ import {apiRequest, versionedRequest} from "@utils/apiRequest";
 import {BulkTicketAction, BulkTicketsResponse, ListTicketsParams, ListTicketsResponse, TicketDetail, TicketResponse, DeleteTicketResponse, UpdateTicketResponse} from "@models/ticket.model";
 import {mapBoardUser, mapTicketSummary, RawBoardUser, RawTicketSummary} from "@services/board.service";
 import {teamPath} from "@utils/teamPath";
+import {mapAttachment, RawAttachment} from "@services/attachment.service";
 
 interface RawTicketDetail extends RawTicketSummary {
   description: string | null;
   board_id: number;
   creator: RawBoardUser;
+  attachments: RawAttachment[];
 }
 
 export function mapTicketDetail(raw: RawTicketDetail): TicketDetail {
@@ -18,6 +20,7 @@ export function mapTicketDetail(raw: RawTicketDetail): TicketDetail {
     description: raw.description ?? '',
     boardId: raw.board_id,
     creator: mapBoardUser(raw.creator),
+    attachments: raw.attachments.map(mapAttachment),
   };
 }
 

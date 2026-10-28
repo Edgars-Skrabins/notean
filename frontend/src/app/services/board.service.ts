@@ -34,6 +34,7 @@ export interface RawTicketSummary {
   lock_version: number;
   assignees: RawBoardUser[];
   tag_ids?: number[];
+  attachment_count: number;
   created_at: string;
   updated_at: string;
 }
@@ -90,6 +91,7 @@ export function mapTicketSummary(raw: RawTicketSummary): TicketSummary {
     lockVersion: raw.lock_version,
     assignees: raw.assignees.map(mapBoardUser),
     tagIds: raw.tag_ids ?? [],
+    attachmentCount: raw.attachment_count,
     createdAt: raw.created_at,
     updatedAt: raw.updated_at,
   };
