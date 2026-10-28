@@ -1,0 +1,39 @@
+.boardTemplate__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.boardTemplate__title {
+  flex: 1;
+  min-width: 0;
+  min-height: var(--control-height);
+  padding: 8px 10px;
+  font-size: var(--font-lg);
+  font-weight: 700;
+}
+
+.boardTemplate__heading {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  color: var(--color-text-heading);
+  font-size: var(--font-xl);
+  font-weight: 700;
+}
+
+.boardTemplate__actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.boardTemplate__sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+}
+
+.boardTemplate__sections > * {
+  flex: 1 1 320px;
+}
