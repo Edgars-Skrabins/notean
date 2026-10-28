@@ -109,7 +109,7 @@ class TemplatesControllerTest < ActionDispatch::IntegrationTest
     assert_response :created
     assert_equal "<p>Logo</p>", json["template"]["content"]
 
-    patch "/teams/#{@team.code}/templates/#{json["template"]["id"]}", params: { template: { content: '<h1>Title</h1><img src="x.png">', lock_version: 0 } }, headers: @headers, as: :json
+    patch "/teams/#{@team.code}/templates/#{json["template"]["id"]}", params: { template: { content: '<h1>Title</h1><img data-attachment-id="5" alt="Logo">', lock_version: 0 } }, headers: @headers, as: :json
     assert_response :success
     assert_equal "<h1>Title</h1>", json["template"]["content"]
   end
