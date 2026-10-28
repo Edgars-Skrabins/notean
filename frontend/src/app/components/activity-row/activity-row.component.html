@@ -1,0 +1,26 @@
+<div class="activityRow" [class.activityRow--unread]="!notification.read">
+  <button type="button" class="activityRow__main" (click)="open.emit(notification)">
+    <app-avatar [avatar]="notification.actor.avatar" [nickname]="notification.actor.nickname" [size]="28"></app-avatar>
+    <span class="activityRow__body">
+      <span class="activityRow__sentence">
+        <strong>{{ notification.actor.nickname }}</strong>
+        {{ kindPhrase | translate }}
+        <app-icon class="activityRow__itemIcon" [name]="itemIcon"></app-icon>
+        <strong>{{ notification.itemTitle }}</strong>
+      </span>
+      <span class="activityRow__detail" *ngIf="notification.changedFields.length">
+        {{ changedFields }}
+        <ng-container *ngIf="notification.eventCount > 1">· {{ PHRASES.ACTIVITY_EVENT_COUNT | translate: {count: notification.eventCount - 1} }}</ng-container>
+      </span>
+      <span class="activityRow__detail" *ngIf="notification.excerpt">{{ notification.excerpt }}</span>
+    </span>
+    <span class="activityRow__time">{{ relativeTime }}</span>
+    <span class="activityRow__dot" *ngIf="!notification.read"></span>
+  </button>
+  <app-icon-button
+    [icon]="notification.read ? 'dot' : 'check'"
+    [size]="28"
+    [tooltip]="(notification.read ? PHRASES.ACTIVITY_MARK_UNREAD : PHRASES.ACTIVITY_MARK_READ) | translate"
+    (pressed)="toggleRead.emit(notification)"
+  ></app-icon-button>
+</div>

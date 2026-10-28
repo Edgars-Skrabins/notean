@@ -1,6 +1,8 @@
 class DiagramsController < ApplicationController
   include FeatureGated
 
+  NOTIFIED_FIELDS = %w[title content].freeze
+
   before_action :authenticate_user!
   before_action :set_team
   before_action :authorize_team_member!
@@ -45,6 +47,7 @@ class DiagramsController < ApplicationController
       @diagram.diagram_contributors.find_or_create_by!(user: current_user)
       DiagramEditingStatus.stop(@diagram.id, current_user)
       render json: { diagram: diagram_json(find_diagram(@diagram.id)) }
+      Notifier.item_changed(@diagram, current_user, NOTIFIED_FIELDS.select { |field| @diagram.saved_change_to_attribute?(field) })
     else
       render_error(limit_error_code(@diagram) || ErrorCodes::Diagrams::DIAGRAM_UPDATE_FAILED, :unprocessable_entity)
     end
@@ -53,7 +56,7 @@ class DiagramsController < ApplicationController
   end
 
   def destroy
-    entry = Trash.move(@diagram, current_user)
+    entry = Notifier.item_deleted(@diagram, current_user) { Trash.move(@diagram, current_user) }
     render json: { trash_entry_ids: [ entry.id ] }
   end
 

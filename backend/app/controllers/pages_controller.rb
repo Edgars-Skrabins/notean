@@ -2,6 +2,8 @@ class PagesController < ApplicationController
   include FeatureGated
   include AttachmentJson
 
+  NOTIFIED_FIELDS = %w[title content].freeze
+
   before_action :authenticate_user!
   before_action :set_team
   before_action :authorize_team_member!
@@ -48,6 +50,7 @@ class PagesController < ApplicationController
       @page.page_contributors.find_or_create_by!(user: current_user)
       PageEditingStatus.stop(@page.id, current_user)
       render json: { page: page_json(find_page(@page.id)) }
+      Notifier.item_changed(@page, current_user, NOTIFIED_FIELDS.select { |field| @page.saved_change_to_attribute?(field) })
     when :quota_exceeded
       render_error(ErrorCodes::Attachments::STORAGE_QUOTA_EXCEEDED, :unprocessable_entity)
     else
@@ -58,7 +61,7 @@ class PagesController < ApplicationController
   end
 
   def destroy
-    entry = Trash.move(@page, current_user)
+    entry = Notifier.item_deleted(@page, current_user) { Trash.move(@page, current_user) }
     render json: { trash_entry_ids: [ entry.id ] }
   end
 

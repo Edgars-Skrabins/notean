@@ -49,6 +49,7 @@
 }
 
 .dashboardSidebar__item {
+  position: relative;
   text-decoration: none;
 }
 

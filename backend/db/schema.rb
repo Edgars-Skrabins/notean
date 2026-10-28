@@ -217,6 +217,31 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
     t.index ["user_id"], name: "index_memberships_on_user_id"
   end
 
+  create_table "notifications", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "team_id", null: false
+    t.integer "actor_user_id", null: false
+    t.string "kind", null: false
+    t.string "item_type", null: false
+    t.integer "item_id"
+    t.string "item_title", null: false
+    t.integer "board_id"
+    t.integer "project_id"
+    t.string "changed_fields", default: [], null: false, array: true
+    t.string "excerpt"
+    t.integer "event_count", default: 1, null: false
+    t.datetime "read_at"
+    t.datetime "occurred_at", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actor_user_id"], name: "index_notifications_on_actor_user_id"
+    t.index ["item_type", "item_id"], name: "index_notifications_on_item_type_and_item_id"
+    t.index ["team_id"], name: "index_notifications_on_team_id"
+    t.index ["user_id", "item_type", "item_id"], name: "index_notifications_on_unread_item_changed", unique: true, where: "(((kind)::text = 'item_changed'::text) AND (read_at IS NULL))"
+    t.index ["user_id", "team_id", "occurred_at"], name: "index_notifications_on_user_id_and_team_id_and_occurred_at"
+    t.index ["user_id", "team_id", "read_at"], name: "index_notifications_on_user_id_and_team_id_and_read_at"
+  end
+
   create_table "page_contributors", force: :cascade do |t|
     t.integer "page_id", null: false
     t.integer "user_id", null: false
@@ -563,6 +588,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
   add_foreign_key "folders", "users", column: "created_by_user_id"
   add_foreign_key "memberships", "teams"
   add_foreign_key "memberships", "users"
+  add_foreign_key "notifications", "teams"
+  add_foreign_key "notifications", "users"
+  add_foreign_key "notifications", "users", column: "actor_user_id"
   add_foreign_key "page_contributors", "pages"
   add_foreign_key "page_contributors", "users"
   add_foreign_key "pages", "folders"

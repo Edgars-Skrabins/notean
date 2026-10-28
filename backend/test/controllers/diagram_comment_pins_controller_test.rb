@@ -94,4 +94,11 @@ class DiagramCommentPinsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 10, json["comment_pins"].length
     assert_equal one, ten
   end
+
+  test "create notifies the diagram's creator" do
+    post pins_url, params: { comment_pin: { x: 1, y: 2, body: "<p>Look here</p>" } }, headers: { "Authorization" => "Bearer #{session_token(@bob)}" }, as: :json
+
+    assert_response :created
+    assert_equal [ [ @user.id, "commented", "Diagram", @diagram.id, "Look here" ] ], Notification.pluck(:user_id, :kind, :item_type, :item_id, :excerpt)
+  end
 end

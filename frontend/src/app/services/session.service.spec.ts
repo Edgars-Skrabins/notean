@@ -8,6 +8,7 @@ import {TeamService} from "@services/team.service";
 import {ThemeService} from "@services/theme.service";
 import {CableService} from "@services/cable.service";
 import {AttachmentService} from "@services/attachment.service";
+import {NotificationChannelService} from "@services/notification-channel.service";
 import {testTeam, rawTestTeam} from "../testing/teamFixtures";
 
 const rawSession = {
@@ -36,9 +37,10 @@ describe('SessionService', () => {
   let themeService: jasmine.SpyObj<ThemeService>;
   let cableService: jasmine.SpyObj<CableService>;
   let attachmentService: jasmine.SpyObj<AttachmentService>;
+  let notificationChannelService: jasmine.SpyObj<NotificationChannelService>;
 
   function create() {
-    return new SessionService(authService, settingsService, avatarService, teamService, themeService, cableService, attachmentService);
+    return new SessionService(authService, settingsService, avatarService, teamService, themeService, cableService, attachmentService, notificationChannelService);
   }
 
   beforeEach(() => {
@@ -50,6 +52,7 @@ describe('SessionService', () => {
     themeService = jasmine.createSpyObj<ThemeService>('ThemeService', ['apply', 'preview']);
     cableService = jasmine.createSpyObj<CableService>('CableService', ['disconnect']);
     attachmentService = jasmine.createSpyObj<AttachmentService>('AttachmentService', ['clear']);
+    notificationChannelService = jasmine.createSpyObj<NotificationChannelService>('NotificationChannelService', ['clear']);
   });
 
   it('loads on construction only when authenticated', () => {
@@ -94,12 +97,13 @@ describe('SessionService', () => {
     expect(teamService.applyActiveTeam).not.toHaveBeenCalled();
   });
 
-  it('clear resets settings, avatar and team, closes the cable connection, drops cached files, but keeps the theme', () => {
+  it('clear resets settings, avatar, team and the unread count, closes the cable connection, drops cached files, but keeps the theme', () => {
     create().clear();
 
     expect(settingsService.clear).toHaveBeenCalled();
     expect(avatarService.clear).toHaveBeenCalled();
     expect(teamService.clearCurrentTeam).toHaveBeenCalled();
+    expect(notificationChannelService.clear).toHaveBeenCalled();
     expect(cableService.disconnect).toHaveBeenCalled();
     expect(attachmentService.clear).toHaveBeenCalled();
     expect(themeService.apply).not.toHaveBeenCalled();

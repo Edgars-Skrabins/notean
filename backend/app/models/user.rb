@@ -15,6 +15,7 @@ class User < ApplicationRecord
   has_many :favorites, dependent: :destroy
   has_many :ticket_assignees, dependent: :destroy
   has_many :user_sessions, dependent: :delete_all
+  has_many :notifications, dependent: :delete_all
   has_one_attached :avatar_image
 
   before_save { self.email = email.downcase }
@@ -38,6 +39,7 @@ class User < ApplicationRecord
   def anonymise!
     transaction do
       memberships.each(&:remove!)
+      notifications.delete_all
       avatar_image.purge if avatar_image.attached?
       update!(email: "deleted-#{id}@deleted.invalid", password: SecureRandom.hex(32), avatar_color: nil, deleted_at: Time.current)
     end

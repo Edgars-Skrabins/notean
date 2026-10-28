@@ -8,7 +8,8 @@ export type IconName =
   | 'flow-terminator' | 'flow-process' | 'flow-decision' | 'flow-io'
   | 'inbox' | 'columns' | 'link' | 'more'
   | 'project' | 'page' | 'diagram' | 'board' | 'ticket'
-  | 'paperclip' | 'upload' | 'download' | 'file' | 'image';
+  | 'paperclip' | 'upload' | 'download' | 'file' | 'image'
+  | 'check' | 'dot';
 
 @Component({
   selector: 'app-icon',

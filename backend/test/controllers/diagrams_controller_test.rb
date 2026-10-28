@@ -269,4 +269,15 @@ class DiagramsControllerTest < ActionDispatch::IntegrationTest
     get "/teams/#{@team.code}/diagrams", params: { folder_id: "root" }, headers: { "Authorization" => "Bearer #{session_token(bob)}" }
     assert_equal [ "Flow" ], JSON.parse(response.body)["diagrams"].map { |diagram| diagram["title"] }
   end
+
+  test "update and destroy notify the diagram's creator" do
+    bob = create_member(@team, "Bob")
+    diagram = Diagram.create!(team: @team, creator: bob, title: "Flow", content: "{}")
+
+    patch "/teams/#{@team.code}/diagrams/#{diagram.id}", params: { diagram: { title: "Flow v2", lock_version: diagram.lock_version } }, headers: @headers, as: :json
+    assert_equal [ [ "item_changed", [ "title" ] ] ], Notification.pluck(:kind, :changed_fields)
+
+    delete "/teams/#{@team.code}/diagrams/#{diagram.id}", headers: @headers
+    assert_equal [ [ "item_deleted", "Flow v2" ] ], Notification.pluck(:kind, :item_title)
+  end
 end

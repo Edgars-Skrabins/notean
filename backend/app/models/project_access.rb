@@ -1,17 +1,22 @@
 class ProjectAccess
   MANAGER_ROLES = %w[owner admin].freeze
 
-  def self.users_who_can_see(board)
-    team = board.team
-    return team.users if board.project_id.nil?
+  def self.users_who_can_see(record)
+    team = record.team
+    project_id = project_id_of(record)
+    return team.users if project_id.nil?
 
     managers = team.memberships.where(role: MANAGER_ROLES).select(:user_id)
-    members = board.project.project_members.select(:user_id)
+    members = ProjectMember.where(project_id: project_id).select(:user_id)
     team.users.where(id: managers).or(team.users.where(id: members))
   end
 
   def self.project_id_of(record)
-    record.is_a?(Ticket) ? record.board.project_id : record.project_id
+    case record
+    when Ticket then record.board.project_id
+    when Project then record.id
+    else record.project_id
+    end
   end
 
   def initialize(user, team)

@@ -13,6 +13,7 @@ class Team < ApplicationRecord
   has_many :folders, dependent: :destroy
   has_many :boards, dependent: :destroy
   has_many :favorites, dependent: :destroy
+  has_many :notifications, dependent: :delete_all
   has_many :projects, dependent: :destroy
   has_many :templates, dependent: :delete_all
   has_many :trash_entries

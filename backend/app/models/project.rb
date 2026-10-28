@@ -14,6 +14,7 @@ class Project < ApplicationRecord
   has_many :diagrams, dependent: :nullify
   has_many :boards, dependent: :nullify
   has_many :folders, dependent: :nullify
+  has_many :notifications, as: :item, dependent: :delete_all
 
   validates :name, presence: true, length: { maximum: TITLE_MAX_LENGTH }, uniqueness: { scope: :team_id, case_sensitive: false }
   validates :description, length: { maximum: DESCRIPTION_MAX_LENGTH }
