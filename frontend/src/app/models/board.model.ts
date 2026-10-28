@@ -1,5 +1,5 @@
 import {Result} from "@models/result.model";
-import {BoardsErrorCode, ProjectsErrorCode, TeamAccessErrorCode} from "@config/errorCodes";
+import {BoardsErrorCode, ProjectsErrorCode, TeamAccessErrorCode, TemplatesErrorCode} from "@config/errorCodes";
 import {TicketSummary} from './ticket.model';
 import {BoardPriority} from './priority.model';
 import {Avatar} from "@models/avatar.model";
@@ -64,7 +64,7 @@ export interface BoardOverview {
 
 export type ListBoardsResponse = Result<{ boards: BoardSummary[] }, TeamAccessErrorCode | ProjectsErrorCode>;
 
-export type BoardResponse = Result<{ board: BoardDetail }, TeamAccessErrorCode | BoardsErrorCode | ProjectsErrorCode>;
+export type BoardResponse = Result<{ board: BoardDetail }, TeamAccessErrorCode | BoardsErrorCode | ProjectsErrorCode | TemplatesErrorCode>;
 
 export type BoardOverviewResponse = Result<{ overview: BoardOverview }, TeamAccessErrorCode | BoardsErrorCode>;
 
