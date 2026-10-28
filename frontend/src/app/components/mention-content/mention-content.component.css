@@ -1,0 +1,24 @@
+app-mention-content {
+  display: block;
+}
+
+.mentionContent .ProseMirror {
+  outline: none;
+  word-break: break-word;
+}
+
+.mentionContent--plain .ProseMirror {
+  white-space: pre-wrap;
+}
+
+.mentionContent--plain p {
+  margin: 0;
+}
+
+.mentionContent .ProseMirror > :first-child {
+  margin-top: 0;
+}
+
+.mentionContent .ProseMirror > :last-child {
+  margin-bottom: 0;
+}
