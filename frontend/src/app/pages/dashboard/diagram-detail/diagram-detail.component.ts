@@ -15,6 +15,7 @@ import {PHRASES} from "@config/phrases";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {FlowchartEditorComponent} from "@components/flowchart-editor/flowchart-editor.component";
 import {ItemDetailLayoutComponent} from "@components/item-detail-layout/item-detail-layout.component";
+import {DiagramCommentLayerComponent} from "@components/diagram-comment-layer/diagram-comment-layer.component";
 import {FolderedItemDetailComponent} from "../foldered-item-detail.base";
 
 @Component({
@@ -22,7 +23,8 @@ import {FolderedItemDetailComponent} from "../foldered-item-detail.base";
   imports: [
     NgIf,
     FlowchartEditorComponent,
-    ItemDetailLayoutComponent
+    ItemDetailLayoutComponent,
+    DiagramCommentLayerComponent
   ],
   templateUrl: './diagram-detail.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,

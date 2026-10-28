@@ -15,6 +15,8 @@
   <div class="flowchartEditor__canvasWrap">
     <div #canvasHost class="flowchartEditor__canvas"></div>
 
+    <ng-content></ng-content>
+
     <p class="flowchartEditor__emptyHint" *ngIf="isEmpty && editable">{{ PHRASES.FLOWCHART_EMPTY_HINT | translate }}</p>
 
     <input
