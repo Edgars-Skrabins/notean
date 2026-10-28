@@ -5,7 +5,8 @@ import {TranslatePipe} from '@ngx-translate/core';
 import {DROPDOWN_POSITIONS} from '@config/overlayPositions';
 import {MenuButtonOption} from '@models/menu-button.model';
 import {AvatarComponent} from '@components/avatar/avatar.component';
-import {IconComponent} from '@components/icon/icon.component';
+import {IconComponent, IconName} from '@components/icon/icon.component';
+import {TooltipDirective} from '@components/tooltip/tooltip.directive';
 
 @Component({
   selector: 'app-menu-button',
@@ -15,7 +16,8 @@ import {IconComponent} from '@components/icon/icon.component';
     OverlayModule,
     TranslatePipe,
     AvatarComponent,
-    IconComponent
+    IconComponent,
+    TooltipDirective
   ],
   templateUrl: './menu-button.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -27,6 +29,7 @@ export class MenuButtonComponent {
   @Input({required: true}) label!: string;
   @Input({required: true}) options: MenuButtonOption[] = [];
   @Input() disabled = false;
+  @Input() icon: IconName | null = null;
   @Output() picked = new EventEmitter<string | number | null>();
 
   isOpen = false;

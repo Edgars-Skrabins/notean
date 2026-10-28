@@ -17,6 +17,19 @@
   cursor: pointer;
 }
 
+.menuButton__trigger--icon {
+  min-height: 28px;
+  padding: 6px;
+  background: none;
+  border-color: transparent;
+  color: var(--color-text-muted);
+}
+
+.menuButton__trigger--icon app-icon {
+  width: 16px;
+  height: 16px;
+}
+
 .menuButton__trigger:hover:not(:disabled),
 .menuButton__trigger[aria-expanded="true"] {
   border-color: var(--color-input-border-focus);

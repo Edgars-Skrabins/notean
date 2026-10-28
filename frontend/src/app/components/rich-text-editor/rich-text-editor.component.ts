@@ -21,6 +21,7 @@ export class RichTextEditorComponent implements AfterViewInit, OnChanges, OnDest
 
   @Input() content = '';
   @Input() editable = true;
+  @Input() compact = false;
   @Output() contentChange = new EventEmitter<string>();
 
   @ViewChild('editorHost', {static: true}) editorHost!: ElementRef<HTMLDivElement>;
@@ -47,6 +48,9 @@ export class RichTextEditorComponent implements AfterViewInit, OnChanges, OnDest
   ngOnChanges(changes: SimpleChanges) {
     if (changes['editable'] && this.editor) {
       this.editor.setEditable(this.editable);
+    }
+    if (changes['content'] && this.editor && this.content !== this.editor.getHTML()) {
+      this.editor.commands.setContent(this.content, {emitUpdate: false});
     }
   }
 
