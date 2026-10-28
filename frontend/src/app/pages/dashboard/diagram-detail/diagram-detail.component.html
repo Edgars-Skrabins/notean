@@ -44,7 +44,7 @@
       [editable]="false"
       (viewportChange)="commentLayer.refresh()"
     >
-      <app-diagram-comment-layer #commentLayer [diagramId]="item.id" [editor]="viewer"></app-diagram-comment-layer>
+      <app-diagram-comment-layer #commentLayer [diagramId]="item.id" [editor]="viewer" [mentionContext]="mentionContext"></app-diagram-comment-layer>
     </app-flowchart-editor>
     <app-flowchart-editor
       class="diagramDetail__editor"

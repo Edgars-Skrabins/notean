@@ -11,6 +11,7 @@
     *ngFor="let comment of comments; trackBy: trackById"
     [comment]="comment"
     [teamCode]="teamCode"
+    [mentionContext]="mentionContext"
     [canEdit]="canEdit(comment)"
     [canDelete]="canDelete(comment)"
     (updated)="handleUpdated($event)"
@@ -19,7 +20,7 @@
   ></app-comment-item>
 
   <div class="commentList__new" *ngIf="isLoaded">
-    <app-rich-text-editor [content]="draft" [compact]="true" (contentChange)="draft = $event"></app-rich-text-editor>
+    <app-rich-text-editor [content]="draft" [compact]="true" [mentionContext]="mentionContext" (contentChange)="draft = $event"></app-rich-text-editor>
     <app-button class="commentList__submit" [disabled]="!canPost" (pressed)="post()">{{ submitLabel | translate }}</app-button>
   </div>
 </section>

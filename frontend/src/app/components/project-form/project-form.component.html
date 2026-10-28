@@ -14,16 +14,18 @@
 
 <div class="authField">
   <label class="authField__label" for="projectDescription">{{ PHRASES.PROJECT_DESCRIPTION | translate }}</label>
-  <textarea
+  <app-mention-text-editor
     *ngIf="!readonly"
-    id="projectDescription"
-    class="projectForm__textarea"
-    rows="3"
-    [ngModel]="params.description"
-    (ngModelChange)="handleDescriptionChange($event)"
-    [maxlength]="DESCRIPTION_MAX_LENGTH"
-  ></textarea>
-  <p class="projectForm__value" *ngIf="readonly">{{ params.description || '—' }}</p>
+    inputId="projectDescription"
+    [value]="params.description"
+    [maxLength]="DESCRIPTION_MAX_LENGTH"
+    [mentionContext]="mentionContext"
+    (valueChange)="handleDescriptionChange($event)"
+  ></app-mention-text-editor>
+  <ng-container *ngIf="readonly">
+    <app-mention-content class="projectForm__value" *ngIf="params.description; else noDescription" [text]="params.description"></app-mention-content>
+    <ng-template #noDescription><p class="projectForm__value">—</p></ng-template>
+  </ng-container>
 </div>
 
 <div class="authField">

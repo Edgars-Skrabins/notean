@@ -17,7 +17,7 @@
       <button type="button" class="projects__row" *ngFor="let project of projects" (click)="handleOpenProject(project)">
         <span class="projects__text">
           <span class="projects__name">{{ project.name }}</span>
-          <span class="projects__description">{{ project.description }}</span>
+          <span class="projects__description">{{ descriptionText(project.description) }}</span>
         </span>
         <span class="projects__meta">
           <app-avatar [avatar]="project.owner.avatar" [nickname]="project.owner.nickname"></app-avatar>

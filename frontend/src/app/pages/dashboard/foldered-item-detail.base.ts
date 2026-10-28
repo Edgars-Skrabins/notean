@@ -20,6 +20,8 @@ import {FolderItemType} from "@models/folder.model";
 import {CreateFolderedItemParams, FolderedItemDetail, FolderedItemEditingUser} from "@models/foldered-item.model";
 import {errorPhrase} from "@utils/errorPhrase";
 import {AppRoutes} from "../../app/app-routes.enum";
+import {MentionContext} from "@models/mention.model";
+import {stableMentionContext} from "@utils/mentionContext";
 
 @Directive()
 export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
@@ -48,6 +50,12 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
   private itemId = 0;
   private folderId: number | null = null;
   private initialDraftProjectId: number | null = null;
+  private cachedMentionContext: MentionContext = {};
+
+  get mentionContext(): MentionContext {
+    this.cachedMentionContext = stableMentionContext(this.cachedMentionContext, {projectId: this.item ? this.item.projectId : this.draftProjectId});
+    return this.cachedMentionContext;
+  }
 
   protected constructor(
     private route: ActivatedRoute,

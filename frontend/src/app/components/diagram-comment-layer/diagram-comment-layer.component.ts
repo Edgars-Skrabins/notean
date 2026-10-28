@@ -17,6 +17,7 @@ import {FlowchartEditorComponent} from '@components/flowchart-editor/flowchart-e
 import {RichTextEditorComponent} from '@components/rich-text-editor/rich-text-editor.component';
 import {errorPhrase} from '@utils/errorPhrase';
 import {commentExcerpt, hasCommentText} from '@utils/commentText';
+import {MentionContext} from "@models/mention.model";
 
 type PanelOrigin = Element | { x: number; y: number; width: number; height: number };
 
@@ -50,6 +51,7 @@ export class DiagramCommentLayerComponent implements OnChanges, OnDestroy {
 
   @Input({required: true}) diagramId!: number;
   @Input({required: true}) editor!: FlowchartEditorComponent;
+  @Input() mentionContext: MentionContext = {};
 
   @ViewChild(CdkConnectedOverlay) panelOverlay?: CdkConnectedOverlay;
 

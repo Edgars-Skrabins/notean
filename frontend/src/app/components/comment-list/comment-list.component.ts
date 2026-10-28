@@ -13,6 +13,7 @@ import {LoadMoreComponent} from '@components/load-more/load-more.component';
 import {RichTextEditorComponent} from '@components/rich-text-editor/rich-text-editor.component';
 import {errorPhrase} from '@utils/errorPhrase';
 import {hasCommentText} from '@utils/commentText';
+import {MentionContext} from '@models/mention.model';
 
 const MANAGER_ROLES = ['admin', 'owner'];
 
@@ -37,6 +38,7 @@ export class CommentListComponent implements OnChanges {
   @Input({required: true}) target!: CommentTarget;
   @Input() title: string | null = PHRASES.COMMENTS;
   @Input() submitLabel: string = PHRASES.POST_COMMENT;
+  @Input() mentionContext: MentionContext = {};
   @Output() commentAdded = new EventEmitter<Comment>();
   @Output() commentUpdated = new EventEmitter<Comment>();
   @Output() commentRemoved = new EventEmitter<Comment>();

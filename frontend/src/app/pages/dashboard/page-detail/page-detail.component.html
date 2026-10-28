@@ -41,6 +41,7 @@
         [content]="item.content"
         [editable]="false"
         [teamCode]="teamCode"
+        [mentionContext]="mentionContext"
       ></app-rich-text-editor>
       <app-rich-text-editor
         *ngIf="mode === 'edit' || mode === 'create'"
@@ -48,6 +49,7 @@
         [editable]="true"
         [teamCode]="teamCode"
         [uploadImage]="uploadImage"
+        [mentionContext]="mentionContext"
         (contentChange)="handleContentChange($event)"
         (filesDropped)="uploadFiles($event)"
       ></app-rich-text-editor>
@@ -63,5 +65,5 @@
       (deleteConfirmed)="handleDeleteAttachment($event)"
     ></app-attachment-list>
   </div>
-  <app-comment-list class="pageDetail__comments" *ngIf="mode === 'view' && commentTarget" [target]="commentTarget"></app-comment-list>
+  <app-comment-list class="pageDetail__comments" *ngIf="mode === 'view' && commentTarget" [target]="commentTarget" [mentionContext]="mentionContext"></app-comment-list>
 </app-item-detail-layout>

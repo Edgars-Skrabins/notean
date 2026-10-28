@@ -44,15 +44,17 @@
           (blur)="handleTitleBlur()"
         />
 
-        <textarea
+        <app-mention-text-editor
           class="ticketDetail__descriptionInput"
-          [(ngModel)]="descriptionDraft"
-          [maxlength]="DESCRIPTION_MAX_LENGTH"
+          [value]="descriptionDraft"
+          [maxLength]="DESCRIPTION_MAX_LENGTH"
           [placeholder]="PHRASES.TICKET_DESCRIPTION_PLACEHOLDER | translate"
-          (keydown.escape)="cancelDescriptionEdit($event)"
-          (focus)="handleDescriptionFocus()"
-          (blur)="handleDescriptionBlur()"
-        ></textarea>
+          [mentionContext]="mentionContext"
+          (valueChange)="descriptionDraft = $event"
+          (escape)="cancelDescriptionEdit($event)"
+          (focused)="handleDescriptionFocus()"
+          (blurred)="handleDescriptionBlur()"
+        ></app-mention-text-editor>
 
         <app-attachment-list
           [teamCode]="state.teamCode"
@@ -62,7 +64,7 @@
           (deleteConfirmed)="handleDeleteAttachment($event)"
         ></app-attachment-list>
 
-        <app-comment-list *ngIf="commentTarget" [target]="commentTarget"></app-comment-list>
+        <app-comment-list *ngIf="commentTarget" [target]="commentTarget" [mentionContext]="mentionContext"></app-comment-list>
       </div>
 
       <div class="ticketDetail__side">

@@ -3,7 +3,7 @@ import {FormsModule} from '@angular/forms';
 import {Router} from '@angular/router';
 import {NgFor, NgIf} from '@angular/common';
 import {debounceTime, distinctUntilChanged, map, Subject, Subscription} from 'rxjs';
-import {TranslatePipe} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {ProjectFilterService} from "@services/project-filter.service";
 import {ProjectService} from "@services/project.service";
@@ -18,6 +18,8 @@ import {ButtonComponent} from "@components/button/button.component";
 import {LoadMoreComponent} from "@components/load-more/load-more.component";
 import {NewProjectDialogComponent} from "@components/new-project-dialog/new-project-dialog.component";
 import {errorPhrase} from "@utils/errorPhrase";
+import {mentionLabelText} from "@utils/mentionTokens";
+import {mentionTypePhrase} from "@utils/mentionChip";
 import {AppRoutes} from "../../../app/app-routes.enum";
 
 @Component({
@@ -60,9 +62,14 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     private projectService: ProjectService,
     private teamService: TeamService,
     private toastService: ToastService,
-    authService: AuthService
+    authService: AuthService,
+    private translateService: TranslateService
   ) {
     this.currentUserId = authService.getCurrentUser()?.id ?? 0;
+  }
+
+  descriptionText(description: string): string {
+    return mentionLabelText(description, (type) => this.translateService.instant(mentionTypePhrase(type)));
   }
 
   ngOnInit() {
