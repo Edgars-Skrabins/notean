@@ -1,0 +1,15 @@
+<span class="capsLabel">{{ PHRASES.TEMPLATE | translate }}</span>
+<input
+  *ngIf="showSearch"
+  type="text"
+  class="boardTemplateSelect__search textInput"
+  [(ngModel)]="searchQuery"
+  (ngModelChange)="handleSearchChange($event)"
+  [placeholder]="PHRASES.SEARCH_TEMPLATES | translate"
+/>
+<app-dropdown
+  [options]="options"
+  [value]="templateId"
+  [ariaLabel]="PHRASES.TEMPLATE | translate"
+  (valueChange)="handleValueChange($event)"
+></app-dropdown>

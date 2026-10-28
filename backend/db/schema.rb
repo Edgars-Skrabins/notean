@@ -459,6 +459,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
     t.index ["code"], name: "index_teams_on_code", unique: true
   end
 
+  create_table "templates", force: :cascade do |t|
+    t.integer "team_id", null: false
+    t.integer "created_by_user_id", null: false
+    t.string "kind", null: false
+    t.string "title", null: false
+    t.text "content", default: "", null: false
+    t.integer "lock_version", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index "lower((title)::text) gin_trgm_ops", name: "index_templates_on_lower_title_trgm", using: :gin
+    t.index ["created_by_user_id"], name: "index_templates_on_created_by_user_id"
+    t.index ["team_id", "kind"], name: "index_templates_on_team_id_and_kind"
+  end
+
   create_table "ticket_assignees", force: :cascade do |t|
     t.integer "ticket_id", null: false
     t.integer "user_id", null: false
@@ -597,6 +611,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
   add_foreign_key "solid_queue_ready_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_recurring_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
   add_foreign_key "solid_queue_scheduled_executions", "solid_queue_jobs", column: "job_id", on_delete: :cascade
+  add_foreign_key "templates", "teams"
+  add_foreign_key "templates", "users", column: "created_by_user_id"
   add_foreign_key "ticket_assignees", "tickets"
   add_foreign_key "ticket_assignees", "users"
   add_foreign_key "ticket_tags", "board_tags", on_delete: :cascade

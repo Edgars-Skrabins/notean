@@ -11,6 +11,7 @@ import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
 import {ProjectFilterService} from "@services/project-filter.service";
 import {FolderService} from "@services/folder.service";
+import {TemplateService} from "@services/template.service";
 import {TrashService} from "@services/trash.service";
 import {CopyLinkService} from "@services/copy-link.service";
 import {AttachmentService} from "@services/attachment.service";
@@ -47,6 +48,7 @@ export class PageDetailComponent extends FolderedItemDetailComponent implements 
   protected readonly itemType = 'Page';
   protected readonly listRoute = AppRoutes.DOCUMENT_PAGES;
   protected readonly untitledItemPhrase = PHRASES.UNTITLED_PAGE;
+  protected readonly templateKind = 'page';
   protected readonly notFoundCode = 'PAGE_NOT_FOUND';
 
   private pageCommentTarget: Extract<CommentTarget, { type: 'page' }> | null = null;
@@ -82,9 +84,10 @@ export class PageDetailComponent extends FolderedItemDetailComponent implements 
     translateService: TranslateService,
     copyLinkService: CopyLinkService,
     trashService: TrashService,
-    private attachmentService: AttachmentService
+    private attachmentService: AttachmentService,
+    templateService: TemplateService
   ) {
-    super(route, pageService, pageEditingService, teamService, authService, navigationService, favoriteService, toastService, projectFilterService, folderService, translateService, copyLinkService, trashService);
+    super(route, pageService, pageEditingService, teamService, authService, navigationService, favoriteService, toastService, projectFilterService, folderService, translateService, copyLinkService, trashService, templateService);
   }
 
   get attachments(): Attachment[] {

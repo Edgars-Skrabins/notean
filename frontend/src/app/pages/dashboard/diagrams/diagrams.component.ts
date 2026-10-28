@@ -16,6 +16,9 @@ import {ButtonComponent} from "@components/button/button.component";
 import {ItemTreeComponent} from "@components/item-tree/item-tree.component";
 import {CreateNamedItemDialogComponent} from "@components/create-named-item-dialog/create-named-item-dialog.component";
 import {FolderProjectDialogComponent} from "@components/folder-project-dialog/folder-project-dialog.component";
+import {MenuButtonComponent} from "@components/menu-button/menu-button.component";
+import {ItemTabsComponent} from "@components/item-tabs/item-tabs.component";
+import {TemplatePickerDialogComponent} from "@components/template-picker-dialog/template-picker-dialog.component";
 import {FolderedListPageComponent} from "../foldered-list-page.base";
 
 @Component({
@@ -28,7 +31,10 @@ import {FolderedListPageComponent} from "../foldered-list-page.base";
     ButtonComponent,
     ItemTreeComponent,
     CreateNamedItemDialogComponent,
-    FolderProjectDialogComponent
+    FolderProjectDialogComponent,
+    MenuButtonComponent,
+    ItemTabsComponent,
+    TemplatePickerDialogComponent
   ],
   templateUrl: './diagrams.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -38,6 +44,7 @@ export class DiagramsComponent extends FolderedListPageComponent {
   protected readonly PHRASES = PHRASES;
   protected readonly itemType: FolderItemType = 'Diagram';
   protected readonly itemRoute = AppRoutes.DIAGRAMS;
+  protected readonly templateKind = 'diagram';
 
   constructor(
     diagramService: DiagramService,

@@ -62,11 +62,19 @@ class ApplicationController < ActionController::API
   end
 
   def create_board_params
-    params.fetch(:board, {}).permit(:title, :project_id)
+    params.fetch(:board, {}).permit(:title, :project_id, :template_id)
   end
 
   def update_board_params
     params.require(:board).permit(:title, :project_id)
+  end
+
+  def create_template_params
+    params.require(:template).permit(:kind, :title, :content)
+  end
+
+  def update_template_params
+    params.require(:template).permit(:title, :content, :lock_version)
   end
 
   def create_column_params

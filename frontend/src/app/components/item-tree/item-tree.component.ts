@@ -10,6 +10,8 @@ import {ConfirmDialogComponent} from '@components/confirm-dialog/confirm-dialog.
 import {FavoriteStarComponent} from '@components/favorite-star/favorite-star.component';
 import {LoadMoreComponent} from '@components/load-more/load-more.component';
 import {ItemTreeRowComponent} from '@components/item-tree-row/item-tree-row.component';
+import {MenuButtonComponent} from '@components/menu-button/menu-button.component';
+import {MenuButtonOption} from '@models/menu-button.model';
 import {FolderDeleteMode} from "@models/folder.model";
 import {compareByTitle} from '@utils/titleOrder';
 
@@ -67,6 +69,7 @@ type DropTarget =
     FavoriteStarComponent,
     LoadMoreComponent,
     ItemTreeRowComponent,
+    MenuButtonComponent,
     CdkDrag
   ],
   templateUrl: './item-tree.component.html',
@@ -75,6 +78,10 @@ type DropTarget =
 })
 export class ItemTreeComponent implements OnChanges {
   protected readonly PHRASES = PHRASES;
+  protected readonly createOptions: MenuButtonOption[] = [
+    {value: 'blank', labelKey: PHRASES.BLANK},
+    {value: 'template', labelKey: PHRASES.FROM_TEMPLATE},
+  ];
 
   @Input() folders: TreeFolder[] = [];
   @Input() items: TreeItem[] = [];
@@ -87,7 +94,7 @@ export class ItemTreeComponent implements OnChanges {
 
   @Output() openItem = new EventEmitter<TreeItem>();
   @Output() createFolder = new EventEmitter<{ parentId: number | null }>();
-  @Output() createItem = new EventEmitter<{ parentId: number | null }>();
+  @Output() createItem = new EventEmitter<{ parentId: number | null; fromTemplate: boolean }>();
   @Output() deleteFolder = new EventEmitter<{ folderId: number; mode: FolderDeleteMode }>();
   @Output() deleteItem = new EventEmitter<{ itemId: number }>();
   @Output() renameFolder = new EventEmitter<{ folderId: number; title: string }>();
@@ -127,6 +134,10 @@ export class ItemTreeComponent implements OnChanges {
 
   levelState(level: ItemLevel): ItemLevelState | undefined {
     return this.levels.get(level);
+  }
+
+  handleCreateChoice(parentId: number, choice: string | number | null) {
+    this.createItem.emit({parentId, fromTemplate: choice === 'template'});
   }
 
   toggleExpand(folder: BuiltFolder) {

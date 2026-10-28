@@ -1,22 +1,24 @@
-<button
-  type="button"
-  class="menuButton__trigger"
-  [class.menuButton__trigger--icon]="icon"
-  cdkOverlayOrigin
-  #origin="cdkOverlayOrigin"
-  aria-haspopup="menu"
-  [attr.aria-expanded]="isOpen"
-  [attr.aria-label]="icon ? (label | translate) : null"
-  [appTooltip]="icon ? (label | translate) : ''"
-  [disabled]="disabled"
-  (click)="toggle()"
->
-  <app-icon *ngIf="icon" [name]="icon"></app-icon>
-  <ng-container *ngIf="!icon">
-    {{ label | translate }}
-    <app-icon class="menuButton__chevron" name="chevron-right"></app-icon>
-  </ng-container>
-</button>
+<span class="menuButton__origin" cdkOverlayOrigin #origin="cdkOverlayOrigin">
+  <button
+    *ngIf="!customTrigger"
+    type="button"
+    class="menuButton__trigger"
+    [class.menuButton__trigger--icon]="icon"
+    aria-haspopup="menu"
+    [attr.aria-expanded]="isOpen"
+    [attr.aria-label]="icon ? (label | translate) : null"
+    [appTooltip]="icon ? (label | translate) : ''"
+    [disabled]="disabled"
+    (click)="toggle()"
+  >
+    <app-icon *ngIf="icon" [name]="icon"></app-icon>
+    <ng-container *ngIf="!icon">
+      {{ label | translate }}
+      <app-icon class="menuButton__chevron" name="chevron-right"></app-icon>
+    </ng-container>
+  </button>
+  <span *ngIf="customTrigger" class="menuButton__custom" (click)="toggle()"><ng-content></ng-content></span>
+</span>
 
 <ng-template
   cdkConnectedOverlay

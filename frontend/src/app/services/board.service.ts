@@ -164,9 +164,9 @@ export class BoardService {
     );
   }
 
-  async createBoard(teamCode: string, title: string, projectId: number | null = null): Promise<BoardResponse> {
+  async createBoard(teamCode: string, title: string, projectId: number | null = null, templateId: number | null = null): Promise<BoardResponse> {
     return apiRequest<BoardResponse>(
-      axiosInstance.post(this.boardsUrl(teamCode), {board: {title, project_id: projectId}}),
+      axiosInstance.post(this.boardsUrl(teamCode), {board: {title, project_id: projectId, template_id: templateId ?? undefined}}),
       (data) => ({success: true, board: mapBoardDetail(data.board)}),
     );
   }

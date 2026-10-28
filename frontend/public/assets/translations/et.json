@@ -400,6 +400,29 @@
   "MENTION_PRIVATE_ITEM": "Privaatne üksus",
   "MENTION_DELETED_ITEM": "Kustutatud üksus",
   "MENTION_SEARCHING": "Otsin…",
+  "TEMPLATES": "Mallid",
+  "NEW_TEMPLATE": "Uus mall",
+  "BLANK": "Tühi",
+  "FROM_TEMPLATE": "Mallist",
+  "FROM_EXISTING_BOARD": "Olemasolevast tahvlist",
+  "USE_TEMPLATE": "Kasuta malli",
+  "DUPLICATE": "Dubleeri",
+  "BUILT_IN": "Sisseehitatud",
+  "BOARD_TEMPLATES": "Tahvlite mallid",
+  "TEMPLATE": "Mall",
+  "DEFAULT_BOARD_TEMPLATE": "Vaikimisi (Teha, Töös, Valmis)",
+  "NO_TEMPLATES_YET": "Malle veel pole",
+  "NO_BOARD_TEMPLATES_YET": "Tahvlite malle veel pole",
+  "SEARCH_TEMPLATES": "Otsi malle…",
+  "CONFIRM_DELETE_TEMPLATE": "Kas kustutada see mall? Seda ei saa tagasi võtta. Sellest loodud üksusi see ei mõjuta.",
+  "CHOOSE_TEMPLATE": "Vali mall",
+  "CHOOSE_BOARD": "Vali tahvel",
+  "TEMPLATE_NAME_PLACEHOLDER": "Malli nimi",
+  "UNTITLED_TEMPLATE": "Pealkirjata mall",
+  "CONFIRM_DISCARD_NEW_TEMPLATE": "Kas loobuda sellest uuest mallist?",
+  "COLUMNS": "Veerud",
+  "REMOVE_COLUMN": "Eemalda veerg",
+  "REORDER_COLUMN": "Lohista järjestuse muutmiseks",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Sinu seanss on aegunud. Palun logi uuesti sisse",
@@ -537,6 +560,13 @@
     "MENTIONS": {
       "TOO_MANY_MENTIONS": "Liiga palju mainimisi",
       "INVALID_MENTION": "Vigane mainimine"
+    },
+    "TEMPLATES": {
+      "TEMPLATE_NOT_FOUND": "Seda malli enam ei ole",
+      "TEMPLATE_CREATE_FAILED": "Malli loomine ebaõnnestus",
+      "TEMPLATE_UPDATE_FAILED": "Malli salvestamine ebaõnnestus",
+      "TEMPLATE_KIND_INVALID": "Tundmatu malli tüüp",
+      "TEMPLATE_CONTENT_INVALID": "Malli sisu ei ole korrektne"
     }
   }
 }

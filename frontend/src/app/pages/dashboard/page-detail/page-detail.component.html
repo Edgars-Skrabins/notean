@@ -44,7 +44,7 @@
         [mentionContext]="mentionContext"
       ></app-rich-text-editor>
       <app-rich-text-editor
-        *ngIf="mode === 'edit' || mode === 'create'"
+        *ngIf="(mode === 'edit' || mode === 'create') && !isLoading"
         [content]="draftContent"
         [editable]="true"
         [teamCode]="teamCode"

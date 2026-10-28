@@ -2,6 +2,11 @@
   display: inline-block;
 }
 
+.menuButton__origin,
+.menuButton__custom {
+  display: inline-flex;
+}
+
 .menuButton__trigger {
   min-height: var(--control-height);
   display: flex;

@@ -1,0 +1,47 @@
+<h3 class="templateRows__label capsLabel">{{ label | translate }}</h3>
+
+<div class="templateRows__rows" cdkDropList [cdkDropListData]="rows" [cdkDropListDisabled]="readonly" (cdkDropListDropped)="handleDropped($event)">
+  <div class="templateRows__row" *ngFor="let row of rows; trackBy: trackByKey" cdkDrag cdkDragLockAxis="y">
+    <span
+      *ngIf="!readonly"
+      class="templateRows__handle"
+      cdkDragHandle
+      [appTooltip]="PHRASES.REORDER_COLUMN | translate"
+      [attr.aria-label]="PHRASES.REORDER_COLUMN | translate"
+    >
+      <app-icon name="menu"></app-icon>
+    </span>
+
+    <app-priority-color-picker
+      *ngIf="row.color"
+      [color]="row.color"
+      [disabled]="readonly"
+      (colorChange)="handleColorChange(row, $event)"
+    ></app-priority-color-picker>
+
+    <input
+      type="text"
+      class="templateRows__input textInput"
+      [(ngModel)]="row.name"
+      [maxlength]="maxLength"
+      [readonly]="readonly"
+      [attr.aria-label]="label | translate"
+    />
+
+    <app-tag-chip *ngIf="chipPreview && row.color && row.name.trim()" [tag]="{name: row.name, color: row.color}"></app-tag-chip>
+
+    <app-icon-button
+      *ngIf="!readonly"
+      icon="trash"
+      variant="danger"
+      [size]="28"
+      [tooltip]="removeLabel | translate"
+      (pressed)="handleRemove(row)"
+    ></app-icon-button>
+  </div>
+</div>
+
+<button *ngIf="!readonly" type="button" class="templateRows__add" (click)="added.emit()">
+  <app-icon name="plus" class="templateRows__addIcon"></app-icon>
+  {{ addLabel | translate }}
+</button>

@@ -1,0 +1,69 @@
+<app-item-detail-layout
+  *ngIf="layoutItem || mode === 'create' || alertMessage"
+  [item]="layoutItem"
+  favoriteType="Page"
+  [titlePlaceholder]="PHRASES.TEMPLATE_NAME_PLACEHOLDER"
+  [editingBannerText]="PHRASES.BEING_EDITED_BY"
+  [confirmDeleteMessage]="PHRASES.CONFIRM_DELETE_TEMPLATE"
+  [discardConfirmMessage]="PHRASES.CONFIRM_DISCARD_NEW_TEMPLATE"
+  [fill]="kind === 'diagram'"
+  [isTemplate]="true"
+  [canManage]="canManage"
+  [showSidebar]="!builtIn && mode !== 'create'"
+  [mode]="mode"
+  [(draftTitle)]="draftTitle"
+  [alertMessage]="alertMessage"
+  [showDeleteConfirm]="showDeleteConfirm"
+  [showDiscardConfirm]="showDiscardConfirm"
+  [showEditConflict]="editConflict !== null"
+  [busy]="isSaving"
+  (closed)="handleClose()"
+  (escapePressed)="handleEscape()"
+  (editRequested)="handleEdit()"
+  (cancelRequested)="handleCancel()"
+  (saveRequested)="handleSave()"
+  (deleteRequested)="handleDelete()"
+  (deleteConfirmed)="handleConfirmDelete()"
+  (deleteCancelled)="handleCancelDelete()"
+  (createRequested)="handleCreate()"
+  (discardConfirmed)="handleConfirmDiscard()"
+  (discardCancelled)="handleCancelDiscard()"
+  (conflictLoadLatest)="handleConflictLoadLatest()"
+  (conflictOverwrite)="handleConflictOverwrite()"
+  (conflictCancelled)="handleConflictCancel()"
+>
+  <ng-container itemDetailActions>
+    <app-button *ngIf="builtIn" variant="ghost" [disabled]="isSaving" (pressed)="handleDuplicate()">{{ PHRASES.DUPLICATE | translate }}</app-button>
+    <app-button [variant]="canManage ? 'ghost' : 'primary'" (pressed)="handleUse()">{{ PHRASES.USE_TEMPLATE | translate }}</app-button>
+  </ng-container>
+
+  <ng-container *ngIf="kind === 'page'">
+    <div class="templateDetail__content" *ngIf="mode === 'view'" [innerHTML]="content"></div>
+    @defer {
+      <app-rich-text-editor
+        *ngIf="mode === 'edit' || mode === 'create'"
+        [content]="draftContent"
+        [editable]="true"
+        (contentChange)="handleContentChange($event)"
+      ></app-rich-text-editor>
+    }
+  </ng-container>
+
+  <ng-container *ngIf="kind === 'diagram'">
+    @defer {
+      <app-flowchart-editor
+        class="templateDetail__diagram"
+        *ngIf="mode === 'view' && layoutItem"
+        [content]="content"
+        [editable]="false"
+      ></app-flowchart-editor>
+      <app-flowchart-editor
+        class="templateDetail__diagram"
+        *ngIf="mode === 'edit' || mode === 'create'"
+        [content]="draftContent"
+        [editable]="true"
+        (contentChange)="handleContentChange($event)"
+      ></app-flowchart-editor>
+    }
+  </ng-container>
+</app-item-detail-layout>
