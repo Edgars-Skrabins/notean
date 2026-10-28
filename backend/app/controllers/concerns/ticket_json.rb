@@ -2,6 +2,7 @@ module TicketJson
   extend ActiveSupport::Concern
 
   ASSIGNEES_PRELOAD = { ticket_assignees: { user: User::AVATAR_PRELOAD } }.freeze
+  TAGS_PRELOAD = { ticket_tags: :tag }.freeze
 
   private
 
@@ -17,6 +18,7 @@ module TicketJson
       lock_version: ticket.lock_version,
       creator: member_json(ticket.creator),
       assignees: assignees_json(ticket),
+      tag_ids: tag_ids_json(ticket),
       created_at: ticket.created_at,
       updated_at: ticket.updated_at
     }
@@ -31,6 +33,7 @@ module TicketJson
       priority_id: ticket.priority_id,
       lock_version: ticket.lock_version,
       assignees: assignees_json(ticket),
+      tag_ids: tag_ids_json(ticket),
       created_at: ticket.created_at,
       updated_at: ticket.updated_at
     }
@@ -42,5 +45,9 @@ module TicketJson
 
   def assignees_json(ticket)
     ticket.ticket_assignees.map { |assignee| member_json(assignee.user) }
+  end
+
+  def tag_ids_json(ticket)
+    ticket.ticket_tags.map(&:tag).sort_by { |tag| [ tag.name.downcase, tag.id ] }.map(&:id)
   end
 end
