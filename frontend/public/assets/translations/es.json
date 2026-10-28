@@ -329,6 +329,21 @@
   "THEME_PAPER": "Papel",
   "THEME_WINTER_FOREST": "Bosque invernal",
   "THEME_NATURE": "Naturaleza",
+  "COMMENTS": "Comentarios",
+  "NO_COMMENTS_YET": "Aún no hay comentarios",
+  "POST_COMMENT": "Comentar",
+  "REPLY": "Responder",
+  "COMMENT_EDITED": "(editado)",
+  "EDIT_COMMENT": "Editar comentario",
+  "DELETE_COMMENT": "Eliminar comentario",
+  "CONFIRM_DELETE_COMMENT": "¿Eliminar este comentario?",
+  "ADD_COMMENT": "Añadir comentario",
+  "COMMENT_PLACE_HINT": "Haz clic en el diagrama para colocar tu comentario",
+  "SHOW_RESOLVED": "Mostrar resueltos",
+  "RESOLVE": "Resolver",
+  "REOPEN": "Reabrir",
+  "COMMENT_REPLIES": "Respuestas: {{count}}",
+  "COMMENT_ACTIONS": "Acciones del comentario",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Tu sesión ha caducado. Vuelve a iniciar sesión",
@@ -439,6 +454,14 @@
     "SEARCH": {
       "QUERY_TOO_SHORT": "Escribe al menos 2 caracteres para buscar",
       "INVALID_TYPE": "No se pudo realizar la búsqueda"
+    },
+    "COMMENTS": {
+      "COMMENT_NOT_FOUND": "Comentario no encontrado",
+      "COMMENT_PIN_NOT_FOUND": "Comentario no encontrado",
+      "COMMENT_BODY_REQUIRED": "Escribe algo antes de publicar",
+      "COMMENT_CREATE_FAILED": "No se pudo publicar el comentario",
+      "COMMENT_UPDATE_FAILED": "No se pudo guardar el comentario",
+      "COMMENT_PIN_UPDATE_FAILED": "No se pudo actualizar el comentario"
     }
   }
 }

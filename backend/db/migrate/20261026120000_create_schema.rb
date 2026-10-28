@@ -72,6 +72,34 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.index [ "board_id" ], name: "index_columns_on_board_id"
     end
 
+    create_table "comments" do |t|
+      t.integer "team_id", null: false
+      t.string "commentable_type", null: false
+      t.integer "commentable_id", null: false
+      t.integer "created_by_user_id", null: false
+      t.text "body", null: false
+      t.datetime "edited_at"
+      t.datetime "created_at", null: false
+      t.datetime "updated_at", null: false
+      t.index [ "commentable_type", "commentable_id", "id" ], name: "index_comments_on_commentable_and_id"
+      t.index [ "created_by_user_id" ], name: "index_comments_on_created_by_user_id"
+      t.index [ "team_id" ], name: "index_comments_on_team_id"
+    end
+
+    create_table "diagram_comment_pins" do |t|
+      t.integer "team_id", null: false
+      t.integer "diagram_id", null: false
+      t.integer "created_by_user_id", null: false
+      t.float "x", null: false
+      t.float "y", null: false
+      t.datetime "resolved_at"
+      t.integer "resolved_by_user_id"
+      t.datetime "created_at", null: false
+      t.datetime "updated_at", null: false
+      t.index [ "diagram_id" ], name: "index_diagram_comment_pins_on_diagram_id"
+      t.index [ "team_id" ], name: "index_diagram_comment_pins_on_team_id"
+    end
+
     create_table "diagram_contributors" do |t|
       t.integer "diagram_id", null: false
       t.integer "user_id", null: false
@@ -281,6 +309,12 @@ class CreateSchema < ActiveRecord::Migration[8.1]
     add_foreign_key "boards", "teams"
     add_foreign_key "boards", "users", column: "created_by_user_id"
     add_foreign_key "columns", "boards"
+    add_foreign_key "comments", "teams"
+    add_foreign_key "comments", "users", column: "created_by_user_id"
+    add_foreign_key "diagram_comment_pins", "diagrams"
+    add_foreign_key "diagram_comment_pins", "teams"
+    add_foreign_key "diagram_comment_pins", "users", column: "created_by_user_id"
+    add_foreign_key "diagram_comment_pins", "users", column: "resolved_by_user_id"
     add_foreign_key "diagram_contributors", "diagrams"
     add_foreign_key "diagram_contributors", "users"
     add_foreign_key "diagrams", "folders"

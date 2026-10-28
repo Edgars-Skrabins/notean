@@ -329,6 +329,21 @@
   "THEME_PAPER": "Paperi",
   "THEME_WINTER_FOREST": "Talvimetsä",
   "THEME_NATURE": "Luonto",
+  "COMMENTS": "Kommentit",
+  "NO_COMMENTS_YET": "Ei vielä kommentteja",
+  "POST_COMMENT": "Kommentoi",
+  "REPLY": "Vastaa",
+  "COMMENT_EDITED": "(muokattu)",
+  "EDIT_COMMENT": "Muokkaa kommenttia",
+  "DELETE_COMMENT": "Poista kommentti",
+  "CONFIRM_DELETE_COMMENT": "Poistetaanko tämä kommentti?",
+  "ADD_COMMENT": "Lisää kommentti",
+  "COMMENT_PLACE_HINT": "Napsauta kaaviota sijoittaaksesi kommenttisi",
+  "SHOW_RESOLVED": "Näytä ratkaistut",
+  "RESOLVE": "Ratkaise",
+  "REOPEN": "Avaa uudelleen",
+  "COMMENT_REPLIES": "Vastauksia: {{count}}",
+  "COMMENT_ACTIONS": "Kommentin toiminnot",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Istuntosi on vanhentunut. Kirjaudu sisään uudelleen",
@@ -439,6 +454,14 @@
     "SEARCH": {
       "QUERY_TOO_SHORT": "Kirjoita vähintään 2 merkkiä hakeaksesi",
       "INVALID_TYPE": "Haku epäonnistui"
+    },
+    "COMMENTS": {
+      "COMMENT_NOT_FOUND": "Kommenttia ei löytynyt",
+      "COMMENT_PIN_NOT_FOUND": "Kommenttia ei löytynyt",
+      "COMMENT_BODY_REQUIRED": "Kirjoita jotain ennen lähettämistä",
+      "COMMENT_CREATE_FAILED": "Kommentin lähettäminen epäonnistui",
+      "COMMENT_UPDATE_FAILED": "Kommentin tallentaminen epäonnistui",
+      "COMMENT_PIN_UPDATE_FAILED": "Kommentin päivittäminen epäonnistui"
     }
   }
 }

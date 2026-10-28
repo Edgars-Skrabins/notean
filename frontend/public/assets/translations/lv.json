@@ -329,6 +329,21 @@
   "THEME_PAPER": "Papīrs",
   "THEME_WINTER_FOREST": "Ziemas mežs",
   "THEME_NATURE": "Daba",
+  "COMMENTS": "Komentāri",
+  "NO_COMMENTS_YET": "Vēl nav komentāru",
+  "POST_COMMENT": "Komentēt",
+  "REPLY": "Atbildēt",
+  "COMMENT_EDITED": "(labots)",
+  "EDIT_COMMENT": "Labot komentāru",
+  "DELETE_COMMENT": "Dzēst komentāru",
+  "CONFIRM_DELETE_COMMENT": "Dzēst šo komentāru?",
+  "ADD_COMMENT": "Pievienot komentāru",
+  "COMMENT_PLACE_HINT": "Noklikšķini uz diagrammas, lai novietotu komentāru",
+  "SHOW_RESOLVED": "Rādīt atrisinātos",
+  "RESOLVE": "Atrisināt",
+  "REOPEN": "Atvērt atkārtoti",
+  "COMMENT_REPLIES": "Atbildes: {{count}}",
+  "COMMENT_ACTIONS": "Komentāra darbības",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Jūsu sesija ir beigusies. Lūdzu, piesakieties vēlreiz",
@@ -439,6 +454,14 @@
     "SEARCH": {
       "QUERY_TOO_SHORT": "Ievadiet vismaz 2 rakstzīmes, lai meklētu",
       "INVALID_TYPE": "Neizdevās veikt meklēšanu"
+    },
+    "COMMENTS": {
+      "COMMENT_NOT_FOUND": "Komentārs nav atrasts",
+      "COMMENT_PIN_NOT_FOUND": "Komentārs nav atrasts",
+      "COMMENT_BODY_REQUIRED": "Pirms publicēšanas uzraksti kaut ko",
+      "COMMENT_CREATE_FAILED": "Neizdevās publicēt komentāru",
+      "COMMENT_UPDATE_FAILED": "Neizdevās saglabāt komentāru",
+      "COMMENT_PIN_UPDATE_FAILED": "Neizdevās atjaunināt komentāru"
     }
   }
 }

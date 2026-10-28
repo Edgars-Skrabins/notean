@@ -139,6 +139,22 @@ class ApplicationController < ActionController::API
     params.require(:password).permit(:current_password, :new_password)
   end
 
+  def create_comment_params
+    params.require(:comment).permit(:body)
+  end
+
+  def update_comment_params
+    params.require(:comment).permit(:body)
+  end
+
+  def create_comment_pin_params
+    params.require(:comment_pin).permit(:x, :y, :body)
+  end
+
+  def update_comment_pin_params
+    params.require(:comment_pin).permit(:resolved)
+  end
+
   def insert_and_reindex(siblings, record, requested_position, attribute)
     insert_at = requested_position.nil? ? siblings.length : requested_position.to_i.clamp(0, siblings.length)
     siblings.insert(insert_at, record).each_with_index do |sibling, index|
@@ -240,7 +256,7 @@ class ApplicationController < ActionController::API
       ErrorCodes::Common::TITLE_TOO_LONG
     elsif record.errors.of_kind?(:content, :too_large)
       ErrorCodes::Common::CONTENT_TOO_LARGE
-    elsif record.errors.of_kind?(:description, :too_long)
+    elsif record.errors.of_kind?(:description, :too_long) || record.errors.of_kind?(:body, :too_long)
       ErrorCodes::Common::DESCRIPTION_TOO_LONG
     end
   end

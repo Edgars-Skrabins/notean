@@ -13,6 +13,8 @@ import {TeamService} from "@services/team.service";
 import {ProjectService} from "@services/project.service";
 import {assignableMembers} from "@utils/assignableMembers";
 import {AuthService} from "@services/auth.service";
+import {CommentListComponent} from "@components/comment-list/comment-list.component";
+import {CommentTarget} from "@models/comment.model";
 import {ToastService} from "@services/toast.service";
 import {ToastType} from "@models/toast.model";
 import {TicketDetail, TicketResponse} from "@models/ticket.model";
@@ -51,7 +53,8 @@ import {AppRoutes} from "../../../app/app-routes.enum";
     MoveToBoardDialogComponent,
     TicketAssigneesComponent,
     TicketTagsComponent,
-    DropdownComponent
+    DropdownComponent,
+    CommentListComponent
   ],
   templateUrl: './ticket-detail.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -78,6 +81,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   readonly currentUserId: number;
 
   private ticketId = 0;
+  commentTarget: CommentTarget | null = null;
   private isDeleting = false;
   private remoteChangesSubscription: Subscription | null = null;
 
@@ -122,6 +126,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.unregisterEscape = this.escapeService.push(() => this.handleGoBack());
     this.ticketId = Number(this.route.snapshot.paramMap.get('ticketId'));
+    this.commentTarget = {type: 'ticket', boardId: this.boardId, ticketId: this.ticketId};
     this.remoteChangesSubscription = this.state.remoteChanges$.subscribe((descriptions) => this.applyRemoteChange(descriptions));
     this.loadTicket();
     this.loadAssignableMembers();

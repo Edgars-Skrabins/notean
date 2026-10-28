@@ -18,8 +18,16 @@ Rails.application.routes.draw do
   patch "users/me/password" => "users#update_password"
   resources :teams, only: [ :create, :update, :destroy ], param: :code do
     resources :folders, only: [ :index, :create, :update, :destroy ]
-    resources :pages, only: [ :index, :create, :show, :update, :destroy ]
-    resources :diagrams, only: [ :index, :create, :show, :update, :destroy ]
+    resources :pages, only: [ :index, :create, :show, :update, :destroy ] do
+      resources :comments, only: [ :index, :create ]
+    end
+    resources :diagrams, only: [ :index, :create, :show, :update, :destroy ] do
+      resources :comment_pins, only: [ :index, :create ], controller: "diagram_comment_pins"
+    end
+    resources :comment_pins, only: [ :update ], controller: "diagram_comment_pins" do
+      resources :comments, only: [ :index, :create ]
+    end
+    resources :comments, only: [ :update, :destroy ]
     resources :boards, only: [ :index, :create, :show, :update, :destroy ] do
       get :overview, on: :member
       resources :columns, only: [ :create, :update, :destroy ]
@@ -32,6 +40,7 @@ Rails.application.routes.draw do
         end
         resources :assignees, only: [ :create, :destroy ], controller: "ticket_assignees", param: :user_id
         resources :tags, only: [ :create, :destroy ], controller: "ticket_tags", param: :tag_id
+        resources :comments, only: [ :index, :create ]
       end
     end
     resources :favorites, only: [ :index, :create, :update, :destroy ]

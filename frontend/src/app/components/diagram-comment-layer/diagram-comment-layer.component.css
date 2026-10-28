@@ -1,0 +1,97 @@
+:host {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.commentLayer__toolbar {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-2);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  pointer-events: auto;
+}
+
+.commentLayer__hint,
+.commentLayer__toggle {
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+}
+
+.commentLayer__toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.commentLayer__placement {
+  position: absolute;
+  inset: 0;
+  cursor: crosshair;
+  pointer-events: auto;
+}
+
+.commentLayer__pin {
+  position: absolute;
+  pointer-events: auto;
+}
+
+.commentLayer__pin--resolved {
+  opacity: 0.5;
+}
+
+.commentLayer__marker {
+  display: block;
+  padding: 2px;
+  min-width: 28px;
+  min-height: 28px;
+  transform: translate(0, -100%);
+  background: var(--color-card-bg);
+  border: 2px solid var(--color-primary-light);
+  border-radius: 50% 50% 50% 0;
+  cursor: pointer;
+}
+
+.commentLayer__card {
+  position: absolute;
+  left: 36px;
+  bottom: 0;
+  display: none;
+  flex-direction: column;
+  gap: var(--space-1);
+  width: 240px;
+  font-size: var(--font-sm);
+}
+
+.commentLayer__pin:hover .commentLayer__card,
+.commentLayer__marker:focus-visible + .commentLayer__card {
+  display: flex;
+}
+
+.commentLayer__replies {
+  color: var(--color-text-muted);
+  font-size: var(--font-xs);
+}
+
+.commentLayer__panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: 360px;
+  max-height: min(480px, calc(100vh - 32px));
+  margin: 0 var(--space-2);
+  padding: var(--space-4);
+}
+
+.commentLayer__resolve {
+  align-self: flex-end;
+}
+
+.commentLayer__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+}

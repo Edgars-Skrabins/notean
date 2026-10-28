@@ -329,6 +329,21 @@
   "THEME_PAPER": "Papper",
   "THEME_WINTER_FOREST": "Vinterskog",
   "THEME_NATURE": "Natur",
+  "COMMENTS": "Kommentarer",
+  "NO_COMMENTS_YET": "Inga kommentarer än",
+  "POST_COMMENT": "Kommentera",
+  "REPLY": "Svara",
+  "COMMENT_EDITED": "(redigerad)",
+  "EDIT_COMMENT": "Redigera kommentar",
+  "DELETE_COMMENT": "Ta bort kommentar",
+  "CONFIRM_DELETE_COMMENT": "Ta bort den här kommentaren?",
+  "ADD_COMMENT": "Lägg till kommentar",
+  "COMMENT_PLACE_HINT": "Klicka på diagrammet för att placera din kommentar",
+  "SHOW_RESOLVED": "Visa lösta",
+  "RESOLVE": "Lös",
+  "REOPEN": "Öppna igen",
+  "COMMENT_REPLIES": "{{count}} svar",
+  "COMMENT_ACTIONS": "Kommentarsåtgärder",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Din session har gått ut. Logga in igen",
@@ -439,6 +454,14 @@
     "SEARCH": {
       "QUERY_TOO_SHORT": "Skriv minst 2 tecken för att söka",
       "INVALID_TYPE": "Det gick inte att söka"
+    },
+    "COMMENTS": {
+      "COMMENT_NOT_FOUND": "Kommentaren hittades inte",
+      "COMMENT_PIN_NOT_FOUND": "Kommentaren hittades inte",
+      "COMMENT_BODY_REQUIRED": "Skriv något innan du publicerar",
+      "COMMENT_CREATE_FAILED": "Kunde inte publicera kommentaren",
+      "COMMENT_UPDATE_FAILED": "Kunde inte spara kommentaren",
+      "COMMENT_PIN_UPDATE_FAILED": "Kunde inte uppdatera kommentaren"
     }
   }
 }

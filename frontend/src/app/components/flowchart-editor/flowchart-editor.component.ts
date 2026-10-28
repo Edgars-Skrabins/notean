@@ -152,6 +152,7 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
   @Input() content = '';
   @Input() editable = true;
   @Output() contentChange = new EventEmitter<string>();
+  @Output() viewportChange = new EventEmitter<void>();
 
   @ViewChild('canvasHost', {static: true}) canvasHost!: ElementRef<HTMLDivElement>;
 
@@ -232,6 +233,9 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
       this.handleGraphChange();
     });
     graph.on('cell:removed', () => this.handleGraphChange());
+    graph.on('translate', () => this.viewportChange.emit());
+    graph.on('scale', () => this.viewportChange.emit());
+    graph.on('resize', () => this.viewportChange.emit());
     graph.on('cell:changed', () => this.handleGraphChange());
 
     graph.on('node:dblclick', ({node, e}) => {
@@ -270,6 +274,22 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
     this.themeSubscription?.unsubscribe();
     this.graph?.dispose();
     this.graph = null;
+  }
+
+  clientToLocal(clientX: number, clientY: number): { x: number; y: number } | null {
+    if (!this.graph) {
+      return null;
+    }
+    const point = this.graph.clientToLocal(clientX, clientY);
+    return {x: point.x, y: point.y};
+  }
+
+  localToCanvas(x: number, y: number): { x: number; y: number } | null {
+    if (!this.graph) {
+      return null;
+    }
+    const point = this.graph.localToGraph(x, y);
+    return {x: point.x, y: point.y};
   }
 
   handleAddShape(shape: 'flow-terminator' | 'flow-process' | 'flow-decision' | 'flow-io') {

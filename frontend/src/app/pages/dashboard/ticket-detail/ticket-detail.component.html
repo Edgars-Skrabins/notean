@@ -43,6 +43,8 @@
           (focus)="handleDescriptionFocus()"
           (blur)="handleDescriptionBlur()"
         ></textarea>
+
+        <app-comment-list *ngIf="commentTarget" [target]="commentTarget"></app-comment-list>
       </div>
 
       <div class="ticketDetail__side">

@@ -7,6 +7,7 @@ import {TagService} from "@services/tag.service";
 import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
 import {TeamService} from "@services/team.service";
+import {CommentService} from "@services/comment.service";
 import {AuthService} from "@services/auth.service";
 import {ProjectService} from "@services/project.service";
 import {ProjectDetail} from "@models/project.model";
@@ -522,9 +523,11 @@ describe('TicketDetailComponent input limits', () => {
   it('limits the title input and the description textarea to the content limits', async () => {
     const ticketService = jasmine.createSpyObj<TicketService>('TicketService', ['getTicket']);
     ticketService.getTicket.and.returnValue(Promise.resolve({success: true, ticket: ticketDetail(1, 10)}));
-    const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['fetchTeamMembers', 'getCurrentTeamCode']);
+    const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['fetchTeamMembers', 'getCurrentTeamCode', 'getCurrentRole']);
     teamService.fetchTeamMembers.and.returnValue(Promise.resolve([]));
     teamService.getCurrentTeamCode.and.returnValue('abc');
+    const commentService = jasmine.createSpyObj<CommentService>('CommentService', ['list']);
+    commentService.list.and.resolveTo({success: true, comments: [], hasMore: false});
     const authService = jasmine.createSpyObj<AuthService>('AuthService', ['getCurrentUser']);
     authService.getCurrentUser.and.returnValue({id: 1, email: 'alice@example.com'});
 
@@ -542,6 +545,7 @@ describe('TicketDetailComponent input limits', () => {
         {provide: ProjectService, useValue: jasmine.createSpyObj<ProjectService>('ProjectService', ['getProject'])},
         {provide: AuthService, useValue: authService},
         {provide: EscapeService, useValue: escapeServiceStub().service},
+        {provide: CommentService, useValue: commentService},
       ],
     }).compileComponents();
 
