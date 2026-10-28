@@ -7,6 +7,7 @@ const rawTicket = (id: number, title: string, position: number, columnId: number
   column_id: columnId,
   lock_version: 2,
   assignees: [],
+  attachment_count: 1,
   created_at: '2024-01-01T00:00:00Z',
   updated_at: '2024-01-02T00:00:00Z',
 });
@@ -20,6 +21,7 @@ const ticket = (id: number, title: string, position: number, columnId: number | 
   lockVersion: 2,
   assignees: [],
   tagIds: [],
+  attachmentCount: 1,
   createdAt: '2024-01-01T00:00:00Z',
   updatedAt: '2024-01-02T00:00:00Z',
 });

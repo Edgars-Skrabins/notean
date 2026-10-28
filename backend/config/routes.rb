@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   post "teams/:code/leave" => "members#leave"
   patch "teams/:code/nickname" => "teams#update_nickname"
   patch "teams/:code/features" => "teams#update_features"
+  get "teams/:code/storage_usage" => "teams#storage_usage"
   get "users/me" => "users#me"
   delete "users/me" => "users#destroy"
   patch "users/me/settings" => "users#update_settings"
@@ -20,6 +21,7 @@ Rails.application.routes.draw do
     resources :folders, only: [ :index, :create, :update, :destroy ]
     resources :pages, only: [ :index, :create, :show, :update, :destroy ] do
       resources :comments, only: [ :index, :create ]
+      resources :attachments, only: [ :create, :destroy ], controller: "page_attachments"
     end
     resources :diagrams, only: [ :index, :create, :show, :update, :destroy ] do
       resources :comment_pins, only: [ :index, :create ], controller: "diagram_comment_pins"
@@ -28,6 +30,9 @@ Rails.application.routes.draw do
       resources :comments, only: [ :index, :create ]
     end
     resources :comments, only: [ :update, :destroy ]
+    resources :attachments, only: [ :create, :destroy ] do
+      get :file, on: :member
+    end
     resources :boards, only: [ :index, :create, :show, :update, :destroy ] do
       get :overview, on: :member
       resources :columns, only: [ :create, :update, :destroy ]
@@ -41,6 +46,7 @@ Rails.application.routes.draw do
         resources :assignees, only: [ :create, :destroy ], controller: "ticket_assignees", param: :user_id
         resources :tags, only: [ :create, :destroy ], controller: "ticket_tags", param: :tag_id
         resources :comments, only: [ :index, :create ]
+        resources :attachments, only: [ :create, :destroy ], controller: "ticket_attachments"
       end
     end
     resources :favorites, only: [ :index, :create, :update, :destroy ]

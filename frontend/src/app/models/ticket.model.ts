@@ -1,6 +1,7 @@
 import {EditConflict, Result} from "@models/result.model";
 import {BoardsErrorCode, TicketsErrorCode, TeamAccessErrorCode} from "@config/errorCodes";
 import {BoardUser} from './board.model';
+import {Attachment} from './attachment.model';
 
 export interface TicketSummary {
   id: number;
@@ -11,6 +12,7 @@ export interface TicketSummary {
   lockVersion: number;
   assignees: BoardUser[];
   tagIds: number[];
+  attachmentCount: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -19,6 +21,7 @@ export interface TicketDetail extends TicketSummary {
   description: string;
   boardId: number;
   creator: BoardUser;
+  attachments: Attachment[];
 }
 
 export interface TicketStatus {

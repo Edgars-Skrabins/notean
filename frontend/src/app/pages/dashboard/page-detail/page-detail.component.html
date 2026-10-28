@@ -34,14 +34,34 @@
   (conflictCancelled)="handleConflictCancel()"
   (draftProjectChange)="handleDraftProjectChange($event)"
 >
-  <div class="pageDetail__content" *ngIf="mode === 'view' && item" [innerHTML]="item.content"></div>
+  <div class="pageDetail" (dragover)="handleDragOver($event)" (drop)="handleDrop($event)" (paste)="handlePaste($event)">
+    @defer {
+      <app-rich-text-editor
+        *ngIf="mode === 'view' && item"
+        [content]="item.content"
+        [editable]="false"
+        [teamCode]="teamCode"
+      ></app-rich-text-editor>
+      <app-rich-text-editor
+        *ngIf="mode === 'edit' || mode === 'create'"
+        [content]="draftContent"
+        [editable]="true"
+        [teamCode]="teamCode"
+        [uploadImage]="uploadImage"
+        (contentChange)="handleContentChange($event)"
+        (filesDropped)="uploadFiles($event)"
+      ></app-rich-text-editor>
+    }
+
+    <app-attachment-list
+      *ngIf="item || mode === 'create'"
+      class="pageDetail__attachments"
+      [teamCode]="teamCode"
+      [attachments]="attachments"
+      [uploads]="uploads"
+      (filesSelected)="uploadFiles($event)"
+      (deleteConfirmed)="handleDeleteAttachment($event)"
+    ></app-attachment-list>
+  </div>
   <app-comment-list class="pageDetail__comments" *ngIf="mode === 'view' && commentTarget" [target]="commentTarget"></app-comment-list>
-  @defer {
-    <app-rich-text-editor
-      *ngIf="mode === 'edit' || mode === 'create'"
-      [content]="draftContent"
-      [editable]="true"
-      (contentChange)="handleContentChange($event)"
-    ></app-rich-text-editor>
-  }
 </app-item-detail-layout>

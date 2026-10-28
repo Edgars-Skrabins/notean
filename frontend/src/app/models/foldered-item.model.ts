@@ -1,6 +1,7 @@
 import {EditConflict, Result} from "@models/result.model";
 import {ErrorCode, FoldersErrorCode, ProjectsErrorCode, TeamAccessErrorCode} from "@config/errorCodes";
 import {Avatar} from "@models/avatar.model";
+import {Attachment} from "@models/attachment.model";
 
 export interface FolderedItemUser {
   id: number;
@@ -28,6 +29,7 @@ export interface FolderedItemDetail extends FolderedItemSummary {
   content: string;
   contributors: FolderedItemUser[];
   currentlyEditing: FolderedItemEditingUser | null;
+  attachments: Attachment[];
 }
 
 export interface CreateFolderedItemParams {
@@ -35,6 +37,7 @@ export interface CreateFolderedItemParams {
   content: string;
   projectId: number | null;
   folderId: number | null;
+  attachmentIds?: number[];
 }
 
 export interface SaveFolderedItemParams {

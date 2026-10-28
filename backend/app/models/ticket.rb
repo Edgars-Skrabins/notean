@@ -19,6 +19,7 @@ class Ticket < ApplicationRecord
   has_many :assignees, through: :ticket_assignees, source: :user
   has_many :ticket_tags, dependent: :delete_all
   has_many :tags, through: :ticket_tags
+  has_many :attachments, as: :attachable, dependent: :destroy
 
   scope :without_description, -> { select(column_names - %w[description]) }
 

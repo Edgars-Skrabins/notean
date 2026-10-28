@@ -1,0 +1,40 @@
+<section class="attachmentList">
+  <div class="attachmentList__header">
+    <h3 class="attachmentList__title capsLabel">{{ PHRASES.ATTACHMENTS | translate }}</h3>
+    <app-button variant="ghost" icon="upload" (pressed)="openPicker()">{{ PHRASES.UPLOAD_FILES | translate }}</app-button>
+    <input #fileInput type="file" multiple hidden (change)="handlePicked(fileInput)">
+  </div>
+
+  <p *ngIf="isEmpty" class="attachmentList__empty">{{ PHRASES.NO_ATTACHMENTS | translate }}</p>
+
+  <ul class="attachmentList__rows">
+    <li *ngFor="let upload of uploads" class="attachmentList__upload">
+      <app-icon name="upload" class="attachmentList__uploadIcon"></app-icon>
+      <span class="attachmentList__uploadName">{{ upload.filename }}</span>
+      <span class="attachmentList__uploadProgress">{{ PHRASES.UPLOADING | translate: {progress: upload.progress} }}</span>
+    </li>
+    <app-attachment-row
+      *ngFor="let attachment of attachments"
+      [teamCode]="teamCode"
+      [attachment]="attachment"
+      [canDelete]="canDelete(attachment)"
+      (opened)="handleOpen($event)"
+      (deleteRequested)="pendingDelete = $event"
+    ></app-attachment-row>
+  </ul>
+</section>
+
+<app-attachment-preview
+  *ngIf="previewed"
+  [teamCode]="teamCode"
+  [attachment]="previewed"
+  (closed)="previewed = null"
+  (downloadRequested)="download($event)"
+></app-attachment-preview>
+
+<app-confirm-dialog
+  *ngIf="pendingDelete"
+  [message]="PHRASES.CONFIRM_DELETE_ATTACHMENT | translate"
+  (confirmed)="confirmDelete()"
+  (cancelled)="pendingDelete = null"
+></app-confirm-dialog>

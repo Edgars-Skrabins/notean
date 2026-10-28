@@ -15,7 +15,7 @@ describe('TagService', () => {
   const url = '/teams/abc/boards/9/tags';
   const ticketsUrl = '/teams/abc/boards/9/tickets/1/tags';
   const rawTicket = {
-    id: 1, title: 'Fix', position: 0, column_id: null, lock_version: 0, assignees: [], tag_ids: [3],
+    id: 1, title: 'Fix', position: 0, column_id: null, lock_version: 0, assignees: [], tag_ids: [3], attachment_count: 0, attachments: [],
     created_at: '2026-10-01T00:00:00Z', updated_at: '2026-10-01T00:00:00Z', description: null, board_id: 9,
     creator: {id: 1, nickname: 'alice', avatar: {color: 'red', image_url: null}},
   };

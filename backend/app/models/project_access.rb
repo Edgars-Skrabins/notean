@@ -48,6 +48,18 @@ class ProjectAccess
     visible?(record) && (project_id.blank? || self.class.project_id_of(record) == project_id.to_i)
   end
 
+  def attachment_visible?(attachment)
+    if attachment.pending?
+      attachment.created_by_user_id == @user.id
+    elsif attachment.template?
+      true
+    elsif attachment.ticket?
+      @team.feature_enabled?(:boards) && scope(@team.boards).joins(:tickets).exists?(tickets: { id: attachment.attachable_id })
+    else
+      @team.feature_enabled?(:pages) && scope(@team.pages).exists?(id: attachment.attachable_id)
+    end
+  end
+
   def scope(relation)
     relation.where(project_id: [ nil, *visible_project_ids ])
   end

@@ -5,6 +5,7 @@ import {apiRequest, versionedRequest} from "@utils/apiRequest";
 import {teamPath} from "@utils/teamPath";
 import {projectQuery} from "@utils/projectQuery";
 import {mapAvatar, RawAvatar} from "@services/avatar.service";
+import {mapAttachment, RawAttachment} from "@services/attachment.service";
 import {
   CreateFolderedItemParams,
   DeleteFolderedItemResponse,
@@ -45,6 +46,7 @@ interface RawFolderedItemDetail extends RawFolderedItemSummary {
   content: string;
   contributors?: RawFolderedItemUser[];
   currently_editing: RawFolderedItemEditingUser | null;
+  attachments?: RawAttachment[];
 }
 
 export function mapFolderedItemUser(raw: RawFolderedItemUser): FolderedItemUser {
@@ -81,6 +83,7 @@ export function mapFolderedItemDetail(raw: RawFolderedItemDetail): FolderedItemD
     content: raw.content,
     contributors: (raw.contributors ?? []).map(mapFolderedItemUser),
     currentlyEditing: raw.currently_editing ? mapFolderedItemEditingUser(raw.currently_editing) : null,
+    attachments: (raw.attachments ?? []).map(mapAttachment),
   };
 }
 
@@ -102,7 +105,7 @@ export abstract class FolderedItemService<E extends ErrorCode> {
 
   async create(teamCode: string, params: CreateFolderedItemParams): Promise<FolderedItemResponse<E>> {
     return this.requestItem(axiosInstance.post(this.itemsUrl(teamCode), {
-      [this.key]: {title: params.title, content: params.content, project_id: params.projectId, folder_id: params.folderId}
+      [this.key]: {title: params.title, content: params.content, project_id: params.projectId, folder_id: params.folderId, ...(params.attachmentIds ? {attachment_ids: params.attachmentIds} : {})}
     }));
   }
 

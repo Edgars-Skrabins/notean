@@ -19,6 +19,7 @@ import {EscapeService} from "@services/escape.service";
 import {TrashService} from "@services/trash.service";
 import {CopyLinkService} from "@services/copy-link.service";
 import {AppRoutes} from "../../../app/app-routes.enum";
+import {AttachmentService} from "@services/attachment.service";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 import {createBoardState, ticketDetail} from "../../../testing/boardFixtures";
 import {escapeServiceStub, EscapeServiceStub} from "../../../testing/escapeServiceStub";
@@ -36,6 +37,7 @@ describe('TicketDetailComponent editing', () => {
   let state: BoardPageStateService;
   let ticket: TicketDetail;
   let escape: EscapeServiceStub;
+  let attachmentService: jasmine.SpyObj<AttachmentService>;
   const route = {snapshot: {paramMap: new Map([['ticketId', '1']])}} as unknown as ActivatedRoute;
 
   beforeEach(() => {
@@ -52,7 +54,8 @@ describe('TicketDetailComponent editing', () => {
     authService.getCurrentUser.and.returnValue({id: 1, email: 'alice@example.com'});
     state = createBoardState();
     escape = escapeServiceStub();
-    component = new TicketDetailComponent(route, router, state, ticketService, tagService, favoriteService, toastService, teamService, projectService, authService, escape.service, {} as CopyLinkService, trashServiceStub().service);
+    attachmentService = jasmine.createSpyObj<AttachmentService>('AttachmentService', ['uploadToTicket', 'deleteFromTicket']);
+    component = new TicketDetailComponent(route, router, state, ticketService, tagService, favoriteService, toastService, teamService, projectService, authService, escape.service, {} as CopyLinkService, trashServiceStub().service, attachmentService);
 
     ticket = {...ticketDetail(1, 10), title: 'My Ticket'};
     component.ticket = ticket;
@@ -518,6 +521,86 @@ describe('TicketDetailComponent editing', () => {
     state.remoteChanges$.next(new Map());
 
     expect(router.navigate).not.toHaveBeenCalled();
+  });
+
+  describe('attachments', () => {
+    const uploaded = {id: 30, filename: 'log.txt', contentType: 'text/plain', byteSize: 10, kind: 'file' as const, uploader: {id: 1, nickname: 'alice', avatar: {color: 'red' as const, imageUrl: null}}, createdAt: '2026-10-28T00:00:00Z'};
+
+    function paste(files: File[], text = ''): ClipboardEvent {
+      const data = new DataTransfer();
+      files.forEach((file) => data.items.add(file));
+      if (text) {
+        data.setData('text/plain', text);
+      }
+      return new ClipboardEvent('paste', {clipboardData: data, cancelable: true});
+    }
+
+    it('uploads pasted files, lists them first and updates the board count', fakeAsync(() => {
+      attachmentService.uploadToTicket.and.returnValue(Promise.resolve({success: true, attachment: uploaded}));
+      component.ticket = {...ticket, attachments: [{...uploaded, id: 29}], attachmentCount: 1};
+      const file = new File(['x'], 'log.txt', {type: 'text/plain'});
+      const event = paste([file]);
+
+      component.handlePaste(event);
+      expect(component.uploads.map((upload) => upload.filename)).toEqual(['log.txt']);
+      flushMicrotasks();
+
+      expect(event.defaultPrevented).toBeTrue();
+      expect(attachmentService.uploadToTicket).toHaveBeenCalledWith('abc', 9, 0, file, jasmine.any(Function));
+      expect(component.uploads).toEqual([]);
+      expect(component.ticket?.attachments.map((attachment) => attachment.id)).toEqual([30, 29]);
+      expect(state.findTicket(1)?.attachmentCount).toBe(2);
+    }));
+
+    it('leaves a text-only paste to the focused field', () => {
+      const event = paste([], 'hello');
+
+      component.handlePaste(event);
+
+      expect(event.defaultPrevented).toBeFalse();
+      expect(attachmentService.uploadToTicket).not.toHaveBeenCalled();
+    });
+
+    it('rejects files over the size limit without uploading', () => {
+      const big = new File(['x'], 'big.bin');
+      Object.defineProperty(big, 'size', {value: 26 * 1024 * 1024});
+
+      component.uploadFiles([big]);
+
+      expect(attachmentService.uploadToTicket).not.toHaveBeenCalled();
+      expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: 'ERRORS.ATTACHMENTS.FILE_TOO_LARGE'});
+    });
+
+    it('shows the error and drops the upload row when an upload fails', fakeAsync(() => {
+      attachmentService.uploadToTicket.and.returnValue(Promise.resolve({success: false, code: 'STORAGE_QUOTA_EXCEEDED'}));
+
+      component.uploadFiles([new File(['x'], 'a.txt')]);
+      flushMicrotasks();
+
+      expect(component.uploads).toEqual([]);
+      expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: 'ERRORS.ATTACHMENTS.STORAGE_QUOTA_EXCEEDED'});
+    }));
+
+    it('removes a deleted attachment', fakeAsync(() => {
+      attachmentService.deleteFromTicket.and.returnValue(Promise.resolve({success: true}));
+      component.ticket = {...ticket, attachments: [uploaded], attachmentCount: 1};
+
+      component.handleDeleteAttachment(uploaded);
+      flushMicrotasks();
+
+      expect(component.ticket?.attachments).toEqual([]);
+      expect(state.findTicket(1)?.attachmentCount).toBe(0);
+    }));
+
+    it('reloads the list when a remote change reports a different count', fakeAsync(() => {
+      ticketService.getTicket.and.returnValue(Promise.resolve({success: true, ticket: {...ticket, attachments: [uploaded], attachmentCount: 1}}));
+      state.findTicket(1)!.attachmentCount = 1;
+
+      component.applyRemoteChange(new Map());
+      flushMicrotasks();
+
+      expect(component.ticket?.attachments).toEqual([uploaded]);
+    }));
   });
 });
 

@@ -17,7 +17,7 @@ import {CopyLinkService} from "@services/copy-link.service";
 import {ToastType} from "@models/toast.model";
 import {FavoritableType} from "@models/favorite.model";
 import {FolderItemType} from "@models/folder.model";
-import {FolderedItemDetail, FolderedItemEditingUser} from "@models/foldered-item.model";
+import {CreateFolderedItemParams, FolderedItemDetail, FolderedItemEditingUser} from "@models/foldered-item.model";
 import {errorPhrase} from "@utils/errorPhrase";
 import {AppRoutes} from "../../app/app-routes.enum";
 
@@ -43,7 +43,8 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
   editConflict: FolderedItemDetail | null = null;
   isCreating = false;
 
-  private readonly teamCode: string;
+  protected readonly teamCode: string;
+  protected isCreated = false;
   private itemId = 0;
   private folderId: number | null = null;
   private initialDraftProjectId: number | null = null;
@@ -56,7 +57,7 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private navigationService: NavigationService,
     private favoriteService: FavoriteService,
-    private toastService: ToastService,
+    protected toastService: ToastService,
     private projectFilterService: ProjectFilterService,
     private folderService: FolderService,
     private translateService: TranslateService,
@@ -216,7 +217,8 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
       title: this.draftTitle.trim() ? this.draftTitle : this.translateService.instant(this.untitledItemPhrase),
       content: this.draftContent,
       projectId: this.draftProjectId,
-      folderId: this.folderId
+      folderId: this.folderId,
+      ...this.createExtras()
     })
       .then((response) => {
         this.isCreating = false;
@@ -226,6 +228,7 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
           return;
         }
 
+        this.isCreated = true;
         const {id, title, folderId, projectId, lockVersion, creator, createdAt, updatedAt} = response.item;
         const createdItem = {id, title, folderId, projectId, lockVersion, creator, createdAt, updatedAt};
         this.navigationService.navigateWithState({createdItem}, AppRoutes.DASHBOARD, this.listRoute);
@@ -287,6 +290,13 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
     this.navigationService.navigate(AppRoutes.DASHBOARD, this.listRoute);
   }
 
+  protected createExtras(): Partial<CreateFolderedItemParams> {
+    return {};
+  }
+
+  protected afterEditEnded() {
+  }
+
   private startCreate() {
     const folder = this.route.snapshot.queryParamMap.get('folder');
 
@@ -334,12 +344,14 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
         this.favoriteService.renameItem(this.favoriteType, response.item.id, response.item.title);
         this.mode = 'view';
         this.editingService.stopEditing();
+        this.afterEditEnded();
       });
   }
 
   private leaveEditMode() {
     this.mode = 'view';
     this.editingService.stopEditing();
+    this.afterEditEnded();
   }
 
   private requestDiscard() {

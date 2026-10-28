@@ -364,6 +364,18 @@
   "TRASH_TYPE_ALL": "Tous les types",
   "TRASH_TYPE_FOLDERS": "Dossiers",
   "SEARCH_TRASH": "Rechercher dans la corbeille par titre",
+  "ATTACHMENTS": "Pièces jointes",
+  "UPLOAD_FILES": "Importer",
+  "NO_ATTACHMENTS": "Aucune pièce jointe pour l'instant",
+  "DELETE_ATTACHMENT": "Supprimer la pièce jointe",
+  "CONFIRM_DELETE_ATTACHMENT": "Supprimer cette pièce jointe ?",
+  "INSERT_IMAGE": "Insérer une image",
+  "DOWNLOAD": "Télécharger",
+  "STORAGE_USAGE": "Stockage : {{used}} sur {{quota}} utilisés",
+  "UPLOADING": "Importation {{progress}} %",
+  "CLOSE_PREVIEW": "Fermer l'aperçu",
+  "ATTACHMENT_COUNT": "{{count}} pièces jointes",
+  "DROP_FILES_HERE": "Déposez des fichiers pour les joindre",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Votre session a expiré. Veuillez vous reconnecter",
@@ -486,6 +498,14 @@
     "TRASH": {
       "TRASH_ENTRY_NOT_FOUND": "Cet élément n'est plus dans la corbeille",
       "TRASH_BOARD_IN_TRASH": "Restaurez d'abord le tableau"
+    },
+    "ATTACHMENTS": {
+      "ATTACHMENT_NOT_FOUND": "Pièce jointe introuvable",
+      "FILE_REQUIRED": "Choisissez un fichier à importer",
+      "FILE_TOO_LARGE": "Les fichiers ne doivent pas dépasser 25 Mo",
+      "INLINE_IMAGE_TYPE_INVALID": "Les images intégrées doivent être au format PNG, JPEG, GIF ou WebP",
+      "STORAGE_QUOTA_EXCEEDED": "Votre équipe a utilisé les 500 Mo de stockage",
+      "ATTACHMENT_UPLOAD_FAILED": "Impossible d'importer le fichier"
     }
   }
 }

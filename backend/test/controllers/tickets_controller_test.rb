@@ -412,6 +412,16 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 0, kept.reload.position
   end
 
+  test "bulk delete keeps the trashed tickets' attachments for a restore" do
+    first = ticket_in(nil, "First", 0)
+    attachment = create_attachment(first, @user)
+
+    delete bulk_url, params: { bulk: { ticket_ids: [ first.id ] } }, headers: @headers, as: :json
+
+    assert_response :ok
+    assert Attachment.exists?(attachment.id)
+  end
+
   test "bulk delete with a foreign ticket deletes nothing" do
     other_board = Board.create!(team: @team, creator: @user, title: "Other")
     foreign = Ticket.create!(board: other_board, team: @team, created_by_user_id: @user.id, title: "Foreign", position: 0)

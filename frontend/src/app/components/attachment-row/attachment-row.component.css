@@ -1,0 +1,69 @@
+.attachmentRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: var(--row-height);
+  border-radius: var(--radius-sm);
+}
+
+.attachmentRow:hover {
+  background: color-mix(in srgb, var(--color-tint) 6%, transparent);
+}
+
+.attachmentRow__open {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-1) var(--space-2);
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.attachmentRow__thumb {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--color-tint) 8%, transparent);
+  color: var(--color-text-muted);
+}
+
+.attachmentRow__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.attachmentRow__icon {
+  width: 18px;
+  height: 18px;
+}
+
+.attachmentRow__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.attachmentRow__name {
+  overflow: hidden;
+  color: var(--color-text-heading);
+  font-size: var(--font-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attachmentRow__details {
+  color: var(--color-text-faint);
+  font-size: var(--font-xs);
+}

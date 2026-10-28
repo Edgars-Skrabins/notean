@@ -364,6 +364,18 @@
   "TRASH_TYPE_ALL": "Alle Typen",
   "TRASH_TYPE_FOLDERS": "Ordner",
   "SEARCH_TRASH": "Papierkorb nach Titel durchsuchen",
+  "ATTACHMENTS": "Anhänge",
+  "UPLOAD_FILES": "Hochladen",
+  "NO_ATTACHMENTS": "Noch keine Anhänge",
+  "DELETE_ATTACHMENT": "Anhang löschen",
+  "CONFIRM_DELETE_ATTACHMENT": "Diesen Anhang löschen?",
+  "INSERT_IMAGE": "Bild einfügen",
+  "DOWNLOAD": "Herunterladen",
+  "STORAGE_USAGE": "Speicher: {{used}} von {{quota}} belegt",
+  "UPLOADING": "Wird hochgeladen {{progress}} %",
+  "CLOSE_PREVIEW": "Vorschau schließen",
+  "ATTACHMENT_COUNT": "{{count}} Anhänge",
+  "DROP_FILES_HERE": "Dateien zum Anhängen hier ablegen",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an",
@@ -486,6 +498,14 @@
     "TRASH": {
       "TRASH_ENTRY_NOT_FOUND": "Dieses Element ist nicht mehr im Papierkorb",
       "TRASH_BOARD_IN_TRASH": "Stelle zuerst das Board wieder her"
+    },
+    "ATTACHMENTS": {
+      "ATTACHMENT_NOT_FOUND": "Anhang nicht gefunden",
+      "FILE_REQUIRED": "Wähle eine Datei zum Hochladen",
+      "FILE_TOO_LARGE": "Dateien dürfen höchstens 25 MB groß sein",
+      "INLINE_IMAGE_TYPE_INVALID": "Eingebettete Bilder müssen PNG, JPEG, GIF oder WebP sein",
+      "STORAGE_QUOTA_EXCEEDED": "Dein Team hat alle 500 MB Speicher belegt",
+      "ATTACHMENT_UPLOAD_FAILED": "Die Datei konnte nicht hochgeladen werden"
     }
   }
 }

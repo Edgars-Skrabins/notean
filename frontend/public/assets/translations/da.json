@@ -364,6 +364,18 @@
   "TRASH_TYPE_ALL": "Alle typer",
   "TRASH_TYPE_FOLDERS": "Mapper",
   "SEARCH_TRASH": "Søg i papirkurven efter titel",
+  "ATTACHMENTS": "Vedhæftninger",
+  "UPLOAD_FILES": "Upload",
+  "NO_ATTACHMENTS": "Ingen vedhæftninger endnu",
+  "DELETE_ATTACHMENT": "Slet vedhæftning",
+  "CONFIRM_DELETE_ATTACHMENT": "Slet denne vedhæftning?",
+  "INSERT_IMAGE": "Indsæt billede",
+  "DOWNLOAD": "Download",
+  "STORAGE_USAGE": "Lagerplads: {{used}} af {{quota}} brugt",
+  "UPLOADING": "Uploader {{progress}} %",
+  "CLOSE_PREVIEW": "Luk forhåndsvisning",
+  "ATTACHMENT_COUNT": "{{count}} vedhæftninger",
+  "DROP_FILES_HERE": "Slip filer for at vedhæfte",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Din session er udløbet. Log ind igen",
@@ -486,6 +498,14 @@
     "TRASH": {
       "TRASH_ENTRY_NOT_FOUND": "Elementet er ikke længere i papirkurven",
       "TRASH_BOARD_IN_TRASH": "Gendan tavlen først"
+    },
+    "ATTACHMENTS": {
+      "ATTACHMENT_NOT_FOUND": "Vedhæftningen blev ikke fundet",
+      "FILE_REQUIRED": "Vælg en fil at uploade",
+      "FILE_TOO_LARGE": "Filer må højst være 25 MB",
+      "INLINE_IMAGE_TYPE_INVALID": "Indsatte billeder skal være PNG, JPEG, GIF eller WebP",
+      "STORAGE_QUOTA_EXCEEDED": "Dit team har brugt alle 500 MB lagerplads",
+      "ATTACHMENT_UPLOAD_FAILED": "Filen kunne ikke uploades"
     }
   }
 }

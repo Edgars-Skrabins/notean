@@ -7,7 +7,8 @@ export type IconName =
   | 'menu' | 'zoom-fit' | 'star' | 'star-filled'
   | 'flow-terminator' | 'flow-process' | 'flow-decision' | 'flow-io'
   | 'inbox' | 'columns' | 'link' | 'more'
-  | 'project' | 'page' | 'diagram' | 'board' | 'ticket';
+  | 'project' | 'page' | 'diagram' | 'board' | 'ticket'
+  | 'paperclip' | 'upload' | 'download' | 'file' | 'image';
 
 @Component({
   selector: 'app-icon',

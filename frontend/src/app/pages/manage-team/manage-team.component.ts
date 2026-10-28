@@ -21,6 +21,9 @@ import {CheckboxComponent} from "@components/checkbox/checkbox.component";
 import {MenuButtonComponent} from "@components/menu-button/menu-button.component";
 import {errorPhrase} from "@utils/errorPhrase";
 import {EscapeService} from "@services/escape.service";
+import {AttachmentService} from "@services/attachment.service";
+import {StorageUsage} from "@models/attachment.model";
+import {formatBytes} from "@utils/formatBytes";
 
 export type MemberAction = 'make_admin' | 'make_user' | 'transfer_ownership' | 'remove';
 
@@ -81,6 +84,7 @@ export class ManageTeamComponent implements OnInit, OnDestroy {
   showDeleteConfirm = false;
   pendingAction: { member: TeamMember; action: MemberAction } | null = null;
   features: TeamFeatures;
+  storage: StorageUsage | null = null;
 
   protected teamCode: string;
 
@@ -93,7 +97,8 @@ export class ManageTeamComponent implements OnInit, OnDestroy {
     private translateService: TranslateService,
     private toastService: ToastService,
     private escapeService: EscapeService,
-    private teamChannelService: TeamChannelService
+    private teamChannelService: TeamChannelService,
+    private attachmentService: AttachmentService
   ) {
     const team = this.teamService.getCurrentTeam()!;
     this.teamCode = team.code;
@@ -117,6 +122,10 @@ export class ManageTeamComponent implements OnInit, OnDestroy {
     return this.translateService.instant(MEMBER_ACTION_CONFIRMS[this.pendingAction.action], {name: this.pendingAction.member.nickname});
   }
 
+  get storageParams(): { used: string; quota: string } | null {
+    return this.storage ? {used: formatBytes(this.storage.usedBytes), quota: formatBytes(this.storage.quotaBytes)} : null;
+  }
+
   get pendingActionLabel(): string {
     return this.pendingAction ? MEMBER_ACTION_LABELS[this.pendingAction.action] : '';
   }
@@ -126,6 +135,7 @@ export class ManageTeamComponent implements OnInit, OnDestroy {
     this.teamChannelService.connect(this.teamCode);
     this.membersChangedSubscription = this.teamChannelService.membersChanged$.subscribe(() => this.loadMembers());
     this.loadMembers();
+    this.loadStorage();
   }
 
   ngOnDestroy() {
@@ -266,5 +276,12 @@ export class ManageTeamComponent implements OnInit, OnDestroy {
     }
 
     return this.teamService.updateMemberRole(this.teamCode, member.id, action === 'make_admin' ? 'admin' : 'user');
+  }
+
+  private loadStorage() {
+    this.attachmentService.storageUsage(this.teamCode)
+      .then((response) => {
+        this.storage = response.success ? response.storage : null;
+      });
   }
 }

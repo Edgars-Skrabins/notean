@@ -364,6 +364,18 @@
   "TRASH_TYPE_ALL": "Todos los tipos",
   "TRASH_TYPE_FOLDERS": "Carpetas",
   "SEARCH_TRASH": "Buscar en la papelera por título",
+  "ATTACHMENTS": "Adjuntos",
+  "UPLOAD_FILES": "Subir",
+  "NO_ATTACHMENTS": "Aún no hay adjuntos",
+  "DELETE_ATTACHMENT": "Eliminar adjunto",
+  "CONFIRM_DELETE_ATTACHMENT": "¿Eliminar este adjunto?",
+  "INSERT_IMAGE": "Insertar imagen",
+  "DOWNLOAD": "Descargar",
+  "STORAGE_USAGE": "Almacenamiento: {{used}} de {{quota}} usados",
+  "UPLOADING": "Subiendo {{progress}} %",
+  "CLOSE_PREVIEW": "Cerrar vista previa",
+  "ATTACHMENT_COUNT": "{{count}} adjuntos",
+  "DROP_FILES_HERE": "Suelta archivos para adjuntarlos",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Tu sesión ha caducado. Vuelve a iniciar sesión",
@@ -486,6 +498,14 @@
     "TRASH": {
       "TRASH_ENTRY_NOT_FOUND": "Este elemento ya no está en la papelera",
       "TRASH_BOARD_IN_TRASH": "Restaura primero el tablero"
+    },
+    "ATTACHMENTS": {
+      "ATTACHMENT_NOT_FOUND": "No se encontró el adjunto",
+      "FILE_REQUIRED": "Elige un archivo para subir",
+      "FILE_TOO_LARGE": "Los archivos deben ocupar 25 MB o menos",
+      "INLINE_IMAGE_TYPE_INVALID": "Las imágenes insertadas deben ser PNG, JPEG, GIF o WebP",
+      "STORAGE_QUOTA_EXCEEDED": "Tu equipo ha usado los 500 MB de almacenamiento",
+      "ATTACHMENT_UPLOAD_FAILED": "No se pudo subir el archivo"
     }
   }
 }

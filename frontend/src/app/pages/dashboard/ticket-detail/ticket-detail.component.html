@@ -1,7 +1,15 @@
 <div class="ticketDetailOverlay" *ngIf="ticket">
   <div class="ticketDetailOverlay__backdrop" (click)="handleGoBack()"></div>
 
-  <div class="ticketDetail">
+  <div
+    class="ticketDetail"
+    [class.ticketDetail--dropping]="isDraggingFiles"
+    (dragenter)="handleDragEnter($event)"
+    (dragover)="handleDragOver($event)"
+    (dragleave)="handleDragLeave($event)"
+    (drop)="handleDrop($event)"
+    (paste)="handlePaste($event)"
+  >
     <div class="ticketDetail__header">
       <div class="ticketDetail__headerActions">
         <app-button *ngIf="ticket.columnId !== null" variant="ghost" icon="inbox" (pressed)="handleMoveToBacklog()">{{ PHRASES.MOVE_TO_BACKLOG | translate }}</app-button>
@@ -17,6 +25,8 @@
         <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE | translate" (pressed)="handleGoBack()"></app-icon-button>
       </div>
     </div>
+
+    <p class="ticketDetail__dropHint" *ngIf="isDraggingFiles">{{ PHRASES.DROP_FILES_HERE | translate }}</p>
 
     <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
@@ -43,6 +53,14 @@
           (focus)="handleDescriptionFocus()"
           (blur)="handleDescriptionBlur()"
         ></textarea>
+
+        <app-attachment-list
+          [teamCode]="state.teamCode"
+          [attachments]="ticket.attachments"
+          [uploads]="uploads"
+          (filesSelected)="uploadFiles($event)"
+          (deleteConfirmed)="handleDeleteAttachment($event)"
+        ></app-attachment-list>
 
         <app-comment-list *ngIf="commentTarget" [target]="commentTarget"></app-comment-list>
       </div>
