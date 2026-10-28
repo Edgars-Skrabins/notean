@@ -89,6 +89,64 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.index [ "trash_entry_id" ], name: "index_boards_on_trash_entry_id"
     end
 
+    create_table "chat_channel_members" do |t|
+      t.integer "chat_channel_id", null: false
+      t.integer "user_id", null: false
+      t.datetime "created_at", null: false
+      t.datetime "updated_at", null: false
+      t.index [ "chat_channel_id", "user_id" ], name: "index_chat_channel_members_on_chat_channel_id_and_user_id", unique: true
+      t.index [ "user_id" ], name: "index_chat_channel_members_on_user_id"
+    end
+
+    create_table "chat_channels" do |t|
+      t.integer "team_id", null: false
+      t.string "name", null: false
+      t.string "scope", null: false
+      t.integer "project_id"
+      t.string "gif_rating", default: "pg", null: false
+      t.integer "created_by_user_id", null: false
+      t.datetime "last_message_at"
+      t.bigint "trash_entry_id"
+      t.datetime "created_at", null: false
+      t.datetime "updated_at", null: false
+      t.index "team_id, lower((name)::text)", name: "index_chat_channels_on_team_id_and_lower_name", unique: true
+      t.index [ "created_by_user_id" ], name: "index_chat_channels_on_created_by_user_id"
+      t.index [ "project_id" ], name: "index_chat_channels_on_project_id"
+      t.index [ "trash_entry_id" ], name: "index_chat_channels_on_trash_entry_id"
+    end
+
+    create_table "chat_messages" do |t|
+      t.integer "chat_channel_id", null: false
+      t.integer "user_id", null: false
+      t.string "kind", default: "text", null: false
+      t.text "body", default: "", null: false
+      t.jsonb "gif"
+      t.datetime "edited_at"
+      t.datetime "created_at", null: false
+      t.datetime "updated_at", null: false
+      t.index [ "chat_channel_id", "id" ], name: "index_chat_messages_on_chat_channel_id_and_id"
+      t.index [ "user_id" ], name: "index_chat_messages_on_user_id"
+    end
+
+    create_table "chat_reactions" do |t|
+      t.integer "chat_message_id", null: false
+      t.integer "user_id", null: false
+      t.string "emoji", null: false
+      t.datetime "created_at", null: false
+      t.index [ "chat_message_id", "user_id", "emoji" ], name: "index_chat_reactions_on_message_user_emoji", unique: true
+      t.index [ "user_id" ], name: "index_chat_reactions_on_user_id"
+    end
+
+    create_table "chat_read_states" do |t|
+      t.integer "chat_channel_id", null: false
+      t.integer "user_id", null: false
+      t.bigint "last_read_message_id", default: 0, null: false
+      t.datetime "created_at", null: false
+      t.datetime "updated_at", null: false
+      t.index [ "chat_channel_id", "user_id" ], name: "index_chat_read_states_on_chat_channel_id_and_user_id", unique: true
+      t.index [ "user_id" ], name: "index_chat_read_states_on_user_id"
+    end
+
     create_table "columns" do |t|
       t.integer "board_id", null: false
       t.string "title", null: false
@@ -215,6 +273,7 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.string "item_title", null: false
       t.integer "board_id"
       t.integer "project_id"
+      t.integer "chat_channel_id"
       t.string "changed_fields", default: [], null: false, array: true
       t.string "excerpt"
       t.integer "event_count", default: 1, null: false
@@ -444,6 +503,7 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.boolean "pages_enabled", default: true, null: false
       t.boolean "diagrams_enabled", default: true, null: false
       t.boolean "boards_enabled", default: true, null: false
+      t.boolean "chat_enabled", default: true, null: false
       t.index [ "code" ], name: "index_teams_on_code", unique: true
     end
 
@@ -553,6 +613,18 @@ class CreateSchema < ActiveRecord::Migration[8.1]
     add_foreign_key "boards", "teams"
     add_foreign_key "boards", "trash_entries"
     add_foreign_key "boards", "users", column: "created_by_user_id"
+    add_foreign_key "chat_channel_members", "chat_channels", on_delete: :cascade
+    add_foreign_key "chat_channel_members", "users"
+    add_foreign_key "chat_channels", "projects"
+    add_foreign_key "chat_channels", "teams"
+    add_foreign_key "chat_channels", "trash_entries"
+    add_foreign_key "chat_channels", "users", column: "created_by_user_id"
+    add_foreign_key "chat_messages", "chat_channels", on_delete: :cascade
+    add_foreign_key "chat_messages", "users"
+    add_foreign_key "chat_reactions", "chat_messages", on_delete: :cascade
+    add_foreign_key "chat_reactions", "users"
+    add_foreign_key "chat_read_states", "chat_channels", on_delete: :cascade
+    add_foreign_key "chat_read_states", "users"
     add_foreign_key "columns", "boards"
     add_foreign_key "comments", "teams"
     add_foreign_key "comments", "users", column: "created_by_user_id"

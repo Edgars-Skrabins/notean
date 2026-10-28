@@ -19,6 +19,8 @@ class ProjectAccess
     end
   end
 
+  attr_reader :user
+
   def initialize(user, team)
     @user = user
     @team = team

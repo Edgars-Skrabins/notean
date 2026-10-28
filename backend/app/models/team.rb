@@ -1,7 +1,7 @@
 class Team < ApplicationRecord
   include ContentLimits
 
-  FEATURES = %w[pages diagrams boards].freeze
+  FEATURES = %w[pages diagrams boards chat].freeze
 
   has_secure_password
 
@@ -16,6 +16,7 @@ class Team < ApplicationRecord
   has_many :notifications, dependent: :delete_all
   has_many :projects, dependent: :destroy
   has_many :templates, dependent: :delete_all
+  has_many :chat_channels, dependent: :destroy
   has_many :trash_entries
   has_many :attachments, dependent: :destroy
 
