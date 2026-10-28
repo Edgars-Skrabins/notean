@@ -32,6 +32,7 @@ Rails.application.routes.draw do
         resources :assignees, only: [ :create, :destroy ], controller: "ticket_assignees", param: :user_id
       end
     end
+    resources :templates, only: [ :index, :create, :show, :update, :destroy ]
     resources :favorites, only: [ :index, :create, :update, :destroy ]
     get :my_work, to: "my_work#index"
     get :search, to: "search#index"
