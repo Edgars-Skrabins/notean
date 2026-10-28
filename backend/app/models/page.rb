@@ -16,6 +16,7 @@ class Page < ApplicationRecord
   has_many :page_contributors, dependent: :destroy
   has_many :contributors, through: :page_contributors, source: :user
   has_many :favorites, as: :favoritable, dependent: :destroy
+  has_many :notifications, as: :item, dependent: :delete_all
   has_many :comments, as: :commentable, dependent: :destroy
   has_many :attachments, as: :attachable, dependent: :destroy
   has_many :attachment_references, dependent: :delete_all

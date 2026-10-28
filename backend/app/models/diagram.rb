@@ -16,6 +16,7 @@ class Diagram < ApplicationRecord
   has_many :diagram_contributors, dependent: :destroy
   has_many :contributors, through: :diagram_contributors, source: :user
   has_many :favorites, as: :favoritable, dependent: :destroy
+  has_many :notifications, as: :item, dependent: :delete_all
   has_many :comment_pins, class_name: "DiagramCommentPin", dependent: :destroy
 
   validates :title, presence: true, length: { maximum: TITLE_MAX_LENGTH }
