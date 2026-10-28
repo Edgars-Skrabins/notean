@@ -1,6 +1,8 @@
 class TemplatesController < ApplicationController
   include FeatureGated
 
+  PAGE_TAGS = (Rails::Html::SafeListSanitizer.allowed_tags.to_a - %w[img]).freeze
+
   before_action :authenticate_user!
   before_action :set_team
   before_action :authorize_team_member!
@@ -94,7 +96,7 @@ class TemplatesController < ApplicationController
   def template_content(content)
     return content.to_s unless @template.kind == "page"
 
-    Rails::Html::SafeListSanitizer.new.sanitize(content.to_s)
+    Rails::Html::SafeListSanitizer.new.sanitize(content.to_s, tags: PAGE_TAGS)
   end
 
   def render_template_error(fallback_code)

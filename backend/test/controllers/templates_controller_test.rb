@@ -104,6 +104,16 @@ class TemplatesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Bob", json["template"]["creator"]["nickname"]
   end
 
+  test "page template content keeps no images" do
+    post "/teams/#{@team.code}/templates", params: { template: { kind: "page", content: '<p>Logo<img src="/rails/active_storage/blobs/1/logo.png"></p>' } }, headers: @headers, as: :json
+    assert_response :created
+    assert_equal "<p>Logo</p>", json["template"]["content"]
+
+    patch "/teams/#{@team.code}/templates/#{json["template"]["id"]}", params: { template: { content: '<h1>Title</h1><img src="x.png">', lock_version: 0 } }, headers: @headers, as: :json
+    assert_response :success
+    assert_equal "<h1>Title</h1>", json["template"]["content"]
+  end
+
   test "create rejects invalid board content and too long titles" do
     post "/teams/#{@team.code}/templates", params: { template: { kind: "board", content: board_content(priorities: [ { name: "Hot", color: "pink" } ]) } }, headers: @headers, as: :json
     assert_response :unprocessable_entity
