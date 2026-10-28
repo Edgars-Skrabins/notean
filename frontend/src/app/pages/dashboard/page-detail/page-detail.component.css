@@ -1,10 +1,6 @@
-.pageDetail__content {
-  color: var(--color-text-heading);
-  line-height: 1.6;
-}
-
-.pageDetail__content :first-child {
-  margin-top: 0;
+.pageDetail__attachments {
+  display: block;
+  margin-top: var(--space-5);
 }
 
 .pageDetail__comments {

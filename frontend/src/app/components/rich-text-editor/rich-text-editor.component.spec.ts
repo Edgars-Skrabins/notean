@@ -1,9 +1,12 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {provideTranslateService} from '@ngx-translate/core';
+import {fakeAsync, flushMicrotasks} from '@angular/core/testing';
 import {RichTextEditorComponent} from './rich-text-editor.component';
+import {AttachmentService} from '@services/attachment.service';
 
 describe('RichTextEditorComponent', () => {
   let fixture: ComponentFixture<RichTextEditorComponent>;
+  let attachmentService: jasmine.SpyObj<AttachmentService>;
 
   function keydown(key: string, keyCode: number): KeyboardEvent {
     const event = new KeyboardEvent('keydown', {key, keyCode, bubbles: true, cancelable: true});
@@ -12,9 +15,11 @@ describe('RichTextEditorComponent', () => {
   }
 
   beforeEach(async () => {
+    attachmentService = jasmine.createSpyObj<AttachmentService>('AttachmentService', ['objectUrl']);
+    attachmentService.objectUrl.and.returnValue(Promise.resolve({success: true, url: 'blob:image'}));
     await TestBed.configureTestingModule({
       imports: [RichTextEditorComponent],
-      providers: [provideTranslateService()],
+      providers: [provideTranslateService(), {provide: AttachmentService, useValue: attachmentService}],
     }).compileComponents();
 
     fixture = TestBed.createComponent(RichTextEditorComponent);
@@ -24,6 +29,7 @@ describe('RichTextEditorComponent', () => {
   });
 
   afterEach(() => {
+    (document.activeElement as HTMLElement | null)?.blur();
     fixture.destroy();
   });
 
@@ -70,5 +76,71 @@ describe('RichTextEditorComponent', () => {
     expect(names).not.toContain('link');
     expect(names).not.toContain('listKeymap');
     expect(names).not.toContain('trailingNode');
+  });
+
+  describe('attachment images', () => {
+    function paste(...files: File[]): ClipboardEvent {
+      const data = new DataTransfer();
+      files.forEach((file) => data.items.add(file));
+      const event = new ClipboardEvent('paste', {clipboardData: data, bubbles: true, cancelable: true});
+      fixture.nativeElement.querySelector('.ProseMirror').dispatchEvent(event);
+      return event;
+    }
+
+    it('keeps the attachment id and alt and drops any src', () => {
+      const component = fixture.componentInstance;
+
+      component.editor!.commands.setContent('<p>Hi</p><img data-attachment-id="12" alt="Chart" src="https://example.com/x.png"><img src="https://example.com/y.png">');
+
+      expect(component.editor!.getHTML()).toBe('<p>Hi</p><img data-attachment-id="12" alt="Chart">');
+    });
+
+    it('shows the image through the attachment service', fakeAsync(() => {
+      fixture.componentInstance.teamCode = 'ABC';
+      fixture.componentInstance.editor!.commands.setContent('<img data-attachment-id="12">');
+      flushMicrotasks();
+
+      expect(attachmentService.objectUrl).toHaveBeenCalledWith('ABC', 12);
+      expect(fixture.nativeElement.querySelector('.attachmentImage__image').getAttribute('src')).toBe('blob:image');
+    }));
+
+    it('uploads a pasted image and swaps the placeholder for the attachment', fakeAsync(() => {
+      const component = fixture.componentInstance;
+      let finish: (id: number | null) => void = () => undefined;
+      component.uploadImage = () => new Promise((resolve) => finish = resolve);
+      component.editor!.commands.setContent('');
+
+      const event = paste(new File(['x'], 'shot.png', {type: 'image/png'}));
+      expect(event.defaultPrevented).toBeTrue();
+      expect(component.editor!.getHTML()).toContain('<img alt="shot.png">');
+
+      finish(44);
+      flushMicrotasks();
+      expect(component.editor!.getHTML()).toContain('<img data-attachment-id="44" alt="shot.png">');
+    }));
+
+    it('removes the placeholder when the upload fails', fakeAsync(() => {
+      const component = fixture.componentInstance;
+      component.uploadImage = () => Promise.resolve(null);
+      component.editor!.commands.setContent('<p>Hi</p>');
+
+      paste(new File(['x'], 'shot.png', {type: 'image/png'}));
+      flushMicrotasks();
+
+      expect(component.editor!.getHTML()).not.toContain('img');
+    }));
+
+    it('hands other pasted files to the page instead of inserting them', () => {
+      const component = fixture.componentInstance;
+      component.uploadImage = jasmine.createSpy('uploadImage');
+      const dropped = jasmine.createSpy('filesDropped');
+      component.filesDropped.subscribe(dropped);
+      const file = new File(['x'], 'notes.txt', {type: 'text/plain'});
+
+      paste(file);
+
+      expect(dropped).toHaveBeenCalledWith([file]);
+      expect(component.uploadImage).not.toHaveBeenCalled();
+    });
   });
 });

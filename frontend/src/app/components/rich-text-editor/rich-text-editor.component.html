@@ -1,4 +1,4 @@
-<div class="richTextEditor" [class.richTextEditor--compact]="compact">
+<div class="richTextEditor" [class.richTextEditor--compact]="compact" [class.richTextEditor--readOnly]="!editable">
   <div class="richTextEditor__toolbar" *ngIf="editable">
     <button type="button" class="richTextEditor__toolbarButton" [class.richTextEditor__toolbarButton--active]="isActive('bold')" [title]="PHRASES.FORMAT_BOLD | translate" [attr.aria-label]="PHRASES.FORMAT_BOLD | translate" (click)="toggleBold()">
       <strong>B</strong>
@@ -29,6 +29,12 @@
         <text x="2" y="21" font-size="7" fill="currentColor" stroke="none">3</text>
       </svg>
     </button>
+    <ng-container *ngIf="uploadImage">
+      <button type="button" class="richTextEditor__toolbarButton" [appTooltip]="PHRASES.INSERT_IMAGE | translate" [attr.aria-label]="PHRASES.INSERT_IMAGE | translate" (click)="pickImage()">
+        <app-icon name="image"></app-icon>
+      </button>
+      <input #imageInput type="file" multiple hidden [accept]="IMAGE_TYPES" (change)="handleImagePicked(imageInput)">
+    </ng-container>
   </div>
 
   <div class="richTextEditor__host" #editorHost></div>

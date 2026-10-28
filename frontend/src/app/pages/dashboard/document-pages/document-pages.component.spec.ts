@@ -28,6 +28,7 @@ function page(id: number, folderId: number | null, title = `Page ${id}`): Folder
     content: '',
     contributors: [],
     currentlyEditing: null,
+    attachments: [],
   };
 }
 

@@ -148,6 +148,15 @@ describe('FolderedItemService', () => {
     expect(patch).toHaveBeenCalledWith('/teams/abc/pages/7', {page: {folder_id: 3}});
   });
 
+  it('sends pending attachment ids with create when given', async () => {
+    const post = spyOn(axiosInstance, 'post').and.returnValue(Promise.resolve({data: {page: {...rawItem, attachments: []}}}));
+    const service = new PageService();
+
+    await service.create('abc', {title: 'Notes', content: '', projectId: null, folderId: null, attachmentIds: [5, 6]});
+
+    expect(post).toHaveBeenCalledWith('/teams/abc/pages', {page: {title: 'Notes', content: '', project_id: null, folder_id: null, attachment_ids: [5, 6]}});
+  });
+
   it('renames with only the title and version in the item key', async () => {
     const patch = spyOn(axiosInstance, 'patch').and.returnValue(Promise.resolve({data: {diagram: rawItem}}));
 
