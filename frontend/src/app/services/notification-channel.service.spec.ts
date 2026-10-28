@@ -11,6 +11,7 @@ const rawNotification: RawNotification = {
   item_id: 4,
   item_title: 'Bug',
   board_id: 2,
+  chat_channel_id: null,
   in_backlog: false,
   changed_fields: [],
   excerpt: null,

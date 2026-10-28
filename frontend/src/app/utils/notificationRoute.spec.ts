@@ -1,4 +1,4 @@
-import {notificationRoute} from "./notificationRoute";
+import {notificationQueryParams, notificationRoute} from "./notificationRoute";
 import {AppRoutes} from "../app/app-routes.enum";
 import {testNotification} from "../testing/notificationFixtures";
 
@@ -18,5 +18,13 @@ describe('notificationRoute', () => {
 
   it('has no route for a deleted item', () => {
     expect(notificationRoute(testNotification({kind: 'item_deleted', itemId: null}))).toBeNull();
+  });
+
+  it('opens a chat mention in its channel at the message', () => {
+    const mention = testNotification({kind: 'mentioned', itemType: 'ChatMessage', itemId: 40, boardId: null, chatChannelId: 7});
+
+    expect(notificationRoute(mention)).toEqual(['/', AppRoutes.DASHBOARD, AppRoutes.CHAT, 7]);
+    expect(notificationQueryParams(mention)).toEqual({message: 40});
+    expect(notificationQueryParams(testNotification())).toBeUndefined();
   });
 });

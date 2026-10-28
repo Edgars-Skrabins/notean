@@ -4,7 +4,7 @@ import {NotificationsErrorCode, TeamAccessErrorCode} from "@config/errorCodes";
 
 export type NotificationKind = 'assigned' | 'unassigned' | 'item_changed' | 'item_deleted' | 'commented' | 'mentioned';
 
-export type NotificationItemType = 'Ticket' | 'Page' | 'Diagram' | 'Project';
+export type NotificationItemType = 'Ticket' | 'Page' | 'Diagram' | 'Project' | 'ChatMessage';
 
 export type NotificationChangedField = 'title' | 'description' | 'content' | 'status' | 'priority';
 
@@ -15,6 +15,7 @@ export interface Notification {
   itemId: number | null;
   itemTitle: string;
   boardId: number | null;
+  chatChannelId: number | null;
   inBacklog: boolean;
   changedFields: NotificationChangedField[];
   excerpt: string | null;
