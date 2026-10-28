@@ -14,12 +14,21 @@ import {ErrorCode} from "@config/errorCodes";
 import {FolderedItemSummary} from "@models/foldered-item.model";
 import {FolderedItemService} from "@services/foldered-item.service";
 import {ProjectFilterService} from "@services/project-filter.service";
+import {PHRASES} from "@config/phrases";
+import {MenuButtonOption} from "@models/menu-button.model";
+import {TemplateKind} from "@models/template.model";
+import {createFromTemplateRoute} from "@utils/templateRoute";
 import {AppRoutes} from "../../app/app-routes.enum";
 
 @Directive()
 export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   protected abstract readonly itemType: FolderItemType;
   protected abstract readonly itemRoute: AppRoutes;
+  protected abstract readonly templateKind: Exclude<TemplateKind, 'board'>;
+  protected readonly createOptions: MenuButtonOption[] = [
+    {value: 'blank', labelKey: PHRASES.BLANK},
+    {value: 'template', labelKey: PHRASES.FROM_TEMPLATE},
+  ];
 
   folders: TreeFolder[] = [];
   items: TreeItem[] = [];
@@ -31,10 +40,12 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   isLoading = true;
   alertMessage = '';
   isCreateFolderDialogOpen = false;
+  isTemplatePickerOpen = false;
   folderPendingProjectChange: TreeFolder | null = null;
 
   protected readonly teamCode: string;
   private pendingCreateFolderParentId: number | null = null;
+  private templatePickerFolderId: number | null = null;
   private projectSubscription: Subscription | null = null;
   private levelBoundaries = new Map<ItemLevel, TitledItem>();
   private loadGeneration = 0;
@@ -62,9 +73,29 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
     this.router.navigate([AppRoutes.DASHBOARD, this.itemRoute, item.id]);
   }
 
-  handleCreateItem(parentId: number | null) {
+  handleCreateItem(parentId: number | null, fromTemplate = false) {
+    if (fromTemplate) {
+      this.templatePickerFolderId = parentId;
+      this.isTemplatePickerOpen = true;
+      return;
+    }
+
     const queryParams = parentId !== null ? {folder: parentId} : {};
     this.router.navigate([AppRoutes.DASHBOARD, this.itemRoute, AppRoutes.NEW], {queryParams});
+  }
+
+  handleCreateChoice(choice: string | number | null) {
+    this.handleCreateItem(null, choice === 'template');
+  }
+
+  handleTemplatePicked(ref: string) {
+    this.isTemplatePickerOpen = false;
+    const {commands, queryParams} = createFromTemplateRoute(this.templateKind, ref, this.templatePickerFolderId);
+    this.router.navigate(commands, {queryParams});
+  }
+
+  handleTemplatePickerCancelled() {
+    this.isTemplatePickerOpen = false;
   }
 
   get isSearching(): boolean {

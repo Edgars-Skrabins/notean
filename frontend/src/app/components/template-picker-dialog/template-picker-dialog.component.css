@@ -1,0 +1,51 @@
+:host {
+  display: block;
+}
+
+.templatePickerOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.templatePickerOverlay__backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--color-overlay);
+}
+
+.templatePicker {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 520px;
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 96px);
+  background: linear-gradient(160deg, var(--color-card-bg) 0%, var(--color-card-bg-alt) 100%);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-5);
+}
+
+.templatePicker__title {
+  margin: 0 0 var(--space-4);
+  color: var(--color-text-heading);
+  font-size: var(--font-lg);
+  font-weight: 700;
+}
+
+.templatePicker__list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.templatePicker__actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--space-4);
+}

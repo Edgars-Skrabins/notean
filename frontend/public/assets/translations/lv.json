@@ -395,6 +395,29 @@
   "ACTIVITY_FIELD_CONTENT": "saturs",
   "ACTIVITY_FIELD_STATUS": "statuss",
   "ACTIVITY_FIELD_PRIORITY": "prioritāte",
+  "TEMPLATES": "Veidnes",
+  "NEW_TEMPLATE": "Jauna veidne",
+  "BLANK": "Tukšs",
+  "FROM_TEMPLATE": "No veidnes",
+  "FROM_EXISTING_BOARD": "No esoša dēļa",
+  "USE_TEMPLATE": "Izmantot veidni",
+  "DUPLICATE": "Dublēt",
+  "BUILT_IN": "Iebūvētās",
+  "BOARD_TEMPLATES": "Dēļu veidnes",
+  "TEMPLATE": "Veidne",
+  "DEFAULT_BOARD_TEMPLATE": "Noklusējuma (Darāms, Procesā, Pabeigts)",
+  "NO_TEMPLATES_YET": "Vēl nav veidņu",
+  "NO_BOARD_TEMPLATES_YET": "Vēl nav dēļu veidņu",
+  "SEARCH_TEMPLATES": "Meklēt veidnes…",
+  "CONFIRM_DELETE_TEMPLATE": "Dzēst šo veidni? To nevar atsaukt. No tās izveidotie vienumi netiek ietekmēti.",
+  "CHOOSE_TEMPLATE": "Izvēlieties veidni",
+  "CHOOSE_BOARD": "Izvēlieties dēli",
+  "TEMPLATE_NAME_PLACEHOLDER": "Veidnes nosaukums",
+  "UNTITLED_TEMPLATE": "Veidne bez nosaukuma",
+  "CONFIRM_DISCARD_NEW_TEMPLATE": "Atmest šo jauno veidni?",
+  "COLUMNS": "Kolonnas",
+  "REMOVE_COLUMN": "Noņemt kolonnu",
+  "REORDER_COLUMN": "Velciet, lai mainītu secību",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Jūsu sesija ir beigusies. Lūdzu, piesakieties vēlreiz",
@@ -528,6 +551,13 @@
     },
     "NOTIFICATIONS": {
       "NOTIFICATION_NOT_FOUND": "Paziņojums nav atrasts"
+    },
+    "TEMPLATES": {
+      "TEMPLATE_NOT_FOUND": "Šī veidne vairs nepastāv",
+      "TEMPLATE_CREATE_FAILED": "Neizdevās izveidot veidni",
+      "TEMPLATE_UPDATE_FAILED": "Neizdevās saglabāt veidni",
+      "TEMPLATE_KIND_INVALID": "Nezināms veidnes veids",
+      "TEMPLATE_CONTENT_INVALID": "Veidnes saturs nav derīgs"
     }
   }
 }

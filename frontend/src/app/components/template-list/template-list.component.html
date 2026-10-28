@@ -1,0 +1,64 @@
+<div class="templateList__toolbar">
+  <input
+    type="text"
+    class="templateList__search textInput"
+    [(ngModel)]="searchQuery"
+    (ngModelChange)="handleSearchChange($event)"
+    [placeholder]="PHRASES.SEARCH_TEMPLATES | translate"
+  />
+  <ng-content></ng-content>
+</div>
+
+<p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+
+<ng-container *ngIf="builtIns.length">
+  <h3 class="templateList__group capsLabel">{{ PHRASES.BUILT_IN | translate }}</h3>
+  <div class="templateList__row" *ngFor="let template of builtIns">
+    <button type="button" class="templateList__open" (click)="opened.emit(builtInRef(template))">
+      <app-icon [name]="template.kind" class="templateList__icon"></app-icon>
+      <span class="templateList__title">{{ template.title }}</span>
+    </button>
+    <app-icon-button
+      *ngIf="canUse"
+      icon="plus"
+      [tooltip]="PHRASES.USE_TEMPLATE | translate"
+      [size]="28"
+      (pressed)="used.emit(builtInRef(template))"
+    ></app-icon-button>
+  </div>
+</ng-container>
+
+<h3 class="templateList__group capsLabel" *ngIf="builtIns.length && templates.length">{{ PHRASES.TEMPLATES | translate }}</h3>
+<div class="templateList__row" *ngFor="let template of templates; trackBy: trackById">
+  <button type="button" class="templateList__open" (click)="opened.emit(teamRef(template))">
+    <app-icon [name]="template.kind" class="templateList__icon"></app-icon>
+    <span class="templateList__title">{{ template.title }}</span>
+    <span class="templateList__meta">{{ template.creator.nickname }} · {{ template.updatedAt | date }}</span>
+  </button>
+  <app-icon-button
+    *ngIf="canUse"
+    icon="plus"
+    [tooltip]="PHRASES.USE_TEMPLATE | translate"
+    [size]="28"
+    (pressed)="used.emit(teamRef(template))"
+  ></app-icon-button>
+  <app-icon-button
+    *ngIf="showActions && template.canManage"
+    icon="trash"
+    [tooltip]="PHRASES.DELETE | translate"
+    [size]="28"
+    (pressed)="handleDelete(template)"
+  ></app-icon-button>
+</div>
+
+<app-load-more *ngIf="hasMore" [loading]="isLoadingMore" (pressed)="handleLoadMore()"></app-load-more>
+
+<p class="dashboardStub__body" *ngIf="isEmpty">{{ emptyLabel | translate }}</p>
+<p class="dashboardStub__body" *ngIf="hasNoSearchResults">{{ PHRASES.NO_SEARCH_RESULTS | translate }}</p>
+
+<app-confirm-dialog
+  *ngIf="templatePendingDelete"
+  [message]="PHRASES.CONFIRM_DELETE_TEMPLATE | translate"
+  (confirmed)="handleDeleteConfirmed()"
+  (cancelled)="handleDeleteCancelled()"
+></app-confirm-dialog>

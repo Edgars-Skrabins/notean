@@ -395,6 +395,29 @@
   "ACTIVITY_FIELD_CONTENT": "Inhalt",
   "ACTIVITY_FIELD_STATUS": "Status",
   "ACTIVITY_FIELD_PRIORITY": "Priorität",
+  "TEMPLATES": "Vorlagen",
+  "NEW_TEMPLATE": "Neue Vorlage",
+  "BLANK": "Leer",
+  "FROM_TEMPLATE": "Aus Vorlage",
+  "FROM_EXISTING_BOARD": "Aus vorhandenem Board",
+  "USE_TEMPLATE": "Vorlage verwenden",
+  "DUPLICATE": "Duplizieren",
+  "BUILT_IN": "Integriert",
+  "BOARD_TEMPLATES": "Board-Vorlagen",
+  "TEMPLATE": "Vorlage",
+  "DEFAULT_BOARD_TEMPLATE": "Standard (Zu erledigen, In Arbeit, Erledigt)",
+  "NO_TEMPLATES_YET": "Noch keine Vorlagen",
+  "NO_BOARD_TEMPLATES_YET": "Noch keine Board-Vorlagen",
+  "SEARCH_TEMPLATES": "Vorlagen suchen…",
+  "CONFIRM_DELETE_TEMPLATE": "Diese Vorlage löschen? Das kann nicht rückgängig gemacht werden. Daraus erstellte Elemente bleiben unverändert.",
+  "CHOOSE_TEMPLATE": "Vorlage auswählen",
+  "CHOOSE_BOARD": "Board auswählen",
+  "TEMPLATE_NAME_PLACEHOLDER": "Name der Vorlage",
+  "UNTITLED_TEMPLATE": "Unbenannte Vorlage",
+  "CONFIRM_DISCARD_NEW_TEMPLATE": "Diese neue Vorlage verwerfen?",
+  "COLUMNS": "Spalten",
+  "REMOVE_COLUMN": "Spalte entfernen",
+  "REORDER_COLUMN": "Zum Sortieren ziehen",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Deine Sitzung ist abgelaufen. Bitte melde dich erneut an",
@@ -528,6 +551,13 @@
     },
     "NOTIFICATIONS": {
       "NOTIFICATION_NOT_FOUND": "Benachrichtigung nicht gefunden"
+    },
+    "TEMPLATES": {
+      "TEMPLATE_NOT_FOUND": "Diese Vorlage existiert nicht mehr",
+      "TEMPLATE_CREATE_FAILED": "Die Vorlage konnte nicht erstellt werden",
+      "TEMPLATE_UPDATE_FAILED": "Die Vorlage konnte nicht gespeichert werden",
+      "TEMPLATE_KIND_INVALID": "Unbekannter Vorlagentyp",
+      "TEMPLATE_CONTENT_INVALID": "Der Inhalt der Vorlage ist ungültig"
     }
   }
 }

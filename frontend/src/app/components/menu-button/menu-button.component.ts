@@ -26,9 +26,10 @@ import {TooltipDirective} from '@components/tooltip/tooltip.directive';
 export class MenuButtonComponent {
   protected readonly DROPDOWN_POSITIONS = DROPDOWN_POSITIONS;
 
-  @Input({required: true}) label!: string;
+  @Input() label = '';
   @Input({required: true}) options: MenuButtonOption[] = [];
   @Input() disabled = false;
+  @Input() customTrigger = false;
   @Input() icon: IconName | null = null;
   @Output() picked = new EventEmitter<string | number | null>();
 
@@ -62,7 +63,7 @@ export class MenuButtonComponent {
     this.close();
   }
 
-  private trigger(): HTMLButtonElement | null {
-    return this.elementRef.nativeElement.querySelector('.menuButton__trigger');
+  private trigger(): HTMLElement | null {
+    return this.elementRef.nativeElement.querySelector('.menuButton__origin');
   }
 }

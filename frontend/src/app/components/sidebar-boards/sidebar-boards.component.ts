@@ -12,8 +12,10 @@ import {BoardSummary} from "@models/board.model";
 import {IconComponent} from "@components/icon/icon.component";
 import {TooltipDirective} from "@components/tooltip/tooltip.directive";
 import {CreateNamedItemDialogComponent} from "@components/create-named-item-dialog/create-named-item-dialog.component";
+import {BoardTemplateSelectComponent} from "@components/board-template-select/board-template-select.component";
 import {AppRoutes} from "../../app/app-routes.enum";
 import {boardRoute} from "@utils/ticketRoute";
+import {errorPhrase} from "@utils/errorPhrase";
 
 @Component({
   selector: 'app-sidebar-boards',
@@ -28,6 +30,7 @@ import {boardRoute} from "@utils/ticketRoute";
     TranslatePipe,
     IconComponent,
     CreateNamedItemDialogComponent,
+    BoardTemplateSelectComponent,
     TooltipDirective
   ],
   templateUrl: './sidebar-boards.component.html',
@@ -36,10 +39,13 @@ import {boardRoute} from "@utils/ticketRoute";
 })
 export class SidebarBoardsComponent implements OnInit {
   protected readonly PHRASES = PHRASES;
+  protected readonly AppRoutes = AppRoutes;
 
   @Input() collapsed = false;
 
   isCreateDialogOpen = false;
+  selectedTemplateId: number | null = null;
+  createErrorMessage = '';
 
   constructor(
     private router: Router,
@@ -77,6 +83,8 @@ export class SidebarBoardsComponent implements OnInit {
   }
 
   handleCreate() {
+    this.selectedTemplateId = null;
+    this.createErrorMessage = '';
     this.isCreateDialogOpen = true;
   }
 
@@ -85,14 +93,14 @@ export class SidebarBoardsComponent implements OnInit {
   }
 
   handleCreateConfirmed(event: { title: string }) {
-    this.isCreateDialogOpen = false;
-
-    this.boardService.createBoard(this.teamService.getCurrentTeamCode(), event.title, this.projectFilterService.getSelectedProjectId())
+    this.boardService.createBoard(this.teamService.getCurrentTeamCode(), event.title, this.projectFilterService.getSelectedProjectId(), this.selectedTemplateId)
       .then((response) => {
         if (!response.success) {
+          this.createErrorMessage = errorPhrase(response.code);
           return;
         }
 
+        this.isCreateDialogOpen = false;
         this.boardListService.add(response.board);
         this.handleOpen(response.board);
       });

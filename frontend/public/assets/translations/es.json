@@ -395,6 +395,29 @@
   "ACTIVITY_FIELD_CONTENT": "contenido",
   "ACTIVITY_FIELD_STATUS": "estado",
   "ACTIVITY_FIELD_PRIORITY": "prioridad",
+  "TEMPLATES": "Plantillas",
+  "NEW_TEMPLATE": "Nueva plantilla",
+  "BLANK": "En blanco",
+  "FROM_TEMPLATE": "Desde plantilla",
+  "FROM_EXISTING_BOARD": "Desde un tablero existente",
+  "USE_TEMPLATE": "Usar plantilla",
+  "DUPLICATE": "Duplicar",
+  "BUILT_IN": "Integradas",
+  "BOARD_TEMPLATES": "Plantillas de tablero",
+  "TEMPLATE": "Plantilla",
+  "DEFAULT_BOARD_TEMPLATE": "Predeterminado (Por hacer, En curso, Hecho)",
+  "NO_TEMPLATES_YET": "Aún no hay plantillas",
+  "NO_BOARD_TEMPLATES_YET": "Aún no hay plantillas de tablero",
+  "SEARCH_TEMPLATES": "Buscar plantillas…",
+  "CONFIRM_DELETE_TEMPLATE": "¿Eliminar esta plantilla? No se puede deshacer. Los elementos creados a partir de ella no se ven afectados.",
+  "CHOOSE_TEMPLATE": "Elige una plantilla",
+  "CHOOSE_BOARD": "Elige un tablero",
+  "TEMPLATE_NAME_PLACEHOLDER": "Nombre de la plantilla",
+  "UNTITLED_TEMPLATE": "Plantilla sin título",
+  "CONFIRM_DISCARD_NEW_TEMPLATE": "¿Descartar esta nueva plantilla?",
+  "COLUMNS": "Columnas",
+  "REMOVE_COLUMN": "Quitar columna",
+  "REORDER_COLUMN": "Arrastra para reordenar",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Tu sesión ha caducado. Vuelve a iniciar sesión",
@@ -528,6 +551,13 @@
     },
     "NOTIFICATIONS": {
       "NOTIFICATION_NOT_FOUND": "Notificación no encontrada"
+    },
+    "TEMPLATES": {
+      "TEMPLATE_NOT_FOUND": "Esta plantilla ya no existe",
+      "TEMPLATE_CREATE_FAILED": "No se pudo crear la plantilla",
+      "TEMPLATE_UPDATE_FAILED": "No se pudo guardar la plantilla",
+      "TEMPLATE_KIND_INVALID": "Tipo de plantilla desconocido",
+      "TEMPLATE_CONTENT_INVALID": "El contenido de la plantilla no es válido"
     }
   }
 }

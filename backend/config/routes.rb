@@ -49,6 +49,7 @@ Rails.application.routes.draw do
         resources :attachments, only: [ :create, :destroy ], controller: "ticket_attachments"
       end
     end
+    resources :templates, only: [ :index, :create, :show, :update, :destroy ]
     resources :favorites, only: [ :index, :create, :update, :destroy ]
     resources :trash, only: [ :index, :destroy ], controller: "trash" do
       collection do

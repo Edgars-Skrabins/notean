@@ -43,6 +43,14 @@
       <span class="sidebarBoards__rowTitle">{{ PHRASES.CREATE_BOARD | translate }}</span>
       <app-icon name="plus" class="sidebarBoards__icon"></app-icon>
     </button>
+    <a
+      class="sidebarBoards__row sidebarBoards__create"
+      [routerLink]="['/', AppRoutes.DASHBOARD, AppRoutes.BOARD_TEMPLATES]"
+      routerLinkActive="sidebarBoards__row--active"
+    >
+      <span class="sidebarBoards__rowTitle">{{ PHRASES.BOARD_TEMPLATES | translate }}</span>
+      <app-icon name="columns" class="sidebarBoards__icon"></app-icon>
+    </a>
   </ng-container>
 </ng-container>
 
@@ -50,6 +58,9 @@
   *ngIf="isCreateDialogOpen"
   [dialogTitle]="PHRASES.NEW_BOARD | translate"
   [defaultValue]="PHRASES.UNTITLED_BOARD | translate"
+  [errorMessage]="createErrorMessage"
   (confirmed)="handleCreateConfirmed($event)"
   (cancelled)="handleCreateCancelled()"
-></app-create-named-item-dialog>
+>
+  <app-board-template-select [(templateId)]="selectedTemplateId"></app-board-template-select>
+</app-create-named-item-dialog>

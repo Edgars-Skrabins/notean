@@ -395,6 +395,29 @@
   "ACTIVITY_FIELD_CONTENT": "contenu",
   "ACTIVITY_FIELD_STATUS": "statut",
   "ACTIVITY_FIELD_PRIORITY": "priorité",
+  "TEMPLATES": "Modèles",
+  "NEW_TEMPLATE": "Nouveau modèle",
+  "BLANK": "Vide",
+  "FROM_TEMPLATE": "À partir d’un modèle",
+  "FROM_EXISTING_BOARD": "À partir d’un tableau existant",
+  "USE_TEMPLATE": "Utiliser le modèle",
+  "DUPLICATE": "Dupliquer",
+  "BUILT_IN": "Intégrés",
+  "BOARD_TEMPLATES": "Modèles de tableau",
+  "TEMPLATE": "Modèle",
+  "DEFAULT_BOARD_TEMPLATE": "Par défaut (À faire, En cours, Terminé)",
+  "NO_TEMPLATES_YET": "Aucun modèle pour l’instant",
+  "NO_BOARD_TEMPLATES_YET": "Aucun modèle de tableau pour l’instant",
+  "SEARCH_TEMPLATES": "Rechercher des modèles…",
+  "CONFIRM_DELETE_TEMPLATE": "Supprimer ce modèle ? Cette action est irréversible. Les éléments créés à partir de celui-ci ne sont pas affectés.",
+  "CHOOSE_TEMPLATE": "Choisir un modèle",
+  "CHOOSE_BOARD": "Choisir un tableau",
+  "TEMPLATE_NAME_PLACEHOLDER": "Nom du modèle",
+  "UNTITLED_TEMPLATE": "Modèle sans titre",
+  "CONFIRM_DISCARD_NEW_TEMPLATE": "Abandonner ce nouveau modèle ?",
+  "COLUMNS": "Colonnes",
+  "REMOVE_COLUMN": "Retirer la colonne",
+  "REORDER_COLUMN": "Glisser pour réorganiser",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Votre session a expiré. Veuillez vous reconnecter",
@@ -528,6 +551,13 @@
     },
     "NOTIFICATIONS": {
       "NOTIFICATION_NOT_FOUND": "Notification introuvable"
+    },
+    "TEMPLATES": {
+      "TEMPLATE_NOT_FOUND": "Ce modèle n’existe plus",
+      "TEMPLATE_CREATE_FAILED": "Impossible de créer le modèle",
+      "TEMPLATE_UPDATE_FAILED": "Impossible d’enregistrer le modèle",
+      "TEMPLATE_KIND_INVALID": "Type de modèle inconnu",
+      "TEMPLATE_CONTENT_INVALID": "Le contenu du modèle n’est pas valide"
     }
   }
 }

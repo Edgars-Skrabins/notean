@@ -7,7 +7,7 @@
     </p>
   </div>
 
-  <div>
+  <div *ngIf="!isTemplate">
     <h3 class="itemDetailSidebar__label capsLabel">{{ PHRASES.CONTRIBUTORS | translate }}</h3>
     <p class="itemDetailSidebar__value itemDetailSidebar__person" *ngFor="let contributor of item.contributors">
       <app-avatar [avatar]="contributor.avatar" [nickname]="contributor.nickname"></app-avatar>
@@ -17,7 +17,7 @@
   </div>
 </ng-container>
 
-<div *ngIf="projectFilterService.hasProjects$ | async">
+<div *ngIf="!isTemplate && (projectFilterService.hasProjects$ | async)">
   <h3 class="itemDetailSidebar__label capsLabel">{{ PHRASES.PROJECT | translate }}</h3>
   <ng-container *ngIf="projectSetByFolder; else projectSelect">
     <p class="itemDetailSidebar__value">{{ selectedProjectName ?? (PHRASES.NO_PROJECT | translate) }}</p>

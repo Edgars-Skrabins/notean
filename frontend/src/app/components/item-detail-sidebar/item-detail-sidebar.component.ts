@@ -21,6 +21,7 @@ export class ItemDetailSidebarComponent {
   @Input() mode: 'view' | 'edit' | 'create' = 'view';
   @Input() draftProjectId: number | null = null;
   @Input() projectSetByFolder = false;
+  @Input() isTemplate = false;
   @Output() projectSelected = new EventEmitter<number | null>();
 
   constructor(protected projectFilterService: ProjectFilterService) {

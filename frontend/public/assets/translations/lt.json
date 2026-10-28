@@ -395,6 +395,29 @@
   "ACTIVITY_FIELD_CONTENT": "turinys",
   "ACTIVITY_FIELD_STATUS": "būsena",
   "ACTIVITY_FIELD_PRIORITY": "prioritetas",
+  "TEMPLATES": "Šablonai",
+  "NEW_TEMPLATE": "Naujas šablonas",
+  "BLANK": "Tuščias",
+  "FROM_TEMPLATE": "Iš šablono",
+  "FROM_EXISTING_BOARD": "Iš esamos lentos",
+  "USE_TEMPLATE": "Naudoti šabloną",
+  "DUPLICATE": "Dubliuoti",
+  "BUILT_IN": "Integruoti",
+  "BOARD_TEMPLATES": "Lentų šablonai",
+  "TEMPLATE": "Šablonas",
+  "DEFAULT_BOARD_TEMPLATE": "Numatytasis (Atlikti, Vykdoma, Atlikta)",
+  "NO_TEMPLATES_YET": "Šablonų dar nėra",
+  "NO_BOARD_TEMPLATES_YET": "Lentų šablonų dar nėra",
+  "SEARCH_TEMPLATES": "Ieškoti šablonų…",
+  "CONFIRM_DELETE_TEMPLATE": "Ištrinti šį šabloną? To negalima atšaukti. Iš jo sukurti elementai nepaveikiami.",
+  "CHOOSE_TEMPLATE": "Pasirinkite šabloną",
+  "CHOOSE_BOARD": "Pasirinkite lentą",
+  "TEMPLATE_NAME_PLACEHOLDER": "Šablono pavadinimas",
+  "UNTITLED_TEMPLATE": "Šablonas be pavadinimo",
+  "CONFIRM_DISCARD_NEW_TEMPLATE": "Atmesti šį naują šabloną?",
+  "COLUMNS": "Stulpeliai",
+  "REMOVE_COLUMN": "Pašalinti stulpelį",
+  "REORDER_COLUMN": "Vilkite, kad pakeistumėte tvarką",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Jūsų sesija baigėsi. Prisijunkite iš naujo",
@@ -528,6 +551,13 @@
     },
     "NOTIFICATIONS": {
       "NOTIFICATION_NOT_FOUND": "Pranešimas nerastas"
+    },
+    "TEMPLATES": {
+      "TEMPLATE_NOT_FOUND": "Šio šablono nebėra",
+      "TEMPLATE_CREATE_FAILED": "Nepavyko sukurti šablono",
+      "TEMPLATE_UPDATE_FAILED": "Nepavyko išsaugoti šablono",
+      "TEMPLATE_KIND_INVALID": "Nežinomas šablono tipas",
+      "TEMPLATE_CONTENT_INVALID": "Šablono turinys netinkamas"
     }
   }
 }

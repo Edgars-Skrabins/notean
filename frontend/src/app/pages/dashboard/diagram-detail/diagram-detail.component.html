@@ -48,7 +48,7 @@
     </app-flowchart-editor>
     <app-flowchart-editor
       class="diagramDetail__editor"
-      *ngIf="mode === 'edit' || mode === 'create'"
+      *ngIf="(mode === 'edit' || mode === 'create') && !isLoading"
       [content]="draftContent"
       [editable]="true"
       (contentChange)="handleContentChange($event)"

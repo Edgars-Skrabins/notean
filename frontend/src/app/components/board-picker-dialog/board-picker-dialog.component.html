@@ -1,0 +1,26 @@
+<div class="boardPickerOverlay">
+  <div class="boardPickerOverlay__backdrop" (click)="cancelled.emit()"></div>
+
+  <div class="boardPicker">
+    <h3 class="boardPicker__title">{{ PHRASES.CHOOSE_BOARD | translate }}</h3>
+
+    <ng-container *ngIf="boardListService.boards$ | async as boards">
+      <div class="boardPicker__list">
+        <button
+          *ngFor="let board of boards; trackBy: trackById"
+          type="button"
+          class="boardPicker__option"
+          (click)="picked.emit(board.id)"
+        >
+          <app-icon name="board" class="boardPicker__icon"></app-icon>
+          {{ board.title }}
+        </button>
+      </div>
+      <p class="dashboardStub__body" *ngIf="!boards.length">{{ PHRASES.NO_BOARDS_YET | translate }}</p>
+    </ng-container>
+
+    <div class="boardPicker__actions">
+      <app-button variant="ghost" (pressed)="cancelled.emit()">{{ PHRASES.CANCEL | translate }}</app-button>
+    </div>
+  </div>
+</div>

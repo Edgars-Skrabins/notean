@@ -1,0 +1,13 @@
+<nav class="itemTabs">
+  <a
+    class="itemTabs__tab"
+    [routerLink]="['/', AppRoutes.DASHBOARD, itemsRoute]"
+    routerLinkActive="itemTabs__tab--active"
+    [routerLinkActiveOptions]="{exact: true}"
+  >{{ itemsLabel | translate }}</a>
+  <a
+    class="itemTabs__tab"
+    [routerLink]="['/', AppRoutes.DASHBOARD, itemsRoute, AppRoutes.TEMPLATES]"
+    routerLinkActive="itemTabs__tab--active"
+  >{{ PHRASES.TEMPLATES | translate }}</a>
+</nav>

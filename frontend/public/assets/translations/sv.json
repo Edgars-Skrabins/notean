@@ -395,6 +395,29 @@
   "ACTIVITY_FIELD_CONTENT": "innehåll",
   "ACTIVITY_FIELD_STATUS": "status",
   "ACTIVITY_FIELD_PRIORITY": "prioritet",
+  "TEMPLATES": "Mallar",
+  "NEW_TEMPLATE": "Ny mall",
+  "BLANK": "Tom",
+  "FROM_TEMPLATE": "Från mall",
+  "FROM_EXISTING_BOARD": "Från befintlig tavla",
+  "USE_TEMPLATE": "Använd mall",
+  "DUPLICATE": "Duplicera",
+  "BUILT_IN": "Inbyggda",
+  "BOARD_TEMPLATES": "Tavelmallar",
+  "TEMPLATE": "Mall",
+  "DEFAULT_BOARD_TEMPLATE": "Standard (Att göra, Pågår, Klart)",
+  "NO_TEMPLATES_YET": "Inga mallar än",
+  "NO_BOARD_TEMPLATES_YET": "Inga tavelmallar än",
+  "SEARCH_TEMPLATES": "Sök mallar…",
+  "CONFIRM_DELETE_TEMPLATE": "Ta bort den här mallen? Det går inte att ångra. Objekt som skapats från den påverkas inte.",
+  "CHOOSE_TEMPLATE": "Välj en mall",
+  "CHOOSE_BOARD": "Välj en tavla",
+  "TEMPLATE_NAME_PLACEHOLDER": "Mallens namn",
+  "UNTITLED_TEMPLATE": "Namnlös mall",
+  "CONFIRM_DISCARD_NEW_TEMPLATE": "Slänga den nya mallen?",
+  "COLUMNS": "Kolumner",
+  "REMOVE_COLUMN": "Ta bort kolumn",
+  "REORDER_COLUMN": "Dra för att ändra ordning",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Din session har gått ut. Logga in igen",
@@ -528,6 +551,13 @@
     },
     "NOTIFICATIONS": {
       "NOTIFICATION_NOT_FOUND": "Aviseringen hittades inte"
+    },
+    "TEMPLATES": {
+      "TEMPLATE_NOT_FOUND": "Mallen finns inte längre",
+      "TEMPLATE_CREATE_FAILED": "Det gick inte att skapa mallen",
+      "TEMPLATE_UPDATE_FAILED": "Det gick inte att spara mallen",
+      "TEMPLATE_KIND_INVALID": "Okänd malltyp",
+      "TEMPLATE_CONTENT_INVALID": "Mallens innehåll är ogiltigt"
     }
   }
 }

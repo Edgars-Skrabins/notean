@@ -30,12 +30,9 @@
           [size]="28"
           (pressed)="createFolder.emit({ parentId: folder.id })"
         ></app-icon-button>
-        <app-icon-button
-          icon="plus"
-          [tooltip]="itemLabel"
-          [size]="28"
-          (pressed)="createItem.emit({ parentId: folder.id })"
-        ></app-icon-button>
+        <app-menu-button [customTrigger]="true" [options]="createOptions" (picked)="handleCreateChoice(folder.id, $event)">
+          <app-icon-button icon="plus" [tooltip]="itemLabel" [size]="28"></app-icon-button>
+        </app-menu-button>
         <app-icon-button
           *ngIf="canChangeFolderProject && folder.parentId === null"
           icon="project"

@@ -11,6 +11,7 @@ import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
 import {FolderService} from "@services/folder.service";
 import {CopyLinkService} from "@services/copy-link.service";
+import {TemplateService} from "@services/template.service";
 import {AttachmentService} from "@services/attachment.service";
 import {Attachment} from "@models/attachment.model";
 import {FolderedItemDetail} from "@models/foldered-item.model";
@@ -45,6 +46,7 @@ describe('PageDetailComponent', () => {
   let projectFilter: ProjectFilterStub;
   let folderService: jasmine.SpyObj<FolderService>;
   let copyLinkService: jasmine.SpyObj<CopyLinkService>;
+  let templateService: jasmine.SpyObj<TemplateService>;
   let attachmentService: jasmine.SpyObj<AttachmentService>;
 
   function createComponent(queryParams: Record<string, string> = {}, params: Record<string, string> = {}) {
@@ -70,6 +72,7 @@ describe('PageDetailComponent', () => {
       copyLinkService,
       trashServiceStub().service,
       attachmentService,
+      templateService,
     );
     component.ngOnInit();
   }
@@ -81,6 +84,7 @@ describe('PageDetailComponent', () => {
     copyLinkService = jasmine.createSpyObj<CopyLinkService>('CopyLinkService', ['copyCurrentLink']);
     projectFilter = projectFilterStub(4);
     folderService = jasmine.createSpyObj<FolderService>('FolderService', ['listFolders']);
+    templateService = jasmine.createSpyObj<TemplateService>('TemplateService', ['resolve']);
     attachmentService = jasmine.createSpyObj<AttachmentService>('AttachmentService', ['uploadPending', 'uploadToPage', 'deletePending', 'deleteFromPage']);
     attachmentService.deletePending.and.returnValue(Promise.resolve({success: true}));
     folderService.listFolders.and.returnValue(Promise.resolve({
@@ -114,6 +118,38 @@ describe('PageDetailComponent', () => {
     const createdItem = {id: 9, title: 'Plan', folderId: 3, projectId: 4, lockVersion: 0, creator: createdPage().creator, createdAt: '', updatedAt: ''};
     expect(navigationService.navigateWithState).toHaveBeenCalledOnceWith({createdItem}, AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES);
     expect(component.isCreating).toBeFalse();
+  }));
+
+  it('prefills the content from a template and keeps the folder and the untitled title', fakeAsync(() => {
+    templateService.resolve.and.returnValue(Promise.resolve({success: true, content: '<h1>Agenda</h1>'}));
+    pageService.create.and.returnValue(Promise.resolve({success: true, item: createdPage()}));
+    createComponent({template: 'builtin:meeting-notes', folder: '3'});
+
+    expect(component.isLoading).toBeTrue();
+
+    tick();
+
+    expect(component.isLoading).toBeFalse();
+
+    expect(templateService.resolve).toHaveBeenCalledWith('abc', 'page', 'builtin:meeting-notes');
+    expect(component.draftContent).toBe('<h1>Agenda</h1>');
+    expect(component.draftTitle).toBe('');
+    expect(component.hasCreateDraftChanges).toBeTrue();
+
+    component.handleCreate();
+    tick();
+
+    expect(pageService.create).toHaveBeenCalledWith('abc', jasmine.objectContaining({content: '<h1>Agenda</h1>', folderId: 3}));
+  }));
+
+  it('opens a blank draft with the error when the template cannot be loaded', fakeAsync(() => {
+    templateService.resolve.and.returnValue(Promise.resolve({success: false, code: 'TEMPLATE_NOT_FOUND'}));
+    createComponent({template: '12'});
+    tick();
+
+    expect(component.mode).toBe('create');
+    expect(component.draftContent).toBe('');
+    expect(component.alertMessage).toBe(errorPhrase('TEMPLATE_NOT_FOUND'));
   }));
 
   it('takes the project of the folder it is created in and locks it', fakeAsync(() => {

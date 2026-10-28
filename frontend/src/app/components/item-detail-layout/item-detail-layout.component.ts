@@ -54,6 +54,9 @@ export class ItemDetailLayoutComponent implements OnInit, OnDestroy {
   @Input() projectSetByFolder = false;
   @Input() busy = false;
   @Input() fill = false;
+  @Input() isTemplate = false;
+  @Input() canManage = true;
+  @Input() showSidebar = true;
   @Output() draftTitleChange = new EventEmitter<string>();
   @Output() closed = new EventEmitter<void>();
   @Output() editRequested = new EventEmitter<void>();

@@ -1,0 +1,9 @@
+export const TEMPLATES_ERROR_CODES = [
+  'TEMPLATE_NOT_FOUND',
+  'TEMPLATE_CREATE_FAILED',
+  'TEMPLATE_UPDATE_FAILED',
+  'TEMPLATE_KIND_INVALID',
+  'TEMPLATE_CONTENT_INVALID',
+] as const;
+
+export type TemplatesErrorCode = typeof TEMPLATES_ERROR_CODES[number];
