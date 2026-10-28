@@ -43,6 +43,30 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "attachment_references", force: :cascade do |t|
+    t.bigint "attachment_id", null: false
+    t.bigint "page_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["attachment_id", "page_id"], name: "index_attachment_references_on_attachment_id_and_page_id", unique: true
+    t.index ["page_id"], name: "index_attachment_references_on_page_id"
+  end
+
+  create_table "attachments", force: :cascade do |t|
+    t.bigint "team_id", null: false
+    t.string "attachable_type"
+    t.bigint "attachable_id"
+    t.string "kind", null: false
+    t.bigint "byte_size", null: false
+    t.bigint "created_by_user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["attachable_type", "attachable_id", "kind"], name: "index_attachments_on_attachable_and_kind"
+    t.index ["created_by_user_id"], name: "index_attachments_on_created_by_user_id"
+    t.index ["team_id", "attachable_id", "created_at"], name: "index_attachments_pending", where: "(attachable_id IS NULL)"
+    t.index ["team_id"], name: "index_attachments_on_team_id"
+  end
+
   create_table "board_priorities", force: :cascade do |t|
     t.bigint "board_id", null: false
     t.string "name", null: false
@@ -440,6 +464,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
     t.bigint "priority_id"
     t.integer "lock_version", default: 0, null: false
     t.bigint "trash_entry_id"
+    t.integer "attachments_count", default: 0, null: false
     t.index "lower((title)::text) gin_trgm_ops", name: "index_tickets_on_lower_title_trgm", using: :gin
     t.index "lower(description) gin_trgm_ops", name: "index_tickets_on_lower_description_trgm", using: :gin
     t.index ["board_id", "column_id", "position"], name: "index_tickets_on_board_id_and_column_id_and_position"
@@ -491,6 +516,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_120000) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "attachment_references", "attachments"
+  add_foreign_key "attachment_references", "pages"
+  add_foreign_key "attachments", "teams"
+  add_foreign_key "attachments", "users", column: "created_by_user_id"
   add_foreign_key "board_priorities", "boards"
   add_foreign_key "board_tags", "boards"
   add_foreign_key "boards", "projects"
