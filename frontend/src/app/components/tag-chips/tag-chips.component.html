@@ -1,0 +1,7 @@
+<app-tag-chip *ngFor="let tag of shownTags; trackBy: trackById" [tag]="tag"></app-tag-chip>
+<span
+  *ngIf="hiddenTags.length"
+  class="tagChip tagChips__more"
+  [appTooltip]="hiddenNames"
+  [attr.aria-label]="hiddenNames"
+>{{ PHRASES.TAG_MORE | translate: {count: hiddenTags.length} }}</span>

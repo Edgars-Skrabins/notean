@@ -35,6 +35,19 @@
     </section>
 
     <section class="ticketFilter__section">
+      <h3 class="ticketFilter__heading">{{ PHRASES.TAGS | translate }}</h3>
+      <app-checkbox
+        *ngFor="let tag of tags"
+        [checked]="filters.tagIds.has(tag.id)"
+        (checkedChange)="toggleTag(tag.id, $event)"
+      ><app-tag-chip [tag]="tag"></app-tag-chip></app-checkbox>
+      <app-checkbox
+        [checked]="filters.tagIds.has('none')"
+        (checkedChange)="toggleTag('none', $event)"
+      >{{ PHRASES.NO_TAGS | translate }}</app-checkbox>
+    </section>
+
+    <section class="ticketFilter__section">
       <h3 class="ticketFilter__heading">{{ PHRASES.FILTER_STATUS | translate }}</h3>
       <app-checkbox
         *ngFor="let status of statuses; trackBy: trackByStatus"

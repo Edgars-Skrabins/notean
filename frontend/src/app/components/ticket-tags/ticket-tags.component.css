@@ -1,0 +1,52 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.ticketTags__title {
+  margin: 0;
+  font-weight: 700;
+}
+
+.ticketTags__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1);
+}
+
+.ticketTags__dropdown {
+  width: 240px;
+  max-height: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.ticketTags__search {
+  min-height: var(--control-height);
+  padding: 6px 8px;
+}
+
+.ticketTags__create {
+  padding: 6px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-primary-light);
+  font-family: var(--font-ui);
+  font-size: var(--font-sm);
+  text-align: left;
+  cursor: pointer;
+}
+
+.ticketTags__create:hover {
+  background: color-mix(in srgb, var(--color-tint) 8%, transparent);
+}
+
+.ticketTags__empty {
+  margin: 0;
+  color: var(--color-text-faint);
+  font-size: var(--font-sm);
+}
