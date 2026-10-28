@@ -4,6 +4,7 @@ import {AuthService} from "@services/auth.service";
 import {SessionService} from "@services/session.service";
 import {PHRASES} from "@config/phrases";
 import {fakeAsync, tick} from "@angular/core/testing";
+import {ActivatedRoute} from "@angular/router";
 
 describe('RegisterComponent.handleRegister', () => {
   let component: RegisterComponent;
@@ -14,7 +15,8 @@ describe('RegisterComponent.handleRegister', () => {
     component = new RegisterComponent(
       jasmine.createSpyObj('NavigationService', ['navigate']) as NavigationService,
       authService,
-      jasmine.createSpyObj('SessionService', ['load']) as SessionService
+      jasmine.createSpyObj('SessionService', ['load']) as SessionService,
+      {} as ActivatedRoute
     );
     component.email = 'alice@example.com';
   });

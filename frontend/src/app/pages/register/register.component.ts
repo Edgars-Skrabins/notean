@@ -10,6 +10,8 @@ import {PHRASES} from "@config/phrases";
 import {AuthCardComponent} from "@components/auth-card/auth-card.component";
 import {errorPhrase} from "@utils/errorPhrase";
 import {isPasswordLongEnough} from "@utils/passwordValidation";
+import {isSafeReturnUrl, RETURN_URL_PARAM} from "@utils/returnUrl";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-register',
@@ -34,7 +36,8 @@ export class RegisterComponent {
   constructor(
     private navigationService: NavigationService,
     private authService: AuthService,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private route: ActivatedRoute
   ) {
   }
 
@@ -63,6 +66,11 @@ export class RegisterComponent {
   }
 
   handleGoToLogin() {
-    this.navigationService.navigate(AppRoutes.LOGIN);
+    const returnUrl = this.route.snapshot.queryParamMap.get(RETURN_URL_PARAM);
+    if (isSafeReturnUrl(returnUrl)) {
+      this.navigationService.navigateWithQuery({[RETURN_URL_PARAM]: returnUrl}, AppRoutes.LOGIN);
+    } else {
+      this.navigationService.navigate(AppRoutes.LOGIN);
+    }
   }
 }
