@@ -85,8 +85,11 @@
   display: none;
 }
 
-.dashboardSidebar__toggle {
+.dashboardSidebar__trash {
   margin-top: auto;
+}
+
+.dashboardSidebar__toggle {
   border: none;
   background: none;
   font-family: var(--font-ui);

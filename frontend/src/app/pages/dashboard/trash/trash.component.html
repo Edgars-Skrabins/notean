@@ -1,0 +1,67 @@
+<div class="dashboardStub">
+  <div class="trash__header">
+    <h2 class="dashboardStub__title">{{ PHRASES.TRASH | translate }}</h2>
+    <app-button *ngIf="canEmpty && entries?.length" variant="danger" icon="trash" (pressed)="handleEmpty()">{{ PHRASES.EMPTY_TRASH | translate }}</app-button>
+  </div>
+
+  <div class="trash__toolbar">
+    <input
+      type="text"
+      class="textInput trash__search"
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="handleSearchChange($event)"
+      [placeholder]="PHRASES.SEARCH_TRASH | translate"
+    />
+    <app-dropdown
+      [options]="typeOptions"
+      [value]="typeFilter"
+      [ariaLabel]="PHRASES.TRASH_TYPE_ALL | translate"
+      (valueChange)="handleTypeChange($event)"
+    ></app-dropdown>
+  </div>
+
+  <ng-container *ngIf="entries">
+    <div class="trash__list" *ngIf="entries.length">
+      <div class="trash__row" *ngFor="let entry of entries">
+        <app-icon class="trash__icon" [name]="icon(entry)"></app-icon>
+        <span class="trash__text">
+          <span class="trash__title">{{ entry.title }}</span>
+          <span class="trash__meta">
+            <ng-container *ngIf="entry.board">{{ entry.board.title }} · </ng-container>
+            <ng-container *ngIf="entry.childrenCount">{{ (entry.childrenCount === 1 ? PHRASES.TRASH_ITEMS_INSIDE_ONE : PHRASES.TRASH_ITEMS_INSIDE) | translate: {count: entry.childrenCount} }} · </ng-container>
+            {{ PHRASES.TRASH_DELETED_BY | translate: {name: entry.deletedBy.nickname} }} {{ deletedAgo(entry) }} ·
+            {{ (daysLeft(entry) === 1 ? PHRASES.TRASH_DAYS_LEFT_ONE : PHRASES.TRASH_DAYS_LEFT) | translate: {count: daysLeft(entry)} }}
+          </span>
+          <span class="trash__hint" *ngIf="!entry.restorable">{{ PHRASES.TRASH_BOARD_IN_TRASH_HINT | translate }}</span>
+        </span>
+        <app-button variant="ghost" [disabled]="!entry.restorable" (pressed)="handleRestore(entry)">{{ PHRASES.RESTORE | translate }}</app-button>
+        <app-icon-button icon="trash" variant="danger" [tooltip]="PHRASES.DELETE_FOREVER | translate" (pressed)="handleDeleteForever(entry)"></app-icon-button>
+      </div>
+      <app-load-more *ngIf="hasMore" [loading]="isLoadingMore" (pressed)="handleLoadMore()"></app-load-more>
+    </div>
+
+    <div class="trash__empty" *ngIf="!entries.length">
+      <p class="dashboardStub__body" *ngIf="activeSearch || typeFilter">{{ PHRASES.NO_SEARCH_RESULTS | translate }}</p>
+      <ng-container *ngIf="!activeSearch && !typeFilter">
+        <p class="dashboardStub__body">{{ PHRASES.TRASH_EMPTY | translate }}</p>
+        <p class="dashboardStub__body">{{ PHRASES.TRASH_EMPTY_HINT | translate }}</p>
+      </ng-container>
+    </div>
+  </ng-container>
+</div>
+
+<app-confirm-dialog
+  *ngIf="entryPendingDeletion"
+  [message]="PHRASES.CONFIRM_DELETE_FOREVER | translate: {title: entryPendingDeletion.title}"
+  [confirmLabel]="PHRASES.DELETE_FOREVER"
+  (confirmed)="handleConfirmDeleteForever()"
+  (cancelled)="handleCancelDeleteForever()"
+></app-confirm-dialog>
+
+<app-confirm-dialog
+  *ngIf="isEmptyConfirmOpen"
+  [message]="PHRASES.CONFIRM_EMPTY_TRASH | translate"
+  [confirmLabel]="PHRASES.EMPTY_TRASH"
+  (confirmed)="handleConfirmEmpty()"
+  (cancelled)="handleCancelEmpty()"
+></app-confirm-dialog>
