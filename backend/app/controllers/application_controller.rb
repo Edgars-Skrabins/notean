@@ -36,7 +36,7 @@ class ApplicationController < ActionController::API
   end
 
   def create_page_params
-    params.fetch(:page, {}).permit(:title, :content, :folder_id, :project_id)
+    params.fetch(:page, {}).permit(:title, :content, :folder_id, :project_id, attachment_ids: [])
   end
 
   def update_page_params
@@ -137,6 +137,10 @@ class ApplicationController < ActionController::API
 
   def update_avatar_params
     params.require(:avatar).permit(:color, :image, :remove_image)
+  end
+
+  def attachment_params
+    params.fetch(:attachment, {}).permit(:file, :kind)
   end
 
   def update_password_params
