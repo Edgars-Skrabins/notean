@@ -13,6 +13,7 @@ import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "./board-page-state.service";
 import {BoardChannelService} from "@services/board-channel.service";
 import {boardDetail, createBoardState} from "../../../testing/boardFixtures";
+import {trashServiceStub} from "../../../testing/trashServiceStub";
 
 describe('BoardPageComponent', () => {
   let component: BoardPageComponent;
@@ -33,7 +34,7 @@ describe('BoardPageComponent', () => {
     toastService = jasmine.createSpyObj<ToastService>('ToastService', ['show']);
     boardChannelService = jasmine.createSpyObj<BoardChannelService>('BoardChannelService', ['connect', 'disconnect']);
     const route = {paramMap: of(convertToParamMap({id: '9'}))} as unknown as ActivatedRoute;
-    component = new BoardPageComponent(route, state, boardService, boardListService, favoriteService, navigationService, toastService, boardChannelService);
+    component = new BoardPageComponent(route, state, boardService, boardListService, favoriteService, navigationService, toastService, boardChannelService, trashServiceStub().service);
   });
 
   it('loads the board from the route and follows its live updates until destroyed', fakeAsync(() => {
@@ -86,7 +87,7 @@ describe('BoardPageComponent', () => {
   });
 
   it('deletes the board, removes it from the sidebar and favorites and goes home', fakeAsync(() => {
-    boardService.deleteBoard.and.returnValue(Promise.resolve({success: true}));
+    boardService.deleteBoard.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
     component.handleDelete();
 
     component.handleConfirmDelete();

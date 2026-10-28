@@ -3,6 +3,7 @@ import {debounceTime, distinctUntilChanged, map, skip, Subject, Subscription} fr
 import {FolderService} from "@services/folder.service";
 import {TeamService} from "@services/team.service";
 import {FavoriteService} from "@services/favorite.service";
+import {TrashService} from "@services/trash.service";
 import {FolderDeleteMode, FolderItemType, FolderSummary} from "@models/folder.model";
 import {ItemLevel, ItemLevelState, TreeFolder, TreeItem} from "@components/item-tree/item-tree.component";
 import {errorPhrase} from "@utils/errorPhrase";
@@ -42,6 +43,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   private searchGeneration = 0;
   private searchTerms = new Subject<string>();
   private searchSubscription: Subscription | null = null;
+  private restoredSubscription: Subscription | null = null;
 
   protected constructor(
     private itemService: FolderedItemService<ErrorCode>,
@@ -49,7 +51,8 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
     private teamService: TeamService,
     private favoriteService: FavoriteService,
     private router: Router,
-    protected projectFilterService: ProjectFilterService
+    protected projectFilterService: ProjectFilterService,
+    private trashService: TrashService
   ) {
     this.teamCode = this.teamService.getCurrentTeamCode();
     this.createdItem = this.router.getCurrentNavigation()?.extras.state?.['createdItem'] ?? null;
@@ -94,11 +97,18 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
     this.searchSubscription = this.searchTerms
       .pipe(map((query) => query.trim()), debounceTime(300), distinctUntilChanged())
       .subscribe((term) => this.startSearch(term));
+    this.restoredSubscription = this.trashService.restored$.subscribe((restored) => {
+      if (restored.some((item) => item.itemType === this.itemType || item.itemType === 'Folder')) {
+        this.loadData();
+        this.startSearch(this.activeSearch);
+      }
+    });
   }
 
   ngOnDestroy() {
     this.projectSubscription?.unsubscribe();
     this.searchSubscription?.unsubscribe();
+    this.restoredSubscription?.unsubscribe();
   }
 
   handleSearchChange(query: string) {
@@ -226,6 +236,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
 
         this.alertMessage = '';
         deletedItemIds.forEach((itemId) => this.favoriteService.forgetItem(this.itemType, itemId));
+        this.trashService.notifyTrashed(this.teamCode, response.trashEntryIds);
         const updated = event.mode === 'cascade'
           ? removeFolderCascade(this.folders, this.items, event.folderId)
           : promoteFolderContents(this.folders, this.items, event.folderId);
@@ -290,6 +301,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
 
         this.alertMessage = '';
         this.favoriteService.forgetItem(this.itemType, event.itemId);
+        this.trashService.notifyTrashed(this.teamCode, response.trashEntryIds);
         this.items = this.items.filter((item) => item.id !== event.itemId);
         this.setSearchItems(this.searchItems.filter((item) => item.id !== event.itemId));
       });

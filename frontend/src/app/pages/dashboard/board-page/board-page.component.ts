@@ -8,6 +8,7 @@ import {PHRASES} from "@config/phrases";
 import {TITLE_MAX_LENGTH} from "@config/contentLimits";
 import {BoardService} from "@services/board.service";
 import {BoardListService} from "@services/board-list.service";
+import {TrashService} from "@services/trash.service";
 import {FavoriteService} from "@services/favorite.service";
 import {NavigationService} from "@services/navigation.service";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
@@ -60,7 +61,8 @@ export class BoardPageComponent implements OnInit, OnDestroy {
     private favoriteService: FavoriteService,
     private navigationService: NavigationService,
     private toastService: ToastService,
-    private boardChannelService: BoardChannelService
+    private boardChannelService: BoardChannelService,
+    private trashService: TrashService
   ) {
   }
 
@@ -164,6 +166,7 @@ export class BoardPageComponent implements OnInit, OnDestroy {
 
         this.boardListService.remove(boardId);
         this.favoriteService.forgetItem('Board', boardId);
+        this.trashService.notifyTrashed(this.state.teamCode, response.trashEntryIds);
         this.navigationService.navigate(AppRoutes.DASHBOARD, AppRoutes.DASHBOARD_HOME);
       });
   }

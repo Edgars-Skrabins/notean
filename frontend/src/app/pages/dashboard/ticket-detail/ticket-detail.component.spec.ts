@@ -14,9 +14,11 @@ import {TicketDetail} from "@models/ticket.model";
 import {PHRASES} from "@config/phrases";
 import {DESCRIPTION_MAX_LENGTH, TITLE_MAX_LENGTH} from "@config/contentLimits";
 import {EscapeService} from "@services/escape.service";
+import {TrashService} from "@services/trash.service";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 import {createBoardState, ticketDetail} from "../../../testing/boardFixtures";
 import {escapeServiceStub, EscapeServiceStub} from "../../../testing/escapeServiceStub";
+import {trashServiceStub} from "../../../testing/trashServiceStub";
 
 describe('TicketDetailComponent editing', () => {
   let component: TicketDetailComponent;
@@ -44,7 +46,7 @@ describe('TicketDetailComponent editing', () => {
     authService.getCurrentUser.and.returnValue({id: 1, email: 'alice@example.com'});
     state = createBoardState();
     escape = escapeServiceStub();
-    component = new TicketDetailComponent(route, router, state, ticketService, favoriteService, toastService, teamService, projectService, authService, escape.service);
+    component = new TicketDetailComponent(route, router, state, ticketService, favoriteService, toastService, teamService, projectService, authService, escape.service, trashServiceStub().service);
 
     ticket = {...ticketDetail(1, 10), title: 'My Ticket'};
     component.ticket = ticket;
@@ -287,7 +289,7 @@ describe('TicketDetailComponent editing', () => {
   }));
 
   it('deletes the ticket, removes it from the board and closes back to the tab', fakeAsync(() => {
-    ticketService.deleteTicket.and.returnValue(Promise.resolve({success: true}));
+    ticketService.deleteTicket.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
     component.ngOnInit();
 
     component.handleConfirmDelete();
@@ -451,7 +453,7 @@ describe('TicketDetailComponent editing', () => {
   });
 
   it('does not report its own deletion as a remote one', fakeAsync(() => {
-    ticketService.deleteTicket.and.returnValue(Promise.resolve({success: true}));
+    ticketService.deleteTicket.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
     component.ngOnInit();
 
     component.handleConfirmDelete();
@@ -499,6 +501,7 @@ describe('TicketDetailComponent input limits', () => {
         {provide: ProjectService, useValue: jasmine.createSpyObj<ProjectService>('ProjectService', ['getProject'])},
         {provide: AuthService, useValue: authService},
         {provide: EscapeService, useValue: escapeServiceStub().service},
+        {provide: TrashService, useValue: trashServiceStub().service},
       ],
     }).compileComponents();
 

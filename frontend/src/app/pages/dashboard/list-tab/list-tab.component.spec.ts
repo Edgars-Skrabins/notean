@@ -19,6 +19,7 @@ import {dashboardRoutes} from "../../../app/dashboard.routes";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 import {createBoardState, fakeTicketList, ticketDetail, ticketSummary} from "../../../testing/boardFixtures";
+import {trashServiceStub} from "../../../testing/trashServiceStub";
 
 describe('ListTabComponent', () => {
   let component: ListTabComponent;
@@ -44,7 +45,8 @@ describe('ListTabComponent', () => {
       favoriteService,
       toastService,
       teamService,
-      jasmine.createSpyObj<ProjectService>('ProjectService', ['getProject'])
+      jasmine.createSpyObj<ProjectService>('ProjectService', ['getProject']),
+      trashServiceStub().service
     );
     component.ngOnInit();
     flushMicrotasks();
@@ -180,7 +182,7 @@ describe('ListTabComponent', () => {
   }));
 
   it('bulk deletes the selected tickets after confirmation and forgets their favorites', fakeAsync(() => {
-    ticketService.bulkDelete.and.returnValue(Promise.resolve({success: true}));
+    ticketService.bulkDelete.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
     component.setSelected(loaded(3), true);
     component.setSelected(loaded(2), true);
     component.requestBulkDelete();
@@ -296,7 +298,7 @@ describe('ListTabComponent', () => {
   }));
 
   it('deletes a ticket, forgets its favorite and drops it from the selection', fakeAsync(() => {
-    ticketService.deleteTicket.and.returnValue(Promise.resolve({success: true}));
+    ticketService.deleteTicket.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
     component.setSelected(loaded(4), true);
     component.requestDelete(loaded(4));
 

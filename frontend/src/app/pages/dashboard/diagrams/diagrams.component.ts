@@ -9,6 +9,7 @@ import {FolderService} from "@services/folder.service";
 import {TeamService} from "@services/team.service";
 import {FavoriteService} from "@services/favorite.service";
 import {ProjectFilterService} from "@services/project-filter.service";
+import {TrashService} from "@services/trash.service";
 import {FolderItemType} from "@models/folder.model";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {ButtonComponent} from "@components/button/button.component";
@@ -44,8 +45,9 @@ export class DiagramsComponent extends FolderedListPageComponent {
     teamService: TeamService,
     favoriteService: FavoriteService,
     router: Router,
-    projectFilterService: ProjectFilterService
+    projectFilterService: ProjectFilterService,
+    trashService: TrashService
   ) {
-    super(diagramService, folderService, teamService, favoriteService, router, projectFilterService);
+    super(diagramService, folderService, teamService, favoriteService, router, projectFilterService, trashService);
   }
 }
