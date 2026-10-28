@@ -843,6 +843,19 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ "Api" ], listed_titles(status: "backlog", tag_ids: [ bug.id ], assignee_ids: [ bob.id ])
   end
 
+  test "the tag filter leaves out trashed tickets" do
+    bug = BoardTag.create!(board: @board, name: "bug", color: "red")
+    live = ticket_in(nil, "Live", 0)
+    trashed = ticket_in(nil, "Trashed", 1)
+    ticket_in(nil, "Untagged", 2)
+    TicketTag.create!(ticket: live, tag: bug)
+    TicketTag.create!(ticket: trashed, tag: bug)
+    Trash.move_tickets(@board, [ trashed ], @user)
+
+    assert_equal [ "Live" ], listed_titles(status: "backlog", tag_ids: [ bug.id ])
+    assert_equal [ "Untagged" ], listed_titles(status: "backlog", tag_ids: [ "none" ])
+  end
+
   test "index pages by 50 and flips has_more at the end" do
     55.times { |index| ticket_in(nil, "Ticket #{index}", index) }
 

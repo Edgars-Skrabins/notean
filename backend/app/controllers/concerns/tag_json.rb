@@ -4,7 +4,7 @@ module TagJson
   private
 
   def tags_json(board)
-    counts = TicketTag.where(board_tag_id: board.tags.select(:id)).group(:board_tag_id).count
+    counts = TicketTag.where(board_tag_id: board.tags.select(:id), ticket_id: board.tickets.select(:id)).group(:board_tag_id).count
     board.tags.map { |tag| tag_json(tag, counts.fetch(tag.id, 0)) }
   end
 
