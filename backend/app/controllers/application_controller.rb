@@ -115,6 +115,10 @@ class ApplicationController < ActionController::API
     params.require(:favorite).permit(:surface, :position)
   end
 
+  def restore_trash_params
+    params.require(:trash).permit(entry_ids: [])
+  end
+
   def update_settings_params
     params.require(:settings).permit(:show_favorites_on_home, :show_favorites_in_sidebar, :show_my_work_on_home, :theme, :theme_mode)
   end
