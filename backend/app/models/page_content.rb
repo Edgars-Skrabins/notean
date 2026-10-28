@@ -3,10 +3,10 @@ class PageContent
   MENTION_ATTRIBUTES = %w[data-type data-mention-type data-id data-label].freeze
 
   class Scrubber < Rails::Html::PermitScrubber
-    def initialize(images: true)
+    def initialize(images: true, tags: Rails::Html::SafeListSanitizer.allowed_tags)
       super()
       @images = images
-      self.tags = Rails::Html::SafeListSanitizer.allowed_tags
+      self.tags = tags
       self.attributes = Rails::Html::SafeListSanitizer.allowed_attributes
     end
 

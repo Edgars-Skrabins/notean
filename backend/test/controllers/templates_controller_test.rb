@@ -114,6 +114,17 @@ class TemplatesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "<h1>Title</h1>", json["template"]["content"]
   end
 
+  test "page template content keeps mentions without item titles" do
+    content = '<p><span data-type="mention" data-mention-type="user" data-id="3" data-label="Ann">@Ann</span>' \
+      '<span data-type="mention" data-mention-type="page" data-id="4" data-label="Secret">@Secret</span></p>'
+
+    post "/teams/#{@team.code}/templates", params: { template: { kind: "page", content: content } }, headers: @headers, as: :json
+
+    assert_response :created
+    assert_equal '<p><span data-type="mention" data-mention-type="user" data-id="3" data-label="Ann">@Ann</span>' \
+      '<span data-type="mention" data-mention-type="page" data-id="4">@</span></p>', json["template"]["content"]
+  end
+
   test "create rejects invalid board content and too long titles" do
     post "/teams/#{@team.code}/templates", params: { template: { kind: "board", content: board_content(priorities: [ { name: "Hot", color: "pink" } ]) } }, headers: @headers, as: :json
     assert_response :unprocessable_entity

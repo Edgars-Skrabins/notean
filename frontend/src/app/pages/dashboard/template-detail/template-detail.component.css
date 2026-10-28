@@ -3,10 +3,6 @@
   line-height: 1.6;
 }
 
-.templateDetail__content :first-child {
-  margin-top: 0;
-}
-
 .templateDetail__diagram {
   flex: 1;
   min-height: 0;

@@ -96,7 +96,8 @@ class TemplatesController < ApplicationController
   def template_content(content)
     return content.to_s unless @template.kind == "page"
 
-    Rails::Html::SafeListSanitizer.new.sanitize(content.to_s, tags: PAGE_TAGS)
+    sanitized = Rails::Html::SafeListSanitizer.new.sanitize(content.to_s, scrubber: PageContent::Scrubber.new(images: false, tags: PAGE_TAGS))
+    Mentions.strip_item_labels(sanitized, html: true)
   end
 
   def render_template_error(fallback_code)
