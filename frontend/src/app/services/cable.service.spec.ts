@@ -70,6 +70,7 @@ describe('CableService', () => {
   });
 
   it('refreshes the ticket every 45 seconds so reconnects use a fresh one', async () => {
+    spyOnProperty(document, 'visibilityState').and.returnValue('visible');
     service.subscribe({channel: 'TeamChannel', team_code: 'abc'}, {});
     await flush();
 
