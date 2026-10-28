@@ -42,6 +42,7 @@ describe('ProjectDetailComponent', () => {
   let boardService: jasmine.SpyObj<BoardService>;
   let teamService: jasmine.SpyObj<TeamService>;
   let router: jasmine.SpyObj<Router>;
+  let navigationService: jasmine.SpyObj<NavigationService>;
   let features: BehaviorSubject<TeamFeatures>;
 
   async function render(project: ProjectDetail = projectDetail()) {
@@ -75,6 +76,7 @@ describe('ProjectDetailComponent', () => {
     teamService.fetchTeamMembers.and.returnValue(Promise.resolve([]));
     teamService.isFeatureEnabled.and.callFake((feature) => features.value[feature]);
     router = jasmine.createSpyObj<Router>('Router', ['navigate']);
+    navigationService = jasmine.createSpyObj<NavigationService>('NavigationService', ['navigate', 'navigateReplacingUrl']);
     const route = {snapshot: {paramMap: convertToParamMap({id: '5'})}} as unknown as ActivatedRoute;
 
     await TestBed.configureTestingModule({
@@ -90,7 +92,7 @@ describe('ProjectDetailComponent', () => {
         {provide: TeamService, useValue: teamService},
         {provide: ProjectFilterService, useValue: projectFilterStub(5).service},
         {provide: ToastService, useValue: jasmine.createSpyObj<ToastService>('ToastService', ['show'])},
-        {provide: NavigationService, useValue: jasmine.createSpyObj<NavigationService>('NavigationService', ['navigate'])},
+        {provide: NavigationService, useValue: navigationService},
       ],
     }).compileComponents();
   });
@@ -105,6 +107,15 @@ describe('ProjectDetailComponent', () => {
     expect(texts('.projectItemRow__title')).toEqual(['Old page', 'New page', 'Sprint']);
     expect(texts('.projectDetail__empty')).toEqual([]);
     expect(fixture.nativeElement.querySelector('.loadMore')).toBeNull();
+  });
+
+  it('sends a missing or hidden project to the unavailable screen', async () => {
+    projectService.getProject.and.returnValue(Promise.resolve({success: false, code: 'PROJECT_NOT_FOUND'}));
+    fixture = TestBed.createComponent(ProjectDetailComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    expect(navigationService.navigateReplacingUrl).toHaveBeenCalledOnceWith(AppRoutes.UNAVAILABLE);
   });
 
   it('loads more pages after the loaded ones', async () => {

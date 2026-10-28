@@ -33,6 +33,8 @@ import {DropdownOption} from "@models/dropdown.model";
 import {errorPhrase} from "@utils/errorPhrase";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 import {EscapeService} from "@services/escape.service";
+import {CopyLinkService} from "@services/copy-link.service";
+import {AppRoutes} from "../../../app/app-routes.enum";
 
 @Component({
   selector: 'app-ticket-detail',
@@ -92,7 +94,8 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     private teamService: TeamService,
     private projectService: ProjectService,
     authService: AuthService,
-    private escapeService: EscapeService
+    private escapeService: EscapeService,
+    private copyLinkService: CopyLinkService
   ) {
     this.currentUserId = authService.getCurrentUser()?.id ?? 0;
   }
@@ -213,6 +216,10 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     this.isMoveDialogOpen = false;
     this.ticketService.moveTicket(this.teamCode, this.boardId, this.ticketId, {columnId: event.columnId})
       .then((response) => this.applyMove(response));
+  }
+
+  handleCopyLink() {
+    this.copyLinkService.copyCurrentLink();
   }
 
   handleDelete() {
@@ -443,6 +450,10 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
         this.isLoading = false;
 
         if (!response.success) {
+          if (response.code === 'TICKET_NOT_FOUND') {
+            this.router.navigate([AppRoutes.UNAVAILABLE], {replaceUrl: true});
+            return;
+          }
           this.alertMessage = errorPhrase(response.code);
           return;
         }

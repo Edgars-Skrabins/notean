@@ -67,6 +67,12 @@
   font-size: var(--font-md);
 }
 
+.projectDetail__actions {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+}
+
 .projectDetail__sidebar {
   width: 220px;
   flex-shrink: 0;

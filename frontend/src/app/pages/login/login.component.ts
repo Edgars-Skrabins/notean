@@ -9,6 +9,8 @@ import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {AuthCardComponent} from "@components/auth-card/auth-card.component";
 import {errorPhrase} from "@utils/errorPhrase";
+import {isSafeReturnUrl, RETURN_URL_PARAM} from "@utils/returnUrl";
+import {ActivatedRoute} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -33,8 +35,13 @@ export class LoginComponent {
   constructor(
     private navigationService: NavigationService,
     private authService: AuthService,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+    private route: ActivatedRoute
   ) {
+  }
+
+  private get returnUrl(): string | null {
+    return this.route.snapshot.queryParamMap.get(RETURN_URL_PARAM);
   }
 
   handleLogin() {
@@ -51,7 +58,10 @@ export class LoginComponent {
         }
 
         return this.sessionService.load().then((session) => {
-          if (session.success && session.session.team) {
+          const returnUrl = this.returnUrl;
+          if (isSafeReturnUrl(returnUrl)) {
+            this.navigationService.navigateByUrl(returnUrl);
+          } else if (session.success && session.session.team) {
             this.navigationService.navigate(AppRoutes.DASHBOARD);
           } else {
             this.navigationService.navigate(AppRoutes.TEAM_SELECTION);
@@ -64,6 +74,11 @@ export class LoginComponent {
   }
 
   handleGoToRegister() {
-    this.navigationService.navigate(AppRoutes.REGISTER);
+    const returnUrl = this.returnUrl;
+    if (isSafeReturnUrl(returnUrl)) {
+      this.navigationService.navigateWithQuery({[RETURN_URL_PARAM]: returnUrl}, AppRoutes.REGISTER);
+    } else {
+      this.navigationService.navigate(AppRoutes.REGISTER);
+    }
   }
 }
