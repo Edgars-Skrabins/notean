@@ -5,6 +5,7 @@ describe('routeFeature', () => {
     expect(routeFeature('/dashboard/pages')).toBe('pages');
     expect(routeFeature('/dashboard/diagrams/4')).toBe('diagrams');
     expect(routeFeature('/dashboard/boards/9/kanban/tickets/3?tab=1')).toBe('boards');
+    expect(routeFeature('/dashboard/chat/5?message=12')).toBe('chat');
   });
 
   it('returns null for screens without a feature', () => {

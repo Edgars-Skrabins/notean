@@ -1,0 +1,39 @@
+<app-gif-picker
+  *ngIf="gifQuery(text) !== null"
+  class="chatComposer__gifs"
+  [channelId]="channelId"
+  [query]="gifQuery(text) ?? ''"
+  (picked)="handleGifPicked($event)"
+></app-gif-picker>
+
+<div class="chatComposer">
+  <app-mention-text-editor
+    class="chatComposer__input"
+    [value]="text"
+    [placeholder]="placeholder"
+    [maxLength]="MESSAGE_MAX_LENGTH"
+    [mentionContext]="mentionContext"
+    [submitOnEnter]="true"
+    (valueChange)="handleChange($event)"
+    (submitted)="handleSubmit()"
+    (escape)="handleEscape($event)"
+  ></app-mention-text-editor>
+
+  <div cdkOverlayOrigin #emojiOrigin="cdkOverlayOrigin">
+    <app-icon-button icon="smile" [tooltip]="PHRASES.ADD_EMOJI | translate" (pressed)="isEmojiOpen = !isEmojiOpen"></app-icon-button>
+  </div>
+  <app-icon-button icon="send" [tooltip]="PHRASES.SEND_MESSAGE | translate" [disabled]="!text.trim() || sending" (pressed)="handleSubmit()"></app-icon-button>
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="emojiOrigin"
+  [cdkConnectedOverlayOpen]="isEmojiOpen"
+  [cdkConnectedOverlayPositions]="DROPDOWN_POSITIONS"
+  [cdkConnectedOverlayPush]="true"
+  [cdkConnectedOverlayViewportMargin]="4"
+  (overlayOutsideClick)="isEmojiOpen = false"
+  (detach)="isEmojiOpen = false"
+>
+  <app-emoji-picker (picked)="handleEmojiPicked($event)"></app-emoji-picker>
+</ng-template>

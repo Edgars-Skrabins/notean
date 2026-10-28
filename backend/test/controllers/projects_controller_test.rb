@@ -253,4 +253,24 @@ class ProjectsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_equal "@[page:1]", @game.reload.description
   end
+
+  test "delete with keep turns the project's chat channels team-wide" do
+    channel = ChatChannel.create!(team: @team, creator: @owner, name: "Game chat", scope: "project", project: @game)
+
+    delete projects_url(@game), params: { project: { mode: "keep", confirm_name: "Game" } }, headers: headers_for(@owner), as: :json
+
+    assert_response :no_content
+    assert_equal [ "team", nil, false ], [ channel.reload.scope, channel.project_id, channel.trashed? ]
+  end
+
+  test "delete with delete_items moves the project's chat channels to the trash as team-wide channels" do
+    channel = ChatChannel.create!(team: @team, creator: @owner, name: "Game chat", scope: "project", project: @game)
+
+    delete projects_url(@game), params: { project: { mode: "delete_items", confirm_name: "Game" } }, headers: headers_for(@owner), as: :json
+
+    assert_response :no_content
+    channel = ChatChannel.unscoped.find(channel.id)
+    assert_equal [ "team", nil, true ], [ channel.scope, channel.project_id, channel.trashed? ]
+    assert TrashEntry.exists?(item_type: "ChatChannel", item_id: channel.id)
+  end
 end

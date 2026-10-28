@@ -12,6 +12,7 @@ import {KanbanTabComponent} from "../pages/dashboard/kanban-tab/kanban-tab.compo
 import {ListTabComponent} from "../pages/dashboard/list-tab/list-tab.component";
 import {TicketDetailComponent} from "../pages/dashboard/ticket-detail/ticket-detail.component";
 import {TrashComponent} from "../pages/dashboard/trash/trash.component";
+import {ChatPageComponent} from "../pages/dashboard/chat-page/chat-page.component";
 import {unsavedChangesGuard} from "../guards/unsaved-changes.guard";
 import {featureGuard} from "../guards/feature.guard";
 import {TemplatesComponent} from "../pages/dashboard/templates/templates.component";
@@ -24,6 +25,7 @@ export const dashboardRoutes: Routes = [
   {path: AppRoutes.DASHBOARD_HOME, component: HomeComponent},
   {path: AppRoutes.PROJECTS, component: ProjectsComponent},
   {path: AppRoutes.TRASH, component: TrashComponent},
+  {path: `${AppRoutes.CHAT}/:id`, component: ChatPageComponent, canActivate: [featureGuard('chat')]},
   {path: `${AppRoutes.PROJECTS}/:id`, component: ProjectDetailComponent, canDeactivate: [unsavedChangesGuard]},
   {path: AppRoutes.DOCUMENT_PAGES, component: DocumentPagesComponent, canActivate: [featureGuard('pages')]},
   {path: `${AppRoutes.DOCUMENT_PAGES}/${AppRoutes.TEMPLATES}`, component: TemplatesComponent, canActivate: [featureGuard('pages')], data: {kind: 'page'}},

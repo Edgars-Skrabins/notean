@@ -1,0 +1,79 @@
+<div class="chatMessage" [class.chatMessage--grouped]="grouped" [class.chatMessage--active]="isEmojiOpen" [attr.data-message-id]="message.id">
+  <div class="chatMessage__gutter">
+    <app-avatar *ngIf="!grouped" [avatar]="message.author.avatar" [nickname]="message.author.nickname" [size]="32"></app-avatar>
+  </div>
+
+  <div class="chatMessage__main">
+    <div class="chatMessage__meta" *ngIf="!grouped">
+      <span class="chatMessage__author">{{ message.author.nickname }}</span>
+      <span class="chatMessage__time" [appTooltip]="exactTime">{{ time }}</span>
+    </div>
+
+    <ng-container *ngIf="!editing; else editor">
+      <app-mention-content *ngIf="message.kind === 'text'" class="chatMessage__body" [text]="message.body" [links]="true"></app-mention-content>
+      <img
+        *ngIf="message.gif as gif"
+        class="chatMessage__gif"
+        [src]="gif.url"
+        [alt]="gif.title"
+        [attr.width]="gif.width"
+        [attr.height]="gif.height"
+        loading="lazy"
+      />
+      <span class="chatMessage__edited" *ngIf="message.editedAt">{{ PHRASES.MESSAGE_EDITED | translate }}</span>
+    </ng-container>
+
+    <ng-template #editor>
+      <app-mention-text-editor
+        [value]="draft"
+        [maxLength]="MESSAGE_MAX_LENGTH"
+        [submitOnEnter]="true"
+        (valueChange)="draft = $event"
+        (submitted)="saveEdit()"
+        (escape)="handleEditEscape($event)"
+      ></app-mention-text-editor>
+    </ng-template>
+
+    <app-chat-reactions
+      [reactions]="message.reactions"
+      [currentUserId]="currentUserId"
+      [nicknames]="nicknames"
+      (toggled)="toggleReaction($event)"
+    ></app-chat-reactions>
+  </div>
+
+  <div class="popupPanel chatMessage__actions" *ngIf="!editing">
+    <button
+      *ngFor="let emoji of recentReactionsService.recent"
+      type="button"
+      class="chatMessage__quickReaction"
+      [attr.aria-label]="(PHRASES.ADD_REACTION | translate) + ' ' + emoji"
+      (click)="toggleReaction(emoji)"
+    >{{ emoji }}</button>
+    <span cdkOverlayOrigin #emojiOrigin="cdkOverlayOrigin">
+      <app-icon-button icon="plus" [size]="28" [tooltip]="PHRASES.MORE_REACTIONS | translate" (pressed)="isEmojiOpen = !isEmojiOpen"></app-icon-button>
+    </span>
+    <app-icon-button *ngIf="canEdit" icon="edit" [size]="28" [tooltip]="PHRASES.EDIT | translate" (pressed)="startEdit()"></app-icon-button>
+    <app-icon-button *ngIf="canDelete" icon="trash" variant="danger" [size]="28" [tooltip]="PHRASES.DELETE | translate" (pressed)="isConfirmingDelete = true"></app-icon-button>
+
+    <ng-template
+      cdkConnectedOverlay
+      [cdkConnectedOverlayOrigin]="emojiOrigin"
+      [cdkConnectedOverlayOpen]="isEmojiOpen"
+      [cdkConnectedOverlayPositions]="MENU_POSITIONS"
+      [cdkConnectedOverlayPush]="true"
+      [cdkConnectedOverlayViewportMargin]="4"
+      (overlayOutsideClick)="isEmojiOpen = false"
+      (detach)="isEmojiOpen = false"
+    >
+      <app-emoji-picker (picked)="handleEmojiPicked($event)"></app-emoji-picker>
+    </ng-template>
+  </div>
+</div>
+
+<app-confirm-dialog
+  *ngIf="isConfirmingDelete"
+  [message]="PHRASES.CONFIRM_DELETE_MESSAGE | translate"
+  (confirmed)="handleDeleteConfirmed()"
+  (cancelled)="isConfirmingDelete = false"
+></app-confirm-dialog>

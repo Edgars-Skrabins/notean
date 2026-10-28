@@ -1,0 +1,14 @@
+<div class="popupPanel gifPicker">
+  <p class="gifPicker__message" *ngIf="unavailable">{{ PHRASES.GIFS_UNAVAILABLE_NOW | translate }}</p>
+  <p class="gifPicker__message" *ngIf="!unavailable && !loading && !gifs.length && query.trim()">{{ PHRASES.NO_GIFS_FOUND | translate }}</p>
+  <p class="gifPicker__message" *ngIf="!query.trim()">{{ PHRASES.SEARCH_GIFS_HINT | translate }}</p>
+
+  <div class="gifPicker__grid" *ngIf="gifs.length">
+    <button type="button" class="gifPicker__gif" *ngFor="let gif of gifs" [attr.aria-label]="gif.title" (click)="picked.emit(gif)">
+      <img [src]="gif.url" [alt]="gif.title" [attr.width]="gif.width" [attr.height]="gif.height" loading="lazy"/>
+    </button>
+  </div>
+
+  <app-load-more *ngIf="hasMore" [loading]="loading" (pressed)="loadMore()"></app-load-more>
+  <p class="gifPicker__attribution">{{ PHRASES.POWERED_BY_GIPHY | translate }}</p>
+</div>

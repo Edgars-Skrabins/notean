@@ -41,11 +41,17 @@ class ProjectsController < ApplicationController
     return render_error(ErrorCodes::Projects::PROJECT_NAME_MISMATCH, :unprocessable_entity) unless destroy_project_params[:confirm_name] == @project.name
 
     Project.transaction do
-      trash_project_items if mode == "delete_items"
+      chat_channel_ids = ChatChannel.where(project_id: @project.id).pluck(:id)
+      ChatChannel.unscoped.where(project_id: @project.id).update_all(scope: "team", project_id: nil)
+      if mode == "delete_items"
+        trash_project_items
+        ChatChannel.where(id: chat_channel_ids).find_each { |channel| Trash.move(channel, current_user) }
+      end
       @project.destroy!
     end
 
     head :no_content
+    ChatBroadcast.channels_changed(@team)
   end
 
   private
@@ -95,6 +101,7 @@ class ProjectsController < ApplicationController
 
     ProjectAccessCleanup.for_project(project)
     render json: { project: project_json(project.reload) }, status: status
+    ChatBroadcast.channels_changed(@team) if ChatChannel.exists?(project_id: project.id)
     MentionNotifications.call(item: project, before: previous_description, after: project.description, actor: current_user, html: false)
   end
 

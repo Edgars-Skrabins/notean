@@ -1,9 +1,9 @@
 class TrashEntry < ApplicationRecord
   include TitleSearchable
 
-  ITEM_TYPES = %w[Page Diagram Board Ticket Folder].freeze
+  ITEM_TYPES = %w[Page Diagram Board Ticket Folder ChatChannel].freeze
   RETENTION = 14.days
-  TYPE_FEATURES = { "Page" => :pages, "Diagram" => :diagrams, "Board" => :boards, "Ticket" => :boards }.freeze
+  TYPE_FEATURES = { "Page" => :pages, "Diagram" => :diagrams, "Board" => :boards, "Ticket" => :boards, "ChatChannel" => :chat }.freeze
 
   belongs_to :team
   belongs_to :project, optional: true

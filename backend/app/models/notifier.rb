@@ -20,6 +20,17 @@ class Notifier
     deliver("mentioned", [ item ], actor, excerpt: excerpt&.truncate(Notification::EXCERPT_MAX_LENGTH)) { user_ids(users) }
   end
 
+  def self.chat_message_deleted(message)
+    earlier = Notification.where(item_type: "ChatMessage", item_id: message.id)
+    removed = earlier.pluck(:id, :user_id).group_by(&:last)
+
+    result = yield
+    earlier.delete_all
+
+    NotificationBroadcast.removed(message.team, User.where(id: removed.keys).map { |user| [ user, removed[user.id].map(&:first) ] })
+    result
+  end
+
   def self.item_changed(items, actor, fields)
     items = Array(items)
     return if items.empty? || fields.empty?
@@ -90,7 +101,8 @@ class Notifier
     candidate_ids = user_ids.compact.uniq - [ actor.id ]
     return [] if candidate_ids.empty?
 
-    ProjectAccess.users_who_can_see(item).merge(User.active).where(id: candidate_ids).pluck(:id)
+    viewers = item.is_a?(ChatMessage) ? ChatAccess.users_who_can_see(item.chat_channel) : ProjectAccess.users_who_can_see(item)
+    viewers.merge(User.active).where(id: candidate_ids).pluck(:id)
   end
 
   def self.owner_ids_by_item(items)
@@ -121,6 +133,7 @@ class Notifier
       item_title: title_of(item),
       board_id: item.is_a?(Ticket) ? item.board_id : nil,
       project_id: ProjectAccess.project_id_of(item),
+      chat_channel_id: item.is_a?(ChatMessage) ? item.chat_channel_id : nil,
       occurred_at: now,
       created_at: now,
       updated_at: now,

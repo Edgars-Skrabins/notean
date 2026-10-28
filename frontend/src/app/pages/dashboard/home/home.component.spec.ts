@@ -25,7 +25,7 @@ describe('HomeComponent', () => {
 
   beforeEach(async () => {
     settings = new BehaviorSubject<UserSettings>({showFavoritesOnHome: true, showFavoritesInSidebar: true, showMyWorkOnHome: true, theme: 'purple_haze', themeMode: 'system'});
-    features = new BehaviorSubject<TeamFeatures>({pages: true, diagrams: true, boards: true});
+    features = new BehaviorSubject<TeamFeatures>({pages: true, diagrams: true, boards: true, chat: true});
     await TestBed.configureTestingModule({
       imports: [HomeComponent],
       providers: [
@@ -52,7 +52,7 @@ describe('HomeComponent', () => {
   });
 
   it('hides My Work when boards are turned off', () => {
-    features.next({pages: true, diagrams: true, boards: false});
+    features.next({pages: true, diagrams: true, boards: false, chat: true});
     render(true, true);
 
     expect(sections()).toEqual(['APP-ACTIVITY-INBOX', 'APP-FAVORITES-GRID']);

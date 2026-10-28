@@ -1,5 +1,5 @@
 class Trash
-  TRASHABLE_CLASSES = [ Page, Diagram, Board, Ticket, Folder ].freeze
+  TRASHABLE_CLASSES = [ Page, Diagram, Board, Ticket, Folder, ChatChannel ].freeze
   FOLDER_ITEM_CLASSES = { "Page" => Page, "Diagram" => Diagram }.freeze
 
   class BoardInTrash < StandardError; end

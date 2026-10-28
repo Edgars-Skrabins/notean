@@ -1,0 +1,26 @@
+:host {
+  display: block;
+  margin-bottom: var(--space-5);
+}
+
+.chatMemberPicker__label {
+  margin: 0 0 var(--space-2);
+}
+
+.chatMemberPicker {
+  max-height: 220px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.chatMemberPicker__row {
+  padding: var(--space-1) 0;
+}
+
+.chatMemberPicker__member {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}

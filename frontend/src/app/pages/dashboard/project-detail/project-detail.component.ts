@@ -38,8 +38,10 @@ export interface ProjectItem {
   updatedAt: string;
 }
 
+export type ProjectItemFeature = Exclude<TeamFeature, 'chat'>;
+
 export interface ProjectItemGroup {
-  feature: TeamFeature;
+  feature: ProjectItemFeature;
   label: string;
   icon: IconName;
   items: ProjectItem[];
@@ -235,7 +237,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChan
       });
   }
 
-  private loadGroupPage(feature: TeamFeature, offset: number): Promise<ProjectItemPage | null> {
+  private loadGroupPage(feature: ProjectItemFeature, offset: number): Promise<ProjectItemPage | null> {
     const projectId = this.projectId;
     switch (feature) {
       case 'pages':

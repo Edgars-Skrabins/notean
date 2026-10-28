@@ -11,7 +11,7 @@ import {Notification} from '@models/notification.model';
 import {ActivityRowComponent} from '@components/activity-row/activity-row.component';
 import {LoadMoreComponent} from '@components/load-more/load-more.component';
 import {errorPhrase} from '@utils/errorPhrase';
-import {notificationRoute} from '@utils/notificationRoute';
+import {notificationQueryParams, notificationRoute} from '@utils/notificationRoute';
 
 export type ActivityFilter = 'all' | 'unread';
 
@@ -101,7 +101,7 @@ export class ActivityInboxComponent implements OnInit, OnDestroy {
 
     const route = notificationRoute(notification);
     if (route) {
-      this.router.navigate(route);
+      this.router.navigate(route, {queryParams: notificationQueryParams(notification)});
     }
   }
 

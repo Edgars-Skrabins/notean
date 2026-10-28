@@ -1,0 +1,13 @@
+<button
+  *ngFor="let reaction of reactions"
+  type="button"
+  class="chatReactions__chip"
+  [class.chatReactions__chip--mine]="isMine(reaction)"
+  [appTooltip]="reactedBy(reaction)"
+  [attr.aria-pressed]="isMine(reaction)"
+  [attr.aria-label]="reaction.emoji + ' ' + reactedBy(reaction)"
+  (click)="toggled.emit(reaction.emoji)"
+>
+  <span class="chatReactions__emoji">{{ reaction.emoji }}</span>
+  <span class="chatReactions__count">{{ reaction.userIds.length }}</span>
+</button>

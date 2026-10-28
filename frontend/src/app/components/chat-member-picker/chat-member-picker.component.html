@@ -1,0 +1,15 @@
+<p class="capsLabel chatMemberPicker__label">{{ PHRASES.CHANNEL_MEMBERS | translate }}</p>
+<ul class="chatMemberPicker">
+  <li *ngFor="let member of members" class="chatMemberPicker__row">
+    <app-checkbox
+      [checked]="isSelected(member.id)"
+      [disabled]="lockedIds.includes(member.id)"
+      (checkedChange)="handleToggle(member.id, $event)"
+    >
+      <span class="chatMemberPicker__member">
+        <app-avatar [avatar]="member.avatar" [nickname]="member.nickname"></app-avatar>
+        {{ member.nickname }}
+      </span>
+    </app-checkbox>
+  </li>
+</ul>

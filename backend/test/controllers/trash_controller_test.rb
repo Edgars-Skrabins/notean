@@ -184,4 +184,36 @@ class TrashControllerTest < ActionDispatch::IntegrationTest
     assert_response :no_content
     assert_equal [ ticket_entry.id ], TrashEntry.pluck(:id)
   end
+
+  test "chat channel entries are listed and restored only by people who may manage the channel" do
+    channel = ChatChannel.create!(team: @team, creator: @owner, name: "General", scope: "team")
+    entry = Trash.move(channel, @owner)
+
+    get "/teams/#{@team.code}/trash", params: { type: "chat_channel" }, headers: @headers
+    assert_empty JSON.parse(response.body)["trash_entries"]
+
+    post "/teams/#{@team.code}/trash/restore", params: { trash: { entry_ids: [ entry.id ] } }, headers: @headers, as: :json
+    assert_response :not_found
+
+    post "/teams/#{@team.code}/trash/restore", params: { trash: { entry_ids: [ entry.id ] } }, headers: @owner_headers, as: :json
+    assert_response :success
+    assert_not channel.reload.trashed?
+    assert_equal "channel_upserted", ::JSON.parse(broadcasts(ChatCable.stream_name(@team, @alice.id)).last)["type"]
+  end
+
+  test "purging a chat channel deletes its messages and notifications" do
+    channel = ChatChannel.create!(team: @team, creator: @owner, name: "General", scope: "team")
+    message = ChatMessage.create!(chat_channel: channel, author: @owner, body: "Hi @[user:#{@alice.id}|Alice]")
+    message.chat_reactions.create!(user: @alice, emoji: "👍")
+    MentionNotifications.call(item: message, before: "", after: message.body, actor: @owner, html: false)
+    entry = Trash.move(channel, @owner)
+
+    delete "/teams/#{@team.code}/trash/#{entry.id}", headers: @owner_headers
+
+    assert_response :no_content
+    assert_not ChatChannel.unscoped.exists?(channel.id)
+    assert_not ChatMessage.exists?(message.id)
+    assert_not ChatReaction.exists?
+    assert_not Notification.exists?(item_type: "ChatMessage")
+  end
 end

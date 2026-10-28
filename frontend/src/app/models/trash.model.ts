@@ -2,9 +2,9 @@ import {Result} from "@models/result.model";
 import {BoardUser} from "@models/board.model";
 import {ProjectsErrorCode, TeamAccessErrorCode, TrashErrorCode} from "@config/errorCodes";
 
-export type TrashItemType = 'Page' | 'Diagram' | 'Board' | 'Ticket' | 'Folder';
+export type TrashItemType = 'Page' | 'Diagram' | 'Board' | 'Ticket' | 'Folder' | 'ChatChannel';
 
-export type TrashTypeFilter = 'page' | 'diagram' | 'board' | 'ticket' | 'folder';
+export type TrashTypeFilter = 'page' | 'diagram' | 'board' | 'ticket' | 'folder' | 'chat_channel';
 
 export interface TrashEntry {
   id: number;

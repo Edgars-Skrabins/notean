@@ -22,3 +22,8 @@ app-mention-content {
 .mentionContent .ProseMirror > :last-child {
   margin-bottom: 0;
 }
+
+.mentionContent a {
+  color: var(--color-primary-light);
+  text-decoration: underline;
+}

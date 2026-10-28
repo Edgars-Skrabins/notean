@@ -8,6 +8,8 @@
     <app-unread-badge *ngIf="notificationChannelService.unreadCount$ | async as unreadCount" [count]="unreadCount" [dot]="collapsed"></app-unread-badge>
   </a>
 
+  <app-sidebar-chat *ngIf="features.chat" [collapsed]="collapsed"></app-sidebar-chat>
+
   <a class="dashboardSidebar__item" [routerLink]="AppRoutes.PROJECTS" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="collapsed ? (PHRASES.PROJECTS | translate) : ''" [attr.aria-label]="PHRASES.PROJECTS | translate">
     <app-icon name="project" class="dashboardSidebar__icon"></app-icon>
     <span class="dashboardSidebar__label">{{ PHRASES.PROJECTS | translate }}</span>

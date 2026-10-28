@@ -1,0 +1,15 @@
+:host {
+  display: block;
+}
+
+.sidebarChat__hash {
+  width: 14px;
+  flex-shrink: 0;
+  text-align: center;
+  color: var(--color-text-faint);
+}
+
+.sidebarChat__row--unread {
+  color: var(--color-text-heading);
+  font-weight: 600;
+}

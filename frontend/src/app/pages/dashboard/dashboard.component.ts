@@ -8,6 +8,7 @@ import {ProjectFilterService} from "@services/project-filter.service";
 import {TeamService} from "@services/team.service";
 import {TeamChannelService} from "@services/team-channel.service";
 import {NotificationChannelService} from "@services/notification-channel.service";
+import {ChatCableService} from "@services/chat-cable.service";
 import {NavigationService} from "@services/navigation.service";
 import {ToastService} from "@services/toast.service";
 import {TeamFeatures} from "@models/team.model";
@@ -36,6 +37,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private teamService: TeamService,
     private teamChannelService: TeamChannelService,
     private notificationChannelService: NotificationChannelService,
+    private chatCableService: ChatCableService,
     private navigationService: NavigationService,
     private toastService: ToastService,
     private router: Router
@@ -52,13 +54,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.notificationChannelService.connect(team.code);
     }
 
-    this.featuresSubscription = this.teamService.features$.subscribe((features) => this.leaveDisabledFeature(features));
+    this.featuresSubscription = this.teamService.features$.subscribe((features) => {
+      this.connectChat(features);
+      this.leaveDisabledFeature(features);
+    });
   }
 
   ngOnDestroy() {
     this.featuresSubscription?.unsubscribe();
     this.teamChannelService.disconnect();
     this.notificationChannelService.disconnect();
+    this.chatCableService.disconnect();
+  }
+
+  private connectChat(features: TeamFeatures) {
+    const team = this.teamService.getCurrentTeam();
+    if (team && features.chat) {
+      this.chatCableService.connect(team.code);
+    } else {
+      this.chatCableService.disconnect();
+    }
   }
 
   private leaveDisabledFeature(features: TeamFeatures) {

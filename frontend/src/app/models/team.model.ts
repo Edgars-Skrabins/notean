@@ -4,7 +4,7 @@ import {Avatar} from "@models/avatar.model";
 
 export type TeamRole = 'user' | 'admin' | 'owner';
 
-export type TeamFeature = 'pages' | 'diagrams' | 'boards';
+export type TeamFeature = 'pages' | 'diagrams' | 'boards' | 'chat';
 
 export type TeamFeatures = Record<TeamFeature, boolean>;
 
@@ -21,6 +21,7 @@ export interface Team {
   pagesEnabled: boolean;
   diagramsEnabled: boolean;
   boardsEnabled: boolean;
+  chatEnabled: boolean;
 }
 
 export interface TeamWithRole extends Team {

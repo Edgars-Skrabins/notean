@@ -5,6 +5,7 @@ const FEATURE_SEGMENTS: Record<string, TeamFeature> = {
   [AppRoutes.DOCUMENT_PAGES]: 'pages',
   [AppRoutes.DIAGRAMS]: 'diagrams',
   [AppRoutes.BOARDS]: 'boards',
+  [AppRoutes.CHAT]: 'chat',
 };
 
 export function routeFeature(url: string): TeamFeature | null {
