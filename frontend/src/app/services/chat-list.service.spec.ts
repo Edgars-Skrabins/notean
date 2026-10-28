@@ -90,6 +90,7 @@ describe('ChatListService', () => {
   });
 
   it('does not count messages in the open channel while the tab is visible', () => {
+    spyOnProperty(document, 'visibilityState').and.returnValue('visible');
     service.setActive(1);
     messageCreated.next(testChatMessage({chatChannelId: 1}));
 
