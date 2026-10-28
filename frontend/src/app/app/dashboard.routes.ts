@@ -13,6 +13,9 @@ import {ListTabComponent} from "../pages/dashboard/list-tab/list-tab.component";
 import {TicketDetailComponent} from "../pages/dashboard/ticket-detail/ticket-detail.component";
 import {unsavedChangesGuard} from "../guards/unsaved-changes.guard";
 import {featureGuard} from "../guards/feature.guard";
+import {TemplatesComponent} from "../pages/dashboard/templates/templates.component";
+import {TemplateDetailComponent} from "../pages/dashboard/template-detail/template-detail.component";
+import {BoardTemplateDetailComponent} from "../pages/dashboard/board-template-detail/board-template-detail.component";
 import {AppRoutes} from "./app-routes.enum";
 
 export const dashboardRoutes: Routes = [
@@ -21,9 +24,20 @@ export const dashboardRoutes: Routes = [
   {path: AppRoutes.PROJECTS, component: ProjectsComponent},
   {path: `${AppRoutes.PROJECTS}/:id`, component: ProjectDetailComponent, canDeactivate: [unsavedChangesGuard]},
   {path: AppRoutes.DOCUMENT_PAGES, component: DocumentPagesComponent, canActivate: [featureGuard('pages')]},
+  {path: `${AppRoutes.DOCUMENT_PAGES}/${AppRoutes.TEMPLATES}`, component: TemplatesComponent, canActivate: [featureGuard('pages')], data: {kind: 'page'}},
+  {path: `${AppRoutes.DOCUMENT_PAGES}/${AppRoutes.TEMPLATES}/${AppRoutes.NEW}`, component: TemplateDetailComponent, canActivate: [featureGuard('pages')], data: {kind: 'page'}},
+  {path: `${AppRoutes.DOCUMENT_PAGES}/${AppRoutes.TEMPLATES}/${AppRoutes.BUILTIN}/:key`, component: TemplateDetailComponent, canActivate: [featureGuard('pages')], data: {kind: 'page'}},
+  {path: `${AppRoutes.DOCUMENT_PAGES}/${AppRoutes.TEMPLATES}/:id`, component: TemplateDetailComponent, canActivate: [featureGuard('pages')], data: {kind: 'page'}},
   {path: `${AppRoutes.DOCUMENT_PAGES}/${AppRoutes.NEW}`, component: PageDetailComponent, canActivate: [featureGuard('pages')]},
   {path: `${AppRoutes.DOCUMENT_PAGES}/:id`, component: PageDetailComponent, canActivate: [featureGuard('pages')]},
   {path: AppRoutes.DIAGRAMS, component: DiagramsComponent, canActivate: [featureGuard('diagrams')]},
+  {path: `${AppRoutes.DIAGRAMS}/${AppRoutes.TEMPLATES}`, component: TemplatesComponent, canActivate: [featureGuard('diagrams')], data: {kind: 'diagram'}},
+  {path: `${AppRoutes.DIAGRAMS}/${AppRoutes.TEMPLATES}/${AppRoutes.NEW}`, component: TemplateDetailComponent, canActivate: [featureGuard('diagrams')], data: {kind: 'diagram'}},
+  {path: `${AppRoutes.DIAGRAMS}/${AppRoutes.TEMPLATES}/${AppRoutes.BUILTIN}/:key`, component: TemplateDetailComponent, canActivate: [featureGuard('diagrams')], data: {kind: 'diagram'}},
+  {path: `${AppRoutes.DIAGRAMS}/${AppRoutes.TEMPLATES}/:id`, component: TemplateDetailComponent, canActivate: [featureGuard('diagrams')], data: {kind: 'diagram'}},
+  {path: AppRoutes.BOARD_TEMPLATES, component: TemplatesComponent, canActivate: [featureGuard('boards')], data: {kind: 'board'}},
+  {path: `${AppRoutes.BOARD_TEMPLATES}/${AppRoutes.NEW}`, component: BoardTemplateDetailComponent, canActivate: [featureGuard('boards')]},
+  {path: `${AppRoutes.BOARD_TEMPLATES}/:id`, component: BoardTemplateDetailComponent, canActivate: [featureGuard('boards')]},
   {path: `${AppRoutes.DIAGRAMS}/${AppRoutes.NEW}`, component: DiagramDetailComponent, canActivate: [featureGuard('diagrams')]},
   {path: `${AppRoutes.DIAGRAMS}/:id`, component: DiagramDetailComponent, canActivate: [featureGuard('diagrams')]},
   {

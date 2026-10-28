@@ -1,0 +1,13 @@
+<div class="templatePickerOverlay">
+  <div class="templatePickerOverlay__backdrop" (click)="cancelled.emit()"></div>
+
+  <div class="templatePicker">
+    <h3 class="templatePicker__title">{{ PHRASES.CHOOSE_TEMPLATE | translate }}</h3>
+
+    <app-template-list class="templatePicker__list" [kind]="kind" [emptyLabel]="PHRASES.NO_TEMPLATES_YET" (opened)="picked.emit($event)"></app-template-list>
+
+    <div class="templatePicker__actions">
+      <app-button variant="ghost" (pressed)="cancelled.emit()">{{ PHRASES.CANCEL | translate }}</app-button>
+    </div>
+  </div>
+</div>

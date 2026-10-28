@@ -1,0 +1,26 @@
+<app-item-tabs *ngIf="itemKind" [itemsLabel]="itemsLabel" [itemsRoute]="itemsRoute"></app-item-tabs>
+<h1 class="templates__title" *ngIf="!itemKind">{{ PHRASES.BOARD_TEMPLATES | translate }}</h1>
+
+<app-template-list
+  [kind]="kind"
+  [emptyLabel]="emptyLabel"
+  [showActions]="true"
+  (opened)="handleOpen($event)"
+  (used)="handleUse($event)"
+>
+  <app-button *ngIf="itemKind" variant="primary" icon="plus" (pressed)="handleNewTemplate()">{{ PHRASES.NEW_TEMPLATE | translate }}</app-button>
+  <app-menu-button
+    *ngIf="!itemKind"
+    [customTrigger]="true"
+    [options]="newBoardTemplateOptions"
+    (picked)="handleNewBoardTemplate($event)"
+  >
+    <app-button variant="primary" icon="plus">{{ PHRASES.NEW_TEMPLATE | translate }}</app-button>
+  </app-menu-button>
+</app-template-list>
+
+<app-board-picker-dialog
+  *ngIf="isBoardPickerOpen"
+  (picked)="handleBoardPicked($event)"
+  (cancelled)="handleBoardPickerCancelled()"
+></app-board-picker-dialog>

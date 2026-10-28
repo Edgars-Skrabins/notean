@@ -8,9 +8,12 @@
 
     <div class="itemDetail__header">
       <div class="itemDetail__actions" *ngIf="mode === 'view' && item">
-        <app-favorite-star [type]="favoriteType" [itemId]="item.id" [title]="item.title" [size]="36"></app-favorite-star>
-        <app-button variant="ghost" (pressed)="deleteRequested.emit()">{{ PHRASES.DELETE | translate }}</app-button>
-        <app-button variant="primary" (pressed)="editRequested.emit()">{{ PHRASES.EDIT | translate }}</app-button>
+        <app-favorite-star *ngIf="!isTemplate" [type]="favoriteType" [itemId]="item.id" [title]="item.title" [size]="36"></app-favorite-star>
+        <ng-content select="[itemDetailActions]"></ng-content>
+        <ng-container *ngIf="canManage">
+          <app-button variant="ghost" (pressed)="deleteRequested.emit()">{{ PHRASES.DELETE | translate }}</app-button>
+          <app-button variant="primary" (pressed)="editRequested.emit()">{{ PHRASES.EDIT | translate }}</app-button>
+        </ng-container>
       </div>
       <div class="itemDetail__actions" *ngIf="mode === 'edit'">
         <app-button variant="ghost" (pressed)="cancelRequested.emit()">{{ PHRASES.CANCEL | translate }}</app-button>
@@ -41,6 +44,8 @@
       </div>
 
       <app-item-detail-sidebar
+        *ngIf="showSidebar"
+        [isTemplate]="isTemplate"
         [item]="item"
         [mode]="mode"
         [draftProjectId]="draftProjectId"

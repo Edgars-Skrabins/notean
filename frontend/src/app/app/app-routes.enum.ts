@@ -18,6 +18,9 @@ export enum AppRoutes {
   LEGACY_BACKLOG = 'backlog',
   TICKETS = 'tickets',
   NEW = 'new',
+  TEMPLATES = 'templates',
+  BUILTIN = 'builtin',
+  BOARD_TEMPLATES = 'board-templates',
   PROFILE = 'profile',
   SETTINGS = 'settings',
 }
