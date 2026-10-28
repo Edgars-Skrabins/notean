@@ -1,0 +1,57 @@
+<div class="sidebarList__header" [class.sidebarList__header--collapsed]="collapsed">
+  <button
+    type="button"
+    class="sidebarList__toggle"
+    [appTooltip]="collapsed ? (PHRASES.CHAT | translate) : ''"
+    [attr.aria-label]="PHRASES.CHAT | translate"
+    [attr.aria-expanded]="chatListService.isOpen"
+    (click)="collapsed || handleToggle()"
+  >
+    <app-icon name="chat"></app-icon>
+    <span class="sidebarList__label" *ngIf="!collapsed">{{ PHRASES.CHAT | translate }}</span>
+    <app-unread-badge *ngIf="chatListService.totalUnread$ | async as unread" [count]="unread" [dot]="collapsed"></app-unread-badge>
+    <app-icon
+      *ngIf="!collapsed"
+      name="chevron-right"
+      class="sidebarList__chevron"
+      [class.sidebarList__chevron--open]="chatListService.isOpen"
+    ></app-icon>
+  </button>
+</div>
+
+<ng-container *ngIf="!collapsed && chatListService.isOpen">
+  <ng-container *ngIf="chatListService.channels$ | async as channels">
+    <div class="sidebarList__rows" cdkDropList [cdkDropListData]="channels" (cdkDropListDropped)="handleDrop($event)">
+      <a
+        *ngFor="let channel of channels; trackBy: trackById"
+        class="sidebarList__row"
+        [class.sidebarChat__row--unread]="channel.unreadCount > 0"
+        cdkDrag
+        cdkDragLockAxis="y"
+        [routerLink]="chatChannelRoute(channel.id)"
+        routerLinkActive="sidebarList__row--active"
+        (click)="$event.preventDefault(); handleOpen(channel)"
+      >
+        <span class="sidebarChat__hash" aria-hidden="true">#</span>
+        <span class="sidebarList__rowTitle">{{ channel.name }}</span>
+        <app-unread-badge *ngIf="channel.unreadCount > 0" [count]="channel.unreadCount"></app-unread-badge>
+      </a>
+    </div>
+    <p class="sidebarList__empty" *ngIf="!channels.length">{{ PHRASES.NO_CHANNELS_YET | translate }}</p>
+    <button
+      type="button"
+      class="sidebarList__row sidebarList__create"
+      *ngIf="(chatListService.creatableScopes$ | async)?.length"
+      (click)="isCreateDialogOpen = true"
+    >
+      <span class="sidebarList__rowTitle">{{ PHRASES.CREATE_CHANNEL | translate }}</span>
+      <app-icon name="plus" class="sidebarList__icon"></app-icon>
+    </button>
+  </ng-container>
+</ng-container>
+
+<app-create-chat-channel-dialog
+  *ngIf="isCreateDialogOpen"
+  (created)="handleCreated($event)"
+  (cancelled)="isCreateDialogOpen = false"
+></app-create-chat-channel-dialog>

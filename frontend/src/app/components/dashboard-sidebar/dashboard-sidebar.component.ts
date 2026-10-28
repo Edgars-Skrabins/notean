@@ -8,6 +8,7 @@ import {TeamService} from "@services/team.service";
 import {NotificationChannelService} from "@services/notification-channel.service";
 import {FavoritesListComponent} from "@components/favorites-list/favorites-list.component";
 import {SidebarBoardsComponent} from "@components/sidebar-boards/sidebar-boards.component";
+import {SidebarChatComponent} from "@components/sidebar-chat/sidebar-chat.component";
 import {IconComponent} from "@components/icon/icon.component";
 import {TooltipDirective} from "@components/tooltip/tooltip.directive";
 import {UnreadBadgeComponent} from "@components/unread-badge/unread-badge.component";
@@ -23,6 +24,7 @@ import {AppRoutes} from "../../app/app-routes.enum";
     TranslatePipe,
     FavoritesListComponent,
     SidebarBoardsComponent,
+    SidebarChatComponent,
     IconComponent,
     TooltipDirective,
     UnreadBadgeComponent

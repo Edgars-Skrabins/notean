@@ -108,10 +108,10 @@ describe('SidebarBoardsComponent create row', () => {
 
   it('lists the boards with the create and board templates rows last', () => {
     const fixture = render([boardDetail()]);
-    const rows = Array.from(fixture.nativeElement.querySelectorAll('.sidebarBoards__row')) as HTMLElement[];
+    const rows = Array.from(fixture.nativeElement.querySelectorAll('.sidebarList__row')) as HTMLElement[];
 
     expect(rows.length).toBe(3);
-    expect(rows[1].classList).toContain('sidebarBoards__create');
+    expect(rows[1].classList).toContain('sidebarList__create');
     expect(rows[2].getAttribute('href')).toBe('/dashboard/board-templates');
     expect(fixture.nativeElement.querySelector('app-icon-button')).toBeNull();
   });
@@ -119,7 +119,7 @@ describe('SidebarBoardsComponent create row', () => {
   it('opens the create dialog from the create row', () => {
     const fixture = render([]);
 
-    (fixture.nativeElement.querySelector('.sidebarBoards__create') as HTMLElement).click();
+    (fixture.nativeElement.querySelector('.sidebarList__create') as HTMLElement).click();
     fixture.detectChanges();
 
     expect(fixture.nativeElement.querySelector('app-create-named-item-dialog')).not.toBeNull();

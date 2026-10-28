@@ -32,6 +32,7 @@ export class CreateNamedItemDialogComponent implements OnInit, OnDestroy {
   @Input() showProjectSelect = false;
   @Input() projectId: number | null = null;
   @Input() errorMessage = '';
+  @Input() confirmLabel: string = PHRASES.CREATE;
   @Output() confirmed = new EventEmitter<{ title: string; projectId: number | null }>();
   @Output() cancelled = new EventEmitter<void>();
 

@@ -1,0 +1,31 @@
+<app-create-named-item-dialog
+  [dialogTitle]="PHRASES.CHANNEL_SETTINGS | translate"
+  [defaultValue]="channel.name"
+  [errorMessage]="errorMessage"
+  [confirmLabel]="PHRASES.SAVE"
+  (confirmed)="handleConfirm($event)"
+  (cancelled)="cancelled.emit()"
+>
+  <div class="chatChannelSettings__field">
+    <p class="capsLabel chatChannelSettings__label">{{ PHRASES.GIF_RATING | translate }}</p>
+    <app-dropdown [options]="ratingOptions" [value]="gifRating" [ariaLabel]="PHRASES.GIF_RATING | translate" (valueChange)="gifRating = $any($event)"></app-dropdown>
+  </div>
+
+  <app-chat-member-picker
+    *ngIf="channel.scope === 'users'"
+    [members]="members"
+    [selectedIds]="memberIds"
+    (selectedIdsChange)="memberIds = $event"
+  ></app-chat-member-picker>
+
+  <div class="chatChannelSettings__field">
+    <app-button variant="danger" icon="trash" (pressed)="isConfirmingDelete = true">{{ PHRASES.DELETE_CHANNEL | translate }}</app-button>
+  </div>
+</app-create-named-item-dialog>
+
+<app-confirm-dialog
+  *ngIf="isConfirmingDelete"
+  [message]="PHRASES.CONFIRM_DELETE_CHANNEL | translate"
+  (confirmed)="handleDeleteConfirmed()"
+  (cancelled)="isConfirmingDelete = false"
+></app-confirm-dialog>

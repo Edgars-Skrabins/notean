@@ -1,0 +1,11 @@
+:host {
+  display: block;
+}
+
+.createChatChannelDialog__field {
+  margin-bottom: var(--space-5);
+}
+
+.createChatChannelDialog__label {
+  margin: 0 0 var(--space-2);
+}
