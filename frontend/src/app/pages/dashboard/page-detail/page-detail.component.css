@@ -6,3 +6,9 @@
 .pageDetail__content :first-child {
   margin-top: 0;
 }
+
+.pageDetail__comments {
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px solid color-mix(in srgb, var(--color-tint) 10%, transparent);
+}

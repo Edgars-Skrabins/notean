@@ -3,6 +3,7 @@ class Diagram < ApplicationRecord
   include BelongsToProject
   include TextSearchable
   include ContentLimits
+  include Trashable
 
   text_searchable :title, :search_text
 
@@ -15,6 +16,7 @@ class Diagram < ApplicationRecord
   has_many :diagram_contributors, dependent: :destroy
   has_many :contributors, through: :diagram_contributors, source: :user
   has_many :favorites, as: :favoritable, dependent: :destroy
+  has_many :comment_pins, class_name: "DiagramCommentPin", dependent: :destroy
 
   validates :title, presence: true, length: { maximum: TITLE_MAX_LENGTH }
   validate :folder_matches_item

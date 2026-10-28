@@ -17,7 +17,7 @@ class TicketsController < ApplicationController
     return if tickets.nil?
 
     tickets = tickets.text_search(params[:search]) if params[:search].present?
-    tickets, has_more = paginate(assignee_filtered(tickets).without_description.includes(TicketJson::ASSIGNEES_PRELOAD).order(:position, :id))
+    tickets, has_more = paginate(tag_filtered(assignee_filtered(tickets)).without_description.includes(TicketJson::ASSIGNEES_PRELOAD, TicketJson::TAGS_PRELOAD).order(:position, :id))
 
     render json: { tickets: tickets.map { |ticket| ticket_summary_json(ticket) }, has_more: has_more }
   end
@@ -79,15 +79,12 @@ class TicketsController < ApplicationController
       render_error(limit_error_code(@ticket) || ErrorCodes::Tickets::TICKET_UPDATE_FAILED, :unprocessable_entity)
     end
   rescue ActiveRecord::StaleObjectError
-    render_error(ErrorCodes::Common::EDIT_CONFLICT, :conflict, extra: { ticket: ticket_json(@board.tickets.includes(:creator, TicketJson::ASSIGNEES_PRELOAD).find(@ticket.id)) })
+    render_error(ErrorCodes::Common::EDIT_CONFLICT, :conflict, extra: { ticket: ticket_json(@board.tickets.includes(:creator, TicketJson::ASSIGNEES_PRELOAD, TicketJson::TAGS_PRELOAD).find(@ticket.id)) })
   end
 
   def destroy
-    shifts = Ticket.transaction do
-      @ticket.destroy!
-      TicketPositions.shift(@board, @ticket.column_id, from: @ticket.position + 1, delta: -1)
-    end
-    head :no_content
+    entries, shifts = Trash.move_tickets(@board, [ @ticket ], current_user)
+    render json: { trash_entry_ids: entries.map(&:id) }
     BoardBroadcast.tickets_shifted(@board, shifts)
     BoardBroadcast.tickets_removed(@board, [ @ticket.id ])
   end
@@ -126,19 +123,16 @@ class TicketsController < ApplicationController
     tickets = load_bulk_tickets
     return if tickets.nil?
 
-    Ticket.transaction do
-      tickets.each(&:destroy!)
-      close_source_gaps(tickets)
-    end
-    head :no_content
-    BoardBroadcast.tickets_shifted(@board, ticket_shifts)
+    entries, shifts = Trash.move_tickets(@board, tickets, current_user)
+    render json: { trash_entry_ids: entries.map(&:id) }
+    BoardBroadcast.tickets_shifted(@board, shifts)
     BoardBroadcast.tickets_removed(@board, bulk_ticket_ids)
   end
 
   private
 
   def set_ticket
-    @ticket = @board.tickets.includes(:creator, TicketJson::ASSIGNEES_PRELOAD).find_by(id: params[:id])
+    @ticket = @board.tickets.includes(:creator, TicketJson::ASSIGNEES_PRELOAD, TicketJson::TAGS_PRELOAD).find_by(id: params[:id])
 
     render_error(ErrorCodes::Tickets::TICKET_NOT_FOUND, :not_found) if @ticket.nil?
   end
@@ -177,6 +171,16 @@ class TicketsController < ApplicationController
     return filtered unless assignee_ids.include?("none")
 
     filtered.or(tickets.where(TicketAssignee.where("ticket_assignees.ticket_id = tickets.id").arel.exists.not))
+  end
+
+  def tag_filtered(tickets)
+    tag_ids = Array(params[:tag_ids]).map(&:to_s)
+    return tickets if tag_ids.empty?
+
+    filtered = tickets.where(id: TicketTag.where(board_tag_id: tag_ids - [ "none" ]).select(:ticket_id))
+    return filtered unless tag_ids.include?("none")
+
+    filtered.or(tickets.where(TicketTag.where("ticket_tags.ticket_id = tickets.id").arel.exists.not))
   end
 
   def bulk_ticket_ids
@@ -235,7 +239,7 @@ class TicketsController < ApplicationController
   end
 
   def bulk_tickets_json
-    tickets = @board.tickets.without_description.includes(TicketJson::ASSIGNEES_PRELOAD).where(id: bulk_ticket_ids).index_by(&:id)
+    tickets = @board.tickets.without_description.includes(TicketJson::ASSIGNEES_PRELOAD, TicketJson::TAGS_PRELOAD).where(id: bulk_ticket_ids).index_by(&:id)
     bulk_ticket_ids.map { |id| ticket_summary_json(tickets[id]) }
   end
 

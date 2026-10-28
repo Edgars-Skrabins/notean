@@ -39,6 +39,33 @@ describe('FlowchartEditorComponent', () => {
     fixture.destroy();
   });
 
+  describe('mapping comment pin points', () => {
+    it('maps a local point to the canvas and back through pan and zoom', () => {
+      const graph = getGraph();
+      graph.zoomTo(2);
+      graph.translate(30, 10);
+      const canvasPoint = component.localToCanvas(50, 40)!;
+      const rect = graph.container.getBoundingClientRect();
+
+      const localPoint = component.clientToLocal(rect.left + canvasPoint.x, rect.top + canvasPoint.y)!;
+
+      expect(canvasPoint).toEqual({x: 130, y: 90});
+      expect(localPoint.x).toBeCloseTo(50);
+      expect(localPoint.y).toBeCloseTo(40);
+    });
+
+    it('emits viewportChange when the canvas pans or zooms', () => {
+      const viewportChange = spyOn(component.viewportChange, 'emit');
+
+      getGraph().translate(20, 0);
+      expect(viewportChange).toHaveBeenCalled();
+
+      viewportChange.calls.reset();
+      getGraph().zoomTo(1.5);
+      expect(viewportChange).toHaveBeenCalled();
+    });
+  });
+
   describe('clearing the selection on Escape', () => {
     function escapeEvent(): KeyboardEvent {
       return new KeyboardEvent('keydown', {key: 'Escape', cancelable: true});

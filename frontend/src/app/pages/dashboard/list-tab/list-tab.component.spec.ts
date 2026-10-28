@@ -19,6 +19,7 @@ import {dashboardRoutes} from "../../../app/dashboard.routes";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 import {createBoardState, fakeTicketList, ticketDetail, ticketSummary} from "../../../testing/boardFixtures";
+import {trashServiceStub} from "../../../testing/trashServiceStub";
 
 describe('ListTabComponent', () => {
   let component: ListTabComponent;
@@ -44,7 +45,8 @@ describe('ListTabComponent', () => {
       favoriteService,
       toastService,
       teamService,
-      jasmine.createSpyObj<ProjectService>('ProjectService', ['getProject'])
+      jasmine.createSpyObj<ProjectService>('ProjectService', ['getProject']),
+      trashServiceStub().service
     );
     component.ngOnInit();
     flushMicrotasks();
@@ -74,9 +76,9 @@ describe('ListTabComponent', () => {
 
   it('loads each status group through the tickets index: Backlog first, then each column', () => {
     expect(ticketService.list.calls.allArgs()).toEqual([
-      ['abc', 9, {status: 'backlog', search: '', assigneeIds: [], offset: 0}],
-      ['abc', 9, {status: 10, search: '', assigneeIds: [], offset: 0}],
-      ['abc', 9, {status: 11, search: '', assigneeIds: [], offset: 0}],
+      ['abc', 9, {status: 'backlog', search: '', assigneeIds: [], tagIds: [], offset: 0}],
+      ['abc', 9, {status: 10, search: '', assigneeIds: [], tagIds: [], offset: 0}],
+      ['abc', 9, {status: 11, search: '', assigneeIds: [], tagIds: [], offset: 0}],
     ]);
     expect(component.groups.map((group) => group.status.columnId)).toEqual([null, 10, 11]);
     expect(visibleIds()).toEqual([[3, 4], [1, 2], []]);
@@ -92,27 +94,27 @@ describe('ListTabComponent', () => {
     flushMicrotasks();
 
     expect(ticketService.list).toHaveBeenCalledTimes(3);
-    expect(ticketService.list).toHaveBeenCalledWith('abc', 9, {status: 'backlog', search: 'fix', assigneeIds: [], offset: 0});
+    expect(ticketService.list).toHaveBeenCalledWith('abc', 9, {status: 'backlog', search: 'fix', assigneeIds: [], tagIds: [], offset: 0});
     discardPeriodicTasks();
   }));
 
   it('reloads only the chosen status groups with the assignee filter', fakeAsync(() => {
     ticketService.list.calls.reset();
 
-    component.handleFiltersChange({assigneeIds: new Set<number | 'none'>(['none', bob.id]), columnIds: new Set([null, 11])});
+    component.handleFiltersChange({assigneeIds: new Set<number | 'none'>(['none', bob.id]), tagIds: new Set(), columnIds: new Set([null, 11])});
     flushMicrotasks();
 
     expect(component.groups.map((group) => group.status.columnId)).toEqual([null, 11]);
     expect(ticketService.list.calls.allArgs()).toEqual([
-      ['abc', 9, {status: 'backlog', search: '', assigneeIds: ['none', bob.id], offset: 0}],
-      ['abc', 9, {status: 11, search: '', assigneeIds: ['none', bob.id], offset: 0}],
+      ['abc', 9, {status: 'backlog', search: '', assigneeIds: ['none', bob.id], tagIds: [], offset: 0}],
+      ['abc', 9, {status: 11, search: '', assigneeIds: ['none', bob.id], tagIds: [], offset: 0}],
     ]);
   }));
 
   it('clears the selection when the groups reload', fakeAsync(() => {
     component.setSelected(loaded(3), true);
 
-    component.handleFiltersChange({assigneeIds: new Set(), columnIds: new Set([null])});
+    component.handleFiltersChange({assigneeIds: new Set(), tagIds: new Set(), columnIds: new Set([null])});
     flushMicrotasks();
 
     expect(component.selectedIds.size).toBe(0);
@@ -120,7 +122,7 @@ describe('ListTabComponent', () => {
 
   it('loads more tickets of one group after the loaded ones', fakeAsync(() => {
     ticketService.list.and.returnValue(page([ticketSummary(3, null, 0), ticketSummary(4, null, 1)], true));
-    component.handleFiltersChange({assigneeIds: new Set(), columnIds: new Set()});
+    component.handleFiltersChange({assigneeIds: new Set(), tagIds: new Set(), columnIds: new Set()});
     flushMicrotasks();
 
     ticketService.list.and.returnValue(page([ticketSummary(8, null, 2)], false));
@@ -128,7 +130,7 @@ describe('ListTabComponent', () => {
     expect(component.groups[0].isLoading).toBeTrue();
     flushMicrotasks();
 
-    expect(ticketService.list).toHaveBeenCalledWith('abc', 9, {status: 'backlog', search: '', assigneeIds: [], offset: 2});
+    expect(ticketService.list).toHaveBeenCalledWith('abc', 9, {status: 'backlog', search: '', assigneeIds: [], tagIds: [], offset: 2});
     expect(component.groups[0].tickets.map((ticket) => ticket.id)).toEqual([3, 4, 8]);
     expect(component.groups[0].hasMore).toBeFalse();
     expect(component.groups[0].isLoading).toBeFalse();
@@ -180,7 +182,7 @@ describe('ListTabComponent', () => {
   }));
 
   it('bulk deletes the selected tickets after confirmation and forgets their favorites', fakeAsync(() => {
-    ticketService.bulkDelete.and.returnValue(Promise.resolve({success: true}));
+    ticketService.bulkDelete.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
     component.setSelected(loaded(3), true);
     component.setSelected(loaded(2), true);
     component.requestBulkDelete();
@@ -220,7 +222,7 @@ describe('ListTabComponent', () => {
 
   it('shows a created ticket in a partly loaded backlog and keeps the next page offset', fakeAsync(() => {
     ticketService.list.and.returnValue(page([ticketSummary(3, null, 0), ticketSummary(4, null, 1)], true));
-    component.handleFiltersChange({assigneeIds: new Set(), columnIds: new Set()});
+    component.handleFiltersChange({assigneeIds: new Set(), tagIds: new Set(), columnIds: new Set()});
     flushMicrotasks();
     ticketService.createTicket.and.returnValue(Promise.resolve({success: true, ticket: ticketDetail(7, null, 60)}));
     component.newTicketTitle = 'Idea';
@@ -231,7 +233,7 @@ describe('ListTabComponent', () => {
     component.handleLoadMore(component.groups[0]);
     flushMicrotasks();
 
-    expect(ticketService.list).toHaveBeenCalledWith('abc', 9, {status: 'backlog', search: '', assigneeIds: [], offset: 2});
+    expect(ticketService.list).toHaveBeenCalledWith('abc', 9, {status: 'backlog', search: '', assigneeIds: [], tagIds: [], offset: 2});
     expect(visibleIds()[0]).toEqual([3, 4, 8, 7]);
   }));
 
@@ -261,7 +263,7 @@ describe('ListTabComponent', () => {
   it('reorders within a filtered column using the position of the ticket it lands on', fakeAsync(() => {
     state.board!.columns[0].tickets.push(ticketSummary(5, 10, 2));
     ticketService.list.and.returnValue(page([ticketSummary(1, 10, 0), ticketSummary(5, 10, 2)], false));
-    component.handleFiltersChange({assigneeIds: new Set([bob.id]), columnIds: new Set([10])});
+    component.handleFiltersChange({assigneeIds: new Set([bob.id]), tagIds: new Set(), columnIds: new Set([10])});
     flushMicrotasks();
     ticketService.moveTicket.and.returnValue(Promise.resolve({success: true, ticket: ticketDetail(5, 10, 0)}));
 
@@ -296,7 +298,7 @@ describe('ListTabComponent', () => {
   }));
 
   it('deletes a ticket, forgets its favorite and drops it from the selection', fakeAsync(() => {
-    ticketService.deleteTicket.and.returnValue(Promise.resolve({success: true}));
+    ticketService.deleteTicket.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
     component.setSelected(loaded(4), true);
     component.requestDelete(loaded(4));
 
@@ -332,7 +334,7 @@ describe('ListTabComponent', () => {
         toastService
       );
       ticketService.list.and.returnValue(page([ticketSummary(3, null, 0), ticketSummary(4, null, 1)], true));
-      component.handleFiltersChange({assigneeIds: new Set(), columnIds: new Set([null])});
+      component.handleFiltersChange({assigneeIds: new Set(), tagIds: new Set(), columnIds: new Set([null])});
       flushMicrotasks();
     }));
 
@@ -358,7 +360,7 @@ describe('ListTabComponent', () => {
 
     it('moves a loaded ticket into another fully loaded group', fakeAsync(() => {
       ticketService.list.and.callFake(fakeTicketList(state));
-      component.handleFiltersChange({assigneeIds: new Set(), columnIds: new Set()});
+      component.handleFiltersChange({assigneeIds: new Set(), tagIds: new Set(), columnIds: new Set()});
       flushMicrotasks();
 
       channel.handleMessage({type: 'tickets_upserted', tickets: [raw(3, 10, 2)]});
@@ -373,12 +375,36 @@ describe('ListTabComponent', () => {
     });
 
     it('updates loaded tickets but inserts none while filtering', fakeAsync(() => {
-      component.handleFiltersChange({assigneeIds: new Set(['none']), columnIds: new Set([null])});
+      component.handleFiltersChange({assigneeIds: new Set(['none']), tagIds: new Set(), columnIds: new Set([null])});
       flushMicrotasks();
 
       channel.handleMessage({type: 'tickets_upserted', tickets: [{...raw(3, null, 0), title: 'Renamed'}, raw(8, null, 1)]});
 
       expect(visibleIds()).toEqual([[3, 4]]);
+      expect(loaded(3).title).toBe('Renamed');
+    }));
+
+    it('sends the tag filter, inserts nothing live and drops a loaded ticket that stops matching', fakeAsync(() => {
+      ticketService.list.calls.reset();
+      ticketService.list.and.returnValue(page([{...ticketSummary(3, null, 0), tagIds: [31]}, {...ticketSummary(4, null, 1), tagIds: [30, 31]}], false));
+      component.handleFiltersChange({assigneeIds: new Set(), tagIds: new Set<number | 'none'>([31]), columnIds: new Set([null])});
+      flushMicrotasks();
+
+      expect(ticketService.list).toHaveBeenCalledWith('abc', 9, {status: 'backlog', search: '', assigneeIds: [], tagIds: [31], offset: 0});
+
+      channel.handleMessage({type: 'tickets_upserted', tickets: [{...raw(3, null, 0), tag_ids: []}, {...raw(4, null, 1), tag_ids: [31]}, {...raw(8, null, 1), tag_ids: [31]}]});
+
+      expect(visibleIds()).toEqual([[4]]);
+      expect(component.isFiltering).toBeTrue();
+    }));
+
+    it('keeps an untagged ticket while filtering by No tags', fakeAsync(() => {
+      ticketService.list.and.returnValue(page([ticketSummary(3, null, 0)], false));
+      component.handleFiltersChange({assigneeIds: new Set(), tagIds: new Set<number | 'none'>(['none']), columnIds: new Set([null])});
+      flushMicrotasks();
+
+      channel.handleMessage({type: 'tickets_upserted', tickets: [{...raw(3, null, 0), title: 'Renamed'}]});
+
       expect(loaded(3).title).toBe('Renamed');
     }));
   });

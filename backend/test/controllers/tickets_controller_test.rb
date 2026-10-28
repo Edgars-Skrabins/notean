@@ -147,12 +147,14 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
-  test "destroy removes the ticket" do
+  test "destroy moves the ticket to the trash" do
     ticket = Ticket.create!(column: @todo, team: @team, created_by_user_id: @user.id, title: "Fix bug", position: 0)
 
     delete "/teams/#{@team.code}/boards/#{@board.id}/tickets/#{ticket.id}", headers: @headers
 
-    assert_response :no_content
+    assert_response :success
+    entry = TrashEntry.find_by!(item_type: "Ticket", item_id: ticket.id)
+    assert_equal({ "trash_entry_ids" => [ entry.id ] }, JSON.parse(response.body))
     assert_nil Ticket.find_by(id: ticket.id)
   end
 
@@ -402,7 +404,9 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
 
     delete bulk_url, params: { bulk: { ticket_ids: [ first.id, second.id ] } }, headers: @headers, as: :json
 
-    assert_response :no_content
+    assert_response :success
+    assert_equal 2, JSON.parse(response.body)["trash_entry_ids"].length
+    assert_equal 2, TrashEntry.count
     assert_nil Ticket.find_by(id: first.id)
     assert_nil Ticket.find_by(id: second.id)
     assert_equal 0, kept.reload.position
@@ -544,7 +548,7 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
 
     delete tickets_url(ticket.id), headers: @headers
 
-    assert_response :no_content
+    assert_response :success
     assert_equal [
       { "type" => "tickets_shifted", "shifts" => [ { "column_id" => @todo.id, "from_position" => 1, "to_position" => nil, "delta" => -1 } ] },
       { "type" => "tickets_removed", "ticket_ids" => [ ticket.id ] }
@@ -585,7 +589,7 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
 
     delete bulk_url, params: { bulk: { ticket_ids: [ first.id, second.id ] } }, headers: @headers, as: :json
 
-    assert_response :no_content
+    assert_response :success
     shifted, removed = board_broadcasts(@board)
     assert_equal "tickets_shifted", shifted["type"]
     assert_equal [ nil, @todo.id ], shifted["shifts"].map { |shift| shift["column_id"] }
@@ -642,7 +646,7 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
 
     delete tickets_url(tickets[1].id), headers: @headers
 
-    assert_response :no_content
+    assert_response :success
     assert_equal [ 0, 1, 2 ], tickets.values_at(0, 2, 3).map { |ticket| ticket.reload.position }
   end
 
@@ -677,7 +681,7 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
 
     delete bulk_url, params: { bulk: { ticket_ids: [ backlog[0].id, todo[1].id, todo[2].id ] } }, headers: @headers, as: :json
 
-    assert_response :no_content
+    assert_response :success
     assert_equal [ 0, 1 ], backlog.drop(1).map { |ticket| ticket.reload.position }
     assert_equal [ 0, 1 ], todo.values_at(0, 3).map { |ticket| ticket.reload.position }
   end
@@ -819,6 +823,39 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ "For Bob", "Nobody" ], listed_titles(status: "backlog", assignee_ids: [ "none", bob.id ])
   end
 
+  test "index filters by any of the given tags and by untagged, combined with the assignee filter" do
+    bob = create_member(@team, "Bob")
+    bug = BoardTag.create!(board: @board, name: "bug", color: "red")
+    api = BoardTag.create!(board: @board, name: "api", color: "blue")
+    bug_ticket = ticket_in(nil, "Bug", 0)
+    api_ticket = ticket_in(nil, "Api", 1)
+    untagged = ticket_in(nil, "Untagged", 2)
+    TicketTag.create!(ticket: bug_ticket, tag: bug)
+    TicketTag.create!(ticket: api_ticket, tag: api)
+    TicketTag.create!(ticket: api_ticket, tag: bug)
+    TicketAssignee.create!(ticket: api_ticket, user: bob)
+    TicketAssignee.create!(ticket: untagged, user: bob)
+
+    assert_equal [ "Bug", "Api" ], listed_titles(status: "backlog", tag_ids: [ bug.id ])
+    assert_equal [ "Api" ], listed_titles(status: "backlog", tag_ids: [ api.id ])
+    assert_equal [ "Untagged" ], listed_titles(status: "backlog", tag_ids: [ "none" ])
+    assert_equal [ "Api", "Untagged" ], listed_titles(status: "backlog", tag_ids: [ "none", api.id ])
+    assert_equal [ "Api" ], listed_titles(status: "backlog", tag_ids: [ bug.id ], assignee_ids: [ bob.id ])
+  end
+
+  test "the tag filter leaves out trashed tickets" do
+    bug = BoardTag.create!(board: @board, name: "bug", color: "red")
+    live = ticket_in(nil, "Live", 0)
+    trashed = ticket_in(nil, "Trashed", 1)
+    ticket_in(nil, "Untagged", 2)
+    TicketTag.create!(ticket: live, tag: bug)
+    TicketTag.create!(ticket: trashed, tag: bug)
+    Trash.move_tickets(@board, [ trashed ], @user)
+
+    assert_equal [ "Live" ], listed_titles(status: "backlog", tag_ids: [ bug.id ])
+    assert_equal [ "Untagged" ], listed_titles(status: "backlog", tag_ids: [ "none" ])
+  end
+
   test "index pages by 50 and flips has_more at the end" do
     55.times { |index| ticket_in(nil, "Ticket #{index}", index) }
 
@@ -851,10 +888,17 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
   test "index runs the same number of queries for 1 and 10 tickets" do
     attach_avatar(@user)
     members = 3.times.map { |index| create_member(@team, nickname_for(index), with_avatar: index.zero?) }
-    TicketAssignee.create!(ticket: ticket_in(nil, "Ticket 0", 0), user: members.first)
+    tags = 3.times.map { |index| BoardTag.create!(board: @board, name: "tag #{index}", color: "grey") }
+    first = ticket_in(nil, "Ticket 0", 0)
+    TicketAssignee.create!(ticket: first, user: members.first)
+    TicketTag.create!(ticket: first, tag: tags.first)
     one = query_count { get tickets_url, params: { status: "backlog" }, headers: @headers }
 
-    9.times { |index| TicketAssignee.create!(ticket: ticket_in(nil, "Ticket #{index + 1}", index + 1), user: members[index % 3]) }
+    9.times do |index|
+      ticket = ticket_in(nil, "Ticket #{index + 1}", index + 1)
+      TicketAssignee.create!(ticket: ticket, user: members[index % 3])
+      TicketTag.create!(ticket: ticket, tag: tags[index % 3])
+    end
     ten = query_count { get tickets_url, params: { status: "backlog" }, headers: @headers }
 
     assert_equal 10, JSON.parse(response.body)["tickets"].length

@@ -8,6 +8,7 @@ import {PHRASES} from "@config/phrases";
 import {TITLE_MAX_LENGTH} from "@config/contentLimits";
 import {BoardService} from "@services/board.service";
 import {BoardListService} from "@services/board-list.service";
+import {TrashService} from "@services/trash.service";
 import {FavoriteService} from "@services/favorite.service";
 import {NavigationService} from "@services/navigation.service";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
@@ -20,6 +21,7 @@ import {errorPhrase} from "@utils/errorPhrase";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "./board-page-state.service";
 import {BoardChannelService} from "@services/board-channel.service";
+import {CopyLinkService} from "@services/copy-link.service";
 
 @Component({
   selector: 'app-board-page',
@@ -60,7 +62,9 @@ export class BoardPageComponent implements OnInit, OnDestroy {
     private favoriteService: FavoriteService,
     private navigationService: NavigationService,
     private toastService: ToastService,
-    private boardChannelService: BoardChannelService
+    private boardChannelService: BoardChannelService,
+    private copyLinkService: CopyLinkService,
+    private trashService: TrashService
   ) {
   }
 
@@ -70,6 +74,10 @@ export class BoardPageComponent implements OnInit, OnDestroy {
       this.alertMessage = '';
       this.boardChannelService.disconnect();
       this.state.load(Number(params.get('id'))).then(() => {
+        if (this.state.errorCode === 'BOARD_NOT_FOUND') {
+          this.navigationService.navigateReplacingUrl(AppRoutes.UNAVAILABLE);
+          return;
+        }
         this.alertMessage = this.state.errorCode ? errorPhrase(this.state.errorCode) : '';
         if (this.state.board) {
           this.boardChannelService.connect(this.state.board.id);
@@ -141,6 +149,10 @@ export class BoardPageComponent implements OnInit, OnDestroy {
       });
   }
 
+  handleCopyLink() {
+    this.copyLinkService.copyCurrentLink();
+  }
+
   handleDelete() {
     this.showDeleteConfirm = true;
   }
@@ -164,6 +176,7 @@ export class BoardPageComponent implements OnInit, OnDestroy {
 
         this.boardListService.remove(boardId);
         this.favoriteService.forgetItem('Board', boardId);
+        this.trashService.notifyTrashed(this.state.teamCode, response.trashEntryIds);
         this.navigationService.navigate(AppRoutes.DASHBOARD, AppRoutes.DASHBOARD_HOME);
       });
   }

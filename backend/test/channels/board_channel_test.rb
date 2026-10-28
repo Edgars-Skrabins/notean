@@ -17,6 +17,15 @@ class BoardChannelTest < ActionCable::Channel::TestCase
     assert_has_stream "board:#{@board.id}"
   end
 
+  test "a trashed board is rejected" do
+    Trash.move(@board, @user)
+    stub_connection current_user: @user
+
+    subscribe board_id: @board.id
+
+    assert subscription.rejected?
+  end
+
   test "a user outside the team is rejected" do
     stub_connection current_user: User.create!(email: "mallory@example.com", password: "supersecret")
 

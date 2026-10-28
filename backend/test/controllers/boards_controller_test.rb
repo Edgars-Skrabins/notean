@@ -92,15 +92,19 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "Sprint 13", board.reload.title
   end
 
-  test "destroy removes the board and its columns" do
+  test "destroy moves the board and its tickets to the trash" do
     board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
     column = Column.create!(board: board, title: "To Do", position: 0)
+    ticket = Ticket.create!(board: board, column: column, team: @team, creator: @user, title: "Bug", position: 0)
 
     delete "/teams/#{@team.code}/boards/#{board.id}", headers: @headers
 
-    assert_response :no_content
+    assert_response :success
+    entry = TrashEntry.find_by!(item_type: "Board", item_id: board.id)
+    assert_equal({ "trash_entry_ids" => [ entry.id ] }, JSON.parse(response.body))
     assert_nil Board.find_by(id: board.id)
-    assert_nil Column.find_by(id: column.id)
+    assert_nil Ticket.find_by(id: ticket.id)
+    assert Column.exists?(column.id)
   end
 
   test "non-members cannot access a team's boards" do
@@ -294,6 +298,35 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal one, ten
   end
 
+  test "show includes the board's tags sorted by name and each ticket's tag ids" do
+    board, todo, = board_with_columns
+    bug = BoardTag.create!(board: board, name: "bug", color: "red")
+    api = BoardTag.create!(board: board, name: "API", color: "blue")
+    ticket = ticket_on(board, todo, "Bug", 0)
+    TicketTag.create!(ticket: ticket, tag: bug)
+    TicketTag.create!(ticket: ticket, tag: api)
+
+    get "/teams/#{@team.code}/boards/#{board.id}", headers: @headers
+
+    body = JSON.parse(response.body)["board"]
+    assert_equal [ [ "API", 1 ], [ "bug", 1 ] ], body["tags"].map { |tag| tag.values_at("name", "ticket_count") }
+    assert_equal [ api.id, bug.id ], body["columns"][0]["tickets"][0]["tag_ids"]
+  end
+
+  test "show runs the same number of queries for 1 and 10 tagged tickets and tags" do
+    board, todo, = board_with_columns
+    TicketTag.create!(ticket: ticket_on(board, todo, "First", 0), tag: BoardTag.create!(board: board, name: "tag", color: "grey"))
+    one = query_count { get "/teams/#{@team.code}/boards/#{board.id}", headers: @headers }
+
+    9.times do |index|
+      tag = BoardTag.create!(board: board, name: "tag #{index}", color: "blue")
+      TicketTag.create!(ticket: ticket_on(board, index.even? ? todo : nil, "T#{index}", index + 1), tag: tag)
+    end
+    ten = query_count { get "/teams/#{@team.code}/boards/#{board.id}", headers: @headers }
+
+    assert_equal one, ten
+  end
+
   test "returns FEATURE_DISABLED when boards are turned off" do
     board = Board.create!(team: @team, creator: @user, title: "Sprint 12")
     @team.update!(boards_enabled: false)
@@ -335,7 +368,7 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
 
     delete "/teams/#{@team.code}/boards/#{board.id}", headers: @headers
 
-    assert_response :no_content
+    assert_response :success
     assert_broadcast_on(BoardChannel.stream_name(board), type: "board_deleted")
   end
 

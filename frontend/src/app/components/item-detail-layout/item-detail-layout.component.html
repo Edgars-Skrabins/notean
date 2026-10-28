@@ -9,6 +9,7 @@
     <div class="itemDetail__header">
       <div class="itemDetail__actions" *ngIf="mode === 'view' && item">
         <app-favorite-star *ngIf="!isTemplate" [type]="favoriteType" [itemId]="item.id" [title]="item.title" [size]="36"></app-favorite-star>
+        <app-icon-button *ngIf="!isTemplate" icon="link" [tooltip]="PHRASES.COPY_LINK | translate" (pressed)="copyLinkRequested.emit()"></app-icon-button>
         <ng-content select="[itemDetailActions]"></ng-content>
         <ng-container *ngIf="canManage">
           <app-button variant="ghost" (pressed)="deleteRequested.emit()">{{ PHRASES.DELETE | translate }}</app-button>

@@ -10,7 +10,7 @@ class MembershipRemoval
       owner = team.memberships.find_by!(role: "owner").user
       team.projects.where(owner: user).find_each { |project| project.update!(owner: owner) }
       ProjectMember.where(project: team.projects, user: user).destroy_all
-      TicketAssignee.where(ticket: Ticket.where(team: team), user: user).destroy_all
+      TicketAssignee.where(ticket: Ticket.unscoped.where(team: team), user: user).destroy_all
       team.favorites.where(user: user).destroy_all
     end
 

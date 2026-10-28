@@ -1,0 +1,6 @@
+module ErrorCodes
+  module Trash
+    TRASH_ENTRY_NOT_FOUND = "TRASH_ENTRY_NOT_FOUND"
+    TRASH_BOARD_IN_TRASH = "TRASH_BOARD_IN_TRASH"
+  end
+end

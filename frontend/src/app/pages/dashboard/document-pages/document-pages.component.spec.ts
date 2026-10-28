@@ -9,6 +9,7 @@ import {FolderSummary} from "@models/folder.model";
 import {FolderedItemDetail} from "@models/foldered-item.model";
 import {projectFilterStub, ProjectFilterStub} from "../../../testing/projectFilterStub";
 import {errorPhrase} from "@utils/errorPhrase";
+import {trashServiceStub, TrashServiceStub} from "../../../testing/trashServiceStub";
 
 function folder(id: number, parentId: number | null, title = `Folder ${id}`): FolderSummary {
   return {id, title, parentId, projectId: null, creator: {id: 1, nickname: 'alice'}, createdAt: '', updatedAt: ''};
@@ -38,9 +39,11 @@ describe('DocumentPagesComponent', () => {
   let projectFilter: ProjectFilterStub;
   let router: jasmine.SpyObj<Router>;
   let teamService: jasmine.SpyObj<TeamService>;
+  let trash: TrashServiceStub;
 
   beforeEach(fakeAsync(() => {
     projectFilter = projectFilterStub();
+    trash = trashServiceStub();
     router = jasmine.createSpyObj<Router>('Router', ['navigate', 'getCurrentNavigation']);
     pageService = jasmine.createSpyObj<PageService>('PageService', ['list', 'moveToFolder', 'delete', 'create', 'rename']);
     folderService = jasmine.createSpyObj<FolderService>('FolderService', ['listFolders', 'createFolder', 'renameFolder', 'moveFolder', 'deleteFolder', 'setFolderProject']);
@@ -67,6 +70,7 @@ describe('DocumentPagesComponent', () => {
       favoriteService,
       router,
       projectFilter.service,
+      trash.service,
     );
   }
 
@@ -213,7 +217,7 @@ describe('DocumentPagesComponent', () => {
 
   it('moves and deletes pages without reloading', fakeAsync(() => {
     pageService.moveToFolder.and.returnValue(Promise.resolve({success: true, item: page(12, 2, 'Ideas')}));
-    pageService.delete.and.returnValue(Promise.resolve({success: true}));
+    pageService.delete.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
 
     component.handleMoveItem({itemId: 12, folderId: 2});
     component.handleDeleteItem({itemId: 10});
@@ -222,7 +226,18 @@ describe('DocumentPagesComponent', () => {
     expect(component.items.find((item) => item.id === 12)?.folderId).toBe(2);
     expect(component.items.map((item) => item.id)).toEqual([11, 12]);
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Page', 10);
+    expect(trash.service.notifyTrashed).toHaveBeenCalledWith('abc', [1]);
     expectNoReload();
+  }));
+
+  it('reloads when a page or folder comes back from the trash, but not for other types', fakeAsync(() => {
+    trash.restored.next([{itemType: 'Diagram', itemId: 4}]);
+    tick();
+    expectNoReload();
+
+    trash.restored.next([{itemType: 'Page', itemId: 10}]);
+    tick();
+    expect(pageService.list).toHaveBeenCalledTimes(2);
   }));
 
   it('renames a page and its favorites without reloading', fakeAsync(() => {
@@ -263,7 +278,7 @@ describe('DocumentPagesComponent', () => {
   }));
 
   it('cascade delete removes the folder subtree and its pages', fakeAsync(() => {
-    folderService.deleteFolder.and.returnValue(Promise.resolve({success: true}));
+    folderService.deleteFolder.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
 
     component.handleDeleteFolder({folderId: 2, mode: 'cascade'});
     tick();
@@ -275,7 +290,7 @@ describe('DocumentPagesComponent', () => {
   }));
 
   it('promote delete moves the contents up a level', fakeAsync(() => {
-    folderService.deleteFolder.and.returnValue(Promise.resolve({success: true}));
+    folderService.deleteFolder.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
 
     component.handleDeleteFolder({folderId: 1, mode: 'promote'});
     tick();
@@ -339,7 +354,7 @@ describe('DocumentPagesComponent', () => {
 
     it('renames and deletes found items in the results', fakeAsync(() => {
       pageService.rename.and.returnValue(Promise.resolve({success: true, item: page(50, 2, 'Notes final')}));
-      pageService.delete.and.returnValue(Promise.resolve({success: true}));
+      pageService.delete.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
       component.handleSearchChange('notes');
       tick(300);
 

@@ -8,6 +8,7 @@ import {ColumnService} from "@services/column.service";
 import {TicketService} from "@services/ticket.service";
 import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
+import {TrashService} from "@services/trash.service";
 import {ToastType} from "@models/toast.model";
 import {BoardColumn} from "@models/board.model";
 import {TicketSummary} from "@models/ticket.model";
@@ -52,7 +53,8 @@ export class KanbanTabComponent {
     private columnService: ColumnService,
     private ticketService: TicketService,
     private favoriteService: FavoriteService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private trashService: TrashService
   ) {
   }
 
@@ -93,6 +95,7 @@ export class KanbanTabComponent {
 
         this.alertMessage = '';
         column.tickets.forEach((ticket) => this.favoriteService.forgetItem('Ticket', ticket.id));
+        this.trashService.notifyTrashed(this.state.teamCode, response.trashEntryIds);
         if (this.state.board) {
           this.state.board.columns = this.state.board.columns.filter((existing) => existing.id !== column.id);
         }
@@ -163,6 +166,7 @@ export class KanbanTabComponent {
         this.alertMessage = '';
         this.favoriteService.forgetItem('Ticket', pending.ticket.id);
         this.state.removeTicket(pending.ticket.id);
+        this.trashService.notifyTrashed(this.state.teamCode, response.trashEntryIds);
       });
   }
 

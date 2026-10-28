@@ -2,6 +2,7 @@ import {Result} from "@models/result.model";
 import {BoardsErrorCode, ProjectsErrorCode, TeamAccessErrorCode, TemplatesErrorCode} from "@config/errorCodes";
 import {TicketSummary} from './ticket.model';
 import {BoardPriority} from './priority.model';
+import {Tag} from './tag.model';
 import {Avatar} from "@models/avatar.model";
 
 export interface BoardUser {
@@ -30,6 +31,7 @@ export interface BoardDetail extends BoardSummary {
   columns: BoardColumn[];
   backlog: TicketSummary[];
   priorities: BoardPriority[];
+  tags: Tag[];
 }
 
 export interface BoardOverviewColumn {
@@ -68,8 +70,8 @@ export type BoardResponse = Result<{ board: BoardDetail }, TeamAccessErrorCode |
 
 export type BoardOverviewResponse = Result<{ overview: BoardOverview }, TeamAccessErrorCode | BoardsErrorCode>;
 
-export type DeleteBoardResponse = Result<object, TeamAccessErrorCode | BoardsErrorCode>;
+export type DeleteBoardResponse = Result<{ trashEntryIds: number[] }, TeamAccessErrorCode | BoardsErrorCode>;
 
 export type ColumnResponse = Result<{ column: BoardColumn }, TeamAccessErrorCode | BoardsErrorCode>;
 
-export type DeleteColumnResponse = Result<object, TeamAccessErrorCode | BoardsErrorCode>;
+export type DeleteColumnResponse = Result<{ trashEntryIds: number[] }, TeamAccessErrorCode | BoardsErrorCode>;

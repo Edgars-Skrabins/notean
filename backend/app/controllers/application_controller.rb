@@ -91,6 +91,14 @@ class ApplicationController < ActionController::API
     params.require(:priority).permit(:name, :color, :position)
   end
 
+  def create_tag_params
+    params.require(:tag).permit(:name, :color)
+  end
+
+  def update_tag_params
+    params.require(:tag).permit(:name, :color)
+  end
+
   def create_ticket_params
     params.fetch(:ticket, {}).permit(:title, :column_id)
   end
@@ -105,6 +113,10 @@ class ApplicationController < ActionController::API
 
   def create_assignee_params
     params.require(:assignee).permit(:user_id)
+  end
+
+  def create_ticket_tag_params
+    params.require(:tag).permit(:tag_id)
   end
 
   def project_params
@@ -123,6 +135,10 @@ class ApplicationController < ActionController::API
     params.require(:favorite).permit(:surface, :position)
   end
 
+  def restore_trash_params
+    params.require(:trash).permit(entry_ids: [])
+  end
+
   def update_settings_params
     params.require(:settings).permit(:show_favorites_on_home, :show_favorites_in_sidebar, :show_my_work_on_home, :theme, :theme_mode)
   end
@@ -133,6 +149,22 @@ class ApplicationController < ActionController::API
 
   def update_password_params
     params.require(:password).permit(:current_password, :new_password)
+  end
+
+  def create_comment_params
+    params.require(:comment).permit(:body)
+  end
+
+  def update_comment_params
+    params.require(:comment).permit(:body)
+  end
+
+  def create_comment_pin_params
+    params.require(:comment_pin).permit(:x, :y, :body)
+  end
+
+  def update_comment_pin_params
+    params.require(:comment_pin).permit(:resolved)
   end
 
   def insert_and_reindex(siblings, record, requested_position, attribute)
@@ -236,7 +268,7 @@ class ApplicationController < ActionController::API
       ErrorCodes::Common::TITLE_TOO_LONG
     elsif record.errors.of_kind?(:content, :too_large)
       ErrorCodes::Common::CONTENT_TOO_LARGE
-    elsif record.errors.of_kind?(:description, :too_long)
+    elsif record.errors.of_kind?(:description, :too_long) || record.errors.of_kind?(:body, :too_long)
       ErrorCodes::Common::DESCRIPTION_TOO_LONG
     end
   end

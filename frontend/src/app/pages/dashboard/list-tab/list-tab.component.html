@@ -11,6 +11,7 @@
     />
     <app-ticket-filter
       [members]="members"
+      [tags]="state.board?.tags ?? []"
       [statuses]="state.statuses"
       [filters]="filters"
       (filtersChange)="handleFiltersChange($event)"
@@ -68,6 +69,7 @@
           [ticket]="ticket"
           [statusTitle]="group.status.columnId === null ? (group.status.title | translate) : group.status.title"
           [priority]="state.priorityById(ticket.priorityId)"
+          [tags]="state.board?.tags ?? []"
           [selected]="isSelected(ticket)"
           (selectedChange)="setSelected(ticket, $event)"
           (opened)="handleOpenTicket(ticket)"

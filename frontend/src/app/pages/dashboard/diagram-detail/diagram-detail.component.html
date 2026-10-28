@@ -23,6 +23,7 @@
   (cancelRequested)="handleCancel()"
   (saveRequested)="handleSave()"
   (deleteRequested)="handleDelete()"
+  (copyLinkRequested)="handleCopyLink()"
   (deleteConfirmed)="handleConfirmDelete()"
   (deleteCancelled)="handleCancelDelete()"
   (projectChange)="handleProjectChange($event)"
@@ -36,11 +37,15 @@
 >
   @defer {
     <app-flowchart-editor
+      #viewer
       class="diagramDetail__editor"
       *ngIf="mode === 'view' && item"
       [content]="item.content"
       [editable]="false"
-    ></app-flowchart-editor>
+      (viewportChange)="commentLayer.refresh()"
+    >
+      <app-diagram-comment-layer #commentLayer [diagramId]="item.id" [editor]="viewer"></app-diagram-comment-layer>
+    </app-flowchart-editor>
     <app-flowchart-editor
       class="diagramDetail__editor"
       *ngIf="(mode === 'edit' || mode === 'create') && !isLoading"

@@ -1,0 +1,36 @@
+<div class="commentItem">
+  <app-avatar [avatar]="comment.author.avatar" [nickname]="comment.author.nickname" [size]="28"></app-avatar>
+
+  <div class="commentItem__main">
+    <div class="commentItem__meta">
+      <strong class="commentItem__author">{{ comment.author.nickname }}</strong>
+      <span class="commentItem__time" tabindex="0" [appTooltip]="exactTime">{{ relativeTime }}</span>
+      <span class="commentItem__time" *ngIf="comment.editedAt">{{ PHRASES.COMMENT_EDITED | translate }}</span>
+      <app-menu-button
+        *ngIf="actions.length > 0 && !isEditing"
+        class="commentItem__menu"
+        icon="more"
+        [label]="PHRASES.COMMENT_ACTIONS"
+        [options]="actions"
+        (picked)="handleAction($event)"
+      ></app-menu-button>
+    </div>
+
+    <div class="commentItem__body" *ngIf="!isEditing" [innerHTML]="comment.body"></div>
+
+    <div *ngIf="isEditing" (keydown.escape)="cancelEdit($event)">
+      <app-rich-text-editor [content]="draft" [compact]="true" (contentChange)="draft = $event"></app-rich-text-editor>
+      <div class="commentItem__editActions">
+        <app-button variant="ghost" (pressed)="cancelEdit()">{{ PHRASES.CANCEL | translate }}</app-button>
+        <app-button [disabled]="!canSave" (pressed)="save()">{{ PHRASES.SAVE | translate }}</app-button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-confirm-dialog
+  *ngIf="showDeleteConfirm"
+  [message]="PHRASES.CONFIRM_DELETE_COMMENT | translate"
+  (confirmed)="confirmDelete()"
+  (cancelled)="cancelDelete()"
+></app-confirm-dialog>

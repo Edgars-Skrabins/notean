@@ -20,6 +20,7 @@ class Project < ApplicationRecord
   validate :owner_is_team_member
 
   after_save :ensure_owner_is_member
+  before_destroy :release_trashed_items
 
   private
 
@@ -27,6 +28,10 @@ class Project < ApplicationRecord
     return unless owner && team
 
     errors.add(:owner, "must be a member of the team") unless team.memberships.exists?(user: owner)
+  end
+
+  def release_trashed_items
+    [ Page, Diagram, Board, Folder ].each { |klass| klass.unscoped.where(project_id: id).where.not(trash_entry_id: nil).update_all(project_id: nil) }
   end
 
   def ensure_owner_is_member

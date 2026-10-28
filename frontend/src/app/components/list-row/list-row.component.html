@@ -10,6 +10,8 @@
     <span class="listRow__title">{{ ticket.title }}</span>
   </button>
 
+  <app-tag-chips class="listRow__tags" [tags]="tags" [tagIds]="ticket.tagIds" [max]="2"></app-tag-chips>
+
   <span class="listRow__priority">
     <ng-container *ngIf="priority">
       <span class="priorityDot" [attr.data-color]="priority.color"></span>

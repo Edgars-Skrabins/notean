@@ -12,10 +12,13 @@ import {ToastService} from "@services/toast.service";
 import {ProjectFilterService} from "@services/project-filter.service";
 import {FolderService} from "@services/folder.service";
 import {TemplateService} from "@services/template.service";
+import {TrashService} from "@services/trash.service";
+import {CopyLinkService} from "@services/copy-link.service";
 import {PHRASES} from "@config/phrases";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {FlowchartEditorComponent} from "@components/flowchart-editor/flowchart-editor.component";
 import {ItemDetailLayoutComponent} from "@components/item-detail-layout/item-detail-layout.component";
+import {DiagramCommentLayerComponent} from "@components/diagram-comment-layer/diagram-comment-layer.component";
 import {FolderedItemDetailComponent} from "../foldered-item-detail.base";
 
 @Component({
@@ -23,7 +26,8 @@ import {FolderedItemDetailComponent} from "../foldered-item-detail.base";
   imports: [
     NgIf,
     FlowchartEditorComponent,
-    ItemDetailLayoutComponent
+    ItemDetailLayoutComponent,
+    DiagramCommentLayerComponent
   ],
   templateUrl: './diagram-detail.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -35,6 +39,7 @@ export class DiagramDetailComponent extends FolderedItemDetailComponent {
   protected readonly listRoute = AppRoutes.DIAGRAMS;
   protected readonly untitledItemPhrase = PHRASES.UNTITLED_DIAGRAM;
   protected readonly templateKind = 'diagram';
+  protected readonly notFoundCode = 'DIAGRAM_NOT_FOUND';
 
   constructor(
     route: ActivatedRoute,
@@ -48,8 +53,10 @@ export class DiagramDetailComponent extends FolderedItemDetailComponent {
     projectFilterService: ProjectFilterService,
     folderService: FolderService,
     translateService: TranslateService,
+    copyLinkService: CopyLinkService,
+    trashService: TrashService,
     templateService: TemplateService
   ) {
-    super(route, diagramService, diagramEditingService, teamService, authService, navigationService, favoriteService, toastService, projectFilterService, folderService, translateService, templateService);
+    super(route, diagramService, diagramEditingService, teamService, authService, navigationService, favoriteService, toastService, projectFilterService, folderService, translateService, copyLinkService, trashService, templateService);
   }
 }

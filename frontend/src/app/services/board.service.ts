@@ -17,6 +17,7 @@ import {mapAvatar, RawAvatar} from "@services/avatar.service";
 import {teamPath} from "@utils/teamPath";
 import {projectQuery} from "@utils/projectQuery";
 import {mapBoardPriority, RawBoardPriority} from "@services/priority.service";
+import {mapTag, RawTag} from "@services/tag.service";
 
 export interface RawBoardUser {
   id: number;
@@ -32,6 +33,7 @@ export interface RawTicketSummary {
   priority_id?: number | null;
   lock_version: number;
   assignees: RawBoardUser[];
+  tag_ids?: number[];
   created_at: string;
   updated_at: string;
 }
@@ -56,6 +58,7 @@ interface RawBoardDetail extends RawBoardSummary {
   columns: RawBoardColumn[];
   backlog?: RawTicketSummary[];
   priorities?: RawBoardPriority[];
+  tags?: RawTag[];
 }
 
 interface RawBoardOverview {
@@ -86,6 +89,7 @@ export function mapTicketSummary(raw: RawTicketSummary): TicketSummary {
     priorityId: raw.priority_id ?? null,
     lockVersion: raw.lock_version,
     assignees: raw.assignees.map(mapBoardUser),
+    tagIds: raw.tag_ids ?? [],
     createdAt: raw.created_at,
     updatedAt: raw.updated_at,
   };
@@ -117,6 +121,7 @@ export function mapBoardDetail(raw: RawBoardDetail): BoardDetail {
     columns: raw.columns.map(mapBoardColumn),
     backlog: (raw.backlog ?? []).map(mapTicketSummary),
     priorities: (raw.priorities ?? []).map(mapBoardPriority),
+    tags: (raw.tags ?? []).map(mapTag),
   };
 }
 
@@ -195,7 +200,7 @@ export class BoardService {
   async deleteBoard(teamCode: string, id: number): Promise<DeleteBoardResponse> {
     return apiRequest<DeleteBoardResponse>(
       axiosInstance.delete(`${this.boardsUrl(teamCode)}/${id}`),
-      () => ({success: true}),
+      (data) => ({success: true, trashEntryIds: data.trash_entry_ids ?? []}),
     );
   }
 }

@@ -24,6 +24,22 @@ export class NavigationService {
     this.track(this.router.navigate(routeSegments, {state}));
   }
 
+  navigateWithQuery(queryParams: Record<string, string>, ...routeSegments: AppRoutes[]) {
+    this.track(this.router.navigate(routeSegments, {queryParams}));
+  }
+
+  navigateReplacingUrl(...routeSegments: AppRoutes[]) {
+    this.track(this.router.navigate(routeSegments, {replaceUrl: true}));
+  }
+
+  navigateByUrl(url: string) {
+    this.track(this.router.navigateByUrl(url));
+  }
+
+  reloadAt(url: string) {
+    window.location.assign(url);
+  }
+
   private track(navigation: Promise<boolean>) {
     this.isNavigating = true;
     navigation

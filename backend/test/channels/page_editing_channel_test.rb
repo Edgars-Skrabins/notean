@@ -17,6 +17,15 @@ class PageEditingChannelTest < ActionCable::Channel::TestCase
     assert_has_stream "page_editing_#{@page.id}"
   end
 
+  test "a trashed page is rejected" do
+    Trash.move(@page, @user)
+    stub_connection current_user: @user
+
+    subscribe page_id: @page.id
+
+    assert subscription.rejected?
+  end
+
   test "a user outside the team is rejected" do
     stub_connection current_user: User.create!(email: "mallory@example.com", password: "supersecret")
 

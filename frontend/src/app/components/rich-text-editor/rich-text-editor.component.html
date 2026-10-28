@@ -1,4 +1,4 @@
-<div class="richTextEditor">
+<div class="richTextEditor" [class.richTextEditor--compact]="compact">
   <div class="richTextEditor__toolbar" *ngIf="editable">
     <button type="button" class="richTextEditor__toolbarButton" [class.richTextEditor__toolbarButton--active]="isActive('bold')" [title]="PHRASES.FORMAT_BOLD | translate" [attr.aria-label]="PHRASES.FORMAT_BOLD | translate" (click)="toggleBold()">
       <strong>B</strong>

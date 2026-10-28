@@ -23,4 +23,6 @@ export enum AppRoutes {
   BOARD_TEMPLATES = 'board-templates',
   PROFILE = 'profile',
   SETTINGS = 'settings',
+  TRASH = 'trash',
+  UNAVAILABLE = 'unavailable',
 }

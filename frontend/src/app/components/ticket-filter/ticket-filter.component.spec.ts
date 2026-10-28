@@ -8,7 +8,7 @@ describe('TicketFilterComponent', () => {
 
   beforeEach(() => {
     component = new TicketFilterComponent({nativeElement: document.createElement('div')} as ElementRef<HTMLElement>);
-    component.filters = {assigneeIds: new Set(), columnIds: new Set()};
+    component.filters = {assigneeIds: new Set(), tagIds: new Set(), columnIds: new Set()};
     emitted = [];
     component.filtersChange.subscribe((filters) => emitted.push(filters));
   });
@@ -33,5 +33,17 @@ describe('TicketFilterComponent', () => {
 
     expect(emitted[emitted.length - 1].columnIds.size).toBe(0);
     expect(component.activeCount).toBe(0);
+  });
+
+  it('counts and clears checked tags, including No tags', () => {
+    component.toggleTag(30, true);
+    component.toggleTag('none', true);
+    component.toggleAssignee(5, true);
+
+    expect([...emitted[emitted.length - 1].tagIds]).toEqual([30, 'none']);
+    expect(component.activeCount).toBe(3);
+
+    component.clear();
+    expect(emitted[emitted.length - 1].tagIds.size).toBe(0);
   });
 });

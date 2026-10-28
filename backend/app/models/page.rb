@@ -3,6 +3,7 @@ class Page < ApplicationRecord
   include BelongsToProject
   include TextSearchable
   include ContentLimits
+  include Trashable
 
   text_searchable :title, :search_text
 
@@ -15,6 +16,7 @@ class Page < ApplicationRecord
   has_many :page_contributors, dependent: :destroy
   has_many :contributors, through: :page_contributors, source: :user
   has_many :favorites, as: :favoritable, dependent: :destroy
+  has_many :comments, as: :commentable, dependent: :destroy
 
   validates :title, presence: true, length: { maximum: TITLE_MAX_LENGTH }
   validate :folder_matches_item

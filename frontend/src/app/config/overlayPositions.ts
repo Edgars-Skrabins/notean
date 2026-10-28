@@ -14,3 +14,10 @@ export const DROPDOWN_POSITIONS: ConnectedPosition[] = [BELOW_START, ABOVE_START
 export const MENU_POSITIONS: ConnectedPosition[] = [BELOW_END, ABOVE_END, BELOW_START, ABOVE_START];
 
 export const TOOLTIP_POSITIONS: ConnectedPosition[] = [ABOVE_CENTER, BELOW_CENTER];
+
+export const SIDE_POSITIONS: ConnectedPosition[] = [
+  {originX: 'end', originY: 'top', overlayX: 'start', overlayY: 'top'},
+  {originX: 'end', originY: 'bottom', overlayX: 'start', overlayY: 'bottom'},
+  {originX: 'start', originY: 'top', overlayX: 'end', overlayY: 'top'},
+  {originX: 'start', originY: 'bottom', overlayX: 'end', overlayY: 'bottom'},
+];

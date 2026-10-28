@@ -59,6 +59,12 @@
   text-overflow: ellipsis;
 }
 
+.listRow__tags {
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+  max-width: 200px;
+}
+
 .listRow__priority {
   display: flex;
   align-items: center;

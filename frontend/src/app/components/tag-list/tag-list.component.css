@@ -1,0 +1,85 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  max-width: 420px;
+}
+
+.tagList__rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.tagList__row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-sm);
+}
+
+.tagList__name,
+.tagList__input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-heading);
+  font-family: var(--font-ui);
+  font-size: var(--font-md);
+}
+
+.tagList__name {
+  display: flex;
+  background: none;
+  border: 1px solid transparent;
+  cursor: text;
+}
+
+.tagList__name:hover {
+  border-color: var(--color-input-border);
+}
+
+.tagList__input {
+  background: var(--color-input-bg-focus);
+  border: 1px solid var(--color-input-border-focus);
+  outline: none;
+}
+
+.tagList__count,
+.tagList__empty {
+  color: var(--color-text-faint);
+  font-size: var(--font-sm);
+}
+
+.tagList__empty {
+  margin: 0;
+}
+
+.tagList__add {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-start;
+  padding: 6px 10px;
+  background: none;
+  border: 1px dashed var(--color-input-border);
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--font-sm);
+  cursor: pointer;
+}
+
+.tagList__add:hover {
+  color: var(--color-text-heading);
+  border-color: var(--color-input-border-focus);
+}
+
+.tagList__addIcon {
+  width: 14px;
+  height: 14px;
+}
