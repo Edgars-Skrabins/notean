@@ -15,6 +15,8 @@ import {PHRASES} from "@config/phrases";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {RichTextEditorComponent} from "@components/rich-text-editor/rich-text-editor.component";
 import {ItemDetailLayoutComponent} from "@components/item-detail-layout/item-detail-layout.component";
+import {CommentListComponent} from "@components/comment-list/comment-list.component";
+import {CommentTarget} from "@models/comment.model";
 import {FolderedItemDetailComponent} from "../foldered-item-detail.base";
 
 @Component({
@@ -22,7 +24,8 @@ import {FolderedItemDetailComponent} from "../foldered-item-detail.base";
   imports: [
     NgIf,
     RichTextEditorComponent,
-    ItemDetailLayoutComponent
+    ItemDetailLayoutComponent,
+    CommentListComponent
   ],
   templateUrl: './page-detail.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -33,6 +36,19 @@ export class PageDetailComponent extends FolderedItemDetailComponent {
   protected readonly itemType = 'Page';
   protected readonly listRoute = AppRoutes.DOCUMENT_PAGES;
   protected readonly untitledItemPhrase = PHRASES.UNTITLED_PAGE;
+
+  private pageCommentTarget: Extract<CommentTarget, { type: 'page' }> | null = null;
+
+  get commentTarget(): CommentTarget | null {
+    const pageId = this.item?.id;
+    if (pageId === undefined) {
+      return null;
+    }
+    if (this.pageCommentTarget?.pageId !== pageId) {
+      this.pageCommentTarget = {type: 'page', pageId};
+    }
+    return this.pageCommentTarget;
+  }
 
   constructor(
     route: ActivatedRoute,
