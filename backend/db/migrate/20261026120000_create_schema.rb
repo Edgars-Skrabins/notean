@@ -203,6 +203,20 @@ class CreateSchema < ActiveRecord::Migration[8.1]
       t.index [ "code" ], name: "index_teams_on_code", unique: true
     end
 
+    create_table "templates" do |t|
+      t.integer "team_id", null: false
+      t.integer "created_by_user_id", null: false
+      t.string "kind", null: false
+      t.string "title", null: false
+      t.text "content", default: "", null: false
+      t.integer "lock_version", default: 0, null: false
+      t.datetime "created_at", null: false
+      t.datetime "updated_at", null: false
+      t.index "lower((title)::text) gin_trgm_ops", using: :gin, name: "index_templates_on_lower_title_trgm"
+      t.index [ "created_by_user_id" ], name: "index_templates_on_created_by_user_id"
+      t.index [ "team_id", "kind" ], name: "index_templates_on_team_id_and_kind"
+    end
+
     create_table "ticket_assignees" do |t|
       t.integer "ticket_id", null: false
       t.integer "user_id", null: false
@@ -288,6 +302,8 @@ class CreateSchema < ActiveRecord::Migration[8.1]
     add_foreign_key "projects", "teams"
     add_foreign_key "projects", "users", column: "created_by_user_id"
     add_foreign_key "projects", "users", column: "owner_user_id"
+    add_foreign_key "templates", "teams"
+    add_foreign_key "templates", "users", column: "created_by_user_id"
     add_foreign_key "ticket_assignees", "tickets"
     add_foreign_key "ticket_assignees", "users"
     add_foreign_key "tickets", "board_priorities", column: "priority_id", on_delete: :nullify
