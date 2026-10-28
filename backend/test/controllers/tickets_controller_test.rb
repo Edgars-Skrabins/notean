@@ -147,12 +147,14 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
-  test "destroy removes the ticket" do
+  test "destroy moves the ticket to the trash" do
     ticket = Ticket.create!(column: @todo, team: @team, created_by_user_id: @user.id, title: "Fix bug", position: 0)
 
     delete "/teams/#{@team.code}/boards/#{@board.id}/tickets/#{ticket.id}", headers: @headers
 
-    assert_response :no_content
+    assert_response :success
+    entry = TrashEntry.find_by!(item_type: "Ticket", item_id: ticket.id)
+    assert_equal({ "trash_entry_ids" => [ entry.id ] }, JSON.parse(response.body))
     assert_nil Ticket.find_by(id: ticket.id)
   end
 
@@ -402,7 +404,9 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
 
     delete bulk_url, params: { bulk: { ticket_ids: [ first.id, second.id ] } }, headers: @headers, as: :json
 
-    assert_response :no_content
+    assert_response :success
+    assert_equal 2, JSON.parse(response.body)["trash_entry_ids"].length
+    assert_equal 2, TrashEntry.count
     assert_nil Ticket.find_by(id: first.id)
     assert_nil Ticket.find_by(id: second.id)
     assert_equal 0, kept.reload.position
@@ -544,7 +548,7 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
 
     delete tickets_url(ticket.id), headers: @headers
 
-    assert_response :no_content
+    assert_response :success
     assert_equal [
       { "type" => "tickets_shifted", "shifts" => [ { "column_id" => @todo.id, "from_position" => 1, "to_position" => nil, "delta" => -1 } ] },
       { "type" => "tickets_removed", "ticket_ids" => [ ticket.id ] }
@@ -585,7 +589,7 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
 
     delete bulk_url, params: { bulk: { ticket_ids: [ first.id, second.id ] } }, headers: @headers, as: :json
 
-    assert_response :no_content
+    assert_response :success
     shifted, removed = board_broadcasts(@board)
     assert_equal "tickets_shifted", shifted["type"]
     assert_equal [ nil, @todo.id ], shifted["shifts"].map { |shift| shift["column_id"] }
@@ -642,7 +646,7 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
 
     delete tickets_url(tickets[1].id), headers: @headers
 
-    assert_response :no_content
+    assert_response :success
     assert_equal [ 0, 1, 2 ], tickets.values_at(0, 2, 3).map { |ticket| ticket.reload.position }
   end
 
@@ -677,7 +681,7 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
 
     delete bulk_url, params: { bulk: { ticket_ids: [ backlog[0].id, todo[1].id, todo[2].id ] } }, headers: @headers, as: :json
 
-    assert_response :no_content
+    assert_response :success
     assert_equal [ 0, 1 ], backlog.drop(1).map { |ticket| ticket.reload.position }
     assert_equal [ 0, 1 ], todo.values_at(0, 3).map { |ticket| ticket.reload.position }
   end

@@ -41,10 +41,7 @@ class ProjectsController < ApplicationController
     return render_error(ErrorCodes::Projects::PROJECT_NAME_MISMATCH, :unprocessable_entity) unless destroy_project_params[:confirm_name] == @project.name
 
     Project.transaction do
-      if mode == "delete_items"
-        [ @project.pages, @project.diagrams, @project.boards ].each(&:destroy_all)
-        @project.folders.where(parent_id: nil).destroy_all
-      end
+      trash_project_items if mode == "delete_items"
       @project.destroy!
     end
 
@@ -61,6 +58,18 @@ class ProjectsController < ApplicationController
     @project = visible_projects.find_by(id: params[:id])
 
     render_error(ErrorCodes::Projects::PROJECT_NOT_FOUND, :not_found) if @project.nil?
+  end
+
+  def trash_project_items
+    folders = @project.folders.where(parent_id: nil).to_a
+    items = @project.pages.where(folder_id: nil).to_a + @project.diagrams.where(folder_id: nil).to_a + @project.boards.to_a
+
+    folders.each { |folder| FolderProject.apply(folder, nil) }
+    items.each { |item| item.class.where(id: item.id).update_all(project_id: nil) }
+    (folders + items).each do |item|
+      item.project_id = nil
+      Trash.move(item, current_user)
+    end
   end
 
   def authorize_project_management!

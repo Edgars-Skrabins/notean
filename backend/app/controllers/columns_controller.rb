@@ -34,8 +34,12 @@ class ColumnsController < ApplicationController
   end
 
   def destroy
-    @column.destroy
-    head :no_content
+    tickets = @board.tickets.where(column_id: @column.id).to_a
+    entries, = Column.transaction do
+      Trash.move_tickets(@board, tickets, current_user).tap { @column.destroy! }
+    end
+    render json: { trash_entry_ids: entries.map(&:id) }
+    BoardBroadcast.tickets_removed(@board, tickets.map(&:id)) if tickets.any?
     broadcast_columns
   end
 

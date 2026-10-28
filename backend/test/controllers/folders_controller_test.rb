@@ -21,16 +21,21 @@ class FoldersControllerTest < ActionDispatch::IntegrationTest
     assert_nil Folder.find_by(id: child.id)
     assert_equal root.id, page.reload.folder_id
     assert_equal root.id, grandchild.reload.parent_id
+    assert_not Folder.unscoped.exists?(child.id)
+    assert_equal 0, TrashEntry.count
   end
 
-  test "destroy with mode=cascade destroys the folder and everything nested inside it" do
+  test "destroy with mode=cascade moves the folder and everything nested inside it to the trash" do
     root = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Root")
     child = Folder.create!(team: @team, creator: @user, item_type: "Page", title: "Child", parent: root)
     page = Page.create!(team: @team, creator: @user, title: "Notes", content: "", folder: root)
 
     delete "/teams/#{@team.code}/folders/#{root.id}?mode=cascade", headers: @headers
 
-    assert_response :no_content
+    assert_response :success
+    entry = TrashEntry.find_by!(item_type: "Folder", item_id: root.id)
+    assert_equal({ "trash_entry_ids" => [ entry.id ] }, JSON.parse(response.body))
+    assert_equal [ entry.id ] * 3, [ Folder.unscoped.find(root.id), Folder.unscoped.find(child.id), Page.unscoped.find(page.id) ].map(&:trash_entry_id)
     assert_nil Folder.find_by(id: root.id)
     assert_nil Folder.find_by(id: child.id)
     assert_nil Page.find_by(id: page.id)

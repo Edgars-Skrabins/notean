@@ -53,8 +53,8 @@ class DiagramsController < ApplicationController
   end
 
   def destroy
-    @diagram.destroy
-    head :no_content
+    entry = Trash.move(@diagram, current_user)
+    render json: { trash_entry_ids: [ entry.id ] }
   end
 
   private

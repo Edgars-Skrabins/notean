@@ -74,8 +74,8 @@ class BoardsController < ApplicationController
   end
 
   def destroy
-    @board.destroy
-    head :no_content
+    entry = Trash.move(@board, current_user)
+    render json: { trash_entry_ids: [ entry.id ] }
     BoardBroadcast.board_deleted(@board)
   end
 
