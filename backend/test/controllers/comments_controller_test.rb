@@ -201,4 +201,37 @@ class CommentsControllerTest < ActionDispatch::IntegrationTest
     assert_response :created
     assert_equal [ [ @user.id, "commented", "Looks good" ], [ @carol.id, "commented", "Looks good" ] ], Notification.order(:user_id).pluck(:user_id, :kind, :excerpt)
   end
+
+  def mention(user, nickname)
+    %(<span data-type="mention" data-mention-type="user" data-id="#{user.id}" data-label="#{nickname}">@#{nickname}</span>)
+  end
+
+  test "create sends mentioned people a mention instead of a comment notification" do
+    post page_comments_url, params: { comment: { body: "<p>#{mention(@user, "Alice")} #{mention(@carol, "Carol")} see</p>" } }, headers: headers_for(@bob), as: :json
+
+    assert_response :created
+    assert_equal [ [ @user.id, "mentioned" ], [ @carol.id, "mentioned" ] ], Notification.order(:user_id).pluck(:user_id, :kind)
+    assert_includes json["comment"]["body"], 'data-mention-type="user"'
+  end
+
+  test "editing a comment notifies only newly mentioned people" do
+    comment = add_comment(@page, user: @bob, body: "<p>#{mention(@user, "Alice")}</p>")
+
+    patch comment_url(comment), params: { comment: { body: "<p>#{mention(@user, "Alice")} #{mention(@carol, "Carol")}</p>" } }, headers: headers_for(@bob), as: :json
+
+    assert_response :success
+    assert_equal [ [ @carol.id, "mentioned" ] ], Notification.pluck(:user_id, :kind)
+  end
+
+  test "comments keep no title of mentioned items, also in the notification excerpt" do
+    secret = %(<span data-type="mention" data-mention-type="ticket" data-id="#{@ticket.id}" data-label="Secret bug">@Secret bug</span>)
+
+    post page_comments_url, params: { comment: { body: "<p>#{mention(@carol, "Carol")} see #{secret}</p>" } }, headers: headers_for(@bob), as: :json
+
+    assert_response :created
+    assert_not_includes json["comment"]["body"], "Secret bug"
+    assert_includes json["comment"]["body"], 'data-label="Carol"'
+    assert Notification.pluck(:excerpt).none? { |excerpt| excerpt.include?("Secret bug") }
+    assert_includes Notification.where(kind: "mentioned").pluck(:excerpt), "@Carol see @"
+  end
 end
