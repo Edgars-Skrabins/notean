@@ -7,4 +7,6 @@ class Column < ApplicationRecord
 
   validates :title, presence: true, length: { maximum: TITLE_MAX_LENGTH }
   validates :position, presence: true
+
+  before_destroy { Ticket.unscoped.where(column_id: id).where.not(trash_entry_id: nil).update_all(column_id: nil) }
 end

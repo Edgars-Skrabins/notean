@@ -3,6 +3,7 @@ class Page < ApplicationRecord
   include BelongsToProject
   include TextSearchable
   include ContentLimits
+  include Trashable
 
   text_searchable :title, :search_text
 
