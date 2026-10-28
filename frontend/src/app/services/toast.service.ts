@@ -3,6 +3,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {Toast, ToastOptions} from '@models/toast.model';
 
 export const TOAST_DURATION_MS = 3000;
+export const TOAST_ACTION_DURATION_MS = 6000;
 export const TOAST_EXIT_MS = 250;
 export const MAX_VISIBLE_TOASTS = 3;
 
@@ -19,7 +20,7 @@ export class ToastService {
     const toast: Toast = {...options, id: this.nextId++, leaving: false};
     this.toastsSubject.next([toast, ...this.toastsSubject.value]);
 
-    setTimeout(() => this.dismiss(toast.id), TOAST_DURATION_MS);
+    setTimeout(() => this.dismiss(toast.id), options.action ? TOAST_ACTION_DURATION_MS : TOAST_DURATION_MS);
 
     const visible = this.toastsSubject.value.filter((item) => !item.leaving);
     if (visible.length > MAX_VISIBLE_TOASTS) {

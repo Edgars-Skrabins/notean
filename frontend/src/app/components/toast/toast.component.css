@@ -20,6 +20,22 @@
   flex: 1;
 }
 
+.toast__action {
+  height: var(--control-height);
+  padding: 0 var(--space-3);
+  border: 1px solid currentColor;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.toast__action:hover {
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+
 .toast--success {
   background: var(--color-success-bg);
   border-color: var(--color-success);

@@ -1,5 +1,5 @@
 import {fakeAsync, tick} from '@angular/core/testing';
-import {MAX_VISIBLE_TOASTS, TOAST_DURATION_MS, TOAST_EXIT_MS, ToastService} from './toast.service';
+import {MAX_VISIBLE_TOASTS, TOAST_ACTION_DURATION_MS, TOAST_DURATION_MS, TOAST_EXIT_MS, ToastService} from './toast.service';
 import {Toast, ToastType} from '@models/toast.model';
 
 describe('ToastService', () => {
@@ -30,6 +30,18 @@ describe('ToastService', () => {
 
     tick(TOAST_EXIT_MS);
     expect(toasts).toEqual([]);
+  }));
+
+  it('keeps a toast with an action for the longer duration', fakeAsync(() => {
+    service.show({type: ToastType.SUCCESS, message: 'MOVED', action: {label: 'UNDO', run: () => undefined}});
+
+    tick(TOAST_DURATION_MS);
+    expect(toasts[0].leaving).toBeFalse();
+
+    tick(TOAST_ACTION_DURATION_MS - TOAST_DURATION_MS);
+    expect(toasts[0].leaving).toBeTrue();
+
+    tick(TOAST_EXIT_MS);
   }));
 
   it('dismisses the oldest toast when more than the maximum are showing', fakeAsync(() => {
