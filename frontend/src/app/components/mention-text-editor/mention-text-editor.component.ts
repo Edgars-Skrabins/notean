@@ -1,13 +1,13 @@
 import {AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Injector, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, ViewEncapsulation} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {Editor, Extension} from '@tiptap/core';
-import {Plugin} from '@tiptap/pm/state';
+import {EditorState, Plugin} from '@tiptap/pm/state';
 import StarterKit from '@tiptap/starter-kit';
 import {MentionContext} from "@models/mention.model";
 import {createMentionExtension} from "@utils/mentionExtension";
 import {parseMentionText, serializeMentionDoc} from "@utils/mentionTokens";
 
-export const PLAIN_TEXT_KIT = StarterKit.configure({
+export const PLAIN_TEXT_OPTIONS = {
   blockquote: false,
   bold: false,
   bulletList: false,
@@ -26,7 +26,16 @@ export const PLAIN_TEXT_KIT = StarterKit.configure({
   strike: false,
   trailingNode: false,
   underline: false,
-});
+} as const;
+
+export const PLAIN_TEXT_KIT = StarterKit.configure(PLAIN_TEXT_OPTIONS);
+
+function isSuggestionActive(state: EditorState): boolean {
+  return state.plugins.some((plugin) => {
+    const key = (plugin.spec.key as { key?: string } | undefined)?.key ?? '';
+    return key.startsWith('mentionSuggestion') && !!(plugin.getState(state) as { active?: boolean } | undefined)?.active;
+  });
+}
 
 @Component({
   selector: 'app-mention-text-editor',
@@ -44,10 +53,12 @@ export class MentionTextEditorComponent implements AfterViewInit, OnChanges, OnD
   @Input() maxLength: number | null = null;
   @Input() mentionContext: MentionContext = {};
   @Input() inputId: string | null = null;
+  @Input() submitOnEnter = false;
   @Output() valueChange = new EventEmitter<string>();
   @Output() focused = new EventEmitter<void>();
   @Output() blurred = new EventEmitter<void>();
   @Output() escape = new EventEmitter<KeyboardEvent>();
+  @Output() submitted = new EventEmitter<void>();
 
   @ViewChild('editorHost', {static: true}) editorHost!: ElementRef<HTMLDivElement>;
 
@@ -60,7 +71,7 @@ export class MentionTextEditorComponent implements AfterViewInit, OnChanges, OnD
   ngAfterViewInit() {
     this.editor = new Editor({
       element: this.editorHost.nativeElement,
-      extensions: [PLAIN_TEXT_KIT, createMentionExtension(this.injector, () => this.mentionContext), this.maxLengthExtension()],
+      extensions: [PLAIN_TEXT_KIT, createMentionExtension(this.injector, () => this.mentionContext), this.maxLengthExtension(), this.submitExtension()],
       content: parseMentionText(this.value),
       editorProps: {
         attributes: this.inputId ? {id: this.inputId, role: 'textbox', 'aria-multiline': 'true'} : {role: 'textbox', 'aria-multiline': 'true'},
@@ -99,6 +110,27 @@ export class MentionTextEditorComponent implements AfterViewInit, OnChanges, OnD
 
   focus() {
     this.editor?.commands.focus();
+  }
+
+  insertText(text: string) {
+    this.editor?.chain().focus().insertContent(text).run();
+  }
+
+  private submitExtension() {
+    return Extension.create({
+      name: 'submitOnEnter',
+      priority: 1000,
+      addKeyboardShortcuts: () => ({
+        'Enter': ({editor}) => {
+          if (!this.submitOnEnter || isSuggestionActive(editor.state)) {
+            return false;
+          }
+          this.submitted.emit();
+          return true;
+        },
+        'Shift-Enter': ({editor}) => this.submitOnEnter && editor.commands.splitBlock(),
+      }),
+    });
   }
 
   private maxLengthExtension() {

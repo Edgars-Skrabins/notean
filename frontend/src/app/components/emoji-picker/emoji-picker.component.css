@@ -1,0 +1,23 @@
+.emojiPicker {
+  min-width: 320px;
+  min-height: 360px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.emojiPicker emoji-picker {
+  --background: var(--color-card-bg);
+  --border-color: var(--color-input-border);
+  --border-size: 0;
+  --button-active-background: color-mix(in srgb, var(--color-tint) 16%, transparent);
+  --button-hover-background: color-mix(in srgb, var(--color-tint) 8%, transparent);
+  --category-font-color: var(--color-text-muted);
+  --indicator-color: var(--color-primary);
+  --input-border-color: var(--color-input-border);
+  --input-font-color: var(--color-text-heading);
+  --input-placeholder-color: var(--color-text-faint);
+  --outline-color: var(--color-input-border-focus);
+  --num-columns: 8;
+  display: block;
+  width: 100%;
+}
