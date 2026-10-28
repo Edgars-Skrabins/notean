@@ -25,6 +25,7 @@ class DiagramCommentPinsController < ApplicationController
     if pin.valid? && comment.valid?
       pin.save!
       render json: { comment_pin: comment_pin_json(pin, 1, comment), comment: comment_json(comment) }, status: :created
+      Notifier.commented(@diagram, current_user, recipients: [], excerpt: SearchText.from_html(comment.body))
     else
       render_error(comment_error_code(comment, ErrorCodes::Comments::COMMENT_CREATE_FAILED), :unprocessable_entity)
     end

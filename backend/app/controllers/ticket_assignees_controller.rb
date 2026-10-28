@@ -21,6 +21,7 @@ class TicketAssigneesController < ApplicationController
 
     render json: { ticket: ticket_json(@ticket.reload) }, status: status
     BoardBroadcast.tickets_upserted(@board, [ ticket_broadcast_json(@ticket) ])
+    Notifier.assigned(@ticket, current_user, [ user ]) if status == :created
   end
 
   def destroy
@@ -30,6 +31,7 @@ class TicketAssigneesController < ApplicationController
     assignee.destroy
     render json: { ticket: ticket_json(@ticket.reload) }
     BoardBroadcast.tickets_upserted(@board, [ ticket_broadcast_json(@ticket) ])
+    Notifier.unassigned(@ticket, current_user, [ assignee.user_id ])
   end
 
   private

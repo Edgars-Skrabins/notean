@@ -921,4 +921,72 @@ class TicketsControllerTest < ActionDispatch::IntegrationTest
     assert_empty ticket_description_selects { get tickets_url, params: { status: "backlog" }, headers: @headers }
     assert_equal [ "Idea" ], JSON.parse(response.body)["tickets"].map { |ticket| ticket["title"] }
   end
+
+  test "update notifies the ticket's owners about the changed fields" do
+    bob = create_member(@team, "Bob")
+    ticket = ticket_in(@todo, "Bug", 0)
+    ticket.ticket_assignees.create!(user: bob)
+
+    patch tickets_url(ticket.id), params: { ticket: { title: "Crash", column_id: @doing.id, lock_version: ticket.lock_version } }, headers: @headers, as: :json
+
+    assert_response :ok
+    assert_equal [ [ bob.id, "item_changed", %w[title status] ] ], Notification.pluck(:user_id, :kind, :changed_fields)
+  end
+
+  test "reordering within a column notifies nobody" do
+    bob = create_member(@team, "Bob")
+    ticket_in(@todo, "First", 0)
+    ticket = ticket_in(@todo, "Second", 1)
+    ticket.ticket_assignees.create!(user: bob)
+
+    patch tickets_url(ticket.id), params: { ticket: { position: 0 } }, headers: @headers, as: :json
+
+    assert_response :ok
+    assert_equal 0, Notification.count
+  end
+
+  test "moving a ticket to the trash replaces its notifications with an item deleted notice" do
+    bob = create_member(@team, "Bob")
+    ticket = Ticket.create!(board: @board, column: @todo, team: @team, created_by_user_id: bob.id, title: "Bug", position: 0)
+    Notifier.item_changed(ticket, @user, [ "title" ])
+
+    delete tickets_url(ticket.id), headers: @headers
+
+    assert_response :ok
+    assert_equal [ [ bob.id, "item_deleted", nil, "Bug" ] ], Notification.pluck(:user_id, :kind, :item_id, :item_title)
+  end
+
+  test "bulk moves and assignee changes notify only for tickets that changed" do
+    bob = create_member(@team, "Bob")
+    moved = Ticket.create!(board: @board, column: @todo, team: @team, created_by_user_id: bob.id, title: "Moved", position: 0)
+    Ticket.create!(board: @board, column: @doing, team: @team, created_by_user_id: bob.id, title: "Stayed", position: 0)
+
+    bulk_update(ticket_ids: @board.tickets.pluck(:id), column_id: @doing.id)
+    assert_equal [ [ moved.id, "item_changed" ] ], Notification.pluck(:item_id, :kind)
+
+    moved.ticket_assignees.create!(user: bob)
+    bulk_update(ticket_ids: @board.tickets.pluck(:id), add_assignee_id: bob.id)
+    assert_equal 1, Notification.where(kind: "assigned").count
+  end
+
+  test "bulk moving tickets to the trash leaves an item deleted notice per ticket" do
+    bob = create_member(@team, "Bob")
+    tickets = 2.times.map { |index| Ticket.create!(board: @board, team: @team, created_by_user_id: bob.id, title: "Ticket #{index}", position: index) }
+
+    delete bulk_url, params: { bulk: { ticket_ids: tickets.map(&:id) } }, headers: @headers, as: :json
+
+    assert_response :ok
+    assert_equal [ "Ticket 0", "Ticket 1" ], Notification.where(user: bob, kind: "item_deleted").order(:item_title).pluck(:item_title)
+  end
+
+  test "a notifying bulk move runs the same number of queries for 1 and 10 tickets" do
+    bob = create_member(@team, "Bob", with_avatar: true)
+    tickets = 10.times.map { |index| Ticket.create!(board: @board, team: @team, created_by_user_id: bob.id, title: "Ticket #{index}", position: index) }
+
+    one = query_count { bulk_update(ticket_ids: [ tickets.first.id ], column_id: @todo.id) }
+    ten = query_count { bulk_update(ticket_ids: tickets.drop(1).map(&:id), column_id: @doing.id) }
+
+    assert_equal 10, Notification.where(user: bob).count
+    assert_equal one, ten
+  end
 end

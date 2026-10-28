@@ -1,0 +1,66 @@
+:host {
+  display: block;
+  margin-top: var(--space-6);
+}
+
+.activityInbox__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.activityInbox__title {
+  margin: 0;
+  color: var(--color-text-heading);
+  font-size: var(--font-lg);
+  font-weight: 600;
+}
+
+.activityInbox__filters {
+  display: inline-flex;
+  gap: var(--space-1);
+  padding: 2px;
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-sm);
+}
+
+.activityInbox__filter,
+.activityInbox__markAll {
+  padding: var(--space-1) var(--space-3);
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  color: var(--color-text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--font-sm);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.activityInbox__filter:hover,
+.activityInbox__markAll:hover:not(:disabled) {
+  color: var(--color-text-heading);
+}
+
+.activityInbox__filter--active {
+  background: var(--color-nav-active-bg);
+  color: var(--color-nav-active-text);
+}
+
+.activityInbox__markAll {
+  margin-left: auto;
+}
+
+.activityInbox__markAll:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.activityInbox__message {
+  margin: 0;
+  color: var(--color-text-faint);
+  font-size: var(--font-md);
+}

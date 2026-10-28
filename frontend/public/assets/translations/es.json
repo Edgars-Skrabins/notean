@@ -39,7 +39,6 @@
   "TEAM_CODE": "Código del equipo",
   "CREATE": "Crear",
   "HOME": "Inicio",
-  "HOME_STUB": "Todo listo: elige algo en la barra lateral para empezar.",
   "PROJECTS": "Proyectos",
   "DOCUMENT_PAGES": "Páginas",
   "DIAGRAMS": "Diagramas",
@@ -376,6 +375,26 @@
   "CLOSE_PREVIEW": "Cerrar vista previa",
   "ATTACHMENT_COUNT": "{{count}} adjuntos",
   "DROP_FILES_HERE": "Suelta archivos para adjuntarlos",
+  "ACTIVITY": "Actividad",
+  "ACTIVITY_ALL": "Todo",
+  "ACTIVITY_UNREAD": "No leídas",
+  "ACTIVITY_MARK_ALL_READ": "Marcar todo como leído",
+  "ACTIVITY_MARK_READ": "Marcar como leída",
+  "ACTIVITY_MARK_UNREAD": "Marcar como no leída",
+  "ACTIVITY_EMPTY": "Aún no hay actividad",
+  "ACTIVITY_ALL_CAUGHT_UP": "Estás al día",
+  "ACTIVITY_ASSIGNED": "te asignó a",
+  "ACTIVITY_UNASSIGNED": "te quitó de",
+  "ACTIVITY_CHANGED": "cambió",
+  "ACTIVITY_TRASHED": "movió a la papelera:",
+  "ACTIVITY_COMMENTED": "comentó en",
+  "ACTIVITY_MENTIONED": "te mencionó en",
+  "ACTIVITY_EVENT_COUNT": "+{{count}} más",
+  "ACTIVITY_FIELD_TITLE": "título",
+  "ACTIVITY_FIELD_DESCRIPTION": "descripción",
+  "ACTIVITY_FIELD_CONTENT": "contenido",
+  "ACTIVITY_FIELD_STATUS": "estado",
+  "ACTIVITY_FIELD_PRIORITY": "prioridad",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Tu sesión ha caducado. Vuelve a iniciar sesión",
@@ -506,6 +525,9 @@
       "INLINE_IMAGE_TYPE_INVALID": "Las imágenes insertadas deben ser PNG, JPEG, GIF o WebP",
       "STORAGE_QUOTA_EXCEEDED": "Tu equipo ha usado los 500 MB de almacenamiento",
       "ATTACHMENT_UPLOAD_FAILED": "No se pudo subir el archivo"
+    },
+    "NOTIFICATIONS": {
+      "NOTIFICATION_NOT_FOUND": "Notificación no encontrada"
     }
   }
 }

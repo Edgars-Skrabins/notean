@@ -100,4 +100,15 @@ class ColumnsControllerTest < ActionDispatch::IntegrationTest
     assert_response :unprocessable_entity
     assert_equal({ "code" => "TITLE_TOO_LONG" }, JSON.parse(response.body))
   end
+
+  test "destroy leaves an item deleted notice for the owners of the trashed tickets" do
+    bob = create_member(@team, "Bob")
+    column = Column.create!(board: @board, title: "To Do", position: 0)
+    Ticket.create!(board: @board, column: column, team: @team, creator: bob, title: "Bug", position: 0)
+
+    delete "/teams/#{@team.code}/boards/#{@board.id}/columns/#{column.id}", headers: @headers
+
+    assert_response :success
+    assert_equal [ [ bob.id, "item_deleted", "Bug" ] ], Notification.pluck(:user_id, :kind, :item_title)
+  end
 end

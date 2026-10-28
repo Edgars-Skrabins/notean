@@ -22,6 +22,7 @@ class CommentsController < ApplicationController
 
     if comment.save
       render json: { comment: comment_json(comment) }, status: :created
+      notify_commented(comment)
     else
       render_error(comment_error_code(comment, ErrorCodes::Comments::COMMENT_CREATE_FAILED), :unprocessable_entity)
     end
@@ -87,6 +88,11 @@ class CommentsController < ApplicationController
     elsif (item = commented_item(@comment.commentable)).nil? || !project_access.visible?(item)
       render_error(ErrorCodes::Comments::COMMENT_NOT_FOUND, :not_found)
     end
+  end
+
+  def notify_commented(comment)
+    earlier_commenters = @commentable.comments.where.not(id: comment.id).distinct.pluck(:created_by_user_id)
+    Notifier.commented(commented_item(@commentable), current_user, recipients: earlier_commenters, excerpt: SearchText.from_html(comment.body))
   end
 
   def commented_item(commentable)

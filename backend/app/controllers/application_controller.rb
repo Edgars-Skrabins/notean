@@ -1,4 +1,6 @@
 class ApplicationController < ActionController::API
+  include MemberJson
+
   DEFAULT_TITLE = "Untitled"
   PAGE_SIZE = 50
 
@@ -163,6 +165,10 @@ class ApplicationController < ActionController::API
     params.require(:comment_pin).permit(:resolved)
   end
 
+  def update_notification_params
+    params.require(:notification).permit(:read)
+  end
+
   def insert_and_reindex(siblings, record, requested_position, attribute)
     insert_at = requested_position.nil? ? siblings.length : requested_position.to_i.clamp(0, siblings.length)
     siblings.insert(insert_at, record).each_with_index do |sibling, index|
@@ -318,21 +324,6 @@ class ApplicationController < ActionController::API
 
   def members_json(team)
     team.memberships.includes(user: User::AVATAR_PRELOAD).map { |m| member_json(m.user).merge(role: m.role) }
-  end
-
-  def member_json(user)
-    { id: user.id, nickname: team_nicknames[user.id], avatar: avatar_json(user) }
-  end
-
-  def avatar_json(user)
-    {
-      color: user.effective_avatar_color,
-      image_url: user.avatar_image.attached? ? rails_storage_proxy_path(user.avatar_image, only_path: true) : nil
-    }
-  end
-
-  def team_nicknames
-    @team_nicknames ||= @team.all_memberships.pluck(:user_id, :nickname).to_h
   end
 
   def render_nickname_error(membership)

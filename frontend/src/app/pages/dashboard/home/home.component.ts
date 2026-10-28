@@ -6,6 +6,7 @@ import {SettingsService} from "@services/settings.service";
 import {TeamService} from "@services/team.service";
 import {FavoritesGridComponent} from "@components/favorites-grid/favorites-grid.component";
 import {MyWorkComponent} from "@components/my-work/my-work.component";
+import {ActivityInboxComponent} from "@components/activity-inbox/activity-inbox.component";
 
 @Component({
   selector: 'app-home',
@@ -13,6 +14,7 @@ import {MyWorkComponent} from "@components/my-work/my-work.component";
     AsyncPipe,
     NgIf,
     TranslatePipe,
+    ActivityInboxComponent,
     FavoritesGridComponent,
     MyWorkComponent
   ],

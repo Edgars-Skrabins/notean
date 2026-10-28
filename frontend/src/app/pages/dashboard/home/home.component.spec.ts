@@ -19,8 +19,8 @@ describe('HomeComponent', () => {
     fixture.detectChanges();
   }
 
-  function has(selector: string): boolean {
-    return fixture.nativeElement.querySelector(selector) !== null;
+  function sections(): string[] {
+    return Array.from(fixture.nativeElement.querySelectorAll('app-activity-inbox, app-favorites-grid, app-my-work')).map((element) => (element as HTMLElement).tagName);
   }
 
   beforeEach(async () => {
@@ -39,42 +39,22 @@ describe('HomeComponent', () => {
     fixture = TestBed.createComponent(HomeComponent);
   });
 
-  it('shows My Work below Favorites when both are on', () => {
+  it('shows Activity first, then Favorites and My Work when both are on', () => {
     render(true, true);
 
-    const sections = Array.from(fixture.nativeElement.querySelectorAll('app-favorites-grid, app-my-work')).map((element) => (element as HTMLElement).tagName);
-    expect(sections).toEqual(['APP-FAVORITES-GRID', 'APP-MY-WORK']);
-    expect(has('.dashboardStub__body')).toBeFalse();
+    expect(sections()).toEqual(['APP-ACTIVITY-INBOX', 'APP-FAVORITES-GRID', 'APP-MY-WORK']);
   });
 
-  it('shows My Work without Favorites', () => {
-    render(false, true);
+  it('always shows Activity, even with Favorites and My Work off', () => {
+    render(false, false);
 
-    expect(has('app-favorites-grid')).toBeFalse();
-    expect(has('app-my-work')).toBeTrue();
-    expect(has('.dashboardStub__body')).toBeFalse();
+    expect(sections()).toEqual(['APP-ACTIVITY-INBOX']);
   });
 
   it('hides My Work when boards are turned off', () => {
     features.next({pages: true, diagrams: true, boards: false});
     render(true, true);
 
-    expect(has('app-favorites-grid')).toBeTrue();
-    expect(has('app-my-work')).toBeFalse();
-  });
-
-  it('shows the placeholder when favorites are off and boards are turned off', () => {
-    features.next({pages: true, diagrams: true, boards: false});
-    render(false, true);
-
-    expect(has('app-my-work')).toBeFalse();
-    expect(has('.dashboardStub__body')).toBeTrue();
-  });
-
-  it('shows the placeholder only when both are off', () => {
-    render(false, false);
-
-    expect(has('app-my-work')).toBeFalse();
-    expect(has('.dashboardStub__body')).toBeTrue();
+    expect(sections()).toEqual(['APP-ACTIVITY-INBOX', 'APP-FAVORITES-GRID']);
   });
 });

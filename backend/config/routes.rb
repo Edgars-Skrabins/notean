@@ -56,6 +56,10 @@ Rails.application.routes.draw do
         delete "/", action: :empty
       end
     end
+    resources :notifications, only: [ :index, :update ] do
+      get :unread_count, on: :collection
+      post :read_all, on: :collection
+    end
     get :my_work, to: "my_work#index"
     get :search, to: "search#index"
     resources :projects, only: [ :index, :create, :show, :update, :destroy ] do

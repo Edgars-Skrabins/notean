@@ -39,7 +39,6 @@
   "TEAM_CODE": "Team code",
   "CREATE": "Create",
   "HOME": "Home",
-  "HOME_STUB": "You're all set — pick something from the sidebar to get started.",
   "PROJECTS": "Projects",
   "DOCUMENT_PAGES": "Pages",
   "DIAGRAMS": "Diagrams",
@@ -376,6 +375,26 @@
   "CLOSE_PREVIEW": "Close preview",
   "ATTACHMENT_COUNT": "{{count}} attachments",
   "DROP_FILES_HERE": "Drop files to attach",
+  "ACTIVITY": "Activity",
+  "ACTIVITY_ALL": "All",
+  "ACTIVITY_UNREAD": "Unread",
+  "ACTIVITY_MARK_ALL_READ": "Mark all read",
+  "ACTIVITY_MARK_READ": "Mark as read",
+  "ACTIVITY_MARK_UNREAD": "Mark as unread",
+  "ACTIVITY_EMPTY": "No activity yet",
+  "ACTIVITY_ALL_CAUGHT_UP": "You're all caught up",
+  "ACTIVITY_ASSIGNED": "assigned you to",
+  "ACTIVITY_UNASSIGNED": "removed you from",
+  "ACTIVITY_CHANGED": "changed",
+  "ACTIVITY_TRASHED": "moved to the trash:",
+  "ACTIVITY_COMMENTED": "commented on",
+  "ACTIVITY_MENTIONED": "mentioned you in",
+  "ACTIVITY_EVENT_COUNT": "+{{count}} more",
+  "ACTIVITY_FIELD_TITLE": "title",
+  "ACTIVITY_FIELD_DESCRIPTION": "description",
+  "ACTIVITY_FIELD_CONTENT": "content",
+  "ACTIVITY_FIELD_STATUS": "status",
+  "ACTIVITY_FIELD_PRIORITY": "priority",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Your session has expired. Please log in again",
@@ -506,6 +525,9 @@
       "INLINE_IMAGE_TYPE_INVALID": "Inline images must be PNG, JPEG, GIF or WebP",
       "STORAGE_QUOTA_EXCEEDED": "Your team has used all 500 MB of storage",
       "ATTACHMENT_UPLOAD_FAILED": "Could not upload the file"
+    },
+    "NOTIFICATIONS": {
+      "NOTIFICATION_NOT_FOUND": "Notification not found"
     }
   }
 }

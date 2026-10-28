@@ -128,4 +128,12 @@ class TicketAssigneesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_broadcast_on(BoardChannel.stream_name(@board), type: "tickets_upserted", tickets: [ ticket_broadcast_json(JSON.parse(response.body)["ticket"]) ])
   end
+
+  test "assigning and unassigning notify the member once" do
+    post assignees_url, params: { assignee: { user_id: @bob.id } }, headers: @headers, as: :json
+    post assignees_url, params: { assignee: { user_id: @bob.id } }, headers: @headers, as: :json
+    delete "#{assignees_url}/#{@bob.id}", headers: @headers
+
+    assert_equal %w[assigned unassigned], Notification.where(user: @bob).order(:id).pluck(:kind)
+  end
 end

@@ -1,0 +1,37 @@
+<section class="activityInbox">
+  <div class="activityInbox__header">
+    <h3 class="activityInbox__title">{{ PHRASES.ACTIVITY | translate }}</h3>
+    <div class="activityInbox__filters" role="group">
+      <button
+        *ngFor="let option of filters"
+        type="button"
+        class="activityInbox__filter"
+        [class.activityInbox__filter--active]="option.value === filter"
+        [attr.aria-pressed]="option.value === filter"
+        (click)="selectFilter(option.value)"
+      >{{ option.phrase | translate }}</button>
+    </div>
+    <button
+      type="button"
+      class="activityInbox__markAll"
+      [disabled]="!(notificationChannelService.unreadCount$ | async)"
+      (click)="markAllRead()"
+    >{{ PHRASES.ACTIVITY_MARK_ALL_READ | translate }}</button>
+  </div>
+
+  <ng-container *ngIf="!isLoading">
+    <p class="activityInbox__message" *ngIf="errorMessage">{{ errorMessage | translate }}</p>
+    <p class="activityInbox__message" *ngIf="!errorMessage && !notifications.length">
+      {{ (filter === 'unread' ? PHRASES.ACTIVITY_ALL_CAUGHT_UP : PHRASES.ACTIVITY_EMPTY) | translate }}
+    </p>
+
+    <app-activity-row
+      *ngFor="let notification of notifications"
+      [notification]="notification"
+      (open)="handleOpen($event)"
+      (toggleRead)="handleToggleRead($event)"
+    ></app-activity-row>
+
+    <app-load-more *ngIf="hasMore" [loading]="isLoadingMore" (pressed)="loadMore()"></app-load-more>
+  </ng-container>
+</section>

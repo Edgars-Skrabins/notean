@@ -1,8 +1,8 @@
 <ng-container *ngIf="teamService.features$ | async as features">
   <div class="dashboardStub" *ngIf="settingsService.settings$ | async as settings">
     <h2 class="dashboardStub__title">{{ PHRASES.HOME | translate }}</h2>
+    <app-activity-inbox></app-activity-inbox>
     <app-favorites-grid *ngIf="settings.showFavoritesOnHome"></app-favorites-grid>
     <app-my-work *ngIf="settings.showMyWorkOnHome && features.boards"></app-my-work>
-    <p class="dashboardStub__body" *ngIf="!settings.showFavoritesOnHome && !(settings.showMyWorkOnHome && features.boards)">{{ PHRASES.HOME_STUB | translate }}</p>
   </div>
 </ng-container>

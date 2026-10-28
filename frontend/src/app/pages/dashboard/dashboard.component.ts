@@ -7,6 +7,7 @@ import {FavoriteService} from "@services/favorite.service";
 import {ProjectFilterService} from "@services/project-filter.service";
 import {TeamService} from "@services/team.service";
 import {TeamChannelService} from "@services/team-channel.service";
+import {NotificationChannelService} from "@services/notification-channel.service";
 import {NavigationService} from "@services/navigation.service";
 import {ToastService} from "@services/toast.service";
 import {TeamFeatures} from "@models/team.model";
@@ -34,6 +35,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     private projectFilterService: ProjectFilterService,
     private teamService: TeamService,
     private teamChannelService: TeamChannelService,
+    private notificationChannelService: NotificationChannelService,
     private navigationService: NavigationService,
     private toastService: ToastService,
     private router: Router
@@ -47,6 +49,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const team = this.teamService.getCurrentTeam();
     if (team) {
       this.teamChannelService.connect(team.code);
+      this.notificationChannelService.connect(team.code);
     }
 
     this.featuresSubscription = this.teamService.features$.subscribe((features) => this.leaveDisabledFeature(features));
@@ -55,6 +58,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.featuresSubscription?.unsubscribe();
     this.teamChannelService.disconnect();
+    this.notificationChannelService.disconnect();
   }
 
   private leaveDisabledFeature(features: TeamFeatures) {

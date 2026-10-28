@@ -4,6 +4,7 @@ class TicketsController < ApplicationController
   include FeatureGated
 
   BULK_ACTIONS = [ :column_id, :to_backlog, :add_assignee_id, :remove_assignee_id ].freeze
+  NOTIFIED_FIELDS = { "title" => "title", "description" => "description", "column_id" => "status", "priority_id" => "priority" }.freeze
 
   before_action :authenticate_user!
   before_action :set_team
@@ -75,6 +76,7 @@ class TicketsController < ApplicationController
       render json: { ticket: ticket_json(@ticket) }
       BoardBroadcast.tickets_shifted(@board, ticket_shifts) if ticket_shifts.any?
       BoardBroadcast.tickets_upserted(@board, [ ticket_broadcast_json(@ticket) ])
+      Notifier.item_changed(@ticket, current_user, notified_fields)
     else
       render_error(limit_error_code(@ticket) || ErrorCodes::Tickets::TICKET_UPDATE_FAILED, :unprocessable_entity)
     end
@@ -83,7 +85,7 @@ class TicketsController < ApplicationController
   end
 
   def destroy
-    entries, shifts = Trash.move_tickets(@board, [ @ticket ], current_user)
+    entries, shifts = Notifier.item_deleted(@ticket, current_user) { Trash.move_tickets(@board, [ @ticket ], current_user) }
     render json: { trash_entry_ids: entries.map(&:id) }
     BoardBroadcast.tickets_shifted(@board, shifts)
     BoardBroadcast.tickets_removed(@board, [ @ticket.id ])
@@ -102,19 +104,21 @@ class TicketsController < ApplicationController
         column = @board.columns.find_by(id: bulk_ticket_params[:column_id])
         return render_error(ErrorCodes::Boards::COLUMN_NOT_FOUND, :not_found) if column.nil?
       end
+      moved = tickets.reject { |ticket| ticket.column_id == column&.id }
       Ticket.transaction { append_tickets(tickets, column) }
     when :add_assignee_id
       user = find_assignable_user(bulk_ticket_params[:add_assignee_id])
       return if user.nil?
 
-      Ticket.transaction { assign_tickets(tickets, user) }
+      assigned_ids = Ticket.transaction { assign_tickets(tickets, user) }
     when :remove_assignee_id
-      Ticket.transaction { unassign_tickets(tickets, bulk_ticket_params[:remove_assignee_id]) }
+      unassigned_ids = Ticket.transaction { unassign_tickets(tickets, bulk_ticket_params[:remove_assignee_id]) }
     end
 
     render json: { tickets: bulk_tickets_json }
     BoardBroadcast.tickets_shifted(@board, ticket_shifts) if ticket_shifts.any?
     BoardBroadcast.tickets_upserted(@board, bulk_tickets_json)
+    notify_bulk_update(tickets, moved, assigned_ids, unassigned_ids)
   end
 
   def bulk_destroy
@@ -123,7 +127,7 @@ class TicketsController < ApplicationController
     tickets = load_bulk_tickets
     return if tickets.nil?
 
-    entries, shifts = Trash.move_tickets(@board, tickets, current_user)
+    entries, shifts = Notifier.items_deleted(tickets, current_user) { Trash.move_tickets(@board, tickets, current_user) }
     render json: { trash_entry_ids: entries.map(&:id) }
     BoardBroadcast.tickets_shifted(@board, shifts)
     BoardBroadcast.tickets_removed(@board, bulk_ticket_ids)
@@ -229,13 +233,27 @@ class TicketsController < ApplicationController
   def assign_tickets(tickets, user)
     now = Time.current
     rows = tickets.map { |ticket| { ticket_id: ticket.id, user_id: user.id, created_at: now, updated_at: now } }
-    TicketAssignee.insert_all(rows, unique_by: [ :ticket_id, :user_id ])
+    assigned_ids = TicketAssignee.insert_all(rows, unique_by: [ :ticket_id, :user_id ], returning: :ticket_id).rows.flatten
     Ticket.refresh_updated_at(tickets.map(&:id))
+    assigned_ids
   end
 
   def unassign_tickets(tickets, user_id)
-    TicketAssignee.where(ticket_id: tickets.map(&:id), user_id: user_id).delete_all
+    assignees = TicketAssignee.where(ticket_id: tickets.map(&:id), user_id: user_id)
+    unassigned_ids = assignees.pluck(:ticket_id)
+    assignees.delete_all
     Ticket.refresh_updated_at(tickets.map(&:id))
+    unassigned_ids
+  end
+
+  def notify_bulk_update(tickets, moved, assigned_ids, unassigned_ids)
+    Notifier.item_changed(moved, current_user, [ "status" ]) if moved
+    Notifier.assigned(tickets.select { |ticket| assigned_ids.include?(ticket.id) }, current_user, bulk_ticket_params[:add_assignee_id]) if assigned_ids
+    Notifier.unassigned(tickets.select { |ticket| unassigned_ids.include?(ticket.id) }, current_user, bulk_ticket_params[:remove_assignee_id]) if unassigned_ids
+  end
+
+  def notified_fields
+    NOTIFIED_FIELDS.filter_map { |column, field| field if @ticket.saved_change_to_attribute?(column) }
   end
 
   def bulk_tickets_json

@@ -1,0 +1,76 @@
+:host {
+  display: block;
+}
+
+.activityRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-right: var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.activityRow:hover {
+  background: color-mix(in srgb, var(--color-tint) 6%, transparent);
+}
+
+.activityRow__main {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-2);
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  font-family: var(--font-ui);
+  font-size: var(--font-md);
+  text-align: left;
+  cursor: pointer;
+}
+
+.activityRow--unread .activityRow__main {
+  color: var(--color-text-heading);
+}
+
+.activityRow__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.activityRow__sentence strong {
+  color: var(--color-text-heading);
+  font-weight: 600;
+}
+
+.activityRow__itemIcon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  vertical-align: -2px;
+}
+
+.activityRow__detail {
+  color: var(--color-text-faint);
+  font-size: var(--font-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.activityRow__time {
+  color: var(--color-text-faint);
+  font-size: var(--font-xs);
+  white-space: nowrap;
+}
+
+.activityRow__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary);
+}

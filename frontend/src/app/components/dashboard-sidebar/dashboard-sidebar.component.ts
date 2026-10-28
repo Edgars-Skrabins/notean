@@ -5,10 +5,12 @@ import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {SettingsService} from "@services/settings.service";
 import {TeamService} from "@services/team.service";
+import {NotificationChannelService} from "@services/notification-channel.service";
 import {FavoritesListComponent} from "@components/favorites-list/favorites-list.component";
 import {SidebarBoardsComponent} from "@components/sidebar-boards/sidebar-boards.component";
 import {IconComponent} from "@components/icon/icon.component";
 import {TooltipDirective} from "@components/tooltip/tooltip.directive";
+import {UnreadBadgeComponent} from "@components/unread-badge/unread-badge.component";
 import {AppRoutes} from "../../app/app-routes.enum";
 
 @Component({
@@ -22,7 +24,8 @@ import {AppRoutes} from "../../app/app-routes.enum";
     FavoritesListComponent,
     SidebarBoardsComponent,
     IconComponent,
-    TooltipDirective
+    TooltipDirective,
+    UnreadBadgeComponent
   ],
   templateUrl: './dashboard-sidebar.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -34,7 +37,11 @@ export class DashboardSidebarComponent {
 
   collapsed = false;
 
-  constructor(protected settingsService: SettingsService, protected teamService: TeamService) {
+  constructor(
+    protected settingsService: SettingsService,
+    protected teamService: TeamService,
+    protected notificationChannelService: NotificationChannelService
+  ) {
   }
 
   toggleCollapsed() {

@@ -39,7 +39,6 @@
   "TEAM_CODE": "Teamkod",
   "CREATE": "Skapa",
   "HOME": "Hem",
-  "HOME_STUB": "Allt är klart – välj något i sidofältet för att komma igång.",
   "PROJECTS": "Projekt",
   "DOCUMENT_PAGES": "Sidor",
   "DIAGRAMS": "Diagram",
@@ -376,6 +375,26 @@
   "CLOSE_PREVIEW": "Stäng förhandsvisning",
   "ATTACHMENT_COUNT": "{{count}} bilagor",
   "DROP_FILES_HERE": "Släpp filer för att bifoga",
+  "ACTIVITY": "Aktivitet",
+  "ACTIVITY_ALL": "Alla",
+  "ACTIVITY_UNREAD": "Olästa",
+  "ACTIVITY_MARK_ALL_READ": "Markera alla som lästa",
+  "ACTIVITY_MARK_READ": "Markera som läst",
+  "ACTIVITY_MARK_UNREAD": "Markera som oläst",
+  "ACTIVITY_EMPTY": "Ingen aktivitet än",
+  "ACTIVITY_ALL_CAUGHT_UP": "Du är ikapp",
+  "ACTIVITY_ASSIGNED": "tilldelade dig",
+  "ACTIVITY_UNASSIGNED": "tog bort dig från",
+  "ACTIVITY_CHANGED": "ändrade",
+  "ACTIVITY_TRASHED": "flyttade till papperskorgen:",
+  "ACTIVITY_COMMENTED": "kommenterade",
+  "ACTIVITY_MENTIONED": "nämnde dig i",
+  "ACTIVITY_EVENT_COUNT": "+{{count}} till",
+  "ACTIVITY_FIELD_TITLE": "titel",
+  "ACTIVITY_FIELD_DESCRIPTION": "beskrivning",
+  "ACTIVITY_FIELD_CONTENT": "innehåll",
+  "ACTIVITY_FIELD_STATUS": "status",
+  "ACTIVITY_FIELD_PRIORITY": "prioritet",
   "ERRORS": {
     "COMMON": {
       "UNAUTHORIZED": "Din session har gått ut. Logga in igen",
@@ -506,6 +525,9 @@
       "INLINE_IMAGE_TYPE_INVALID": "Infogade bilder måste vara PNG, JPEG, GIF eller WebP",
       "STORAGE_QUOTA_EXCEEDED": "Ditt team har använt alla 500 MB lagring",
       "ATTACHMENT_UPLOAD_FAILED": "Kunde inte ladda upp filen"
+    },
+    "NOTIFICATIONS": {
+      "NOTIFICATION_NOT_FOUND": "Aviseringen hittades inte"
     }
   }
 }
