@@ -14,8 +14,8 @@ class TemplateTest < ActiveSupport::TestCase
     template(kind: "board", content: data.is_a?(String) ? data : data.to_json)
   end
 
-  def board_data(columns: [ "To Do", "Done" ], priorities: [ { name: "Low", color: "blue" } ])
-    { columns: columns, priorities: priorities }
+  def board_data(columns: [ "To Do", "Done" ], priorities: [ { name: "Low", color: "blue" } ], tags: [ { name: "Bug", color: "red" } ])
+    { columns: columns, priorities: priorities, tags: tags }
   end
 
   test "only accepts known kinds" do
@@ -33,6 +33,23 @@ class TemplateTest < ActiveSupport::TestCase
   test "accepts board content with columns and priorities, including empty lists" do
     assert board_template(board_data).valid?
     assert board_template(board_data(columns: [], priorities: [])).valid?
+  end
+
+  test "accepts board content without tags and validates tags like board tags" do
+    assert board_template({ columns: [], priorities: [] }).valid?
+    assert board_template(board_data(tags: [ { name: " #{"a" * 24} ", color: "teal" } ])).valid?
+    assert board_template(board_data(tags: Array.new(BoardTag::MAX_PER_BOARD) { |index| { name: "Tag #{index}", color: "grey" } })).valid?
+
+    [
+      board_data(tags: [ { name: "", color: "red" } ]),
+      board_data(tags: [ { name: "a" * 25, color: "red" } ]),
+      board_data(tags: [ { name: "Bug", color: "pink" } ]),
+      board_data(tags: [ { name: "Bug", color: "red" }, { name: " bug ", color: "blue" } ]),
+      board_data(tags: Array.new(BoardTag::MAX_PER_BOARD + 1) { |index| { name: "Tag #{index}", color: "grey" } }),
+      board_data(tags: "Bug")
+    ].each do |data|
+      assert_not board_template(data).valid?, "expected #{data[:tags].inspect} to be invalid"
+    end
   end
 
   test "rejects board content that is not the expected shape" do
@@ -53,16 +70,19 @@ class TemplateTest < ActiveSupport::TestCase
     end
   end
 
-  test "board content from a board keeps column and priority order" do
+  test "board content from a board keeps column and priority order and copies tags" do
     board = Board.create!(team: @team, creator: @user, title: "Sprint")
     board.columns.create!(title: "Review", position: 1)
     board.columns.create!(title: "Backlog", position: 0)
     board.priorities.first.update!(position: 10)
+    board.tags.create!(name: "Urgent", color: "red")
+    board.tags.create!(name: "api", color: "blue")
 
     record = board_template(Template.board_content_from(board.reload))
 
     assert record.valid?
     assert_equal [ "Backlog", "Review" ], record.board_columns
+    assert_equal [ { "name" => "api", "color" => "blue" }, { "name" => "Urgent", "color" => "red" } ], record.board_tags
     assert_equal BoardPriority::DEFAULTS.drop(1).map { |priority| priority[:name] } + [ BoardPriority::DEFAULTS.first[:name] ], record.board_priorities.map { |priority| priority["name"] }
   end
 end

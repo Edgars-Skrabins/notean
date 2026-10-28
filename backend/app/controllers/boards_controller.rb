@@ -129,7 +129,11 @@ class BoardsController < ApplicationController
     template.board_columns.each_with_index do |title, index|
       board.columns.create!(title: title, position: index)
     end
+    template.board_tags.each do |tag|
+      board.tags.create!(name: tag["name"], color: tag["color"])
+    end
     board.priorities.reset
+    board.tags.reset
   end
 
   def board_json(board)

@@ -37,8 +37,8 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ 0, 1, 2 ], columns.map { |column| column["position"] }
   end
 
-  test "create from a board template uses its columns and priorities" do
-    content = { columns: [ "Ideas", "Shipped" ], priorities: [ { name: "Hot", color: "red" }, { name: "Cold", color: "blue" } ] }.to_json
+  test "create from a board template uses its columns, priorities and tags" do
+    content = { columns: [ "Ideas", "Shipped" ], priorities: [ { name: "Hot", color: "red" }, { name: "Cold", color: "blue" } ], tags: [ { name: "UX", color: "purple" }, { name: "Bug", color: "red" } ] }.to_json
     template = Template.create!(team: @team, creator: @user, kind: "board", title: "Product", content: content)
 
     post "/teams/#{@team.code}/boards", params: { board: { title: "Roadmap", template_id: template.id } }, headers: @headers, as: :json
@@ -48,6 +48,7 @@ class BoardsControllerTest < ActionDispatch::IntegrationTest
     assert_equal [ "Ideas", "Shipped" ], board["columns"].map { |column| column["title"] }
     assert_equal [ [ "Hot", "red", 0 ], [ "Cold", "blue", 1 ] ], board["priorities"].map { |priority| priority.values_at("name", "color", "position") }
     assert_equal 2, BoardPriority.where(board_id: board["id"]).count
+    assert_equal [ [ "Bug", "red", 0 ], [ "UX", "purple", 0 ] ], board["tags"].map { |tag| tag.values_at("name", "color", "ticket_count") }
   end
 
   test "create from a missing or non-board template fails without creating a board" do
