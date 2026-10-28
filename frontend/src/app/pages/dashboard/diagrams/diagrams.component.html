@@ -1,4 +1,6 @@
 <div class="diagramsView">
+  <app-item-tabs [itemsLabel]="PHRASES.DIAGRAMS" [itemsRoute]="itemRoute"></app-item-tabs>
+
   <div class="diagramsView__toolbar">
     <input
       type="text"
@@ -8,7 +10,9 @@
       [placeholder]="PHRASES.SEARCH_DIAGRAMS | translate"
     />
     <app-button variant="ghost" icon="folder-plus" (pressed)="handleCreateFolder(null)">{{ PHRASES.NEW_FOLDER | translate }}</app-button>
-    <app-button variant="primary" icon="plus" (pressed)="handleCreateItem(null)">{{ PHRASES.NEW_DIAGRAM | translate }}</app-button>
+    <app-menu-button [customTrigger]="true" [options]="createOptions" (picked)="handleCreateChoice($event)">
+      <app-button variant="primary" icon="plus">{{ PHRASES.NEW_DIAGRAM | translate }}</app-button>
+    </app-menu-button>
   </div>
 
   <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
@@ -23,7 +27,7 @@
     [deleteItemConfirmMessage]="PHRASES.CONFIRM_DELETE_DIAGRAM | translate"
     (openItem)="handleOpenItem($event)"
     (createFolder)="handleCreateFolder($event.parentId)"
-    (createItem)="handleCreateItem($event.parentId)"
+    (createItem)="handleCreateItem($event.parentId, $event.fromTemplate)"
     (renameFolder)="handleRenameFolder($event)"
     (renameItem)="handleRenameItem($event)"
     (deleteFolder)="handleDeleteFolder($event)"
@@ -58,3 +62,10 @@
   (confirmed)="handleFolderProjectConfirmed($event)"
   (cancelled)="handleFolderProjectCancelled()"
 ></app-folder-project-dialog>
+
+<app-template-picker-dialog
+  *ngIf="isTemplatePickerOpen"
+  kind="diagram"
+  (picked)="handleTemplatePicked($event)"
+  (cancelled)="handleTemplatePickerCancelled()"
+></app-template-picker-dialog>

@@ -11,6 +11,7 @@ import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
 import {ProjectFilterService} from "@services/project-filter.service";
 import {FolderService} from "@services/folder.service";
+import {TemplateService} from "@services/template.service";
 import {PHRASES} from "@config/phrases";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {RichTextEditorComponent} from "@components/rich-text-editor/rich-text-editor.component";
@@ -33,6 +34,7 @@ export class PageDetailComponent extends FolderedItemDetailComponent {
   protected readonly itemType = 'Page';
   protected readonly listRoute = AppRoutes.DOCUMENT_PAGES;
   protected readonly untitledItemPhrase = PHRASES.UNTITLED_PAGE;
+  protected readonly templateKind = 'page';
 
   constructor(
     route: ActivatedRoute,
@@ -45,8 +47,9 @@ export class PageDetailComponent extends FolderedItemDetailComponent {
     toastService: ToastService,
     projectFilterService: ProjectFilterService,
     folderService: FolderService,
-    translateService: TranslateService
+    translateService: TranslateService,
+    templateService: TemplateService
   ) {
-    super(route, pageService, pageEditingService, teamService, authService, navigationService, favoriteService, toastService, projectFilterService, folderService, translateService);
+    super(route, pageService, pageEditingService, teamService, authService, navigationService, favoriteService, toastService, projectFilterService, folderService, translateService, templateService);
   }
 }

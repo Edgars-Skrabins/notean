@@ -15,6 +15,9 @@ import {ButtonComponent} from "@components/button/button.component";
 import {ItemTreeComponent} from "@components/item-tree/item-tree.component";
 import {CreateNamedItemDialogComponent} from "@components/create-named-item-dialog/create-named-item-dialog.component";
 import {FolderProjectDialogComponent} from "@components/folder-project-dialog/folder-project-dialog.component";
+import {MenuButtonComponent} from "@components/menu-button/menu-button.component";
+import {ItemTabsComponent} from "@components/item-tabs/item-tabs.component";
+import {TemplatePickerDialogComponent} from "@components/template-picker-dialog/template-picker-dialog.component";
 import {FolderedListPageComponent} from "../foldered-list-page.base";
 
 @Component({
@@ -27,7 +30,10 @@ import {FolderedListPageComponent} from "../foldered-list-page.base";
     ButtonComponent,
     ItemTreeComponent,
     CreateNamedItemDialogComponent,
-    FolderProjectDialogComponent
+    FolderProjectDialogComponent,
+    MenuButtonComponent,
+    ItemTabsComponent,
+    TemplatePickerDialogComponent
   ],
   templateUrl: './document-pages.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -37,6 +43,7 @@ export class DocumentPagesComponent extends FolderedListPageComponent {
   protected readonly PHRASES = PHRASES;
   protected readonly itemType: FolderItemType = 'Page';
   protected readonly itemRoute = AppRoutes.DOCUMENT_PAGES;
+  protected readonly templateKind = 'page';
 
   constructor(
     pageService: PageService,

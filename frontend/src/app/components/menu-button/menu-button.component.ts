@@ -24,9 +24,10 @@ import {IconComponent} from '@components/icon/icon.component';
 export class MenuButtonComponent {
   protected readonly DROPDOWN_POSITIONS = DROPDOWN_POSITIONS;
 
-  @Input({required: true}) label!: string;
+  @Input() label = '';
   @Input({required: true}) options: MenuButtonOption[] = [];
   @Input() disabled = false;
+  @Input() customTrigger = false;
   @Output() picked = new EventEmitter<string | number | null>();
 
   isOpen = false;
@@ -59,7 +60,7 @@ export class MenuButtonComponent {
     this.close();
   }
 
-  private trigger(): HTMLButtonElement | null {
-    return this.elementRef.nativeElement.querySelector('.menuButton__trigger');
+  private trigger(): HTMLElement | null {
+    return this.elementRef.nativeElement.querySelector('.menuButton__origin');
   }
 }

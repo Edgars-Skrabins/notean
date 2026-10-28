@@ -12,10 +12,12 @@ import {FavoriteService} from "@services/favorite.service";
 import {ToastService} from "@services/toast.service";
 import {ProjectFilterService} from "@services/project-filter.service";
 import {FolderService} from "@services/folder.service";
+import {TemplateService} from "@services/template.service";
 import {ToastType} from "@models/toast.model";
 import {FavoritableType} from "@models/favorite.model";
 import {FolderItemType} from "@models/folder.model";
 import {FolderedItemDetail, FolderedItemEditingUser} from "@models/foldered-item.model";
+import {TemplateKind} from "@models/template.model";
 import {errorPhrase} from "@utils/errorPhrase";
 import {AppRoutes} from "../../app/app-routes.enum";
 
@@ -26,6 +28,7 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
   protected abstract readonly itemType: FolderItemType;
   protected abstract readonly listRoute: AppRoutes;
   protected abstract readonly untitledItemPhrase: string;
+  protected abstract readonly templateKind: Exclude<TemplateKind, 'board'>;
 
   item: FolderedItemDetail | null = null;
   mode: 'view' | 'edit' | 'create' = 'view';
@@ -56,7 +59,8 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
     private toastService: ToastService,
     private projectFilterService: ProjectFilterService,
     private folderService: FolderService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private templateService: TemplateService
   ) {
     this.teamCode = teamService.getCurrentTeamCode();
   }
@@ -291,6 +295,26 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
     if (this.folderId !== null) {
       this.loadFolderProject(this.folderId);
     }
+
+    const template = this.route.snapshot.queryParamMap.get('template');
+    if (template !== null) {
+      this.loadTemplateContent(template);
+    }
+  }
+
+  private loadTemplateContent(ref: string) {
+    this.isLoading = true;
+    this.templateService.resolve(this.teamCode, this.templateKind, ref)
+      .then((response) => {
+        this.isLoading = false;
+
+        if (!response.success) {
+          this.alertMessage = errorPhrase(response.code);
+          return;
+        }
+
+        this.draftContent = response.content;
+      });
   }
 
   private loadFolderProject(folderId: number) {

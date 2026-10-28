@@ -372,4 +372,23 @@ describe('DocumentPagesComponent', () => {
 
     expect(router.navigate).toHaveBeenCalledOnceWith(['dashboard', 'pages', 'new'], {queryParams: {folder: 3}});
   });
+
+  it('opens the template picker for From template and creates in the folder from the picked template', () => {
+    component.handleCreateItem(3, true);
+
+    expect(component.isTemplatePickerOpen).toBeTrue();
+    expect(router.navigate).not.toHaveBeenCalled();
+
+    component.handleTemplatePicked('builtin:concept');
+
+    expect(component.isTemplatePickerOpen).toBeFalse();
+    expect(router.navigate).toHaveBeenCalledOnceWith(['dashboard', 'pages', 'new'], {queryParams: {template: 'builtin:concept', folder: 3}});
+  });
+
+  it('creates at the top level from a template picked in the toolbar menu', () => {
+    component.handleCreateChoice('template');
+    component.handleTemplatePicked('4');
+
+    expect(router.navigate).toHaveBeenCalledOnceWith(['dashboard', 'pages', 'new'], {queryParams: {template: '4'}});
+  });
 });

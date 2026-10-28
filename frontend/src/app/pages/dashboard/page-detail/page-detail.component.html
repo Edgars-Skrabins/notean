@@ -36,7 +36,7 @@
   <div class="pageDetail__content" *ngIf="mode === 'view' && item" [innerHTML]="item.content"></div>
   @defer {
     <app-rich-text-editor
-      *ngIf="mode === 'edit' || mode === 'create'"
+      *ngIf="(mode === 'edit' || mode === 'create') && !isLoading"
       [content]="draftContent"
       [editable]="true"
       (contentChange)="handleContentChange($event)"
