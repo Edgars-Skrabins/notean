@@ -62,6 +62,8 @@ Rails.application.routes.draw do
     end
     get :my_work, to: "my_work#index"
     get :search, to: "search#index"
+    get "mentions/search", to: "mentions#search"
+    post "mentions/resolve", to: "mentions#resolve"
     resources :projects, only: [ :index, :create, :show, :update, :destroy ] do
       get :options, on: :collection
     end
