@@ -8,6 +8,7 @@ import {mapActiveTeam, RawActiveTeam, TeamService} from "@services/team.service"
 import {ThemeService} from "@services/theme.service";
 import {CableService} from "@services/cable.service";
 import {AttachmentService} from "@services/attachment.service";
+import {NotificationChannelService} from "@services/notification-channel.service";
 import {AuthUser} from "@models/auth.model";
 import {SessionData, SessionResponse} from "@models/session.model";
 
@@ -40,7 +41,8 @@ export class SessionService {
     private teamService: TeamService,
     private themeService: ThemeService,
     private cableService: CableService,
-    private attachmentService: AttachmentService
+    private attachmentService: AttachmentService,
+    private notificationChannelService: NotificationChannelService
   ) {
     if (authService.isAuthenticated()) {
       this.load();
@@ -65,6 +67,7 @@ export class SessionService {
     this.settingsService.clear();
     this.avatarService.clear();
     this.teamService.clearCurrentTeam();
+    this.notificationChannelService.clear();
     this.cableService.disconnect();
     this.attachmentService.clear();
   }
