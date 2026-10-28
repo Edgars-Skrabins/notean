@@ -24,4 +24,4 @@ export type ListFoldersResponse = Result<{ folders: FolderSummary[] }, TeamAcces
 
 export type FolderResponse = Result<{ folder: FolderSummary }, TeamAccessErrorCode | FoldersErrorCode | ProjectsErrorCode>;
 
-export type DeleteFolderResponse = Result<object, TeamAccessErrorCode | FoldersErrorCode>;
+export type DeleteFolderResponse = Result<{ trashEntryIds: number[] }, TeamAccessErrorCode | FoldersErrorCode>;

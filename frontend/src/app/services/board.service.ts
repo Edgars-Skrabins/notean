@@ -195,7 +195,7 @@ export class BoardService {
   async deleteBoard(teamCode: string, id: number): Promise<DeleteBoardResponse> {
     return apiRequest<DeleteBoardResponse>(
       axiosInstance.delete(`${this.boardsUrl(teamCode)}/${id}`),
-      () => ({success: true}),
+      (data) => ({success: true, trashEntryIds: data.trash_entry_ids ?? []}),
     );
   }
 }
