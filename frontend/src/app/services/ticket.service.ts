@@ -25,8 +25,8 @@ export function mapTicketDetail(raw: RawTicketDetail): TicketDetail {
   providedIn: 'root',
 })
 export class TicketService {
-  async list(teamCode: string, boardId: number, {status, search, assigneeIds, offset}: ListTicketsParams): Promise<ListTicketsResponse> {
-    const params = {status, search: search || undefined, assignee_ids: assigneeIds?.length ? assigneeIds : undefined, offset: offset || undefined};
+  async list(teamCode: string, boardId: number, {status, search, assigneeIds, tagIds, offset}: ListTicketsParams): Promise<ListTicketsResponse> {
+    const params = {status, search: search || undefined, assignee_ids: assigneeIds?.length ? assigneeIds : undefined, tag_ids: tagIds?.length ? tagIds : undefined, offset: offset || undefined};
     return apiRequest<ListTicketsResponse>(
       axiosInstance.get(this.ticketsUrl(teamCode, boardId), {params}),
       (data) => ({success: true, tickets: data.tickets.map(mapTicketSummary), hasMore: data.has_more}),
