@@ -13,6 +13,7 @@
           [tooltip]="PHRASES.DELETE_TICKET | translate"
           (pressed)="handleDelete()"
         ></app-icon-button>
+        <app-icon-button icon="link" [tooltip]="PHRASES.COPY_LINK | translate" (pressed)="handleCopyLink()"></app-icon-button>
         <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE | translate" (pressed)="handleGoBack()"></app-icon-button>
       </div>
     </div>
