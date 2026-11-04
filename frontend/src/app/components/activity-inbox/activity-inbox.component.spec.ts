@@ -13,6 +13,7 @@ import {testNotification} from '../../testing/notificationFixtures';
 
 describe('ActivityInboxComponent', () => {
   let fixture: ComponentFixture<ActivityInboxComponent>;
+  let emptyChanges: boolean[];
   let notificationService: jasmine.SpyObj<NotificationService>;
   let router: jasmine.SpyObj<Router>;
   let channel: {
@@ -30,6 +31,8 @@ describe('ActivityInboxComponent', () => {
   async function render(response: NotificationsResponse) {
     notificationService.list.and.returnValue(Promise.resolve(response));
     fixture = TestBed.createComponent(ActivityInboxComponent);
+    emptyChanges = [];
+    fixture.componentInstance.emptyChange.subscribe((empty) => emptyChanges.push(empty));
     fixture.detectChanges();
     await settle();
   }
@@ -148,5 +151,31 @@ describe('ActivityInboxComponent', () => {
 
     channel.removed$.next([2, 3]);
     expect(rowIds()).toEqual([1]);
+  });
+
+  it('reports an empty All load and a live notification as the end of it', async () => {
+    await render(page([]));
+    expect(emptyChanges).toEqual([true]);
+
+    channel.upserted$.next(testNotification({id: 3}));
+
+    expect(emptyChanges).toEqual([true, false]);
+  });
+
+  it('reports a non-empty All load as not empty', async () => {
+    await render(page([testNotification({id: 1})]));
+
+    expect(emptyChanges).toEqual([false]);
+  });
+
+  it('reports nothing for Unread loads or failed loads', async () => {
+    await render({success: false, code: 'NETWORK_ERROR'});
+    expect(emptyChanges).toEqual([]);
+
+    notificationService.list.and.returnValue(Promise.resolve(page([])));
+    fixture.componentInstance.selectFilter('unread');
+    await settle();
+
+    expect(emptyChanges).toEqual([]);
   });
 });

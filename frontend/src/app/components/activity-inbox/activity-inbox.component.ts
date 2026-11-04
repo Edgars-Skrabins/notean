@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {Component, EventEmitter, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
 import {Router} from '@angular/router';
 import {AsyncPipe, NgFor, NgIf} from '@angular/common';
 import {Subscription} from 'rxjs';
@@ -35,6 +35,8 @@ export class ActivityInboxComponent implements OnInit, OnDestroy {
     {value: 'all', phrase: PHRASES.ACTIVITY_ALL},
     {value: 'unread', phrase: PHRASES.ACTIVITY_UNREAD},
   ];
+
+  @Output() emptyChange = new EventEmitter<boolean>();
 
   filter: ActivityFilter = 'all';
   notifications: Notification[] = [];
@@ -139,10 +141,14 @@ export class ActivityInboxComponent implements OnInit, OnDestroy {
     this.notifications = [...this.notifications, ...response.notifications.filter((notification) => !loadedIds.has(notification.id))];
     this.hasMore = response.hasMore;
     this.notificationChannelService.setUnreadCount(response.unreadCount);
+    if (this.filter === 'all') {
+      this.emptyChange.emit(this.notifications.length === 0);
+    }
   }
 
   private applyUpserted(notification: Notification) {
     this.notifications = [notification, ...this.notifications.filter((loaded) => loaded.id !== notification.id)];
+    this.emptyChange.emit(false);
   }
 
   private applyRead(change: NotificationsRead) {
