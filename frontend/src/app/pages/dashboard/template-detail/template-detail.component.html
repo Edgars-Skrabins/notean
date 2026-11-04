@@ -51,6 +51,7 @@
         [content]="draftContent"
         [editable]="true"
         [mentionContext]="{}"
+        [ariaLabel]="PHRASES.PAGE_CONTENT | translate"
         (contentChange)="handleContentChange($event)"
       ></app-rich-text-editor>
     }

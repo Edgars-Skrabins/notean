@@ -1,7 +1,17 @@
-<div class="itemDetailOverlay">
+<div class="itemDetailOverlay" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
   <div class="itemDetailOverlay__backdrop" (click)="closed.emit()"></div>
 
-  <div class="itemDetail" [class.itemDetail--fill]="fill" cdkScrollable>
+  <div
+    class="itemDetail"
+    [class.itemDetail--fill]="fill"
+    cdkScrollable
+    role="dialog"
+    aria-modal="true"
+    tabindex="-1"
+    [attr.aria-labelledby]="mode === 'view' ? titleId : null"
+    [attr.aria-label]="mode === 'view' ? null : (draftTitle || (titlePlaceholder | translate))"
+    [attr.cdkFocusInitial]="mode === 'view' ? '' : null"
+  >
     <div class="itemDetail__editingBanner" *ngIf="editingNickname">
       <strong>{{ editingNickname }}</strong> {{ editingBannerText | translate }}
     </div>
@@ -31,7 +41,7 @@
 
     <div class="itemDetail__body">
       <div class="itemDetail__main">
-        <h1 class="itemDetail__title" *ngIf="mode === 'view' && item">{{ item.title }}</h1>
+        <h1 class="itemDetail__title" [id]="titleId" *ngIf="mode === 'view' && item">{{ item.title }}</h1>
         <input
           *ngIf="mode !== 'view'"
           type="text"
@@ -40,6 +50,8 @@
           (ngModelChange)="draftTitleChange.emit($event)"
           [maxlength]="TITLE_MAX_LENGTH"
           [placeholder]="titlePlaceholder | translate"
+          [attr.aria-label]="titlePlaceholder | translate"
+          cdkFocusInitial
         />
         <ng-content></ng-content>
       </div>

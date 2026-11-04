@@ -47,6 +47,30 @@ describe('MentionTextEditorComponent', () => {
     expect(component.editor!.getText()).toBe('Ask @Ann');
   });
 
+  describe('accessible name', () => {
+    function label(): string | null {
+      return fixture.nativeElement.querySelector('.ProseMirror').getAttribute('aria-label');
+    }
+
+    it('prefers the explicit label over the placeholder', () => {
+      fixture.componentRef.setInput('placeholder', 'Add a description...');
+      fixture.componentRef.setInput('ariaLabel', 'Description');
+      fixture.detectChanges();
+
+      expect(label()).toBe('Description');
+    });
+
+    it('falls back to the placeholder and follows its changes', () => {
+      fixture.componentRef.setInput('placeholder', 'Message #general');
+      fixture.detectChanges();
+      expect(label()).toBe('Message #general');
+
+      fixture.componentRef.setInput('placeholder', 'Message #random');
+      fixture.detectChanges();
+      expect(label()).toBe('Message #random');
+    });
+  });
+
   it('emits escape when no dropdown handled it', () => {
     const escaped = jasmine.createSpy('escape');
     component.escape.subscribe(escaped);

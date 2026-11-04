@@ -36,6 +36,8 @@ export class RichTextEditorComponent implements AfterViewInit, OnChanges, OnDest
   @Input() teamCode = '';
   @Input() uploadImage: ((file: File) => Promise<number | null>) | null = null;
   @Input() mentionContext: MentionContext | null = null;
+  @Input() autofocus = false;
+  @Input() ariaLabel = '';
   @Output() contentChange = new EventEmitter<string>();
   @Output() filesDropped = new EventEmitter<File[]>();
 
@@ -61,7 +63,9 @@ export class RichTextEditorComponent implements AfterViewInit, OnChanges, OnDest
       ],
       content: this.content,
       editable: this.editable,
+      autofocus: this.autofocus ? 'end' : false,
       editorProps: {
+        attributes: () => this.editorAttributes(),
         handleDOMEvents: {
           keydown: (_view, event) => event.key === 'Escape',
         },
@@ -80,6 +84,9 @@ export class RichTextEditorComponent implements AfterViewInit, OnChanges, OnDest
     }
     if (changes['content'] && this.editor && this.content !== this.editor.getHTML()) {
       this.editor.commands.setContent(this.content, {emitUpdate: false});
+    }
+    if (changes['ariaLabel'] && this.editor) {
+      this.editor.setOptions({});
     }
   }
 
@@ -119,6 +126,17 @@ export class RichTextEditorComponent implements AfterViewInit, OnChanges, OnDest
 
   toggleOrderedList() {
     this.editor?.chain().focus().toggleOrderedList().run();
+  }
+
+  private editorAttributes(): Record<string, string> {
+    if (!this.editable) {
+      return {role: 'presentation'};
+    }
+    return {
+      role: 'textbox',
+      'aria-multiline': 'true',
+      ...(this.ariaLabel ? {'aria-label': this.ariaLabel} : {}),
+    };
   }
 
   private handleFiles(files: File[], position?: number): boolean {

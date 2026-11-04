@@ -39,6 +39,7 @@
       [maxlength]="TAG_NAME_MAX_LENGTH"
       [(ngModel)]="searchQuery"
       [placeholder]="PHRASES.SEARCH_TAGS | translate"
+      [attr.aria-label]="PHRASES.SEARCH_TAGS | translate"
       (keydown.enter)="handleCreate()"
     />
     <app-checkbox

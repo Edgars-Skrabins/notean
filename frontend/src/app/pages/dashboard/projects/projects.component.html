@@ -10,6 +10,7 @@
     [(ngModel)]="searchQuery"
     (ngModelChange)="handleSearchChange($event)"
     [placeholder]="PHRASES.SEARCH_PROJECTS | translate"
+    [attr.aria-label]="PHRASES.SEARCH_PROJECTS | translate"
   />
 
   <ng-container *ngIf="projects">

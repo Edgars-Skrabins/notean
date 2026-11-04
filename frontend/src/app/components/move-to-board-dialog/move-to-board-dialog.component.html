@@ -1,8 +1,8 @@
-<div class="moveToBoardDialogOverlay">
+<div class="moveToBoardDialogOverlay" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
   <div class="moveToBoardDialogOverlay__backdrop" (click)="handleCancel()"></div>
 
-  <div class="moveToBoardDialog">
-    <h3 class="moveToBoardDialog__title">{{ PHRASES.MOVE_TO_BOARD | translate }}</h3>
+  <div class="moveToBoardDialog" role="dialog" aria-modal="true" [attr.aria-labelledby]="titleId" tabindex="-1">
+    <h3 class="moveToBoardDialog__title" [id]="titleId">{{ PHRASES.MOVE_TO_BOARD | translate }}</h3>
     <p class="moveToBoardDialog__hint">{{ PHRASES.CHOOSE_COLUMN | translate }}</p>
 
     <label class="moveToBoardDialog__option" *ngFor="let column of columns">
