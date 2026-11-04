@@ -16,6 +16,9 @@
       "@models/*": [
         "./src/app/models/*"
       ],
+      "@pipes/*": [
+        "./src/app/pipes/*"
+      ],
       "@services/*": [
         "./src/app/services/*"
       ],
