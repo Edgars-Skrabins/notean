@@ -1,45 +1,51 @@
-<nav class="dashboardSidebar" [class.dashboardSidebar--collapsed]="collapsed" *ngIf="teamService.features$ | async as features">
-  <a class="dashboardSidebar__item" [routerLink]="AppRoutes.DASHBOARD_HOME" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="collapsed ? (PHRASES.HOME | translate) : ''" [attr.aria-label]="PHRASES.HOME | translate">
+<nav class="dashboardSidebar" [class.dashboardSidebar--collapsed]="isCollapsed" [class.dashboardSidebar--compact]="compact" *ngIf="teamService.features$ | async as features">
+  <div class="dashboardSidebar__drawerHeader" *ngIf="compact">
+    <app-project-selector class="dashboardSidebar__projectSelector"></app-project-selector>
+    <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE | translate" [size]="44" (pressed)="closeRequested.emit()"></app-icon-button>
+  </div>
+
+  <a class="dashboardSidebar__item" [routerLink]="AppRoutes.DASHBOARD_HOME" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="isCollapsed ? (PHRASES.HOME | translate) : ''" [attr.aria-label]="PHRASES.HOME | translate">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M3 12l9-9 9 9"></path>
       <path d="M5 10v10a1 1 0 0 0 1 1h3v-6h6v6h3a1 1 0 0 0 1-1V10"></path>
     </svg>
     <span class="dashboardSidebar__label">{{ PHRASES.HOME | translate }}</span>
-    <app-unread-badge *ngIf="notificationChannelService.unreadCount$ | async as unreadCount" [count]="unreadCount" [dot]="collapsed"></app-unread-badge>
+    <app-unread-badge *ngIf="notificationChannelService.unreadCount$ | async as unreadCount" [count]="unreadCount" [dot]="isCollapsed"></app-unread-badge>
   </a>
 
-  <app-sidebar-chat *ngIf="features.chat" [collapsed]="collapsed"></app-sidebar-chat>
+  <app-sidebar-chat *ngIf="features.chat" [collapsed]="isCollapsed"></app-sidebar-chat>
 
-  <a class="dashboardSidebar__item" [routerLink]="AppRoutes.PROJECTS" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="collapsed ? (PHRASES.PROJECTS | translate) : ''" [attr.aria-label]="PHRASES.PROJECTS | translate">
+  <a class="dashboardSidebar__item" [routerLink]="AppRoutes.PROJECTS" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="isCollapsed ? (PHRASES.PROJECTS | translate) : ''" [attr.aria-label]="PHRASES.PROJECTS | translate">
     <app-icon name="project" class="dashboardSidebar__icon"></app-icon>
     <span class="dashboardSidebar__label">{{ PHRASES.PROJECTS | translate }}</span>
   </a>
 
-  <a *ngIf="features.pages" class="dashboardSidebar__item" [routerLink]="AppRoutes.DOCUMENT_PAGES" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="collapsed ? (PHRASES.DOCUMENT_PAGES | translate) : ''" [attr.aria-label]="PHRASES.DOCUMENT_PAGES | translate">
+  <a *ngIf="features.pages" class="dashboardSidebar__item" [routerLink]="AppRoutes.DOCUMENT_PAGES" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="isCollapsed ? (PHRASES.DOCUMENT_PAGES | translate) : ''" [attr.aria-label]="PHRASES.DOCUMENT_PAGES | translate">
     <app-icon name="page" class="dashboardSidebar__icon"></app-icon>
     <span class="dashboardSidebar__label">{{ PHRASES.DOCUMENT_PAGES | translate }}</span>
   </a>
 
-  <a *ngIf="features.diagrams" class="dashboardSidebar__item" [routerLink]="AppRoutes.DIAGRAMS" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="collapsed ? (PHRASES.DIAGRAMS | translate) : ''" [attr.aria-label]="PHRASES.DIAGRAMS | translate">
+  <a *ngIf="features.diagrams" class="dashboardSidebar__item" [routerLink]="AppRoutes.DIAGRAMS" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="isCollapsed ? (PHRASES.DIAGRAMS | translate) : ''" [attr.aria-label]="PHRASES.DIAGRAMS | translate">
     <app-icon name="diagram" class="dashboardSidebar__icon"></app-icon>
     <span class="dashboardSidebar__label">{{ PHRASES.DIAGRAMS | translate }}</span>
   </a>
 
-  <app-sidebar-boards *ngIf="features.boards" [collapsed]="collapsed"></app-sidebar-boards>
+  <app-sidebar-boards *ngIf="features.boards" [collapsed]="isCollapsed"></app-sidebar-boards>
 
-  <app-favorites-list *ngIf="!collapsed && (settingsService.settings$ | async)?.showFavoritesInSidebar"></app-favorites-list>
+  <app-favorites-list *ngIf="!isCollapsed && (settingsService.settings$ | async)?.showFavoritesInSidebar"></app-favorites-list>
 
-  <a class="dashboardSidebar__item dashboardSidebar__trash" [routerLink]="AppRoutes.TRASH" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="collapsed ? (PHRASES.TRASH | translate) : ''" [attr.aria-label]="PHRASES.TRASH | translate">
+  <a class="dashboardSidebar__item dashboardSidebar__trash" [routerLink]="AppRoutes.TRASH" routerLinkActive="dashboardSidebar__item--active" [appTooltip]="isCollapsed ? (PHRASES.TRASH | translate) : ''" [attr.aria-label]="PHRASES.TRASH | translate">
     <app-icon name="trash" class="dashboardSidebar__icon"></app-icon>
     <span class="dashboardSidebar__label">{{ PHRASES.TRASH | translate }}</span>
   </a>
 
   <button
+    *ngIf="!compact"
     type="button"
     class="dashboardSidebar__toggle"
     (click)="toggleCollapsed()"
-    [title]="(collapsed ? PHRASES.EXPAND_SIDEBAR : PHRASES.COLLAPSE_SIDEBAR) | translate"
-    [attr.aria-label]="(collapsed ? PHRASES.EXPAND_SIDEBAR : PHRASES.COLLAPSE_SIDEBAR) | translate"
+    [appTooltip]="isCollapsed ? (PHRASES.EXPAND_SIDEBAR | translate) : ''"
+    [attr.aria-label]="(isCollapsed ? PHRASES.EXPAND_SIDEBAR : PHRASES.COLLAPSE_SIDEBAR) | translate"
   >
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <polyline points="15 18 9 12 15 6"></polyline>

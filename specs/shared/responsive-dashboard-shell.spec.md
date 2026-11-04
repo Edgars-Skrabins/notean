@@ -1,7 +1,7 @@
 # Responsive dashboard shell — Spec
 
 **Type:** feature
-**Status:** ready for implementation
+**Status:** in progress
 **Last updated:** 2026-11-04
 
 # Part 1 — Business logic and usage
@@ -135,12 +135,12 @@ Read Part 1 and Part 2 before starting. Work through the tasks in order and tick
 Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 assertions, 0 failures (master f15abdf, 2026-11-04).
 
 ### A. Shared building blocks
-- [ ] A1. Add `ACCOUNT_MENU`, `NAVIGATION` and `LANGUAGE_DEVICE_HINT` to `frontend/src/app/config/phrases.ts` (next to `MENU` / `LANGUAGE`) and to all 11 files in `frontend/public/assets/translations/` with the values from the table in Part 2.2, each placed next to the related existing key.
-- [ ] A2. `components/icon-button/`: allow `size` `44` (`iconButton--size44`, 44×44 with an 18px icon, next to the other size rules) and add `@Input() expanded: boolean | null = null` bound to `[attr.aria-expanded]`. Add a spec (`icon-button.component.spec.ts`, TestBed) checking `aria-expanded` is absent by default and reflects `true`/`false` when set.
+- [x] A1. Add `ACCOUNT_MENU`, `NAVIGATION` and `LANGUAGE_DEVICE_HINT` to `frontend/src/app/config/phrases.ts` (next to `MENU` / `LANGUAGE`) and to all 11 files in `frontend/public/assets/translations/` with the values from the table in Part 2.2, each placed next to the related existing key.
+- [x] A2. `components/icon-button/`: allow `size` `44` (`iconButton--size44`, 44×44 with an 18px icon, next to the other size rules) and add `@Input() expanded: boolean | null = null` bound to `[attr.aria-expanded]`. Add a spec (`icon-button.component.spec.ts`, TestBed) checking `aria-expanded` is absent by default and reflects `true`/`false` when set.
 
 ### B. Sidebar as drawer content
-- [ ] B1. `components/dashboard-sidebar/`: add `compact` input, `closeRequested` output and the `isCollapsed` getter; switch every template use of `collapsed` to `isCollapsed`; render the `dashboardSidebar__drawerHeader` row (project selector + 44px Close icon button) only when `compact`; hide the collapse toggle when `compact`; replace the toggle's `[title]` with `[appTooltip]` (only when collapsed) keeping `aria-label`; add `.dashboardSidebar--compact` and `.dashboardSidebar__drawerHeader` CSS. Stay under the 4kB style budget.
-- [ ] B2. Add `dashboard-sidebar.component.spec.ts` (constructed with `new` and simple stubs): `isCollapsed` is false when `compact` even after `toggleCollapsed()`, and true when not compact and collapsed; the Close action emits `closeRequested`.
+- [x] B1. `components/dashboard-sidebar/`: add `compact` input, `closeRequested` output and the `isCollapsed` getter; switch every template use of `collapsed` to `isCollapsed`; render the `dashboardSidebar__drawerHeader` row (project selector + 44px Close icon button) only when `compact`; hide the collapse toggle when `compact`; replace the toggle's `[title]` with `[appTooltip]` (only when collapsed) keeping `aria-label`; add `.dashboardSidebar--compact` and `.dashboardSidebar__drawerHeader` CSS. Stay under the 4kB style budget.
+- [x] B2. Add `dashboard-sidebar.component.spec.ts` (constructed with `new` and simple stubs): `isCollapsed` is false when `compact` even after `toggleCollapsed()`, and true when not compact and collapsed; the Close action emits `closeRequested`.
 
 ### C. Header
 - [ ] C1. `components/dashboard-header/`: add `compact`, `navOpen` inputs and `navToggle` output; add the compact Menu icon button (size 44, `[expanded]="navOpen"`); hide brand and project selector when compact; remove `app-language-switcher` and its import.
