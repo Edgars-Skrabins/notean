@@ -1,7 +1,7 @@
 # Dialog accessibility — Spec
 
 **Type:** bug fix
-**Status:** ready for implementation
+**Status:** in progress
 **Last updated:** 2026-11-04
 
 # Part 1 — Business logic and usage
@@ -126,10 +126,10 @@ Read Part 1 and Part 2 before starting. Work through the tasks in order and tick
 Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 assertions, 0 failures.
 
 ### A. Shared building blocks
-- [ ] A1. Add `frontend/src/app/utils/uniqueId.ts` exporting `uniqueId(prefix: string): string` (module-level counter, returns `` `${prefix}-${n}` ``), with `uniqueId.spec.ts` checking that two calls with the same prefix return different ids that both start with the prefix.
-- [ ] A2. Add `@Input() initialFocus = false` to `components/button/button.component.ts` and bind `[attr.cdkFocusInitial]="initialFocus ? '' : null"` on the inner `<button>` in `button.component.html`.
-- [ ] A3. In `frontend/src/styles.css`, right after the `.popupPanel` rules, add the `[role='dialog'][tabindex='-1']:focus, [role='alertdialog'][tabindex='-1']:focus { outline: none; }` rule.
-- [ ] A4. In `components/menu-button/menu-button.component.ts`, add a private `focusTrigger()` that focuses the first focusable element inside `.menuButton__origin` (Part 2.2). Call it at the start of `pick()`, and in the panel's Esc handler before `close()` (move the template's inline `close(); $event.preventDefault()` into a `handlePanelEscape(event)` method). Add `menu-button.component.spec.ts` (TestBed, `provideTranslateService()`): open the menu, click an option, and expect `document.activeElement` to be the trigger and `picked` to have emitted.
+- [x] A1. Add `frontend/src/app/utils/uniqueId.ts` exporting `uniqueId(prefix: string): string` (module-level counter, returns `` `${prefix}-${n}` ``), with `uniqueId.spec.ts` checking that two calls with the same prefix return different ids that both start with the prefix.
+- [x] A2. Add `@Input() initialFocus = false` to `components/button/button.component.ts` and bind `[attr.cdkFocusInitial]="initialFocus ? '' : null"` on the inner `<button>` in `button.component.html`.
+- [x] A3. In `frontend/src/styles.css`, right after the `.popupPanel` rules, add the `[role='dialog'][tabindex='-1']:focus, [role='alertdialog'][tabindex='-1']:focus { outline: none; }` rule.
+- [x] A4. In `components/menu-button/menu-button.component.ts`, add a private `focusTrigger()` that focuses the first focusable element inside `.menuButton__origin` (Part 2.2). Call it at the start of `pick()`, and in the panel's Esc handler before `close()` (move the template's inline `close(); $event.preventDefault()` into a `handlePanelEscape(event)` method). Add `menu-button.component.spec.ts` (TestBed, `provideTranslateService()`): open the menu, click an option, and expect `document.activeElement` to be the trigger and `picked` to have emitted.
 
 ### B. Small dialogs
 - [ ] B1. `confirm-dialog`: import `CdkTrapFocus`, add `messageId = uniqueId('confirmDialog')`, apply the pattern with `role="alertdialog"` labelled by the message, and put `[initialFocus]="true"` on the *Cancel* button. Add `confirm-dialog.component.spec.ts` (TestBed): the panel has `role="alertdialog"`, `aria-modal="true"` and `aria-labelledby` pointing at the message's id; after `await fixture.whenStable()` the Cancel `<button>` is `document.activeElement`; with a button outside the dialog focused before creation, destroying the fixture returns focus to it.
