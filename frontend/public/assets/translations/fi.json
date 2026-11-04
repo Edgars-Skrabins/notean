@@ -228,6 +228,7 @@
   "COLLAPSE_GROUP": "Pienennä ryhmä",
   "EXPAND_GROUP": "Laajenna ryhmä",
   "BULK_ACTION_FAILED": "Valittujen tehtävien päivitys epäonnistui",
+  "STATUS": "Tila",
   "PRIORITY": "Prioriteetti",
   "PRIORITIES": "Prioriteetit",
   "NO_PRIORITY": "Ei prioriteettia",

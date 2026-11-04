@@ -228,6 +228,7 @@
   "COLLAPSE_GROUP": "Gruppe einklappen",
   "EXPAND_GROUP": "Gruppe ausklappen",
   "BULK_ACTION_FAILED": "Die ausgewählten Tickets konnten nicht aktualisiert werden",
+  "STATUS": "Status",
   "PRIORITY": "Priorität",
   "PRIORITIES": "Prioritäten",
   "NO_PRIORITY": "Keine Priorität",

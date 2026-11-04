@@ -1,8 +1,8 @@
-<div class="templatePickerOverlay">
+<div class="templatePickerOverlay" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
   <div class="templatePickerOverlay__backdrop" (click)="cancelled.emit()"></div>
 
-  <div class="templatePicker">
-    <h3 class="templatePicker__title">{{ PHRASES.CHOOSE_TEMPLATE | translate }}</h3>
+  <div class="templatePicker" role="dialog" aria-modal="true" [attr.aria-labelledby]="titleId" tabindex="-1">
+    <h3 class="templatePicker__title" [id]="titleId">{{ PHRASES.CHOOSE_TEMPLATE | translate }}</h3>
 
     <app-template-list class="templatePicker__list" [kind]="kind" [emptyLabel]="PHRASES.NO_TEMPLATES_YET" (opened)="picked.emit($event)"></app-template-list>
 
