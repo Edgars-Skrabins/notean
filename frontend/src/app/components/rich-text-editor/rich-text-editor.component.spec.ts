@@ -80,6 +80,52 @@ describe('RichTextEditorComponent', () => {
     expect(names).not.toContain('trailingNode');
   });
 
+  describe('accessible name and state', () => {
+    function prose(): HTMLElement {
+      return fixture.nativeElement.querySelector('.ProseMirror');
+    }
+
+    it('names an editable editor as a multi-line textbox', () => {
+      fixture.componentRef.setInput('ariaLabel', 'Write a comment');
+      fixture.detectChanges();
+
+      expect(prose().getAttribute('role')).toBe('textbox');
+      expect(prose().getAttribute('aria-multiline')).toBe('true');
+      expect(prose().getAttribute('aria-label')).toBe('Write a comment');
+    });
+
+    it('follows a changed name', () => {
+      fixture.componentRef.setInput('ariaLabel', 'Write a comment');
+      fixture.detectChanges();
+      fixture.componentRef.setInput('ariaLabel', 'Edit comment');
+      fixture.detectChanges();
+
+      expect(prose().getAttribute('aria-label')).toBe('Edit comment');
+    });
+
+    it('gives a read-only editor no textbox role', () => {
+      fixture.componentRef.setInput('ariaLabel', 'Page content');
+      fixture.componentRef.setInput('editable', false);
+      fixture.detectChanges();
+
+      expect(prose().getAttribute('role')).toBe('presentation');
+      expect(prose().hasAttribute('aria-multiline')).toBeFalse();
+      expect(prose().hasAttribute('aria-label')).toBeFalse();
+    });
+
+    it('exposes the bold state on its toolbar button without a native title', () => {
+      const bold: HTMLButtonElement = fixture.nativeElement.querySelector('.richTextEditor__toolbarButton');
+      expect(bold.getAttribute('aria-pressed')).toBe('false');
+
+      fixture.componentInstance.editor!.commands.selectAll();
+      fixture.componentInstance.toggleBold();
+      fixture.detectChanges();
+
+      expect(bold.getAttribute('aria-pressed')).toBe('true');
+      expect(bold.hasAttribute('title')).toBeFalse();
+    });
+  });
+
   describe('attachment images', () => {
     function paste(...files: File[]): ClipboardEvent {
       const data = new DataTransfer();

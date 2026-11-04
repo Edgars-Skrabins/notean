@@ -20,7 +20,7 @@
   ></app-comment-item>
 
   <div class="commentList__new" *ngIf="isLoaded">
-    <app-rich-text-editor [content]="draft" [compact]="true" [mentionContext]="mentionContext" (contentChange)="draft = $event"></app-rich-text-editor>
+    <app-rich-text-editor [content]="draft" [compact]="true" [mentionContext]="mentionContext" [ariaLabel]="PHRASES.WRITE_COMMENT | translate" (contentChange)="draft = $event"></app-rich-text-editor>
     <app-button class="commentList__submit" [disabled]="!canPost" (pressed)="post()">{{ submitLabel | translate }}</app-button>
   </div>
 </section>
