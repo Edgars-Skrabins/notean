@@ -139,7 +139,7 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] C4. Grep for missed count call sites as described in Part 2.2; fix existing specs that read changed text. Run `npm test`; the translation coverage test passes for all 11 languages.
 
 ### D. Docs
-- [ ] D1. Update `CLAUDE.md` (Structure tree, Path aliases, i18n) as described in Part 2.2.
+- [x] D1. Update `CLAUDE.md` (Structure tree, Path aliases, i18n) as described in Part 2.2.
 
 ### Z. Wrap-up
 - [ ] Z1. Full test runs (`npm test` in `frontend/`, `bin/rails test` in `backend/`) and `npm run build`.
