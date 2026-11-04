@@ -1,7 +1,7 @@
 # New item split button — Spec
 
 **Type:** feature
-**Status:** ready for implementation
+**Status:** in progress
 **Last updated:** 2026-11-04
 
 # Part 1 — Business logic and usage
@@ -133,20 +133,20 @@ Read Part 1 and Part 2 before starting. Work through the tasks in order and tick
 Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 assertions, 0 failures (master f15abdf, 2026-11-04).
 
 ### A. Shared split button
-- [ ] A1. Add `CREATION_OPTIONS` to `frontend/src/app/config/phrases.ts` next to `BLANK` / `FROM_TEMPLATE`, and to all 11 files in `frontend/public/assets/translations/` next to the same keys, with the texts in Part 2.2.
-- [ ] A2. In `frontend/src/app/components/menu-button/menu-button.component.ts` make `toggle()` return without changing `isOpen` while `disabled` is true.
-- [ ] A3. Generate `SplitButtonComponent` with `npm run newcomponent split-button` in `frontend/` and implement the TS, HTML and CSS as described in Part 2.2 (inputs `label`, `menuLabel`, `options`, `icon`, `compact`, `disabled`; outputs `pressed`, `picked`; default and compact looks; focus-visible ring; tokens only; no `transition: all`; no comments).
-- [ ] A4. Add `frontend/src/app/components/split-button/split-button.component.spec.ts` with `TestBed`: clicking the main part emits `pressed` and does not open the menu; clicking the chevron sets `aria-expanded="true"` and shows both menu options; picking "From template" emits `picked` with `'template'`; with `disabled` neither part emits nor opens; in compact mode the main part has the `label` as `aria-label` and no visible text. Run `npm test`.
+- [x] A1. Add `CREATION_OPTIONS` to `frontend/src/app/config/phrases.ts` next to `BLANK` / `FROM_TEMPLATE`, and to all 11 files in `frontend/public/assets/translations/` next to the same keys, with the texts in Part 2.2.
+- [x] A2. In `frontend/src/app/components/menu-button/menu-button.component.ts` make `toggle()` return without changing `isOpen` while `disabled` is true.
+- [x] A3. Generate `SplitButtonComponent` with `npm run newcomponent split-button` in `frontend/` and implement the TS, HTML and CSS as described in Part 2.2 (inputs `label`, `menuLabel`, `options`, `icon`, `compact`, `disabled`; outputs `pressed`, `picked`; default and compact looks; focus-visible ring; tokens only; no `transition: all`; no comments).
+- [x] A4. Add `frontend/src/app/components/split-button/split-button.component.spec.ts` with `TestBed`: clicking the main part emits `pressed` and does not open the menu; clicking the chevron sets `aria-expanded="true"` and shows both menu options; picking "From template" emits `picked` with `'template'`; with `disabled` neither part emits nor opens; in compact mode the main part has the `label` as `aria-label` and no visible text. Run `npm test`.
 
 ### B. Use it on Pages, Diagrams and folder rows
-- [ ] B1. `frontend/src/app/pages/dashboard/document-pages/document-pages.component.html` / `.ts`: replace the toolbar menu with `app-split-button` as in Part 2.2; swap the import.
-- [ ] B2. `frontend/src/app/pages/dashboard/diagrams/diagrams.component.html` / `.ts`: the same for "New diagram".
-- [ ] B3. `frontend/src/app/components/item-tree/item-tree.component.html` / `.ts`: replace the folder row "+" menu with the compact `app-split-button`; swap the import. Verify `handleFolderRowClick` ignores clicks on both new buttons (a click on either must not expand or collapse the folder); adjust its target check if needed.
-- [ ] B4. Tests: in `frontend/src/app/pages/dashboard/document-pages/document-pages.component.spec.ts` keep the existing `handleCreateItem` / `handleCreateChoice` tests and add one asserting `handleCreateItem(null)` navigates to `…/new` with no query params (the main part's path) if not already covered. In `frontend/src/app/components/item-tree/item-tree.component.spec.ts` add a test that the folder row's split main part emits `createItem` with `{parentId: <folder id>, fromTemplate: false}` and does not toggle the folder. Run `npm test`.
+- [x] B1. `frontend/src/app/pages/dashboard/document-pages/document-pages.component.html` / `.ts`: replace the toolbar menu with `app-split-button` as in Part 2.2; swap the import.
+- [x] B2. `frontend/src/app/pages/dashboard/diagrams/diagrams.component.html` / `.ts`: the same for "New diagram".
+- [x] B3. `frontend/src/app/components/item-tree/item-tree.component.html` / `.ts`: replace the folder row "+" menu with the compact `app-split-button`; swap the import. Verify `handleFolderRowClick` ignores clicks on both new buttons (a click on either must not expand or collapse the folder); adjust its target check if needed.
+- [x] B4. Tests: in `frontend/src/app/pages/dashboard/document-pages/document-pages.component.spec.ts` keep the existing `handleCreateItem` / `handleCreateChoice` tests and add one asserting `handleCreateItem(null)` navigates to `…/new` with no query params (the main part's path) if not already covered. In `frontend/src/app/components/item-tree/item-tree.component.spec.ts` add a test that the folder row's split main part emits `createItem` with `{parentId: <folder id>, fromTemplate: false}` and does not toggle the folder. Run `npm test`.
 
 ### C. Docs
-- [ ] C1. Update `CLAUDE.md`: in the Templates bullet replace '"New page" / "New diagram" and a folder\'s "+" are `MenuButtonComponent`s with `customTrigger` offering Blank / From template' with: they are `SplitButtonComponent`s (`app-split-button`, `compact` on folder rows) whose main part creates a blank item and whose chevron opens the Blank / From template menu (a `MenuButtonComponent` with `customTrigger`). Add `app-split-button` to the Components conventions as the shared control for a default action plus alternatives.
+- [x] C1. Update `CLAUDE.md`: in the Templates bullet replace '"New page" / "New diagram" and a folder\'s "+" are `MenuButtonComponent`s with `customTrigger` offering Blank / From template' with: they are `SplitButtonComponent`s (`app-split-button`, `compact` on folder rows) whose main part creates a blank item and whose chevron opens the Blank / From template menu (a `MenuButtonComponent` with `customTrigger`). Add `app-split-button` to the Components conventions as the shared control for a default action plus alternatives.
 
 ### Z. Wrap-up
-- [ ] Z1. Full test runs, build and lint, using the commands in `CLAUDE.md` (`npm test` and `npm run build` in `frontend/`); the new component's stylesheet must stay under the 2 kB warning.
-- [ ] Z2. Manual check in the running app, in Purple haze dark and Paper light: Pages → click "New page" → blank create popup opens in one click. Click the chevron → menu with Blank / From template under it → From template opens the picker. Hover a folder row → "+" creates a blank page in that folder, its chevron opens the menu, neither toggles the folder. Tab through the toolbar: main part, then chevron, both with a visible focus ring; Enter on the chevron opens the menu, Esc closes it. Repeat on Diagrams.
+- [x] Z1. Full test runs, build and lint, using the commands in `CLAUDE.md` (`npm test` and `npm run build` in `frontend/`); the new component's stylesheet must stay under the 2 kB warning.
+- [ ] Z2. Manual check in the running app, in Purple haze dark and Paper light: Pages → click "New page" → blank create popup opens in one click. Click the chevron → menu with Blank / From template under it → From template opens the picker. Hover a folder row → "+" creates a blank page in that folder, its chevron opens the menu, neither toggles the folder. Tab through the toolbar: main part, then chevron, both with a visible focus ring; Enter on the chevron opens the menu, Esc closes it. Repeat on Diagrams. **Not done (2026-11-04):** the app's dev-server slots for this folder were all held by other sessions and port 3000 was in use, so the browser check is left for the coordinator.
