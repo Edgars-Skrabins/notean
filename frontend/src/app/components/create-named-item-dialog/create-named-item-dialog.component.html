@@ -10,6 +10,8 @@
       [(ngModel)]="itemTitle"
       [maxlength]="TITLE_MAX_LENGTH"
       [placeholder]="defaultValue"
+      [attr.aria-invalid]="errorMessage ? true : null"
+      [attr.aria-describedby]="errorMessage ? 'createNamedItemError' : null"
       autofocus
     />
 
@@ -22,7 +24,7 @@
 
     <ng-content></ng-content>
 
-    <p class="createNamedItemDialog__error" *ngIf="errorMessage">{{ errorMessage | translate }}</p>
+    <p class="errorMessage createNamedItemDialog__error" role="alert" id="createNamedItemError" *ngIf="errorMessage">{{ errorMessage | translate }}</p>
 
     <div class="createNamedItemDialog__actions">
       <app-button variant="ghost" (pressed)="handleCancel()">{{ PHRASES.CANCEL | translate }}</app-button>

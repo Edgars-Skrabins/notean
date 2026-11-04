@@ -7,9 +7,11 @@
     [ngModel]="params.name"
     (ngModelChange)="handleNameChange($event)"
     [maxlength]="TITLE_MAX_LENGTH"
+    [attr.aria-invalid]="nameError ? true : null"
+    [attr.aria-describedby]="nameError ? 'projectNameError' : null"
   />
   <p class="projectForm__value" *ngIf="readonly">{{ params.name }}</p>
-  <p class="projectForm__error" *ngIf="nameError">{{ nameError | translate }}</p>
+  <p class="errorMessage projectForm__error" role="alert" id="projectNameError" *ngIf="nameError">{{ nameError | translate }}</p>
 </div>
 
 <div class="authField">
