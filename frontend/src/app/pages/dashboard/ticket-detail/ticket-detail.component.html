@@ -1,9 +1,14 @@
-<div class="ticketDetailOverlay" *ngIf="ticket">
+<div class="ticketDetailOverlay" *ngIf="ticket" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
   <div class="ticketDetailOverlay__backdrop" (click)="handleGoBack()"></div>
 
   <div
     class="ticketDetail"
     [class.ticketDetail--dropping]="isDraggingFiles"
+    role="dialog"
+    aria-modal="true"
+    tabindex="-1"
+    [attr.aria-label]="ticket.title || (PHRASES.TICKET_TITLE_PLACEHOLDER | translate)"
+    cdkFocusInitial
     (dragenter)="handleDragEnter($event)"
     (dragover)="handleDragOver($event)"
     (dragleave)="handleDragLeave($event)"
@@ -12,8 +17,6 @@
   >
     <div class="ticketDetail__header">
       <div class="ticketDetail__headerActions">
-        <app-button *ngIf="ticket.columnId !== null" variant="ghost" icon="inbox" (pressed)="handleMoveToBacklog()">{{ PHRASES.MOVE_TO_BACKLOG | translate }}</app-button>
-        <app-button *ngIf="ticket.columnId === null" variant="ghost" icon="columns" (pressed)="handleOpenMoveDialog()">{{ PHRASES.MOVE_TO_BOARD | translate }}</app-button>
         <app-favorite-star type="Ticket" [itemId]="ticket.id" [title]="ticket.title" [size]="36"></app-favorite-star>
         <app-icon-button
           icon="trash"
@@ -71,6 +74,17 @@
 
       <div class="ticketDetail__side">
         <div class="ticketDetail__field">
+          <h3 class="ticketDetail__fieldTitle">{{ PHRASES.STATUS | translate }}</h3>
+          <app-dropdown
+            class="ticketDetail__status"
+            [options]="statusOptions"
+            [value]="ticket.columnId"
+            [ariaLabel]="PHRASES.STATUS"
+            (valueChange)="handleStatusChange($event)"
+          ></app-dropdown>
+        </div>
+
+        <div class="ticketDetail__field">
           <h3 class="ticketDetail__fieldTitle">{{ PHRASES.PRIORITY | translate }}</h3>
           <app-dropdown
             class="ticketDetail__priority"
@@ -101,13 +115,6 @@
       </div>
     </div>
   </div>
-
-  <app-move-to-board-dialog
-    *ngIf="isMoveDialogOpen && state.board"
-    [columns]="state.board.columns"
-    (moved)="handleMoveToColumn($event)"
-    (cancelled)="handleMoveCancelled()"
-  ></app-move-to-board-dialog>
 
   <app-confirm-dialog
     *ngIf="showDeleteConfirm"

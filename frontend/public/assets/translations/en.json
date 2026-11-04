@@ -231,6 +231,7 @@
   "COLLAPSE_GROUP": "Collapse group",
   "EXPAND_GROUP": "Expand group",
   "BULK_ACTION_FAILED": "Could not update the selected tickets",
+  "STATUS": "Status",
   "PRIORITY": "Priority",
   "PRIORITIES": "Priorities",
   "NO_PRIORITY": "No priority",

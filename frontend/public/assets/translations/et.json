@@ -231,6 +231,7 @@
   "COLLAPSE_GROUP": "Ahenda grupp",
   "EXPAND_GROUP": "Laienda grupp",
   "BULK_ACTION_FAILED": "Valitud ülesandeid ei õnnestunud uuendada",
+  "STATUS": "Olek",
   "PRIORITY": "Prioriteet",
   "PRIORITIES": "Prioriteedid",
   "NO_PRIORITY": "Prioriteet puudub",

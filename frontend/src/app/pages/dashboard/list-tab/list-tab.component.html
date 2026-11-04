@@ -19,20 +19,6 @@
     ></app-ticket-filter>
   </div>
 
-  <app-ticket-selection-bar
-    *ngIf="selectedTickets.length"
-    [count]="selectedTickets.length"
-    [statuses]="state.statuses"
-    [members]="members"
-    [assignedMembers]="assignedMembers"
-    [busy]="isBulkBusy"
-    (setStatus)="handleBulkStatus($event)"
-    (assign)="handleBulkAssign($event)"
-    (unassign)="handleBulkUnassign($event)"
-    (deleteSelected)="requestBulkDelete()"
-    (clearSelection)="clearSelection()"
-  ></app-ticket-selection-bar>
-
   <p class="listTab__empty" *ngIf="showNoTickets">{{ PHRASES.BOARD_NO_TICKETS | translate }}</p>
 
   <section class="listTab__group" *ngFor="let group of groups; trackBy: trackByGroup">
@@ -68,7 +54,6 @@
           cdkDragLockAxis="y"
           [cdkDragData]="ticket"
           [ticket]="ticket"
-          [statusTitle]="group.status.columnId === null ? (group.status.title | translate) : group.status.title"
           [priority]="state.priorityById(ticket.priorityId)"
           [tags]="state.board?.tags ?? []"
           [selected]="isSelected(ticket)"
@@ -104,6 +89,21 @@
       </ng-container>
     </ng-container>
   </section>
+
+  <app-ticket-selection-bar
+    class="listTab__selectionBar"
+    *ngIf="selectedTickets.length"
+    [count]="selectedTickets.length"
+    [statuses]="state.statuses"
+    [members]="members"
+    [assignedMembers]="assignedMembers"
+    [busy]="isBulkBusy"
+    (setStatus)="handleBulkStatus($event)"
+    (assign)="handleBulkAssign($event)"
+    (unassign)="handleBulkUnassign($event)"
+    (deleteSelected)="requestBulkDelete()"
+    (clearSelection)="clearSelection()"
+  ></app-ticket-selection-bar>
 </div>
 
 <router-outlet></router-outlet>

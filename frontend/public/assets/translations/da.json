@@ -231,6 +231,7 @@
   "COLLAPSE_GROUP": "Skjul gruppe",
   "EXPAND_GROUP": "Udvid gruppe",
   "BULK_ACTION_FAILED": "De valgte opgaver kunne ikke opdateres",
+  "STATUS": "Status",
   "PRIORITY": "Prioritet",
   "PRIORITIES": "Prioriteter",
   "NO_PRIORITY": "Ingen prioritet",

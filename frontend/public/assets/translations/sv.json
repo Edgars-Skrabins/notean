@@ -231,6 +231,7 @@
   "COLLAPSE_GROUP": "Fäll ihop gruppen",
   "EXPAND_GROUP": "Fäll ut gruppen",
   "BULK_ACTION_FAILED": "Det gick inte att uppdatera de valda ärendena",
+  "STATUS": "Status",
   "PRIORITY": "Prioritet",
   "PRIORITIES": "Prioriteter",
   "NO_PRIORITY": "Ingen prioritet",
