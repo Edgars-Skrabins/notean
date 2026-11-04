@@ -21,6 +21,7 @@ import {resizeAvatar} from "@utils/resizeAvatar";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {AvatarComponent} from "@components/avatar/avatar.component";
 import {ButtonComponent} from "@components/button/button.component";
+import {TooltipDirective} from "@components/tooltip/tooltip.directive";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {EscapeService} from "@services/escape.service";
 
@@ -33,7 +34,8 @@ import {EscapeService} from "@services/escape.service";
     TranslatePipe,
     ConfirmDialogComponent,
     AvatarComponent,
-    ButtonComponent
+    ButtonComponent,
+    TooltipDirective
   ],
   templateUrl: './profile.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,

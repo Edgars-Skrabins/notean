@@ -129,6 +129,7 @@ Before adding, compare each translation with the neighbouring keys in that file 
 7. **Native `title` becomes `appTooltip` on the toolbar, swatches, team code copy button, collapsed sidebar toggle and avatar stack** (2026-11-04). Reason: CLAUDE.md requires styled tooltips plus `aria-label` for icon-only controls, never `title`. A native `title` never shows on keyboard focus or touch. The avatar stack isn't focusable, so it also gets `role="img"` and an `aria-label`, so the names reach screen readers.
 8. **Visually hidden radios use CDK's `.cdk-visually-hidden` from `a11y-prebuilt.css`** (2026-11-04). Reason: the brief prefers CDK a11y, and the same stylesheet is needed by `LiveAnnouncer` in `announced-status-messages`, so the project gains one shared visually-hidden class instead of a home-made one. Rejected: a custom `.visuallyHidden` class in `styles.css` (a second class for the same job).
 9. **Read-only rich-text views get `role="presentation"`** (2026-11-04, during C1). Reason: Tiptap 3 always adds `role="textbox"` to the editor element and merges `editorProps.attributes` over it, so a read-only view can't leave the role out; until now page view mode and comments were announced as text boxes. `presentation` overrides it with no role, so the view reads as plain content, which is what decision 3 asks for. Rejected: removing the attribute from the DOM after each ProseMirror update (fragile, ProseMirror re-applies it) and `role="document"` (adds a landmark-like boundary inside the page).
+10. **Each radio option label gets `position: relative`** (2026-11-04, during D1). Reason: `.cdk-visually-hidden` is `position: absolute; left: 0`, so without a positioned label the hidden radio sits at the left edge of a distant ancestor, and focusing it with the arrow keys can scroll the page sideways. The swatch label also gets `display: block` so it keeps the button's size.
 
 Decisions to double-check: none. These are markup-only fixes with no business logic, data or permission changes.
 
@@ -151,9 +152,9 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] C3. Pass `ariaLabel` at every usage in the editor table in Part 2.2.
 
 ### D. Radio groups
-- [ ] D1. `theme-mode-switch`: radiogroup markup and CSS from Part 2.2. Update `theme-mode-switch.component.spec.ts`: three radios with exactly the current mode checked, and dispatching `change` on another radio emits `modeChange` with its mode.
-- [ ] D2. `theme-picker`: radiogroup markup and CSS. Update `theme-picker.component.spec.ts` (its `aria-pressed` assertions become `checked` radios): nine radios in order with only the selected theme checked; `change` on another emits `themeChange`.
-- [ ] D3. Profile avatar colours: radiogroup markup, `appTooltip`, CSS focus ring, `TooltipDirective` import. Keep `profile.component.spec.ts` passing, and check the style budget for `profile.component.css`.
+- [x] D1. `theme-mode-switch`: radiogroup markup and CSS from Part 2.2. Update `theme-mode-switch.component.spec.ts`: three radios with exactly the current mode checked, and dispatching `change` on another radio emits `modeChange` with its mode.
+- [x] D2. `theme-picker`: radiogroup markup and CSS. Update `theme-picker.component.spec.ts` (its `aria-pressed` assertions become `checked` radios): nine radios in order with only the selected theme checked; `change` on another emits `themeChange`.
+- [x] D3. Profile avatar colours: radiogroup markup, `appTooltip`, CSS focus ring, `TooltipDirective` import. Keep `profile.component.spec.ts` passing, and check the style budget for `profile.component.css`.
 
 ### E. Native titles
 - [ ] E1. Swap `title` for `appTooltip` in `team-code-display` and `dashboard-sidebar` as described in Part 2.2.

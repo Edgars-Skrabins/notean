@@ -45,6 +45,8 @@
 }
 
 .profile__swatch {
+  position: relative;
+  display: block;
   width: 28px;
   height: 28px;
   padding: 0;
@@ -60,4 +62,9 @@
 
 .profile__swatch--selected {
   box-shadow: 0 0 0 2px var(--color-card-bg), 0 0 0 4px var(--color-text-heading);
+}
+
+.profile__swatch:has(:focus-visible) {
+  outline: 2px solid var(--color-input-border-focus);
+  outline-offset: 2px;
 }
