@@ -97,6 +97,10 @@ export class ItemDetailLayoutComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (changes['mode'] && !changes['mode'].firstChange) {
+      this.trapFocus?.focusTrap.focusInitialElementWhenReady();
+    }
+
     const autofocus = changes['autofocusTitle'];
     if (!autofocus?.currentValue || autofocus.previousValue) {
       return;
@@ -106,12 +110,6 @@ export class ItemDetailLayoutComponent implements OnInit, OnChanges, OnDestroy {
       this.titleInput?.nativeElement.focus();
       this.titleInput?.nativeElement.select();
     });
-  }
-
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['mode'] && !changes['mode'].firstChange) {
-      this.trapFocus?.focusTrap.focusInitialElementWhenReady();
-    }
   }
 
   ngOnDestroy() {
