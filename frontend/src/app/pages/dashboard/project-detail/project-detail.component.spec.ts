@@ -17,7 +17,7 @@ import {BoardSummary} from '@models/board.model';
 import {TeamFeatures} from '@models/team.model';
 import {PHRASES} from '@config/phrases';
 import {AppRoutes} from '../../../app/app-routes.enum';
-import {projectFilterStub} from '../../../testing/projectFilterStub';
+import {projectFilterStub, ProjectFilterStub} from '../../../testing/projectFilterStub';
 
 const alice = {id: 1, nickname: 'alice', avatar: {color: 'red' as const, imageUrl: null}};
 const bob = {id: 2, nickname: 'bob', avatar: {color: 'blue' as const, imageUrl: null}};
@@ -44,6 +44,7 @@ describe('ProjectDetailComponent', () => {
   let router: jasmine.SpyObj<Router>;
   let navigationService: jasmine.SpyObj<NavigationService>;
   let features: BehaviorSubject<TeamFeatures>;
+  let projectFilter: ProjectFilterStub;
 
   async function render(project: ProjectDetail = projectDetail()) {
     projectService.getProject.and.returnValue(Promise.resolve({success: true, project}));
@@ -64,6 +65,7 @@ describe('ProjectDetailComponent', () => {
 
   beforeEach(async () => {
     features = new BehaviorSubject<TeamFeatures>({pages: true, diagrams: true, boards: true, chat: true});
+    projectFilter = projectFilterStub(5);
     projectService = jasmine.createSpyObj<ProjectService>('ProjectService', ['getProject', 'updateProject', 'deleteProject']);
     pageService = jasmine.createSpyObj<PageService>('PageService', ['list']);
     pageService.list.and.returnValue(Promise.resolve({success: true, items: [item(1, 'Old page', '2026-10-01T10:00:00Z'), item(2, 'New page', '2026-10-20T10:00:00Z')], hasMore: false}));
@@ -90,7 +92,7 @@ describe('ProjectDetailComponent', () => {
         {provide: DiagramService, useValue: diagramService},
         {provide: BoardService, useValue: boardService},
         {provide: TeamService, useValue: teamService},
-        {provide: ProjectFilterService, useValue: projectFilterStub(5).service},
+        {provide: ProjectFilterService, useValue: projectFilter.service},
         {provide: ToastService, useValue: jasmine.createSpyObj<ToastService>('ToastService', ['show'])},
         {provide: NavigationService, useValue: navigationService},
       ],
@@ -105,7 +107,7 @@ describe('ProjectDetailComponent', () => {
     expect(boardService.listBoards).toHaveBeenCalledWith('abc', 5);
     expect(texts('.projectDetail__groupTitle')).toEqual([PHRASES.DOCUMENT_PAGES, PHRASES.BOARDS]);
     expect(texts('.projectItemRow__title')).toEqual(['Old page', 'New page', 'Sprint']);
-    expect(texts('.projectDetail__empty')).toEqual([]);
+    expect(texts('.emptyState__title')).toEqual([]);
     expect(fixture.nativeElement.querySelector('.loadMore')).toBeNull();
   });
 
@@ -138,7 +140,30 @@ describe('ProjectDetailComponent', () => {
     await render();
 
     expect(texts('.projectDetail__groupTitle')).toEqual([]);
-    expect(texts('.projectDetail__empty')).toEqual([PHRASES.NO_PROJECT_ITEMS]);
+    expect(texts('.emptyState__title')).toEqual([PHRASES.NO_PROJECT_ITEMS]);
+  });
+
+  it('offers to select the project for new items when another one is selected', async () => {
+    pageService.list.and.returnValue(Promise.resolve({success: true, items: [], hasMore: false}));
+    boardService.listBoards.and.returnValue(Promise.resolve({success: true, boards: []}));
+    await render();
+    expect(fixture.nativeElement.querySelector('.emptyState__actions app-button')).toBeNull();
+
+    projectFilter.selected.next(null);
+    fixture.detectChanges();
+    (fixture.nativeElement.querySelector('.emptyState__actions button') as HTMLButtonElement).click();
+    fixture.detectChanges();
+
+    expect(projectFilter.selected.value).toBe(5);
+    expect(fixture.nativeElement.querySelector('.emptyState__actions app-button')).toBeNull();
+  });
+
+  it('shows no empty state when the items failed to load', async () => {
+    pageService.list.and.returnValue(Promise.resolve({success: false, code: 'NETWORK_ERROR'}));
+    boardService.listBoards.and.returnValue(Promise.resolve({success: true, boards: []}));
+    await render();
+
+    expect(texts('.emptyState__title')).toEqual([]);
   });
 
   it('skips and hides the items of disabled features', async () => {
@@ -151,7 +176,7 @@ describe('ProjectDetailComponent', () => {
     features.next({pages: false, diagrams: true, boards: false, chat: true});
     fixture.detectChanges();
 
-    expect(texts('.projectDetail__empty')).toEqual([PHRASES.NO_PROJECT_ITEMS]);
+    expect(texts('.emptyState__title')).toEqual([PHRASES.NO_PROJECT_ITEMS]);
   });
 
   it('lists the owner first with the Owner label', async () => {

@@ -57,6 +57,29 @@
   pointer-events: none;
 }
 
+.flowchartEditor__emptyState {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  pointer-events: none;
+}
+
+.flowchartEditor__emptyState > * {
+  pointer-events: auto;
+}
+
+.flowchartEditor__emptyStateText {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-md);
+  pointer-events: none;
+}
+
 .flowchartEditor__labelInput {
   position: absolute;
   z-index: 20;

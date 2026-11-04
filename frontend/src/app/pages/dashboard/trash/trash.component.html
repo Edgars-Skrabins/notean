@@ -41,13 +41,12 @@
       <app-load-more *ngIf="hasMore" [loading]="isLoadingMore" (pressed)="handleLoadMore()"></app-load-more>
     </div>
 
-    <div class="trash__empty" *ngIf="!entries.length">
-      <p class="dashboardStub__body" *ngIf="activeSearch || typeFilter">{{ PHRASES.NO_SEARCH_RESULTS | translate }}</p>
-      <ng-container *ngIf="!activeSearch && !typeFilter">
-        <p class="dashboardStub__body">{{ PHRASES.TRASH_EMPTY | translate }}</p>
-        <p class="dashboardStub__body">{{ PHRASES.TRASH_EMPTY_HINT | translate }}</p>
-      </ng-container>
-    </div>
+    <ng-container *ngIf="!entries.length && !hasLoadError">
+      <app-empty-state *ngIf="activeSearch || typeFilter" [title]="PHRASES.TRASH_NO_MATCHES">
+        <app-button variant="ghost" (pressed)="clearFilters()">{{ PHRASES.TRASH_CLEAR_FILTERS | translate }}</app-button>
+      </app-empty-state>
+      <app-empty-state *ngIf="!activeSearch && !typeFilter" [title]="PHRASES.TRASH_EMPTY" [hint]="PHRASES.TRASH_EMPTY_HINT"></app-empty-state>
+    </ng-container>
   </ng-container>
 </div>
 

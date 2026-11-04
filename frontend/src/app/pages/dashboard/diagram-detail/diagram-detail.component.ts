@@ -1,6 +1,6 @@
 import {Component, ChangeDetectionStrategy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {TranslateService} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {NgIf} from '@angular/common';
 import {DiagramService} from "@services/diagram.service";
 import {DiagramEditingService} from "@services/diagram-editing.service";
@@ -16,6 +16,7 @@ import {TrashService} from "@services/trash.service";
 import {CopyLinkService} from "@services/copy-link.service";
 import {PHRASES} from "@config/phrases";
 import {AppRoutes} from "../../../app/app-routes.enum";
+import {ButtonComponent} from "@components/button/button.component";
 import {FlowchartEditorComponent} from "@components/flowchart-editor/flowchart-editor.component";
 import {ItemDetailLayoutComponent} from "@components/item-detail-layout/item-detail-layout.component";
 import {DiagramCommentLayerComponent} from "@components/diagram-comment-layer/diagram-comment-layer.component";
@@ -25,6 +26,8 @@ import {FolderedItemDetailComponent} from "../foldered-item-detail.base";
   selector: 'app-diagram-detail',
   imports: [
     NgIf,
+    TranslatePipe,
+    ButtonComponent,
     FlowchartEditorComponent,
     ItemDetailLayoutComponent,
     DiagramCommentLayerComponent

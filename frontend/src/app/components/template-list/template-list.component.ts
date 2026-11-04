@@ -13,6 +13,8 @@ import {IconComponent} from '@components/icon/icon.component';
 import {IconButtonComponent} from '@components/icon-button/icon-button.component';
 import {LoadMoreComponent} from '@components/load-more/load-more.component';
 import {ConfirmDialogComponent} from '@components/confirm-dialog/confirm-dialog.component';
+import {ButtonComponent} from '@components/button/button.component';
+import {EmptyStateComponent} from '@components/empty-state/empty-state.component';
 
 @Component({
   selector: 'app-template-list',
@@ -25,7 +27,9 @@ import {ConfirmDialogComponent} from '@components/confirm-dialog/confirm-dialog.
     IconComponent,
     IconButtonComponent,
     LoadMoreComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    ButtonComponent,
+    EmptyStateComponent
   ],
   templateUrl: './template-list.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -104,6 +108,11 @@ export class TemplateListComponent implements OnInit, OnDestroy {
 
   handleSearchChange(query: string) {
     this.searchTerms.next(query);
+  }
+
+  clearSearch() {
+    this.searchQuery = '';
+    this.searchTerms.next('');
   }
 
   handleLoadMore() {

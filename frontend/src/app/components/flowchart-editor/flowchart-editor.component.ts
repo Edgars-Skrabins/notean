@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, ViewEncapsulation, ChangeDetectionStrategy} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, ViewEncapsulation, ChangeDetectionStrategy} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
@@ -157,6 +157,7 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
   @ViewChild('canvasHost', {static: true}) canvasHost!: ElementRef<HTMLDivElement>;
 
   isEmpty = true;
+  hasLoaded = false;
   editingLabel: EditingLabel | null = null;
 
   private graph: Graph | null = null;
@@ -168,7 +169,8 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
 
   constructor(
     private translateService: TranslateService,
-    private themeService: ThemeService
+    private themeService: ThemeService,
+    private changeDetector: ChangeDetectorRef
   ) {
   }
 
@@ -257,6 +259,7 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
     this.loadContent();
 
     this.themeSubscription = this.themeService.theme$.subscribe(() => this.applyTheme());
+    this.changeDetector.detectChanges();
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -418,6 +421,7 @@ export class FlowchartEditorComponent implements AfterViewInit, OnChanges, OnDes
     this.graph.getCells().forEach((cell) => this.colorCell(cell));
 
     this.isEmpty = this.graph.getCells().length === 0;
+    this.hasLoaded = true;
   }
 
   private applyTheme() {

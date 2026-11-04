@@ -27,13 +27,6 @@
   margin-top: var(--space-5);
 }
 
-.trash__empty {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  margin-top: var(--space-5);
-}
-
 .trash__row {
   display: flex;
   align-items: center;

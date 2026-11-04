@@ -4,18 +4,13 @@ import {Router, RouterLink, RouterLinkActive} from '@angular/router';
 import {CdkDrag, CdkDragDrop, CdkDropList} from '@angular/cdk/drag-drop';
 import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
-import {BoardService} from "@services/board.service";
 import {BoardListService} from "@services/board-list.service";
-import {TeamService} from "@services/team.service";
-import {ProjectFilterService} from "@services/project-filter.service";
 import {BoardSummary} from "@models/board.model";
 import {IconComponent} from "@components/icon/icon.component";
 import {TooltipDirective} from "@components/tooltip/tooltip.directive";
-import {CreateNamedItemDialogComponent} from "@components/create-named-item-dialog/create-named-item-dialog.component";
-import {BoardTemplateSelectComponent} from "@components/board-template-select/board-template-select.component";
+import {CreateBoardDialogComponent} from "@components/create-board-dialog/create-board-dialog.component";
 import {AppRoutes} from "../../app/app-routes.enum";
 import {boardRoute} from "@utils/ticketRoute";
-import {errorPhrase} from "@utils/errorPhrase";
 
 @Component({
   selector: 'app-sidebar-boards',
@@ -29,8 +24,7 @@ import {errorPhrase} from "@utils/errorPhrase";
     CdkDrag,
     TranslatePipe,
     IconComponent,
-    CreateNamedItemDialogComponent,
-    BoardTemplateSelectComponent,
+    CreateBoardDialogComponent,
     TooltipDirective
   ],
   templateUrl: './sidebar-boards.component.html',
@@ -44,15 +38,10 @@ export class SidebarBoardsComponent implements OnInit {
   @Input() collapsed = false;
 
   isCreateDialogOpen = false;
-  selectedTemplateId: number | null = null;
-  createErrorMessage = '';
 
   constructor(
     private router: Router,
-    protected boardListService: BoardListService,
-    private boardService: BoardService,
-    private teamService: TeamService,
-    private projectFilterService: ProjectFilterService
+    protected boardListService: BoardListService
   ) {
   }
 
@@ -83,8 +72,6 @@ export class SidebarBoardsComponent implements OnInit {
   }
 
   handleCreate() {
-    this.selectedTemplateId = null;
-    this.createErrorMessage = '';
     this.isCreateDialogOpen = true;
   }
 
@@ -92,17 +79,8 @@ export class SidebarBoardsComponent implements OnInit {
     this.isCreateDialogOpen = false;
   }
 
-  handleCreateConfirmed(event: { title: string }) {
-    this.boardService.createBoard(this.teamService.getCurrentTeamCode(), event.title, this.projectFilterService.getSelectedProjectId(), this.selectedTemplateId)
-      .then((response) => {
-        if (!response.success) {
-          this.createErrorMessage = errorPhrase(response.code);
-          return;
-        }
-
-        this.isCreateDialogOpen = false;
-        this.boardListService.add(response.board);
-        this.handleOpen(response.board);
-      });
+  handleCreated(board: BoardSummary) {
+    this.isCreateDialogOpen = false;
+    this.handleOpen(board);
   }
 }

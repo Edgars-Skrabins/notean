@@ -13,6 +13,7 @@ import {TrashService} from "@services/trash.service";
 import {FolderItemType} from "@models/folder.model";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {ButtonComponent} from "@components/button/button.component";
+import {EmptyStateComponent} from "@components/empty-state/empty-state.component";
 import {ItemTreeComponent} from "@components/item-tree/item-tree.component";
 import {CreateNamedItemDialogComponent} from "@components/create-named-item-dialog/create-named-item-dialog.component";
 import {FolderProjectDialogComponent} from "@components/folder-project-dialog/folder-project-dialog.component";
@@ -29,6 +30,7 @@ import {FolderedListPageComponent} from "../foldered-list-page.base";
     AsyncPipe,
     TranslatePipe,
     ButtonComponent,
+    EmptyStateComponent,
     ItemTreeComponent,
     CreateNamedItemDialogComponent,
     FolderProjectDialogComponent,
@@ -45,6 +47,9 @@ export class DocumentPagesComponent extends FolderedListPageComponent {
   protected readonly itemType: FolderItemType = 'Page';
   protected readonly itemRoute = AppRoutes.DOCUMENT_PAGES;
   protected readonly templateKind = 'page';
+  protected readonly emptyTitle = PHRASES.EMPTY_PAGES_TITLE;
+  protected readonly emptyInProjectTitle = PHRASES.EMPTY_PAGES_IN_PROJECT_TITLE;
+  protected readonly emptyHint = PHRASES.EMPTY_PAGES_HINT;
 
   constructor(
     pageService: PageService,

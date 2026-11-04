@@ -74,4 +74,20 @@ describe('TemplateListComponent', () => {
     expect(templateService.delete).toHaveBeenCalledWith('abc', 1);
     expect(component.templates.map((template) => template.id)).toEqual([2]);
   }));
+
+  it('clears the search and lists every template again', fakeAsync(() => {
+    templateService.list.and.returnValue(Promise.resolve({success: true, templates: [], hasMore: false}));
+    component.searchQuery = 'zzz';
+    component.handleSearchChange('zzz');
+    tick(300);
+    expect(component.hasNoSearchResults).toBeTrue();
+
+    component.clearSearch();
+    tick(300);
+
+    expect(component.searchQuery).toBe('');
+    expect(component.activeSearch).toBe('');
+    expect(component.hasNoSearchResults).toBeFalse();
+    expect(templateService.list.calls.mostRecent().args).toEqual(['abc', 'page', '', 0]);
+  }));
 });

@@ -43,6 +43,7 @@
       (viewportChange)="commentLayer.refresh()"
     >
       <app-diagram-comment-layer #commentLayer [diagramId]="item.id" [editor]="viewer" [mentionContext]="mentionContext"></app-diagram-comment-layer>
+      <app-button flowchartEmptyAction variant="primary" (pressed)="handleEdit()">{{ PHRASES.EDIT_DIAGRAM | translate }}</app-button>
     </app-flowchart-editor>
     <app-flowchart-editor
       class="diagramDetail__editor"

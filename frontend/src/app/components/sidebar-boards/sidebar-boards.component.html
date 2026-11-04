@@ -54,13 +54,8 @@
   </ng-container>
 </ng-container>
 
-<app-create-named-item-dialog
+<app-create-board-dialog
   *ngIf="isCreateDialogOpen"
-  [dialogTitle]="PHRASES.NEW_BOARD | translate"
-  [defaultValue]="PHRASES.UNTITLED_BOARD | translate"
-  [errorMessage]="createErrorMessage"
-  (confirmed)="handleCreateConfirmed($event)"
+  (created)="handleCreated($event)"
   (cancelled)="handleCreateCancelled()"
->
-  <app-board-template-select [(templateId)]="selectedTemplateId"></app-board-template-select>
-</app-create-named-item-dialog>
+></app-create-board-dialog>

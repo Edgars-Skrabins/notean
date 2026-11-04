@@ -17,6 +17,7 @@ import {ButtonComponent} from "@components/button/button.component";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {IconComponent, IconName} from "@components/icon/icon.component";
 import {DropdownComponent} from "@components/dropdown/dropdown.component";
+import {EmptyStateComponent} from "@components/empty-state/empty-state.component";
 import {LoadMoreComponent} from "@components/load-more/load-more.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {errorPhrase} from "@utils/errorPhrase";
@@ -46,6 +47,7 @@ const TYPE_ICONS: Record<TrashItemType, IconName> = {
     IconButtonComponent,
     IconComponent,
     DropdownComponent,
+    EmptyStateComponent,
     LoadMoreComponent,
     ConfirmDialogComponent
   ],
@@ -67,6 +69,7 @@ export class TrashComponent implements OnInit, OnDestroy {
 
   entries: TrashEntry[] | null = null;
   hasMore = false;
+  hasLoadError = false;
   isLoadingMore = false;
   searchQuery = '';
   activeSearch = '';
@@ -101,6 +104,9 @@ export class TrashComponent implements OnInit, OnDestroy {
     this.searchSubscription = this.searchTerms
       .pipe(map((query) => query.trim()), debounceTime(300), distinctUntilChanged())
       .subscribe((term) => {
+        if (term === this.activeSearch) {
+          return;
+        }
         this.activeSearch = term;
         this.loadPage(true);
       });
@@ -117,6 +123,14 @@ export class TrashComponent implements OnInit, OnDestroy {
 
   handleTypeChange(type: string | number | null) {
     this.typeFilter = type as TrashTypeFilter | null;
+    this.loadPage(true);
+  }
+
+  clearFilters() {
+    this.searchQuery = '';
+    this.activeSearch = '';
+    this.typeFilter = null;
+    this.searchTerms.next('');
     this.loadPage(true);
   }
 
@@ -226,6 +240,7 @@ export class TrashComponent implements OnInit, OnDestroy {
           return;
         }
         this.isLoadingMore = false;
+        this.hasLoadError = !response.success;
         if (!response.success) {
           this.toastService.show({type: ToastType.ERROR, message: errorPhrase(response.code)});
           this.entries = loaded;

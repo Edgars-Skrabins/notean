@@ -15,6 +15,7 @@ import {ProjectParams, ProjectSummary} from "@models/project.model";
 import {TeamMember} from "@models/team.model";
 import {AvatarComponent} from "@components/avatar/avatar.component";
 import {ButtonComponent} from "@components/button/button.component";
+import {EmptyStateComponent} from "@components/empty-state/empty-state.component";
 import {LoadMoreComponent} from "@components/load-more/load-more.component";
 import {NewProjectDialogComponent} from "@components/new-project-dialog/new-project-dialog.component";
 import {errorPhrase} from "@utils/errorPhrase";
@@ -33,6 +34,7 @@ import {PluralPipe} from "@pipes/plural.pipe";
     PluralPipe,
     AvatarComponent,
     ButtonComponent,
+    EmptyStateComponent,
     LoadMoreComponent,
     NewProjectDialogComponent
   ],
@@ -52,6 +54,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   isLoadingMore = false;
   searchQuery = '';
   activeSearch = '';
+  hasLoadError = false;
   readonly currentUserId: number;
 
   private loadGeneration = 0;
@@ -90,6 +93,11 @@ export class ProjectsComponent implements OnInit, OnDestroy {
 
   handleSearchChange(query: string) {
     this.searchTerms.next(query);
+  }
+
+  clearSearch() {
+    this.searchQuery = '';
+    this.searchTerms.next('');
   }
 
   handleLoadMore() {
@@ -151,6 +159,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
           return;
         }
         this.isLoadingMore = false;
+        this.hasLoadError = !response.success;
         if (!response.success) {
           this.toastService.show({type: ToastType.ERROR, message: errorPhrase(response.code)});
           this.projects = loaded;

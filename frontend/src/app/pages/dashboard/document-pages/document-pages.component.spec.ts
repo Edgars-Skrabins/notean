@@ -1,5 +1,8 @@
-import {fakeAsync, tick} from "@angular/core/testing";
+import {NO_ERRORS_SCHEMA} from "@angular/core";
+import {AsyncPipe, NgIf} from "@angular/common";
+import {fakeAsync, TestBed, tick} from "@angular/core/testing";
 import {Router} from "@angular/router";
+import {provideTranslateService, TranslatePipe} from "@ngx-translate/core";
 import {DocumentPagesComponent} from "./document-pages.component";
 import {PageService} from "@services/page.service";
 import {FolderService} from "@services/folder.service";
@@ -10,6 +13,10 @@ import {FolderedItemDetail} from "@models/foldered-item.model";
 import {projectFilterStub, ProjectFilterStub} from "../../../testing/projectFilterStub";
 import {errorPhrase} from "@utils/errorPhrase";
 import {trashServiceStub, TrashServiceStub} from "../../../testing/trashServiceStub";
+import {ProjectFilterService} from "@services/project-filter.service";
+import {TrashService} from "@services/trash.service";
+import {EmptyStateComponent} from "@components/empty-state/empty-state.component";
+import {PHRASES} from "@config/phrases";
 
 function folder(id: number, parentId: number | null, title = `Folder ${id}`): FolderSummary {
   return {id, title, parentId, projectId: null, creator: {id: 1, nickname: 'alice'}, createdAt: '', updatedAt: ''};
@@ -356,6 +363,33 @@ describe('DocumentPagesComponent', () => {
       expect(pageService.rename).toHaveBeenCalledWith('abc', 50, 'Notes final', 0);
       expect(component.displayItems.map((item) => item.title)).toEqual(['Notes final']);
     }));
+
+    it('clears the search and shows the tree again', fakeAsync(() => {
+      pageService.list.and.returnValue(Promise.resolve({success: true, items: [], hasMore: false}));
+      component.searchQuery = 'zzz';
+      component.handleSearchChange('zzz');
+      tick(300);
+
+      component.clearSearch();
+      tick(300);
+
+      expect(component.searchQuery).toBe('');
+      expect(component.isSearching).toBeFalse();
+      expect(component.hasNoSearchResults).toBeFalse();
+      expect(component.displayItems.map((item) => item.id)).toEqual([10, 11, 12]);
+    }));
+
+    it('searches again after clearing, even for the same term', fakeAsync(() => {
+      component.handleSearchChange('notes');
+      tick(300);
+      component.clearSearch();
+      tick(300);
+
+      component.handleSearchChange('notes');
+      tick(300);
+
+      expect(pageService.list).toHaveBeenCalledTimes(3);
+    }));
   });
 
   it('reloads folders and pages for the newly selected project', fakeAsync(() => {
@@ -396,5 +430,83 @@ describe('DocumentPagesComponent', () => {
     component.handleTemplatePicked('4');
 
     expect(router.navigate).toHaveBeenCalledOnceWith(['dashboard', 'pages', 'new'], {queryParams: {template: '4'}});
+  });
+  it('shows all projects by clearing the project selector', () => {
+    projectFilter.selected.next(4);
+
+    component.showAllProjects();
+
+    expect(projectFilter.selected.value).toBeNull();
+  });
+
+  it('names the selected project only when it is known', () => {
+    expect(component.selectedProjectName).toBeNull();
+
+    projectFilter.projects.next([{id: 4, name: 'Apollo'}]);
+    projectFilter.selected.next(4);
+    expect(component.selectedProjectName).toBe('Apollo');
+
+    projectFilter.selected.next(5);
+    expect(component.selectedProjectName).toBeNull();
+  });
+
+  it('browses the page templates', () => {
+    component.handleBrowseTemplates();
+
+    expect(router.navigate).toHaveBeenCalledOnceWith(['dashboard', 'pages', 'templates']);
+  });
+});
+
+describe('DocumentPagesComponent empty states', () => {
+  let projectFilter: ProjectFilterStub;
+
+  async function render(items: FolderedItemDetail[], projectId: number | null = null) {
+    projectFilter = projectFilterStub(projectId);
+    projectFilter.projects.next([{id: 4, name: 'Apollo'}]);
+    const pageService = jasmine.createSpyObj<PageService>('PageService', ['list']);
+    pageService.list.and.returnValue(Promise.resolve({success: true, items, hasMore: false}));
+    const folderService = jasmine.createSpyObj<FolderService>('FolderService', ['listFolders']);
+    folderService.listFolders.and.returnValue(Promise.resolve({success: true, folders: []}));
+    TestBed.configureTestingModule({
+      imports: [DocumentPagesComponent],
+      providers: [
+        provideTranslateService(),
+        {provide: PageService, useValue: pageService},
+        {provide: FolderService, useValue: folderService},
+        {provide: TeamService, useValue: {getCurrentTeamCode: () => 'abc'}},
+        {provide: FavoriteService, useValue: {}},
+        {provide: Router, useValue: jasmine.createSpyObj<Router>('Router', ['navigate', 'getCurrentNavigation'])},
+        {provide: ProjectFilterService, useValue: projectFilter.service},
+        {provide: TrashService, useValue: trashServiceStub().service},
+      ],
+    }).overrideComponent(DocumentPagesComponent, {set: {imports: [NgIf, AsyncPipe, TranslatePipe, EmptyStateComponent], schemas: [NO_ERRORS_SCHEMA]}});
+    const fixture = TestBed.createComponent(DocumentPagesComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  function title(fixture: {nativeElement: HTMLElement}): string | null {
+    return fixture.nativeElement.querySelector('.emptyState__title')?.textContent ?? null;
+  }
+
+  it('teaches first use when there are no pages at all', async () => {
+    const fixture = await render([]);
+
+    expect(title(fixture)).toBe(PHRASES.EMPTY_PAGES_TITLE);
+    expect(fixture.nativeElement.querySelector('.emptyState__hint')?.textContent).toBe(PHRASES.EMPTY_PAGES_HINT);
+  });
+
+  it('names the selected project when it has no pages', async () => {
+    const fixture = await render([], 4);
+
+    expect(title(fixture)).toBe(PHRASES.EMPTY_PAGES_IN_PROJECT_TITLE);
+  });
+
+  it('shows no empty state while there are pages', async () => {
+    const fixture = await render([page(10, null)]);
+
+    expect(title(fixture)).toBeNull();
   });
 });

@@ -47,8 +47,28 @@
     (loadMore)="handleLoadMore($event)"
   ></app-item-tree>
 
-  <p class="dashboardStub__body" *ngIf="!isLoading && hasNoSearchResults">{{ PHRASES.NO_SEARCH_RESULTS | translate }}</p>
-  <p class="dashboardStub__body" *ngIf="!isLoading && !isSearching && !displayFolders.length && !displayItems.length">{{ PHRASES.NO_DIAGRAMS_YET | translate }}</p>
+  <ng-container *ngIf="!isLoading && !alertMessage">
+    <app-empty-state
+      *ngIf="hasNoSearchResults"
+      [title]="PHRASES.NO_MATCHES_TITLE"
+      [titleParams]="{query: activeSearch}"
+      [hint]="selectedProjectName ? PHRASES.NO_MATCHES_IN_PROJECT_HINT : PHRASES.NO_MATCHES_TITLES_HINT"
+      [hintParams]="{project: selectedProjectName ?? ''}"
+    >
+      <app-button variant="ghost" (pressed)="clearSearch()">{{ PHRASES.CLEAR_SEARCH | translate }}</app-button>
+      <app-button *ngIf="selectedProjectName" variant="ghost" (pressed)="showAllProjects()">{{ PHRASES.SHOW_ALL_PROJECTS | translate }}</app-button>
+    </app-empty-state>
+    <app-empty-state
+      *ngIf="!isSearching && !displayFolders.length && !displayItems.length"
+      [title]="selectedProjectName ? emptyInProjectTitle : emptyTitle"
+      [titleParams]="{project: selectedProjectName ?? ''}"
+      [hint]="emptyHint"
+    >
+      <app-button variant="ghost" icon="plus" (pressed)="handleCreateItem(null)">{{ PHRASES.NEW_DIAGRAM | translate }}</app-button>
+      <app-button *ngIf="selectedProjectName" variant="ghost" (pressed)="showAllProjects()">{{ PHRASES.SHOW_ALL_PROJECTS | translate }}</app-button>
+      <app-button *ngIf="!selectedProjectName" variant="ghost" (pressed)="handleBrowseTemplates()">{{ PHRASES.BROWSE_TEMPLATES | translate }}</app-button>
+    </app-empty-state>
+  </ng-container>
 </div>
 
 <app-create-named-item-dialog
