@@ -262,8 +262,8 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] D3. Check the style budget: `npm run build` shows no component style over 4kB.
 
 ### E. Avatar colours
-- [ ] E1. Change red, orange, green and blue in `config/avatarColors.ts` as in Part 2.2; update `utils/mentionChip.spec.ts`'s expected red.
-- [ ] E2. Add `config/avatarColors.spec.ts`: every colour's letter is ≥ 4.5:1 on its background (using `testing/contrast.ts`).
+- [x] E1. Change red, orange, green and blue in `config/avatarColors.ts` as in Part 2.2; update `utils/mentionChip.spec.ts`'s expected red.
+- [x] E2. Add `config/avatarColors.spec.ts`: every colour's letter is ≥ 4.5:1 on its background (using `testing/contrast.ts`).
 
 ### F. Instant theme switch
 - [ ] F1. Reproduce the slow fade in the running app as described in Part 2.2 and add the finding as a dated line under decision 9 in this spec.

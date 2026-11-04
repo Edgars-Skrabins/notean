@@ -14,7 +14,7 @@ describe('mentionChipState', () => {
 
   it('shows people with their avatar colour and former members muted', () => {
     expect(mentionChipState('user', 'Ann', {type: 'user', id: 1, status: 'ok', nickname: 'Annie', avatar: {color: 'red', imageUrl: null}}))
-      .toEqual(jasmine.objectContaining({variant: 'person', text: '@Annie', color: '#E53935', icon: null, route: null}));
+      .toEqual(jasmine.objectContaining({variant: 'person', text: '@Annie', color: '#D32F2F', icon: null, route: null}));
     expect(mentionChipState('user', 'Ann', {type: 'user', id: 1, status: 'removed', nickname: 'Ann'}))
       .toEqual(jasmine.objectContaining({variant: 'removed', text: '@Ann', route: null}));
   });
