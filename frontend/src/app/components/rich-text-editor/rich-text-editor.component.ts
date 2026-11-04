@@ -36,6 +36,7 @@ export class RichTextEditorComponent implements AfterViewInit, OnChanges, OnDest
   @Input() teamCode = '';
   @Input() uploadImage: ((file: File) => Promise<number | null>) | null = null;
   @Input() mentionContext: MentionContext | null = null;
+  @Input() autofocus = false;
   @Output() contentChange = new EventEmitter<string>();
   @Output() filesDropped = new EventEmitter<File[]>();
 
@@ -61,6 +62,7 @@ export class RichTextEditorComponent implements AfterViewInit, OnChanges, OnDest
       ],
       content: this.content,
       editable: this.editable,
+      autofocus: this.autofocus ? 'end' : false,
       editorProps: {
         handleDOMEvents: {
           keydown: (_view, event) => event.key === 'Escape',
