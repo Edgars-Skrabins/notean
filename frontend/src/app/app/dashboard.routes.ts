@@ -10,6 +10,7 @@ import {BoardPageComponent} from "../pages/dashboard/board-page/board-page.compo
 import {BoardOverviewTabComponent} from "../pages/dashboard/board-overview-tab/board-overview-tab.component";
 import {KanbanTabComponent} from "../pages/dashboard/kanban-tab/kanban-tab.component";
 import {ListTabComponent} from "../pages/dashboard/list-tab/list-tab.component";
+import {BoardSettingsTabComponent} from "../pages/dashboard/board-settings-tab/board-settings-tab.component";
 import {TicketDetailComponent} from "../pages/dashboard/ticket-detail/ticket-detail.component";
 import {TrashComponent} from "../pages/dashboard/trash/trash.component";
 import {ChatPageComponent} from "../pages/dashboard/chat-page/chat-page.component";
@@ -63,6 +64,7 @@ export const dashboardRoutes: Routes = [
         component: ListTabComponent,
         children: [{path: `${AppRoutes.TICKETS}/:ticketId`, component: TicketDetailComponent}],
       },
+      {path: AppRoutes.SETTINGS, component: BoardSettingsTabComponent},
     ],
   },
 ];
