@@ -17,6 +17,9 @@ import {AppRoutes} from '../../app/app-routes.enum';
 
 export const MIN_QUERY_LENGTH = 1;
 export const SEARCH_DEBOUNCE_MS = 250;
+export const LISTBOX_ID = 'globalSearchListbox';
+const OPTION_ID_PREFIX = 'globalSearchOption-';
+const HEADING_ID_PREFIX = 'globalSearchHeading-';
 
 const SECTION_PHRASES: Record<SearchResultType, string> = {
   project: PHRASES.PROJECTS,
@@ -45,12 +48,14 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
   protected readonly SECTION_PHRASES = SECTION_PHRASES;
   protected readonly DROPDOWN_POSITIONS = DROPDOWN_POSITIONS;
+  protected readonly LISTBOX_ID = LISTBOX_ID;
 
   @ViewChild('input', {static: true}) input!: ElementRef<HTMLInputElement>;
 
   query = '';
   sections: SearchSection[] = [];
   isOpen = false;
+  isFocused = false;
   isLoading = false;
   hasError = false;
   includeAllProjects = false;
@@ -136,6 +141,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
   }
 
   handleFocus() {
+    this.isFocused = true;
     if (this.trimmedQuery().length >= MIN_QUERY_LENGTH && !this.isOpen) {
       this.open();
       this.search();
@@ -162,6 +168,11 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
       this.close();
       this.input.nativeElement.blur();
     }
+  }
+
+  handleBlur() {
+    this.isFocused = false;
+    this.close();
   }
 
   handleOutsideClick(event: MouseEvent) {
@@ -233,12 +244,30 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     return splitSnippet(snippet, this.searchedQuery);
   }
 
+  get activeOptionId(): string | null {
+    return this.isOpen && this.activeIndex >= 0 ? this.optionId(this.activeIndex) : null;
+  }
+
+  optionId(index: number): string {
+    return `${OPTION_ID_PREFIX}${index}`;
+  }
+
+  headingId(section: SearchSection): string {
+    return `${HEADING_ID_PREFIX}${section.type}`;
+  }
+
+  navIndex(item: SearchResult | SearchSection): number {
+    return this.navItems().findIndex((navItem) => navItem.result === item || navItem.section === item);
+  }
+
   isActive(item: SearchResult | SearchSection): boolean {
-    const active = this.navItems()[this.activeIndex];
-    return !!active && (active.result === item || active.section === item);
+    return this.activeIndex >= 0 && this.navIndex(item) === this.activeIndex;
   }
 
   private navItems(): NavItem[] {
+    if (this.isLoading) {
+      return [];
+    }
     return this.visibleSections.flatMap((section): NavItem[] => [
       ...section.results.map((result) => ({result})),
       ...(section.hasMore ? [{section}] : []),

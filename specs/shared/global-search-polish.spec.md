@@ -108,9 +108,9 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] A1. Add the new keys and the changed `SEARCH_IN_PROJECT` text to `config/phrases.ts` and all 11 translation files, next to the existing `SEARCH_*` keys.
 
 ### B. Combobox and listbox semantics
-- [ ] B1. Template: combobox attributes on the input, the listbox/group/option structure with ids, `aria-selected`, `aria-disabled` on *Show more* while loading, and `(mousedown)` preventDefault on the panel. In the `.ts`, add `LISTBOX_ID`, `optionId`, `headingId` and `activeOptionId`.
-- [ ] B2. Add `handleBlur()` closing the panel and `isFocused` tracking.
-- [ ] B3. Update `global-search.component.spec.ts`: the input has `role="combobox"` and `aria-controls` points at the rendered listbox only while open; `aria-activedescendant` follows ↓/↑ and is cleared on close; each result row is `role="option"` inside a `role="group"` labelled by its heading; blur closes the panel; the existing keyboard and routing tests still pass with the `div` rows.
+- [x] B1. Template: combobox attributes on the input, the listbox/group/option structure with ids, `aria-selected`, `aria-disabled` on *Show more* while loading, and `(mousedown)` preventDefault on the panel. In the `.ts`, add `LISTBOX_ID`, `optionId`, `headingId` and `activeOptionId`.
+- [x] B2. Add `handleBlur()` closing the panel and `isFocused` tracking.
+- [x] B3. Update `global-search.component.spec.ts`: the input has `role="combobox"` and `aria-controls` points at the rendered listbox only while open; `aria-activedescendant` follows ↓/↑ and is cleared on close; each result row is `role="option"` inside a `role="group"` labelled by its heading; blur closes the panel; the existing keyboard and routing tests still pass with the `div` rows.
 
 ### C. Project scope row and no-results state
 - [ ] C1. Add the `{ scope: true }` nav item, the scope option row, Enter and click handling, and the pre-highlight when a project-scoped search is empty. Remove the footer markup and CSS.

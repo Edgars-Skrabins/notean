@@ -1,7 +1,7 @@
 import {ComponentFixture, fakeAsync, flushMicrotasks, TestBed, tick} from '@angular/core/testing';
 import {Router} from '@angular/router';
 import {provideTranslateService} from '@ngx-translate/core';
-import {GlobalSearchComponent, SEARCH_DEBOUNCE_MS} from './global-search.component';
+import {GlobalSearchComponent, LISTBOX_ID, SEARCH_DEBOUNCE_MS} from './global-search.component';
 import {SearchService} from '@services/search.service';
 import {TeamService} from '@services/team.service';
 import {ProjectFilterService} from '@services/project-filter.service';
@@ -189,6 +189,78 @@ describe('GlobalSearchComponent', () => {
 
     expect(component.isOpen).toBeFalse();
     expect(event.defaultPrevented).toBeTrue();
+  }));
+
+  it('is a combobox that controls the listbox only while open', fakeAsync(() => {
+    searchService.search.and.returnValue(Promise.resolve(found(section('page', [result('page', 1)]))));
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('input');
+    expect(input.getAttribute('role')).toBe('combobox');
+    expect(input.hasAttribute('aria-controls')).toBeFalse();
+
+    type('rocket');
+    fixture.detectChanges();
+    expect(input.getAttribute('aria-controls')).toBe(LISTBOX_ID);
+    expect(document.getElementById(LISTBOX_ID)?.getAttribute('role')).toBe('listbox');
+
+    component.close();
+    fixture.detectChanges();
+    expect(input.hasAttribute('aria-controls')).toBeFalse();
+  }));
+
+  it('points aria-activedescendant at the highlighted option and clears it on close', fakeAsync(() => {
+    searchService.search.and.returnValue(Promise.resolve(found(section('page', [result('page', 1), result('page', 2)]))));
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('input');
+    type('rocket');
+    fixture.detectChanges();
+    expect(input.hasAttribute('aria-activedescendant')).toBeFalse();
+
+    component.handleKeydown(new KeyboardEvent('keydown', {key: 'ArrowDown'}));
+    component.handleKeydown(new KeyboardEvent('keydown', {key: 'ArrowDown'}));
+    fixture.detectChanges();
+    const second = document.getElementById(input.getAttribute('aria-activedescendant')!)!;
+    expect(second.textContent).toContain('page 2');
+    expect(second.getAttribute('aria-selected')).toBe('true');
+
+    component.handleKeydown(new KeyboardEvent('keydown', {key: 'ArrowUp'}));
+    fixture.detectChanges();
+    const first = document.getElementById(input.getAttribute('aria-activedescendant')!)!;
+    expect(first.textContent).toContain('page 1');
+    expect(second.getAttribute('aria-selected')).toBe('false');
+
+    component.close();
+    fixture.detectChanges();
+    expect(input.hasAttribute('aria-activedescendant')).toBeFalse();
+  }));
+
+  it('renders results as options in groups labelled by their heading', fakeAsync(() => {
+    searchService.search.and.returnValue(Promise.resolve(found(
+      section('page', [result('page', 1)]),
+      section('board', [result('board', 2)], true),
+    )));
+    type('rocket');
+    fixture.detectChanges();
+
+    const groups = Array.from(document.getElementById(LISTBOX_ID)!.querySelectorAll('[role="group"]'));
+    expect(groups.length).toBe(2);
+    groups.forEach((group) => {
+      const heading = document.getElementById(group.getAttribute('aria-labelledby')!)!;
+      expect(group.contains(heading)).toBeTrue();
+      expect(heading.textContent!.trim()).not.toBe('');
+      expect(group.querySelectorAll('[role="option"]').length).toBeGreaterThan(0);
+    });
+    expect(groups[1].querySelectorAll('[role="option"]').length).toBe(2);
+  }));
+
+  it('closes the panel when the input loses focus', fakeAsync(() => {
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('input');
+    type('rocket');
+    input.dispatchEvent(new FocusEvent('focus'));
+    expect(component.isFocused).toBeTrue();
+
+    input.dispatchEvent(new FocusEvent('blur'));
+
+    expect(component.isOpen).toBeFalse();
+    expect(component.isFocused).toBeFalse();
   }));
 
   it('leaves Escape to the layer below when the panel is closed', () => {
