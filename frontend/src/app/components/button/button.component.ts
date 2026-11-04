@@ -17,5 +17,6 @@ export class ButtonComponent {
   @Input() icon?: IconName;
   @Input() disabled = false;
   @Input() type: 'button' | 'submit' = 'button';
+  @Input() initialFocus = false;
   @Output() pressed = new EventEmitter<void>();
 }

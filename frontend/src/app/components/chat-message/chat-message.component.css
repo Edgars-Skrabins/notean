@@ -10,12 +10,15 @@
   border-radius: var(--radius-sm);
 }
 
+.chatMessage:focus:not(:focus-visible) {
+  outline: none;
+}
+
 .chatMessage--grouped {
   padding-top: 2px;
 }
 
-.chatMessage:hover,
-.chatMessage--active {
+.chatMessage--revealed {
   background: color-mix(in srgb, var(--color-tint) 4%, transparent);
 }
 
@@ -66,16 +69,18 @@
   right: var(--space-3);
   width: auto;
   overflow: visible;
-  display: none;
+  display: flex;
   align-items: center;
   gap: 2px;
   padding: 2px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--transition-fast);
 }
 
-.chatMessage:hover .chatMessage__actions,
-.chatMessage--active .chatMessage__actions,
-.chatMessage__actions:focus-within {
-  display: flex;
+.chatMessage--revealed .chatMessage__actions {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 .chatMessage__quickReaction {

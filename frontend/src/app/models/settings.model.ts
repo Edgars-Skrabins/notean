@@ -10,4 +10,6 @@ export interface UserSettings {
   themeMode: ThemeMode;
 }
 
+export type ToggleSetting = 'showFavoritesOnHome' | 'showFavoritesInSidebar' | 'showMyWorkOnHome';
+
 export type SettingsResponse = Result<{ settings: UserSettings }, UsersErrorCode>;

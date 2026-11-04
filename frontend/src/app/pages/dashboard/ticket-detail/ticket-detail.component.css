@@ -89,6 +89,7 @@
   letter-spacing: 0.06em;
 }
 
+.ticketDetail__status,
 .ticketDetail__priority {
   display: block;
 }

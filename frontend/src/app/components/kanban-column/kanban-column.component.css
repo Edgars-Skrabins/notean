@@ -52,8 +52,15 @@
   transition: opacity var(--transition-fast);
 }
 
-.kanbanColumn__header:hover .kanbanColumn__actions {
+.kanbanColumn__header:hover .kanbanColumn__actions,
+.kanbanColumn__header:focus-within .kanbanColumn__actions {
   opacity: 1;
+}
+
+@media (hover: none) {
+  .kanbanColumn__actions {
+    opacity: 1;
+  }
 }
 
 .kanbanColumn__body {

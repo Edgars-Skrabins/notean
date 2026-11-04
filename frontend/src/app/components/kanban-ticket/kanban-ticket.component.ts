@@ -8,6 +8,7 @@ import {FavoriteStarComponent} from '@components/favorite-star/favorite-star.com
 import {AvatarStackComponent} from '@components/avatar-stack/avatar-stack.component';
 import {TagChipsComponent} from '@components/tag-chips/tag-chips.component';
 import {Tag} from '@models/tag.model';
+import {BoardPriority} from '@models/priority.model';
 import {IconComponent} from '@components/icon/icon.component';
 import {TooltipDirective} from '@components/tooltip/tooltip.directive';
 
@@ -32,6 +33,7 @@ export class KanbanTicketComponent {
 
   @Input({required: true}) ticket!: TicketSummary;
   @Input() tags: Tag[] = [];
+  @Input() priority: BoardPriority | null = null;
   @Output() opened = new EventEmitter<void>();
   @Output() moveToBacklog = new EventEmitter<void>();
   @Output() deleteTicket = new EventEmitter<void>();

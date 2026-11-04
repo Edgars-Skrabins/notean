@@ -1,8 +1,8 @@
-<div class="folderProjectDialogOverlay">
+<div class="folderProjectDialogOverlay" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
   <div class="folderProjectDialogOverlay__backdrop" (click)="handleCancel()"></div>
 
-  <div class="folderProjectDialog">
-    <h3 class="folderProjectDialog__title">{{ PHRASES.CHANGE_FOLDER_PROJECT | translate }}: '{{ folderTitle }}'</h3>
+  <div class="folderProjectDialog" role="dialog" aria-modal="true" [attr.aria-labelledby]="titleId" tabindex="-1">
+    <h3 class="folderProjectDialog__title" [id]="titleId">{{ PHRASES.CHANGE_FOLDER_PROJECT | translate }}: '{{ folderTitle }}'</h3>
 
     <app-project-select
       class="folderProjectDialog__select"
