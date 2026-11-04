@@ -1,10 +1,11 @@
 import {ActiveTheme, ThemeService} from "./theme.service";
-import {THEME_MODE_STORAGE_KEY, THEME_STORAGE_KEY} from "@utils/themeDom";
+import {THEME_MODE_STORAGE_KEY, THEME_STORAGE_KEY, THEME_SWITCHING_ATTRIBUTE} from "@utils/themeDom";
 
 describe('ThemeService', () => {
   const root = document.documentElement;
   let savedTheme: string | null;
   let savedMode: string | null;
+  let savedSwitching: string | null;
   let prefersDark: boolean;
   let changeListener: () => void;
 
@@ -21,6 +22,7 @@ describe('ThemeService', () => {
   beforeEach(() => {
     savedTheme = root.getAttribute('data-theme');
     savedMode = root.getAttribute('data-mode');
+    savedSwitching = root.getAttribute(THEME_SWITCHING_ATTRIBUTE);
     prefersDark = false;
     localStorage.removeItem(THEME_STORAGE_KEY);
     localStorage.removeItem(THEME_MODE_STORAGE_KEY);
@@ -37,6 +39,7 @@ describe('ThemeService', () => {
   afterEach(() => {
     restore('data-theme', savedTheme);
     restore('data-mode', savedMode);
+    restore(THEME_SWITCHING_ATTRIBUTE, savedSwitching);
     localStorage.removeItem(THEME_STORAGE_KEY);
     localStorage.removeItem(THEME_MODE_STORAGE_KEY);
   });
@@ -74,6 +77,21 @@ describe('ThemeService', () => {
     expect(root.getAttribute('data-mode')).toBe('dark');
     expect(localStorage.getItem(THEME_STORAGE_KEY)).toBeNull();
     expect(localStorage.getItem(THEME_MODE_STORAGE_KEY)).toBeNull();
+  });
+
+  it('turns transitions off for two frames while the theme changes', async () => {
+    const service = create();
+
+    service.preview('terminal', 'light');
+
+    expect(root.hasAttribute(THEME_SWITCHING_ATTRIBUTE)).toBeTrue();
+    expect(root.getAttribute('data-theme')).toBe('terminal');
+    expect(root.getAttribute('data-mode')).toBe('light');
+
+    await new Promise(requestAnimationFrame);
+    await new Promise(requestAnimationFrame);
+
+    expect(root.hasAttribute(THEME_SWITCHING_ATTRIBUTE)).toBeFalse();
   });
 
   it('follows the system preference live in system mode', () => {

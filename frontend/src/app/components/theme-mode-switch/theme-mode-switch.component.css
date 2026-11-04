@@ -18,7 +18,7 @@
   min-height: var(--control-height-sm);
   padding: 0 var(--space-4);
   background: none;
-  border: none;
+  border: 1px solid transparent;
   border-radius: var(--radius-sm);
   color: var(--color-text-muted);
   font-family: var(--font-ui);
@@ -33,8 +33,9 @@
 }
 
 .themeModeSwitch__option--active {
-  background: var(--color-nav-active-bg);
-  color: var(--color-nav-active-text);
+  background: var(--color-card-bg);
+  border-color: var(--color-control-border);
+  color: var(--color-text-heading);
 }
 
 .themeModeSwitch__option:has(:focus-visible) {

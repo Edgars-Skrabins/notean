@@ -72,6 +72,7 @@ export const THEME_TOKENS: string[] = [
   '--color-input-bg-focus',
   '--color-input-border',
   '--color-input-border-focus',
+  '--color-control-border',
   '--color-primary',
   '--color-primary-light',
   '--color-primary-gradient',

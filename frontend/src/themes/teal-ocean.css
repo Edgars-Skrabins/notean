@@ -33,6 +33,7 @@
   --color-input-bg-focus: #163035;
   --color-input-border: #1f3a3f;
   --color-input-border-focus: #2fb5a3;
+  --color-control-border: #617e83;
 
   --color-primary: #2fb5a3;
   --color-primary-light: #8fe6da;
@@ -59,9 +60,10 @@
   --color-input-bg-focus: #ffffff;
   --color-input-border: #dce8e6;
   --color-input-border-focus: #0e7f72;
+  --color-control-border: #7d8786;
 
   --color-primary: #0e7f72;
-  --color-primary-light: #2fb5a3;
+  --color-primary-light: #007767;
   --color-primary-gradient: #0e7f72;
   --color-on-primary: #ffffff;
 
@@ -70,5 +72,5 @@
 
   --color-text-heading: #0f2b2c;
   --color-text-muted: #4f6b6a;
-  --color-text-faint: #5d7877;
+  --color-text-faint: #526d6c;
 }

@@ -39,6 +39,14 @@ describe('ThemePickerComponent', () => {
     expect(radios[3].checked).toBeTrue();
   });
 
+  it('shows a check only on the selected card', async () => {
+    const {cards} = await render();
+
+    expect(cards.map((card) => card.querySelector('.themePicker__check') !== null)).toEqual([
+      false, false, false, true, false, false, false, false, false,
+    ]);
+  });
+
   it('renders each preview in its own theme and the resolved mode', async () => {
     const {cards} = await render();
     const preview = cards[5].querySelector('.themePicker__preview') as HTMLElement;
