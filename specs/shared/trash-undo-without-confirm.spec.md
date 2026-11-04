@@ -1,7 +1,7 @@
 # Trash undo without confirm — Spec
 
 **Type:** feature
-**Status:** ready for implementation
+**Status:** in progress
 **Last updated:** 2026-11-04
 
 # Part 1 — Business logic and usage
@@ -127,6 +127,10 @@ In `config/phrases.ts` and every file in `frontend/public/assets/translations/` 
 10. **Chat channel delete now responds `200 { trash_entry_ids }`** instead of `204`, so the client can offer Undo like every other trash move. This changes the API, and CLAUDE.md's routes and trash notes get updated with it. Rejected: keeping the confirm for channels only (inconsistent, and the channel is restorable); restoring by looking the entry up on the client (no endpoint for that).
 11. **Board and chat channel deletes, which affect every member, no longer ask first.** If you'd rather keep a confirm for team-wide containers (boards, channels), decisions 1 and 6 change for those two only.
 
+### Decisions made during implementation
+12. **CLAUDE.md does not describe the toast pause** (2026-11-04). The pause on hover and focus lands with `announced-status-messages`, which documents it; describing it here would be wrong on this branch until that spec merges. The trash bullet says the toast names the item and that moves to the trash have no confirm.
+13. **The column-delete toast and the empty-column delete** (2026-11-04). Deleting an empty column trashes nothing, so `notifyTrashed` shows no toast for it (its existing empty-ids rule), as before.
+
 # Part 3 — Implementation TODO
 
 Read Part 1 and Part 2 before starting. Work through the tasks in order and tick each one when it is done.
@@ -134,31 +138,31 @@ Read Part 1 and Part 2 before starting. Work through the tasks in order and tick
 Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 assertions, 0 failures (master f15abdf, 2026-11-04).
 
 ### A. Backend
-- [ ] A1. In `backend/app/controllers/chat_channels_controller.rb#destroy`, keep the entry `Trash.move` returns and render `{ trash_entry_ids: [ entry.id ] }` (200) before the `ChatBroadcast.channel_removed` line. Update the delete test in `backend/test/controllers/chat_channels_controller_test.rb` to assert `:ok` and the returned id equals the channel's new `TrashEntry` id. Run `bin/rails test test/controllers/chat_channels_controller_test.rb`.
+- [x] A1. In `backend/app/controllers/chat_channels_controller.rb#destroy`, keep the entry `Trash.move` returns and render `{ trash_entry_ids: [ entry.id ] }` (200) before the `ChatBroadcast.channel_removed` line. Update the delete test in `backend/test/controllers/chat_channels_controller_test.rb` to assert `:ok` and the returned id equals the channel's new `TrashEntry` id. Run `bin/rails test test/controllers/chat_channels_controller_test.rb`.
 
 ### B. Toast and trash service
-- [ ] B1. Add `messageParams` to `ToastOptions` (`models/toast.model.ts`) and render it in `components/toast/toast.component.html`.
+- [x] B1. Add `messageParams` to `ToastOptions` (`models/toast.model.ts`) and render it in `components/toast/toast.component.html`.
 - [ ] ~~B2. Toast pause/resume.~~ Moved to `announced-status-messages` (owner of the toast countdown) to avoid two implementations.
-- [ ] B3. Add `TrashedSubject` to `models/trash.model.ts` and change `TrashService.notifyTrashed` to take it, choosing `TRASHED_ITEM`, `TRASHED_TICKETS` or `TRASHED_TICKETS_ONE` with params and cutting titles over 60 characters. Update `services/trash.service.spec.ts`: title message and params, the 60-character cut, count and one-ticket messages, and that empty `entryIds` still shows nothing. Update `testing/trashServiceStub.ts` if its typing needs it.
-- [ ] B4. Add the new phrases and change the texts listed in 2.2 in `config/phrases.ts` and all 11 translation files, next to related keys. Don't remove keys yet (that's E2).
+- [x] B3. Add `TrashedSubject` to `models/trash.model.ts` and change `TrashService.notifyTrashed` to take it, choosing `TRASHED_ITEM`, `TRASHED_TICKETS` or `TRASHED_TICKETS_ONE` with params and cutting titles over 60 characters. Update `services/trash.service.spec.ts`: title message and params, the 60-character cut, count and one-ticket messages, and that empty `entryIds` still shows nothing. Update `testing/trashServiceStub.ts` if its typing needs it.
+- [x] B4. Add the new phrases and change the texts listed in 2.2 in `config/phrases.ts` and all 11 translation files, next to related keys. Don't remove keys yet (that's E2).
 
 ### C. Remove confirms from moves to the trash
-- [ ] C1. Pages/Diagrams tree: `item-tree` deletes without confirm (remove `itemPendingDeletion`, handlers, the confirm, the `deleteItemConfirmMessage` input and its bindings in `document-pages` and `diagrams`). In `foldered-list-page.base.ts`, add the `deletingItemIds` guard and the `{title}` subjects for item and folder-cascade deletes. Update `item-tree.component.spec.ts` (pressing delete emits `deleteItem` at once) and add a spec for the guard and subject in the Pages or Diagrams list spec.
-- [ ] C2. Page/diagram popup: in `foldered-item-detail.base.ts`, `handleDelete` deletes directly behind `isDeleting` with `{title}`; remove the confirm state and handlers and the page/diagram template bindings. Add `confirmDeleteLabel` and make `confirmDeleteMessage` optional with `{title}` params in `item-detail-layout`. Pass `CONFIRM_DELETE_TEMPLATE` / `DELETE_TEMPLATE` from `template-detail.component.html`. Update `page-detail.component.spec.ts` for the direct delete (one request, goes back, toast subject).
-- [ ] C3. Board: `board-page.component.{ts,html}` deletes directly behind `isDeleting`; update `board-page.component.spec.ts` (replace the `handleConfirmDelete` calls with `handleDelete`, plus a repeat-press test).
-- [ ] C4. Tickets: `kanban-tab` card delete, `list-tab` row and bulk delete, and `ticket-detail` delete all run directly with their guards and subjects. Update `kanban-tab.component.spec.ts`, `list-tab.component.spec.ts` and `ticket-detail.component.spec.ts`: drop the confirm steps, assert the subjects, assert a second press while pending sends nothing.
-- [ ] C5. Chat channel: `ChatService.deleteChannel` returns `trashEntryIds`; `chat-channel-settings-dialog` deletes directly behind `isDeleting` and emits the ids; `chat-page.component.ts` navigates Home and calls `notifyTrashed` with `{title: channel.name}`. Add or adjust specs for the dialog (one request, emits ids, error shown on failure) and the chat page handler.
+- [x] C1. Pages/Diagrams tree: `item-tree` deletes without confirm (remove `itemPendingDeletion`, handlers, the confirm, the `deleteItemConfirmMessage` input and its bindings in `document-pages` and `diagrams`). In `foldered-list-page.base.ts`, add the `deletingItemIds` guard and the `{title}` subjects for item and folder-cascade deletes. Update `item-tree.component.spec.ts` (pressing delete emits `deleteItem` at once) and add a spec for the guard and subject in the Pages or Diagrams list spec.
+- [x] C2. Page/diagram popup: in `foldered-item-detail.base.ts`, `handleDelete` deletes directly behind `isDeleting` with `{title}`; remove the confirm state and handlers and the page/diagram template bindings. Add `confirmDeleteLabel` and make `confirmDeleteMessage` optional with `{title}` params in `item-detail-layout`. Pass `CONFIRM_DELETE_TEMPLATE` / `DELETE_TEMPLATE` from `template-detail.component.html`. Update `page-detail.component.spec.ts` for the direct delete (one request, goes back, toast subject).
+- [x] C3. Board: `board-page.component.{ts,html}` deletes directly behind `isDeleting`; update `board-page.component.spec.ts` (replace the `handleConfirmDelete` calls with `handleDelete`, plus a repeat-press test).
+- [x] C4. Tickets: `kanban-tab` card delete, `list-tab` row and bulk delete, and `ticket-detail` delete all run directly with their guards and subjects. Update `kanban-tab.component.spec.ts`, `list-tab.component.spec.ts` and `ticket-detail.component.spec.ts`: drop the confirm steps, assert the subjects, assert a second press while pending sends nothing.
+- [x] C5. Chat channel: `ChatService.deleteChannel` returns `trashEntryIds`; `chat-channel-settings-dialog` deletes directly behind `isDeleting` and emits the ids; `chat-page.component.ts` navigates Home and calls `notifyTrashed` with `{title: channel.name}`. Add or adjust specs for the dialog (one request, emits ids, error shown on failure) and the chat page handler.
 
 ### D. Name the item in the remaining confirms
-- [ ] D1. Kanban column confirm: key by ticket count, `{title, count}`, `DELETE_COLUMN` label, and `{ticketCount}` for the toast. Extend `kanban-tab.component.spec.ts` to check the key chosen for 0, 1 and several tickets.
-- [ ] D2. Template confirms in `template-list`, `board-template-detail` and `template-detail` (through `item-detail-layout`) with `{title}` and `DELETE_TEMPLATE`. Update `template-list.component.spec.ts` if it asserts the message.
-- [ ] D3. `delete-folder-dialog` title, `attachment-list` (`{name}`, `DELETE_ATTACHMENT`), `comment-item` (`DELETE_COMMENT`), `chat-message` (`DELETE_MESSAGE`) and `manage-team` (`{name: teamName}`, `DELETE_TEAM`). Update `attachment-list`, `comment-item` and `manage-team` specs only where they assert the old bindings.
+- [x] D1. Kanban column confirm: key by ticket count, `{title, count}`, `DELETE_COLUMN` label, and `{ticketCount}` for the toast. Extend `kanban-tab.component.spec.ts` to check the key chosen for 0, 1 and several tickets.
+- [x] D2. Template confirms in `template-list`, `board-template-detail` and `template-detail` (through `item-detail-layout`) with `{title}` and `DELETE_TEMPLATE`. Update `template-list.component.spec.ts` if it asserts the message.
+- [x] D3. `delete-folder-dialog` title, `attachment-list` (`{name}`, `DELETE_ATTACHMENT`), `comment-item` (`DELETE_COMMENT`), `chat-message` (`DELETE_MESSAGE`) and `manage-team` (`{name: teamName}`, `DELETE_TEAM`). Update `attachment-list`, `comment-item` and `manage-team` specs only where they assert the old bindings.
 
 ### E. Cleanup and docs
-- [ ] E1. Remove `ConfirmDialogComponent` from the `imports` of components that no longer render it. Remove unused fields and handlers left behind.
-- [ ] E2. Remove the unused phrase keys listed in 2.2 from `phrases.ts` and every translation file, after grepping that each is unused.
-- [ ] E3. Update `CLAUDE.md`: the trash bullet (`notifyTrashed(teamCode, trashEntryIds, subject)`, the named toast that pauses on hover and focus, no confirm before a move to the trash, permanent deletes confirm and name the item) and the backend trash/chat routes note (chat channel delete now responds `200 { trash_entry_ids }`).
+- [x] E1. Remove `ConfirmDialogComponent` from the `imports` of components that no longer render it. Remove unused fields and handlers left behind.
+- [x] E2. Remove the unused phrase keys listed in 2.2 from `phrases.ts` and every translation file, after grepping that each is unused.
+- [x] E3. Update `CLAUDE.md`: the trash bullet (`notifyTrashed(teamCode, trashEntryIds, subject)`, the named toast that pauses on hover and focus, no confirm before a move to the trash, permanent deletes confirm and name the item) and the backend trash/chat routes note (chat channel delete now responds `200 { trash_entry_ids }`).
 
 ### Z. Wrap-up
-- [ ] Z1. Full test runs, build and lint, using the commands in `CLAUDE.md` (`npm test`, `npm run build` in `frontend/`; `bin/rails test`, `bin/rubocop` in `backend/`).
+- [x] Z1. Full test runs, build and lint, using the commands in `CLAUDE.md` (`npm test`, `npm run build` in `frontend/`; `bin/rails test`, `bin/rubocop` in `backend/`).
 - [ ] Z2. Manual check in the running app: delete a page from the list and from its popup, a diagram, a ticket from a Kanban card, a List row and the ticket popup, three selected tickets in List, a board and a chat channel. Each one is gone at once, the toast names it, hovering or tabbing into the toast keeps it up, and Undo brings it back. A fast double click sends one request. Delete a column, a template, an attachment, a comment and a chat message, and check each confirm names the item and its button names the action.
