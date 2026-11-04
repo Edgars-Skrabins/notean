@@ -17,6 +17,14 @@
   padding: 14px 18px;
 }
 
+.teamCodeDisplay--compact {
+  display: inline-flex;
+  max-width: 100%;
+  padding: var(--space-1) var(--space-1) var(--space-1) var(--space-3);
+  font-size: var(--font-sm);
+  color: var(--color-text-muted);
+}
+
 .teamCodeDisplay__text {
   word-break: break-all;
 }

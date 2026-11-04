@@ -1,10 +1,5 @@
-<button type="button" class="pageBackButton" (click)="handleGoBack()">
-  <span class="pageBackButton__arrow" aria-hidden="true">&larr;</span>
-  {{ PHRASES.BACK_TO_DASHBOARD | translate }}
-</button>
-
-<div class="settings">
-  <h1 class="settings__title">{{ PHRASES.SETTINGS | translate }}</h1>
+<div class="dashboardStub settings">
+  <h1 class="dashboardStub__title settings__title">{{ PHRASES.SETTINGS | translate }}</h1>
 
   <section class="settings__appearance">
     <h2 class="settings__sectionTitle">{{ PHRASES.APPEARANCE | translate }}</h2>
@@ -23,21 +18,26 @@
         (themeChange)="handleThemeChange($event)"
       ></app-theme-picker>
     </div>
+    <div class="settings__field">
+      <span class="settings__label">{{ PHRASES.LANGUAGE | translate }}</span>
+      <app-language-switcher></app-language-switcher>
+      <span class="settings__hint">{{ PHRASES.LANGUAGE_DEVICE_HINT | translate }}</span>
+    </div>
   </section>
 
   <div class="settings__options">
-    <app-checkbox
+    <app-switch
       [checked]="settings.showFavoritesOnHome"
       (checkedChange)="handleSettingChange('showFavoritesOnHome', $event)"
-    >{{ PHRASES.SHOW_FAVORITES_ON_HOME | translate }}</app-checkbox>
-    <app-checkbox
+    >{{ PHRASES.SHOW_FAVORITES_ON_HOME | translate }}</app-switch>
+    <app-switch
       [checked]="settings.showFavoritesInSidebar"
       (checkedChange)="handleSettingChange('showFavoritesInSidebar', $event)"
-    >{{ PHRASES.SHOW_FAVORITES_IN_SIDEBAR | translate }}</app-checkbox>
-    <app-checkbox
+    >{{ PHRASES.SHOW_FAVORITES_IN_SIDEBAR | translate }}</app-switch>
+    <app-switch
       [checked]="settings.showMyWorkOnHome"
       (checkedChange)="handleSettingChange('showMyWorkOnHome', $event)"
-    >{{ PHRASES.SHOW_MY_WORK_ON_HOME | translate }}</app-checkbox>
+    >{{ PHRASES.SHOW_MY_WORK_ON_HOME | translate }}</app-switch>
   </div>
 
   <button class="authButton" [disabled]="!hasUnsavedChanges || isSaving" (click)="handleSave()">

@@ -1,4 +1,4 @@
-import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {AfterViewChecked, Component, ChangeDetectionStrategy, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
 import {NgFor, NgIf} from '@angular/common';
 import {CdkDragDrop, CdkDropListGroup, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
@@ -17,6 +17,7 @@ import {KanbanColumnComponent} from "@components/kanban-column/kanban-column.com
 import {CreateNamedItemDialogComponent} from "@components/create-named-item-dialog/create-named-item-dialog.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {errorPhrase} from "@utils/errorPhrase";
+import {scrollEdges} from "@utils/scrollEdges";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 
@@ -37,14 +38,20 @@ import {BoardPageStateService} from "../board-page/board-page-state.service";
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './kanban-tab.component.css'
 })
-export class KanbanTabComponent {
+export class KanbanTabComponent implements AfterViewChecked, OnDestroy {
   protected readonly PHRASES = PHRASES;
+
+  @ViewChild('scroller') scroller?: ElementRef<HTMLElement>;
 
   alertMessage = '';
   columnPendingDeletion: BoardColumn | null = null;
   isCreateColumnDialogOpen = false;
   ticketPendingDeletion: { ticket: TicketSummary; column: BoardColumn } | null = null;
   addTicketToColumn: BoardColumn | null = null;
+
+  private resizeObserver: ResizeObserver | null = null;
+  private observedElement: HTMLElement | null = null;
+  private scrollToEndPending = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -56,6 +63,43 @@ export class KanbanTabComponent {
     private toastService: ToastService,
     private trashService: TrashService
   ) {
+  }
+
+  ngAfterViewChecked() {
+    const element = this.scroller?.nativeElement;
+    if (!element) {
+      return;
+    }
+
+    if (element !== this.observedElement) {
+      this.resizeObserver ??= new ResizeObserver(() => this.updateOverflow());
+      this.resizeObserver.disconnect();
+      this.resizeObserver.observe(element);
+      this.observedElement = element;
+    }
+
+    if (this.scrollToEndPending) {
+      this.scrollToEndPending = false;
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      element.scrollTo({left: element.scrollWidth, behavior: reduceMotion ? 'auto' : 'smooth'});
+    }
+
+    this.updateOverflow();
+  }
+
+  ngOnDestroy() {
+    this.resizeObserver?.disconnect();
+  }
+
+  updateOverflow() {
+    const element = this.scroller?.nativeElement;
+    if (!element) {
+      return;
+    }
+
+    const edges = scrollEdges(element);
+    element.classList.toggle('kanbanTab--fadeStart', edges.start);
+    element.classList.toggle('kanbanTab--fadeEnd', edges.end);
   }
 
   handleRenameColumn(column: BoardColumn, title: string) {
@@ -118,6 +162,7 @@ export class KanbanTabComponent {
 
         this.alertMessage = '';
         this.state.board?.columns.push(response.column);
+        this.scrollToEndPending = true;
       });
   }
 

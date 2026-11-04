@@ -5,11 +5,12 @@
     [(ngModel)]="searchQuery"
     (ngModelChange)="handleSearchChange($event)"
     [placeholder]="PHRASES.SEARCH_TEMPLATES | translate"
+    [attr.aria-label]="PHRASES.SEARCH_TEMPLATES | translate"
   />
   <ng-content></ng-content>
 </div>
 
-<p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+<p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
 <ng-container *ngIf="builtIns.length">
   <div class="templateList__group capsLabel" role="heading" [attr.aria-level]="headingLevel">{{ PHRASES.BUILT_IN | translate }}</div>

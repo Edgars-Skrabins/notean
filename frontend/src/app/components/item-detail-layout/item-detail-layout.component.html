@@ -1,7 +1,17 @@
-<div class="itemDetailOverlay">
+<div class="itemDetailOverlay" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
   <div class="itemDetailOverlay__backdrop" (click)="closed.emit()"></div>
 
-  <div class="itemDetail" [class.itemDetail--fill]="fill" cdkScrollable>
+  <div
+    class="itemDetail"
+    [class.itemDetail--fill]="fill"
+    cdkScrollable
+    role="dialog"
+    aria-modal="true"
+    tabindex="-1"
+    [attr.aria-labelledby]="mode === 'view' ? titleId : null"
+    [attr.aria-label]="mode === 'view' ? null : (draftTitle || (titlePlaceholder | translate))"
+    [attr.cdkFocusInitial]="mode === 'view' ? '' : null"
+  >
     <div class="itemDetail__editingBanner" *ngIf="editingNickname">
       <strong>{{ editingNickname }}</strong> {{ editingBannerText | translate }}
     </div>
@@ -27,14 +37,15 @@
       <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE | translate" (pressed)="closed.emit()"></app-icon-button>
     </div>
 
-    <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+    <p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
     <div class="itemDetail__body">
       <div class="itemDetail__main">
-        <h1 class="itemDetail__title" *ngIf="mode === 'view' && item">{{ item.title }}</h1>
+        <h1 class="itemDetail__title" [id]="titleId" *ngIf="mode === 'view' && item">{{ item.title }}</h1>
         <h1 class="cdk-visually-hidden" *ngIf="mode === 'edit' && item">{{ item.title }}</h1>
         <h1 class="cdk-visually-hidden" *ngIf="mode === 'create' && createHeading">{{ createHeading | translate }}</h1>
         <input
+          #titleInput
           *ngIf="mode !== 'view'"
           type="text"
           class="itemDetail__titleInput textInput"
@@ -43,6 +54,9 @@
           [maxlength]="TITLE_MAX_LENGTH"
           [placeholder]="titlePlaceholder | translate"
           [attr.aria-label]="titlePlaceholder | translate"
+          [attr.cdkFocusInitial]="autofocusTitle ? '' : null"
+          [attr.aria-label]="titlePlaceholder | translate"
+          cdkFocusInitial
         />
         <ng-content></ng-content>
       </div>

@@ -9,14 +9,20 @@
       [(ngModel)]="searchQuery"
       (ngModelChange)="handleSearchChange($event)"
       [placeholder]="PHRASES.SEARCH_DIAGRAMS | translate"
+      [attr.aria-label]="PHRASES.SEARCH_DIAGRAMS | translate"
     />
     <app-button variant="ghost" icon="folder-plus" (pressed)="handleCreateFolder(null)">{{ PHRASES.NEW_FOLDER | translate }}</app-button>
-    <app-menu-button [customTrigger]="true" [options]="createOptions" (picked)="handleCreateChoice($event)">
-      <app-button variant="primary" icon="plus">{{ PHRASES.NEW_DIAGRAM | translate }}</app-button>
-    </app-menu-button>
+    <app-split-button
+      icon="plus"
+      [label]="PHRASES.NEW_DIAGRAM | translate"
+      [menuLabel]="PHRASES.CREATION_OPTIONS | translate"
+      [options]="createOptions"
+      (pressed)="handleCreateItem(null)"
+      (picked)="handleCreateChoice($event)"
+    ></app-split-button>
   </div>
 
-  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+  <p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
   <app-item-tree
     *ngIf="!isLoading"

@@ -70,4 +70,63 @@ describe('ToastService', () => {
 
     tick(TOAST_DURATION_MS);
   }));
+
+  it('keeps a paused toast and lets it leave after the remaining time once resumed', fakeAsync(() => {
+    service.show({type: ToastType.INFO, message: 'HELLO'});
+    const id = toasts[0].id;
+
+    tick(1000);
+    service.pause(id);
+    tick(TOAST_DURATION_MS + 5000);
+    expect(toasts[0].leaving).toBeFalse();
+
+    service.resume(id);
+    tick(TOAST_DURATION_MS - 1000 - 1);
+    expect(toasts[0].leaving).toBeFalse();
+
+    tick(1);
+    expect(toasts[0].leaving).toBeTrue();
+
+    tick(TOAST_EXIT_MS);
+    expect(toasts).toEqual([]);
+  }));
+
+  it('resumes an action toast with its own remaining time', fakeAsync(() => {
+    service.show({type: ToastType.SUCCESS, message: 'MOVED', action: {label: 'UNDO', run: () => undefined}});
+    const id = toasts[0].id;
+
+    tick(4000);
+    service.pause(id);
+    tick(10000);
+    service.resume(id);
+
+    tick(TOAST_ACTION_DURATION_MS - 4000 - 1);
+    expect(toasts[0].leaving).toBeFalse();
+
+    tick(1);
+    expect(toasts[0].leaving).toBeTrue();
+
+    tick(TOAST_EXIT_MS);
+  }));
+
+  it('ignores pause and resume for unknown or leaving toasts', fakeAsync(() => {
+    expect(() => {
+      service.pause(999);
+      service.resume(999);
+    }).not.toThrow();
+
+    service.show({type: ToastType.INFO, message: 'HELLO'});
+    const id = toasts[0].id;
+    service.dismiss(id);
+    service.pause(id);
+    service.resume(id);
+    expect(toasts[0].leaving).toBeTrue();
+
+    tick(TOAST_EXIT_MS);
+    expect(toasts).toEqual([]);
+
+    service.resume(id);
+    tick(TOAST_DURATION_MS);
+    expect(toasts).toEqual([]);
+  }));
 });

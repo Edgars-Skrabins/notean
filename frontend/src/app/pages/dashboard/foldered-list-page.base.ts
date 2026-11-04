@@ -49,7 +49,6 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   private projectSubscription: Subscription | null = null;
   private levelBoundaries = new Map<ItemLevel, TitledItem>();
   private loadGeneration = 0;
-  private createdItem: FolderedItemSummary | null;
   private searchDisplayItems: TreeItem[] = [];
   private searchGeneration = 0;
   private searchTerms = new Subject<string>();
@@ -66,7 +65,6 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
     private trashService: TrashService
   ) {
     this.teamCode = this.teamService.getCurrentTeamCode();
-    this.createdItem = this.router.getCurrentNavigation()?.extras.state?.['createdItem'] ?? null;
   }
 
   handleOpenItem(item: TreeItem) {
@@ -365,7 +363,6 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
       this.folders = foldersResponse.folders.map((folder) => this.toTreeFolder(folder));
       this.items = [];
       this.applyLevelPage('root', itemsResponse.items, itemsResponse.hasMore);
-      this.insertCreatedItem(projectId);
     });
   }
 
@@ -416,16 +413,6 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
 
   private setLevel(level: ItemLevel, state: ItemLevelState) {
     this.levels = new Map(this.levels).set(level, state);
-  }
-
-  private insertCreatedItem(projectId: number | null) {
-    const created = this.createdItem;
-    this.createdItem = null;
-    if (!created || (projectId !== null && created.projectId !== projectId) || this.items.some((item) => item.id === created.id)) {
-      return;
-    }
-
-    this.items = [...this.items, this.toTreeItem(created)];
   }
 
   private startSearch(term: string) {

@@ -3,7 +3,9 @@ import {NavigationService} from "@services/navigation.service";
 import {AuthService} from "@services/auth.service";
 import {SessionService} from "@services/session.service";
 import {ActivatedRoute, convertToParamMap} from "@angular/router";
-import {fakeAsync, tick} from "@angular/core/testing";
+import {fakeAsync, TestBed, tick} from "@angular/core/testing";
+import {provideTranslateService} from "@ngx-translate/core";
+import {AuthCardComponent} from "@components/auth-card/auth-card.component";
 import {AppRoutes} from "../../app/app-routes.enum";
 
 describe('LoginComponent', () => {
@@ -51,5 +53,39 @@ describe('LoginComponent', () => {
     create({returnUrl: '/dashboard/pages/4?team=AB12CD'}).handleGoToRegister();
 
     expect(navigationService.navigateWithQuery).toHaveBeenCalledOnceWith({returnUrl: '/dashboard/pages/4?team=AB12CD'}, AppRoutes.REGISTER);
+  });
+});
+
+describe('LoginComponent form', () => {
+  let authService: jasmine.SpyObj<AuthService>;
+
+  beforeEach(async () => {
+    authService = jasmine.createSpyObj<AuthService>('AuthService', ['login']);
+    authService.login.and.resolveTo({success: false, code: 'INVALID_CREDENTIALS'} as Awaited<ReturnType<AuthService['login']>>);
+    await TestBed.configureTestingModule({
+      imports: [LoginComponent],
+      providers: [
+        provideTranslateService(),
+        {provide: NavigationService, useValue: jasmine.createSpyObj<NavigationService>('NavigationService', ['navigate', 'navigateByUrl', 'navigateWithQuery'])},
+        {provide: AuthService, useValue: authService},
+        {provide: SessionService, useValue: jasmine.createSpyObj<SessionService>('SessionService', ['load'])},
+        {provide: ActivatedRoute, useValue: {snapshot: {queryParamMap: convertToParamMap({})}}},
+      ],
+    })
+      .overrideComponent(AuthCardComponent, {set: {imports: [], template: '<ng-content select="[card-corner]"></ng-content><ng-content></ng-content>'}})
+      .compileComponents();
+  });
+
+  it('lets password managers fill the credentials and submits once', () => {
+    const fixture = TestBed.createComponent(LoginComponent);
+    fixture.detectChanges();
+    const element: HTMLElement = fixture.nativeElement;
+
+    expect(element.querySelector('#emailInput')!.getAttribute('autocomplete')).toBe('username');
+    expect(element.querySelector('#passwordInput')!.getAttribute('autocomplete')).toBe('current-password');
+
+    element.querySelector('form')!.dispatchEvent(new Event('submit'));
+
+    expect(authService.login).toHaveBeenCalledTimes(1);
   });
 });

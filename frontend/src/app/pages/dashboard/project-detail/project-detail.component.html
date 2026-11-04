@@ -1,6 +1,6 @@
 <button type="button" class="projectDetail__back" (click)="handleGoBack()">&larr; {{ PHRASES.BACK_TO_PROJECTS | translate }}</button>
 
-<p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+<p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
 <div class="projectDetail" *ngIf="project">
   <div class="projectDetail__main">

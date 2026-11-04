@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
+import {CdkTrapFocus} from '@angular/cdk/a11y';
 import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ProjectParams} from '@models/project.model';
@@ -6,10 +7,12 @@ import {TeamMember} from '@models/team.model';
 import {ButtonComponent} from '@components/button/button.component';
 import {ProjectFormComponent} from '@components/project-form/project-form.component';
 import {EscapeService} from '@services/escape.service';
+import {uniqueId} from '@utils/uniqueId';
 
 @Component({
   selector: 'app-new-project-dialog',
   imports: [
+    CdkTrapFocus,
     TranslatePipe,
     ButtonComponent,
     ProjectFormComponent
@@ -20,6 +23,7 @@ import {EscapeService} from '@services/escape.service';
 })
 export class NewProjectDialogComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
+  protected readonly titleId = uniqueId('newProjectDialog');
 
   @Input({required: true}) members: TeamMember[] = [];
   @Input({required: true}) currentUserId!: number;

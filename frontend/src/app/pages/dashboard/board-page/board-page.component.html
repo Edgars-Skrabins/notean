@@ -1,4 +1,4 @@
-<p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+<p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
 <div class="boardPage" *ngIf="state.board as board">
   <div class="boardPage__header">
@@ -10,6 +10,7 @@
         class="boardPage__titleInput"
         [(ngModel)]="renameDraft"
         [maxlength]="TITLE_MAX_LENGTH"
+        [attr.aria-label]="PHRASES.RENAME_BOARD | translate"
         (keydown.enter)="commitRename()"
         (keydown.escape)="cancelRename(); $event.preventDefault()"
         (blur)="commitRename()"
@@ -36,6 +37,7 @@
     <a class="boardPage__tab" [routerLink]="AppRoutes.OVERVIEW" routerLinkActive="boardPage__tab--active">{{ PHRASES.TAB_OVERVIEW | translate }}</a>
     <a class="boardPage__tab" [routerLink]="AppRoutes.KANBAN" routerLinkActive="boardPage__tab--active">{{ PHRASES.TAB_KANBAN | translate }}</a>
     <a class="boardPage__tab" [routerLink]="AppRoutes.LIST" routerLinkActive="boardPage__tab--active">{{ PHRASES.TAB_LIST | translate }}</a>
+    <a class="boardPage__tab" [routerLink]="AppRoutes.SETTINGS" routerLinkActive="boardPage__tab--active">{{ PHRASES.TAB_SETTINGS | translate }}</a>
   </nav>
 
   <router-outlet></router-outlet>

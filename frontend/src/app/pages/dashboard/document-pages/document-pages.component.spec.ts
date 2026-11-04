@@ -45,7 +45,7 @@ describe('DocumentPagesComponent', () => {
   beforeEach(fakeAsync(() => {
     projectFilter = projectFilterStub();
     trash = trashServiceStub();
-    router = jasmine.createSpyObj<Router>('Router', ['navigate', 'getCurrentNavigation']);
+    router = jasmine.createSpyObj<Router>('Router', ['navigate']);
     pageService = jasmine.createSpyObj<PageService>('PageService', ['list', 'moveToFolder', 'delete', 'create', 'rename']);
     folderService = jasmine.createSpyObj<FolderService>('FolderService', ['listFolders', 'createFolder', 'renameFolder', 'moveFolder', 'deleteFolder', 'setFolderProject']);
     favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem', 'renameItem']);
@@ -126,32 +126,6 @@ describe('DocumentPagesComponent', () => {
 
     expect(component.alertMessage).toBe(errorPhrase('NETWORK_ERROR'));
     expect(component.levels.get('root')).toEqual({loaded: true, isLoading: false, hasMore: true});
-  }));
-
-  it('places an item created in a folder in its level without duplicating it later', fakeAsync(() => {
-    const created = page(40, 2, 'Brand new');
-    router.getCurrentNavigation.and.returnValue({extras: {state: {createdItem: created}}} as never);
-    component = createComponent();
-    component.ngOnInit();
-    tick();
-
-    expect(component.items.find((item) => item.id === 40)?.folderId).toBe(2);
-
-    pageService.list.and.returnValue(Promise.resolve({success: true, items: [created], hasMore: false}));
-    component.handleExpandFolder({folderId: 2});
-    tick();
-
-    expect(component.items.filter((item) => item.id === 40).length).toBe(1);
-  }));
-
-  it('leaves out a created item of another project than the selected one', fakeAsync(() => {
-    projectFilter.selected.next(5);
-    router.getCurrentNavigation.and.returnValue({extras: {state: {createdItem: {...page(40, null), projectId: 6}}}} as never);
-    component = createComponent();
-    component.ngOnInit();
-    tick();
-
-    expect(component.items.some((item) => item.id === 40)).toBeFalse();
   }));
 
   it('adds a created folder without reloading', fakeAsync(() => {

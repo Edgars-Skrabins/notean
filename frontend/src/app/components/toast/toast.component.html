@@ -1,7 +1,6 @@
 <div
   class="toast toast--{{ toast.type }}"
   [class.toast--leaving]="toast.leaving"
-  [attr.role]="role"
 >
   <span class="toast__message">{{ toast.message | translate }}</span>
   <button *ngIf="toast.action as action" type="button" class="toast__action" (click)="act(action)">{{ action.label | translate }}</button>

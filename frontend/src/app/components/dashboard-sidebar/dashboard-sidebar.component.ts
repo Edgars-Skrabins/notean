@@ -1,4 +1,4 @@
-import {Component, ChangeDetectionStrategy} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {AsyncPipe, NgIf} from '@angular/common';
 import {RouterLink, RouterLinkActive} from '@angular/router';
 import {TranslatePipe} from "@ngx-translate/core";
@@ -12,6 +12,8 @@ import {SidebarChatComponent} from "@components/sidebar-chat/sidebar-chat.compon
 import {IconComponent} from "@components/icon/icon.component";
 import {TooltipDirective} from "@components/tooltip/tooltip.directive";
 import {UnreadBadgeComponent} from "@components/unread-badge/unread-badge.component";
+import {ProjectSelectorComponent} from "@components/project-selector/project-selector.component";
+import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {AppRoutes} from "../../app/app-routes.enum";
 
 @Component({
@@ -27,7 +29,9 @@ import {AppRoutes} from "../../app/app-routes.enum";
     SidebarChatComponent,
     IconComponent,
     TooltipDirective,
-    UnreadBadgeComponent
+    UnreadBadgeComponent,
+    ProjectSelectorComponent,
+    IconButtonComponent
   ],
   templateUrl: './dashboard-sidebar.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -37,6 +41,9 @@ export class DashboardSidebarComponent {
   protected readonly PHRASES = PHRASES;
   protected readonly AppRoutes = AppRoutes;
 
+  @Input() compact = false;
+  @Output() closeRequested = new EventEmitter<void>();
+
   collapsed = false;
 
   constructor(
@@ -44,6 +51,10 @@ export class DashboardSidebarComponent {
     protected teamService: TeamService,
     protected notificationChannelService: NotificationChannelService
   ) {
+  }
+
+  get isCollapsed(): boolean {
+    return this.collapsed && !this.compact;
   }
 
   toggleCollapsed() {

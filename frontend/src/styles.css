@@ -274,11 +274,16 @@ textarea {
   transform: translateX(3px);
 }
 
-.authStatus {
+.errorMessage {
   margin: var(--space-3) 0 0;
-  color: var(--color-text-muted);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--color-error) 35%, transparent);
+  border-radius: var(--radius-sm);
+  background: var(--color-error-bg);
+  color: var(--color-error);
   font-size: var(--font-sm);
-  text-align: center;
+  line-height: 1.4;
+  text-align: start;
 }
 
 .pageBackButton {
@@ -342,6 +347,11 @@ textarea {
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
   padding: var(--space-2);
+}
+
+[role='dialog'][tabindex='-1']:focus,
+[role='alertdialog'][tabindex='-1']:focus {
+  outline: none;
 }
 
 .textInput {

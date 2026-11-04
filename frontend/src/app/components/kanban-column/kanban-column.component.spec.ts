@@ -1,4 +1,5 @@
 import {KanbanColumnComponent} from "./kanban-column.component";
+import {ticketSummary} from "../../testing/boardFixtures";
 
 describe('KanbanColumnComponent rename', () => {
   let component: KanbanColumnComponent;
@@ -64,5 +65,29 @@ describe('KanbanColumnComponent rename', () => {
 
     expect(component.isRenaming).toBeFalse();
     expect(emitted).toEqual([]);
+  });
+});
+
+describe('KanbanColumnComponent priorityOf', () => {
+  let component: KanbanColumnComponent;
+
+  beforeEach(() => {
+    component = new KanbanColumnComponent();
+    component.priorities = [
+      {id: 20, name: 'Low', color: 'blue', position: 0, ticketCount: 0},
+      {id: 21, name: 'High', color: 'orange', position: 1, ticketCount: 1},
+    ];
+  });
+
+  it('returns the priority the ticket points to', () => {
+    expect(component.priorityOf({...ticketSummary(1, 10), priorityId: 21})?.name).toBe('High');
+  });
+
+  it('returns null for a ticket without a priority', () => {
+    expect(component.priorityOf(ticketSummary(1, 10))).toBeNull();
+  });
+
+  it('returns null for an unknown priority id', () => {
+    expect(component.priorityOf({...ticketSummary(1, 10), priorityId: 99})).toBeNull();
   });
 });

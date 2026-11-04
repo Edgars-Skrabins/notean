@@ -17,6 +17,9 @@ import {AppRoutes} from '../../app/app-routes.enum';
 
 export const MIN_QUERY_LENGTH = 1;
 export const SEARCH_DEBOUNCE_MS = 250;
+export const LISTBOX_ID = 'globalSearchListbox';
+const OPTION_ID_PREFIX = 'globalSearchOption-';
+const HEADING_ID_PREFIX = 'globalSearchHeading-';
 
 const SECTION_PHRASES: Record<SearchResultType, string> = {
   project: PHRASES.PROJECTS,
@@ -26,7 +29,12 @@ const SECTION_PHRASES: Record<SearchResultType, string> = {
   ticket: PHRASES.TICKETS,
 };
 
-type NavItem = { result: SearchResult; section?: undefined } | { section: SearchSection; result?: undefined };
+type NavItem =
+  | { result: SearchResult; section?: undefined; scope?: undefined }
+  | { section: SearchSection; result?: undefined; scope?: undefined }
+  | { scope: true; result?: undefined; section?: undefined };
+
+type NavTarget = SearchResult | SearchSection | 'scope';
 
 @Component({
   selector: 'app-global-search',
@@ -45,20 +53,24 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
   protected readonly SECTION_PHRASES = SECTION_PHRASES;
   protected readonly DROPDOWN_POSITIONS = DROPDOWN_POSITIONS;
+  protected readonly LISTBOX_ID = LISTBOX_ID;
 
   @ViewChild('input', {static: true}) input!: ElementRef<HTMLInputElement>;
 
   query = '';
   sections: SearchSection[] = [];
   isOpen = false;
+  isFocused = false;
   isLoading = false;
   hasError = false;
   includeAllProjects = false;
   loadingMoreType: SearchResultType | null = null;
   activeIndex = -1;
   panelWidth = 0;
+  searchedQuery = '';
+  statusText = '';
+  statusParams: Record<string, string | number> = {};
 
-  private searchedQuery = '';
   private searchedProjectId: number | null = null;
   private typed = new Subject<string>();
   private immediate = new Subject<string>();
@@ -88,7 +100,8 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
       this.sections = response.success ? response.sections : [];
       this.searchedQuery = query;
       this.searchedProjectId = projectId;
-      this.activeIndex = -1;
+      this.activeIndex = this.isEmpty && this.selectedProjectName !== null ? this.navItems().length - 1 : -1;
+      this.announce();
     });
   }
 
@@ -102,6 +115,10 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
 
   get isEmpty(): boolean {
     return !this.isLoading && !this.hasError && this.visibleSections.length === 0;
+  }
+
+  get showShortcutHint(): boolean {
+    return !this.isFocused && !this.query;
   }
 
   get selectedProjectName(): string | null {
@@ -128,6 +145,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
       this.isLoading = false;
       this.sections = [];
       this.activeIndex = -1;
+      this.statusText = '';
       return;
     }
     this.open();
@@ -136,6 +154,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
   }
 
   handleFocus() {
+    this.isFocused = true;
     if (this.trimmedQuery().length >= MIN_QUERY_LENGTH && !this.isOpen) {
       this.open();
       this.search();
@@ -154,6 +173,8 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
         this.openResult(item.result);
       } else if (item?.section) {
         this.showMore(item.section);
+      } else if (item?.scope) {
+        this.handleIncludeAllProjects();
       }
     } else if (event.key === 'Escape') {
       if (this.isOpen) {
@@ -162,6 +183,11 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
       this.close();
       this.input.nativeElement.blur();
     }
+  }
+
+  handleBlur() {
+    this.isFocused = false;
+    this.close();
   }
 
   handleOutsideClick(event: MouseEvent) {
@@ -173,6 +199,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
 
   handleIncludeAllProjects() {
     this.includeAllProjects = true;
+    this.activeIndex = -1;
     this.search();
   }
 
@@ -189,10 +216,12 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
         }
         if (!response.success) {
           this.hasError = true;
+          this.announce();
           return;
         }
         section.results = [...section.results, ...response.section.results];
         section.hasMore = response.section.hasMore;
+        this.announce();
       });
   }
 
@@ -208,6 +237,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     this.isOpen = false;
     this.includeAllProjects = false;
     this.activeIndex = -1;
+    this.statusText = '';
   }
 
   resultRoute(result: SearchResult): (string | number)[] {
@@ -233,16 +263,50 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     return splitSnippet(snippet, this.searchedQuery);
   }
 
-  isActive(item: SearchResult | SearchSection): boolean {
-    const active = this.navItems()[this.activeIndex];
-    return !!active && (active.result === item || active.section === item);
+  get activeOptionId(): string | null {
+    return this.isOpen && this.activeIndex >= 0 ? this.optionId(this.activeIndex) : null;
+  }
+
+  optionId(index: number): string {
+    return `${OPTION_ID_PREFIX}${index}`;
+  }
+
+  headingId(section: SearchSection): string {
+    return `${HEADING_ID_PREFIX}${section.type}`;
+  }
+
+  navIndex(item: NavTarget): number {
+    return this.navItems().findIndex((navItem) => item === 'scope' ? !!navItem.scope : navItem.result === item || navItem.section === item);
+  }
+
+  isActive(item: NavTarget): boolean {
+    return this.activeIndex >= 0 && this.navIndex(item) === this.activeIndex;
   }
 
   private navItems(): NavItem[] {
-    return this.visibleSections.flatMap((section): NavItem[] => [
+    const sectionItems = this.isLoading ? [] : this.visibleSections.flatMap((section): NavItem[] => [
       ...section.results.map((result) => ({result})),
       ...(section.hasMore ? [{section}] : []),
     ]);
+    return this.selectedProjectName === null ? sectionItems : [...sectionItems, {scope: true}];
+  }
+
+  private announce() {
+    const count = this.visibleSections.reduce((total, section) => total + section.results.length, 0);
+    const projectName = this.selectedProjectName;
+    if (this.hasError) {
+      this.statusText = PHRASES.SEARCH_FAILED;
+      this.statusParams = {};
+    } else if (count > 0) {
+      this.statusText = count === 1 ? PHRASES.SEARCH_RESULTS_SHOWN_ONE : PHRASES.SEARCH_RESULTS_SHOWN;
+      this.statusParams = {count};
+    } else if (projectName !== null) {
+      this.statusText = PHRASES.SEARCH_NO_MATCHES_IN_PROJECT;
+      this.statusParams = {query: this.searchedQuery, project: projectName};
+    } else {
+      this.statusText = PHRASES.SEARCH_NO_MATCHES;
+      this.statusParams = {query: this.searchedQuery};
+    }
   }
 
   private open() {

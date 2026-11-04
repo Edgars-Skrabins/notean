@@ -47,6 +47,7 @@
       class="ticketAssignees__search"
       [(ngModel)]="searchQuery"
       [placeholder]="PHRASES.SEARCH_MEMBERS | translate"
+      [attr.aria-label]="PHRASES.SEARCH_MEMBERS | translate"
     />
     <button type="button" class="ticketAssignees__option" *ngFor="let member of availableMembers" (click)="handlePick(member)">
       <app-avatar [avatar]="member.avatar" [nickname]="member.nickname"></app-avatar>

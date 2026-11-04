@@ -1,8 +1,8 @@
-<div class="createNamedItemDialogOverlay">
+<div class="createNamedItemDialogOverlay" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
   <div class="createNamedItemDialogOverlay__backdrop" (click)="handleCancel()"></div>
 
-  <div class="createNamedItemDialog">
-    <h3 class="createNamedItemDialog__title">{{ dialogTitle }}</h3>
+  <div class="createNamedItemDialog" role="dialog" aria-modal="true" [attr.aria-labelledby]="titleId" tabindex="-1">
+    <h3 class="createNamedItemDialog__title" [id]="titleId">{{ dialogTitle }}</h3>
 
     <input
       type="text"
@@ -10,7 +10,10 @@
       [(ngModel)]="itemTitle"
       [maxlength]="TITLE_MAX_LENGTH"
       [placeholder]="defaultValue"
-      autofocus
+      [attr.aria-invalid]="errorMessage ? true : null"
+      [attr.aria-describedby]="errorMessage ? 'createNamedItemError' : null"
+      [attr.aria-labelledby]="titleId"
+      cdkFocusInitial
     />
 
     <app-project-select
@@ -22,7 +25,7 @@
 
     <ng-content></ng-content>
 
-    <p class="createNamedItemDialog__error" *ngIf="errorMessage">{{ errorMessage | translate }}</p>
+    <p class="errorMessage createNamedItemDialog__error" role="alert" id="createNamedItemError" *ngIf="errorMessage">{{ errorMessage | translate }}</p>
 
     <div class="createNamedItemDialog__actions">
       <app-button variant="ghost" (pressed)="handleCancel()">{{ PHRASES.CANCEL | translate }}</app-button>

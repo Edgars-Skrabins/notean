@@ -48,4 +48,4 @@ export type SaveTemplateResponse = TemplateResponse | EditConflict<TemplateDetai
 
 export type DeleteTemplateResponse = Result<object, TeamAccessErrorCode | TemplatesErrorCode>;
 
-export type TemplateContentResponse = Result<{ content: string }, TeamAccessErrorCode | TemplatesErrorCode>;
+export type TemplateContentResponse = Result<{ title: string; content: string }, TeamAccessErrorCode | TemplatesErrorCode>;

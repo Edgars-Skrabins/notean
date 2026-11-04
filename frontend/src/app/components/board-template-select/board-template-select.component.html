@@ -6,6 +6,7 @@
   [(ngModel)]="searchQuery"
   (ngModelChange)="handleSearchChange($event)"
   [placeholder]="PHRASES.SEARCH_TEMPLATES | translate"
+  [attr.aria-label]="PHRASES.SEARCH_TEMPLATES | translate"
 />
 <app-dropdown
   [options]="options"

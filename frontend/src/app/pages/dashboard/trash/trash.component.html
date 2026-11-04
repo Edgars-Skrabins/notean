@@ -11,6 +11,7 @@
       [(ngModel)]="searchQuery"
       (ngModelChange)="handleSearchChange($event)"
       [placeholder]="PHRASES.SEARCH_TRASH | translate"
+      [attr.aria-label]="PHRASES.SEARCH_TRASH | translate"
     />
     <app-dropdown
       [options]="typeOptions"
