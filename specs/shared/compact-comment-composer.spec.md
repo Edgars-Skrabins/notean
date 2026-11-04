@@ -1,7 +1,7 @@
 # Compact comment composer — Spec
 
 **Type:** feature
-**Status:** ready for implementation
+**Status:** in progress
 **Last updated:** 2026-11-04
 
 # Part 1 — Business logic and usage
@@ -69,6 +69,7 @@ Existing stack: Angular templates, Tiptap's `autofocus` editor option, ngx-trans
 6. **Esc unchanged (2026-11-04):** the editor deliberately leaves Esc to the popup (`rich-text-editor` returns `true` for Escape without `preventDefault`). Reason: changing it would mean registering a new `EscapeService` layer per composer; the current behaviour is consistent across editors. Rejected: Esc collapses an empty composer (worth considering later together with dialog Esc rules).
 7. **Pin replies use "Reply…" (2026-11-04):** the diagram thread already labels its submit button "Reply". Reason: Nielsen #4 consistency of wording within one surface.
 8. **Same component everywhere (2026-11-04):** the change lives in `CommentListComponent`, so tickets, pages and pin threads behave the same. The new-pin composer stays open (see Out of scope).
+9. **Collapsed button spacing (2026-11-04):** `.commentList__trigger` also gets `padding: 0 10px` and `font-size: var(--font-md)`, the same as the other `.textInput` fields (`templateList__search`). Reason: Impeccable consistency; `.textInput` has no padding of its own, so the text would touch the border.
 
 # Part 3 — Implementation TODO
 
@@ -77,15 +78,15 @@ Read Part 1 and Part 2 before starting. Work through the tasks in order and tick
 Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 assertions, 0 failures (master f15abdf, 2026-11-04).
 
 ### A. Editor autofocus
-- [ ] A1. Add `@Input() autofocus = false` to `frontend/src/app/components/rich-text-editor/rich-text-editor.component.ts` and pass `autofocus: this.autofocus ? 'end' : false` to the `Editor` in `ngAfterViewInit`.
-- [ ] A2. In `rich-text-editor.component.spec.ts`, add a test that a component created with `autofocus = true` has a focused editor after the first `detectChanges` (`editor.isFocused` or `document.activeElement` inside `.ProseMirror`), and one that the default leaves it unfocused. Reuse the existing `afterEach` blur.
+- [x] A1. Add `@Input() autofocus = false` to `frontend/src/app/components/rich-text-editor/rich-text-editor.component.ts` and pass `autofocus: this.autofocus ? 'end' : false` to the `Editor` in `ngAfterViewInit`.
+- [x] A2. In `rich-text-editor.component.spec.ts`, add a test that a component created with `autofocus = true` has a focused editor after the first `detectChanges` (`editor.isFocused` or `document.activeElement` inside `.ProseMirror`), and one that the default leaves it unfocused. Reuse the existing `afterEach` blur.
 
 ### B. Collapsible composer
-- [ ] B1. Add `COMMENT_PLACEHOLDER` and `REPLY_PLACEHOLDER` to `frontend/src/app/config/phrases.ts` next to `POST_COMMENT` / `REPLY`, and to all 11 translation files next to `"POST_COMMENT"` / `"REPLY"` with proper translations ("Add a comment…" / "Reply…" in English).
-- [ ] B2. In `frontend/src/app/components/comment-list/comment-list.component.ts`, add the `placeholder` input, `isComposerOpen`, the `composerTrigger` view child, `openComposer`, `cancelComposer`, `handleComposerFocusOut`, the private `focusTrigger`, the collapse on successful `post()`, and the reset in `ngOnChanges`, as in Part 2.2. Import `ElementRef` and `ViewChild`.
-- [ ] B3. Update `comment-list.component.html` to the collapsed button and the open block (editor with `[autofocus]="true"`, Cancel and submit in `.commentList__actions`), and `comment-list.component.css` with `.commentList__trigger` and `.commentList__actions`, removing the unused `.commentList__submit` rule (and the `commentList__submit` class from the template if nothing else uses it).
-- [ ] B4. Pass `[placeholder]="PHRASES.REPLY_PLACEHOLDER"` to the thread's `<app-comment-list>` in `frontend/src/app/components/diagram-comment-layer/diagram-comment-layer.component.html`.
-- [ ] B5. Extend `comment-list.component.spec.ts`: the composer starts closed; `openComposer()` opens it; `handleComposerFocusOut` with a `relatedTarget` outside and an empty draft closes it, with text keeps it open, with a `relatedTarget` inside keeps it open; `cancelComposer()` clears the draft and closes; a successful `post()` closes it, a failed one keeps it open with the draft; a new `target` resets it. Keep the existing "appends a posted comment and clears the editor" test passing.
+- [x] B1. Add `COMMENT_PLACEHOLDER` and `REPLY_PLACEHOLDER` to `frontend/src/app/config/phrases.ts` next to `POST_COMMENT` / `REPLY`, and to all 11 translation files next to `"POST_COMMENT"` / `"REPLY"` with proper translations ("Add a comment…" / "Reply…" in English).
+- [x] B2. In `frontend/src/app/components/comment-list/comment-list.component.ts`, add the `placeholder` input, `isComposerOpen`, the `composerTrigger` view child, `openComposer`, `cancelComposer`, `handleComposerFocusOut`, the private `focusTrigger`, the collapse on successful `post()`, and the reset in `ngOnChanges`, as in Part 2.2. Import `ElementRef` and `ViewChild`.
+- [x] B3. Update `comment-list.component.html` to the collapsed button and the open block (editor with `[autofocus]="true"`, Cancel and submit in `.commentList__actions`), and `comment-list.component.css` with `.commentList__trigger` and `.commentList__actions`, removing the unused `.commentList__submit` rule (and the `commentList__submit` class from the template if nothing else uses it).
+- [x] B4. Pass `[placeholder]="PHRASES.REPLY_PLACEHOLDER"` to the thread's `<app-comment-list>` in `frontend/src/app/components/diagram-comment-layer/diagram-comment-layer.component.html`.
+- [x] B5. Extend `comment-list.component.spec.ts`: the composer starts closed; `openComposer()` opens it; `handleComposerFocusOut` with a `relatedTarget` outside and an empty draft closes it, with text keeps it open, with a `relatedTarget` inside keeps it open; `cancelComposer()` clears the draft and closes; a successful `post()` closes it, a failed one keeps it open with the draft; a new `target` resets it. Keep the existing "appends a posted comment and clears the editor" test passing.
 
 ### Z. Wrap-up
 - [ ] Z1. Full test runs, build and lint, using the commands in `CLAUDE.md` (`npm test`, `npm run build` in `frontend/`; `bin/rails test` in `backend/` to confirm the untouched baseline).
