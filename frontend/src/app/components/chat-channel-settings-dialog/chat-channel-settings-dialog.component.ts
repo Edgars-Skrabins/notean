@@ -10,7 +10,6 @@ import {TeamService} from '@services/team.service';
 import {errorPhrase} from '@utils/errorPhrase';
 import {ButtonComponent} from '@components/button/button.component';
 import {DropdownComponent} from '@components/dropdown/dropdown.component';
-import {ConfirmDialogComponent} from '@components/confirm-dialog/confirm-dialog.component';
 import {CreateNamedItemDialogComponent} from '@components/create-named-item-dialog/create-named-item-dialog.component';
 import {ChatMemberPickerComponent} from '@components/chat-member-picker/chat-member-picker.component';
 
@@ -21,7 +20,6 @@ import {ChatMemberPickerComponent} from '@components/chat-member-picker/chat-mem
     TranslatePipe,
     ButtonComponent,
     DropdownComponent,
-    ConfirmDialogComponent,
     CreateNamedItemDialogComponent,
     ChatMemberPickerComponent
   ],
@@ -38,14 +36,14 @@ export class ChatChannelSettingsDialogComponent implements OnInit {
 
   @Input({required: true}) channel!: ChatChannel;
   @Output() saved = new EventEmitter<ChatChannel>();
-  @Output() deleted = new EventEmitter<void>();
+  @Output() deleted = new EventEmitter<number[]>();
   @Output() cancelled = new EventEmitter<void>();
 
   gifRating: GifRating = 'pg';
   members: BoardUser[] = [];
   memberIds: number[] = [];
   errorMessage = '';
-  isConfirmingDelete = false;
+  isDeleting = false;
 
   constructor(private chatService: ChatService, private teamService: TeamService) {
   }
@@ -71,11 +69,16 @@ export class ChatChannelSettingsDialogComponent implements OnInit {
     }
   }
 
-  async handleDeleteConfirmed() {
-    this.isConfirmingDelete = false;
+  async handleDelete() {
+    if (this.isDeleting) {
+      return;
+    }
+
+    this.isDeleting = true;
     const response = await this.chatService.deleteChannel(this.teamService.getCurrentTeamCode(), this.channel.id);
+    this.isDeleting = false;
     if (response.success) {
-      this.deleted.emit();
+      this.deleted.emit(response.trashEntryIds);
     } else {
       this.errorMessage = errorPhrase(response.code);
     }

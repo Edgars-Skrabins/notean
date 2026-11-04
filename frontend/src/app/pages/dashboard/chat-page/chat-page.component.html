@@ -44,6 +44,6 @@
   *ngIf="isSettingsOpen && channel"
   [channel]="channel"
   (saved)="handleSettingsSaved($event)"
-  (deleted)="handleSettingsDeleted()"
+  (deleted)="handleSettingsDeleted($event)"
   (cancelled)="isSettingsOpen = false"
 ></app-chat-channel-settings-dialog>
