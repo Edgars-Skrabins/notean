@@ -11,7 +11,7 @@ import {TicketSummary} from "@models/ticket.model";
 import {PHRASES} from "@config/phrases";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 import {createBoardState, ticketDetail} from "../../../testing/boardFixtures";
-import {trashServiceStub} from "../../../testing/trashServiceStub";
+import {trashServiceStub, TrashServiceStub} from "../../../testing/trashServiceStub";
 
 function dropEvent(previousData: TicketSummary[], data: TicketSummary[], previousIndex: number, currentIndex: number): CdkDragDrop<TicketSummary[]> {
   const container = {data};
@@ -27,16 +27,18 @@ describe('KanbanTabComponent', () => {
   let favoriteService: jasmine.SpyObj<FavoriteService>;
   let toastService: jasmine.SpyObj<ToastService>;
   let router: jasmine.SpyObj<Router>;
+  let trash: TrashServiceStub;
   const route = {} as ActivatedRoute;
 
   beforeEach(() => {
     state = createBoardState();
+    trash = trashServiceStub();
     ticketService = jasmine.createSpyObj<TicketService>('TicketService', ['moveTicket', 'moveToBacklog', 'deleteTicket', 'createTicket']);
     columnService = jasmine.createSpyObj<ColumnService>('ColumnService', ['renameColumn', 'deleteColumn', 'createColumn']);
     favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem']);
     toastService = jasmine.createSpyObj<ToastService>('ToastService', ['show']);
     router = jasmine.createSpyObj<Router>('Router', ['navigate']);
-    component = new KanbanTabComponent(route, router, state, columnService, ticketService, favoriteService, toastService, trashServiceStub().service);
+    component = new KanbanTabComponent(route, router, state, columnService, ticketService, favoriteService, toastService, trash.service);
   });
 
   function columnIds(index: number): number[] {
@@ -111,24 +113,34 @@ describe('KanbanTabComponent', () => {
     expect(columnIds(0)).toEqual([1, 2, 7]);
   }));
 
-  it('deletes a ticket and forgets its favorite', fakeAsync(() => {
+  it('deletes a ticket at once, forgets its favorite and names it in the toast', fakeAsync(() => {
     ticketService.deleteTicket.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
     const todo = state.board!.columns[0];
-    component.requestDeleteTicket(todo.tickets[1], todo);
 
-    component.handleConfirmDeleteTicket();
+    component.requestDeleteTicket(todo.tickets[1]);
     flushMicrotasks();
 
     expect(columnIds(0)).toEqual([1]);
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Ticket', 2);
+    expect(trash.service.notifyTrashed).toHaveBeenCalledWith('abc', [1], {title: 'Ticket 2'});
+  }));
+
+  it('sends one delete for repeated presses on a ticket while it runs', fakeAsync(() => {
+    ticketService.deleteTicket.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
+    const ticket = state.board!.columns[0].tickets[1];
+
+    component.requestDeleteTicket(ticket);
+    component.requestDeleteTicket(ticket);
+    flushMicrotasks();
+
+    expect(ticketService.deleteTicket).toHaveBeenCalledTimes(1);
   }));
 
   it('keeps the ticket and shows the error when deleting fails', fakeAsync(() => {
     ticketService.deleteTicket.and.returnValue(Promise.resolve({success: false, code: 'TICKET_NOT_FOUND'}));
     const todo = state.board!.columns[0];
-    component.requestDeleteTicket(todo.tickets[1], todo);
 
-    component.handleConfirmDeleteTicket();
+    component.requestDeleteTicket(todo.tickets[1]);
     flushMicrotasks();
 
     expect(columnIds(0)).toEqual([1, 2]);
@@ -143,7 +155,21 @@ describe('KanbanTabComponent', () => {
     flushMicrotasks();
 
     expect(state.board!.columns.map((column) => column.id)).toEqual([11]);
+    expect(trash.service.notifyTrashed).toHaveBeenCalledWith('abc', [1], {ticketCount: 2});
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Ticket', 1);
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Ticket', 2);
   }));
+
+  it('names the column and counts its tickets in the delete question', () => {
+    const column = state.board!.columns[0];
+
+    component.requestDeleteColumn(column);
+    expect(component.columnDeleteMessage).toBe(PHRASES.CONFIRM_DELETE_COLUMN);
+
+    column.tickets = column.tickets.slice(0, 1);
+    expect(component.columnDeleteMessage).toBe(PHRASES.CONFIRM_DELETE_COLUMN_ONE);
+
+    column.tickets = [];
+    expect(component.columnDeleteMessage).toBe(PHRASES.CONFIRM_DELETE_EMPTY_COLUMN);
+  });
 });

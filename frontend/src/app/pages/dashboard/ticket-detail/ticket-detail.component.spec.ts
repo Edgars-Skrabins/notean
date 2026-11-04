@@ -23,7 +23,7 @@ import {AttachmentService} from "@services/attachment.service";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 import {createBoardState, ticketDetail} from "../../../testing/boardFixtures";
 import {escapeServiceStub, EscapeServiceStub} from "../../../testing/escapeServiceStub";
-import {trashServiceStub} from "../../../testing/trashServiceStub";
+import {trashServiceStub, TrashServiceStub} from "../../../testing/trashServiceStub";
 import {By} from '@angular/platform-browser';
 import {MentionTextEditorComponent} from '@components/mention-text-editor/mention-text-editor.component';
 
@@ -40,6 +40,7 @@ describe('TicketDetailComponent editing', () => {
   let ticket: TicketDetail;
   let escape: EscapeServiceStub;
   let attachmentService: jasmine.SpyObj<AttachmentService>;
+  let trash: TrashServiceStub;
   const route = {snapshot: {paramMap: new Map([['ticketId', '1']])}} as unknown as ActivatedRoute;
 
   beforeEach(() => {
@@ -56,8 +57,9 @@ describe('TicketDetailComponent editing', () => {
     authService.getCurrentUser.and.returnValue({id: 1, email: 'alice@example.com'});
     state = createBoardState();
     escape = escapeServiceStub();
+    trash = trashServiceStub();
     attachmentService = jasmine.createSpyObj<AttachmentService>('AttachmentService', ['uploadToTicket', 'deleteFromTicket']);
-    component = new TicketDetailComponent(route, router, state, ticketService, tagService, favoriteService, toastService, teamService, projectService, authService, escape.service, {} as CopyLinkService, trashServiceStub().service, attachmentService);
+    component = new TicketDetailComponent(route, router, state, ticketService, tagService, favoriteService, toastService, teamService, projectService, authService, escape.service, {} as CopyLinkService, trash.service, attachmentService);
 
     ticket = {...ticketDetail(1, 10), title: 'My Ticket'};
     component.ticket = ticket;
@@ -313,11 +315,14 @@ describe('TicketDetailComponent editing', () => {
     ticketService.deleteTicket.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
     component.ngOnInit();
 
-    component.handleConfirmDelete();
+    component.handleDelete();
+    component.handleDelete();
     flushMicrotasks();
 
+    expect(ticketService.deleteTicket).toHaveBeenCalledTimes(1);
     expect(state.findTicket(1)).toBeNull();
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Ticket', 1);
+    expect(trash.service.notifyTrashed).toHaveBeenCalledWith('abc', [1], {title: 'My Ticket'});
     expect(router.navigate).toHaveBeenCalledWith(['../..'], {relativeTo: route});
   }));
 
@@ -505,7 +510,7 @@ describe('TicketDetailComponent editing', () => {
     ticketService.deleteTicket.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
     component.ngOnInit();
 
-    component.handleConfirmDelete();
+    component.handleDelete();
     state.removeTickets([1]);
     state.remoteChanges$.next(new Map());
     flushMicrotasks();

@@ -107,13 +107,6 @@
     (cancelled)="handleMoveCancelled()"
   ></app-move-to-board-dialog>
 
-  <app-confirm-dialog
-    *ngIf="showDeleteConfirm"
-    [message]="PHRASES.CONFIRM_DELETE_TICKET | translate"
-    (confirmed)="handleConfirmDelete()"
-    (cancelled)="handleCancelDelete()"
-  ></app-confirm-dialog>
-
   <app-edit-conflict-dialog
     *ngIf="editConflict"
     (loadLatest)="handleConflictLoadLatest()"
