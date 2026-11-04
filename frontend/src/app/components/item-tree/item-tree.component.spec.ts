@@ -87,6 +87,19 @@ describe('ItemTreeComponent', () => {
     expect(component.isExpanded(1)).toBeFalse();
   });
 
+  it('creates a blank item in the folder from its split button without toggling the folder', () => {
+    const created: { parentId: number | null; fromTemplate: boolean }[] = [];
+    component.createItem.subscribe((event) => created.push(event));
+    render([{id: 1, title: 'Docs', parentId: null, projectId: null}], [buildItem({folderId: 1})]);
+
+    query<HTMLButtonElement>('.itemTree__row--folder .splitButton__main').click();
+    query<HTMLButtonElement>('.itemTree__row--folder .splitButton__toggle').click();
+    fixture.detectChanges();
+
+    expect(created).toEqual([{parentId: 1, fromTemplate: false}]);
+    expect(component.isExpanded(1)).toBeFalse();
+  });
+
   it('lets an unloaded folder expand and asks for its items on each expand', () => {
     const expanded: { folderId: number }[] = [];
     component.expandFolder.subscribe((event) => expanded.push(event));
