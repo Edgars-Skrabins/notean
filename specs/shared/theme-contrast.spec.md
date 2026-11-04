@@ -269,7 +269,7 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 ### F. Instant theme switch
 - [x] F1. Reproduce the slow fade in the running app as described in Part 2.2 and add the finding as a dated line under decision 9 in this spec.
 - [x] F2. Add `THEME_SWITCHING_ATTRIBUTE` to `utils/themeDom.ts`, set and remove it in `ThemeService.render()`, and add the `[data-theme-switching]` rule to `styles.css`.
-- [ ] F3. Rewrite the two `item-tree.component.css` transition shorthands as explicit lists (and any other property-less or `all` transition F1 found).
+- [x] F3. Rewrite the two `item-tree.component.css` transition shorthands as explicit lists (and any other property-less or `all` transition F1 found).
 - [x] F4. Add to `services/theme.service.spec.ts`: after `preview(...)` the root has `data-theme-switching`; after two `await new Promise(requestAnimationFrame)` it doesn't; the `data-theme` and `data-mode` values are set while the attribute is present. Restore the attribute in `afterEach` like the existing theme attributes.
 
 ### G. Selected state in Settings
