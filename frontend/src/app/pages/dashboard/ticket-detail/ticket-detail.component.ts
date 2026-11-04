@@ -22,11 +22,9 @@ import {ToastType} from "@models/toast.model";
 import {TicketDetail, TicketResponse} from "@models/ticket.model";
 import {TeamMember} from "@models/team.model";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
-import {ButtonComponent} from "@components/button/button.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {EditConflictDialogComponent} from "@components/edit-conflict-dialog/edit-conflict-dialog.component";
 import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
-import {MoveToBoardDialogComponent} from "@components/move-to-board-dialog/move-to-board-dialog.component";
 import {TicketAssigneesComponent} from "@components/ticket-assignees/ticket-assignees.component";
 import {TicketTagsComponent} from "@components/ticket-tags/ticket-tags.component";
 import {TagService} from "@services/tag.service";
@@ -57,11 +55,9 @@ import {stableMentionContext} from "@utils/mentionContext";
     CdkTrapFocus,
     TranslatePipe,
     IconButtonComponent,
-    ButtonComponent,
     ConfirmDialogComponent,
     EditConflictDialogComponent,
     FavoriteStarComponent,
-    MoveToBoardDialogComponent,
     TicketAssigneesComponent,
     TicketTagsComponent,
     DropdownComponent,
@@ -85,7 +81,6 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   alertMessage = '';
   showDeleteConfirm = false;
   editConflict: { changes: { title: string } | { description: string }; latest: TicketDetail } | null = null;
-  isMoveDialogOpen = false;
   members: TeamMember[] = [];
   isUpdatingAssignees = false;
   isUpdatingTags = false;
@@ -139,6 +134,12 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
 
   get boardTags(): Tag[] {
     return this.state.board?.tags ?? [];
+  }
+
+  get statusOptions(): DropdownOption[] {
+    return this.state.statuses.map((status) => status.columnId === null
+      ? {value: null, labelKey: status.title}
+      : {value: status.columnId, label: status.title});
   }
 
   get priorityOptions(): DropdownOption[] {
@@ -286,23 +287,15 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
     this.router.navigate(['../..'], {relativeTo: this.route});
   }
 
-  handleMoveToBacklog() {
-    this.ticketService.moveToBacklog(this.teamCode, this.boardId, this.ticketId)
-      .then((response) => this.applyMove(response));
-  }
+  handleStatusChange(value: string | number | null) {
+    if (!this.ticket || value === this.ticket.columnId) {
+      return;
+    }
 
-  handleOpenMoveDialog() {
-    this.isMoveDialogOpen = true;
-  }
-
-  handleMoveCancelled() {
-    this.isMoveDialogOpen = false;
-  }
-
-  handleMoveToColumn(event: { columnId: number }) {
-    this.isMoveDialogOpen = false;
-    this.ticketService.moveTicket(this.teamCode, this.boardId, this.ticketId, {columnId: event.columnId})
-      .then((response) => this.applyMove(response));
+    const request = value === null
+      ? this.ticketService.moveToBacklog(this.teamCode, this.boardId, this.ticketId)
+      : this.ticketService.moveTicket(this.teamCode, this.boardId, this.ticketId, {columnId: Number(value)});
+    request.then((response) => this.applyMove(response));
   }
 
   handleCopyLink() {
