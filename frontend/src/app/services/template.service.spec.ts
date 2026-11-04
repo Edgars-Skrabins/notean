@@ -1,6 +1,6 @@
 import {AxiosError, AxiosResponse} from "axios";
 import {axiosInstance} from "@config/axiosConfig";
-import {builtInTemplate, mapTemplateDetail,TemplateService} from "./template.service";
+import {builtInTemplate, mapTemplateDetail, TemplateService} from "./template.service";
 
 const raw = {
   id: 4,

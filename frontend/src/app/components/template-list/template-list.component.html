@@ -13,7 +13,7 @@
 <p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
 <ng-container *ngIf="builtIns.length">
-  <h3 class="templateList__group capsLabel">{{ PHRASES.BUILT_IN | translate }}</h3>
+  <div class="templateList__group capsLabel" role="heading" [attr.aria-level]="headingLevel">{{ PHRASES.BUILT_IN | translate }}</div>
   <div class="templateList__row" *ngFor="let template of builtIns">
     <button type="button" class="templateList__open" (click)="opened.emit(builtInRef(template))">
       <app-icon [name]="template.kind" class="templateList__icon"></app-icon>
@@ -29,7 +29,7 @@
   </div>
 </ng-container>
 
-<h3 class="templateList__group capsLabel" *ngIf="builtIns.length && templates.length">{{ PHRASES.TEMPLATES | translate }}</h3>
+<div class="templateList__group capsLabel" role="heading" [attr.aria-level]="headingLevel" *ngIf="builtIns.length && templates.length">{{ PHRASES.TEMPLATES | translate }}</div>
 <div class="templateList__row" *ngFor="let template of templates; trackBy: trackById">
   <button type="button" class="templateList__open" (click)="opened.emit(teamRef(template))">
     <app-icon [name]="template.kind" class="templateList__icon"></app-icon>

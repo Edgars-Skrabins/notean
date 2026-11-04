@@ -4,14 +4,14 @@
 
 <div class="projectDetail" *ngIf="project">
   <div class="projectDetail__main">
-    <h2 class="projectDetail__title">{{ project.name }}</h2>
+    <h1 class="projectDetail__title">{{ project.name }}</h1>
     <app-mention-content class="projectDetail__description" *ngIf="project.description" [text]="project.description"></app-mention-content>
 
     <section class="projectDetail__items">
-      <h3 class="projectDetail__heading">{{ PHRASES.PROJECT_ITEMS | translate }}</h3>
+      <h2 class="projectDetail__heading">{{ PHRASES.PROJECT_ITEMS | translate }}</h2>
 
       <div class="projectDetail__group" *ngFor="let group of visibleGroups">
-        <h4 class="projectDetail__groupTitle">{{ group.label | translate }}</h4>
+        <h3 class="projectDetail__groupTitle">{{ group.label | translate }}</h3>
         <app-project-item-row
           *ngFor="let item of group.items"
           [icon]="group.icon"
@@ -33,7 +33,7 @@
     </div>
 
     <div>
-      <h3 class="projectDetail__sidebarLabel">{{ PHRASES.PROJECT_MEMBERS | translate }}</h3>
+      <h2 class="projectDetail__sidebarLabel">{{ PHRASES.PROJECT_MEMBERS | translate }}</h2>
       <p class="projectDetail__person" *ngFor="let person of people">
         <app-avatar [avatar]="person.user.avatar" [nickname]="person.user.nickname"></app-avatar>
         <span class="projectDetail__nickname">{{ person.user.nickname }}</span>

@@ -35,7 +35,6 @@ function flowchart(nodes: FlowNode[], edges: FlowEdge[]): string {
 }
 
 const FEATURE_DOCUMENTATION = [
-  '<h1>Feature name</h1>',
   '<p><strong>Status:</strong> Draft · <strong>Owner:</strong> Name · <strong>Last updated:</strong> Date</p>',
   '<h2>Summary</h2>',
   '<p>One or two sentences on what this feature does and who it is for.</p>',
@@ -54,7 +53,6 @@ const FEATURE_DOCUMENTATION = [
 ].join('');
 
 const MEETING_NOTES = [
-  '<h1>Meeting notes</h1>',
   '<p><strong>Date:</strong> Date · <strong>Facilitator:</strong> Name</p>',
   '<h2>Attendees</h2>',
   '<ul><li><p>Name</p></li></ul>',
@@ -69,7 +67,6 @@ const MEETING_NOTES = [
 ].join('');
 
 const CONCEPT = [
-  '<h1>Concept name</h1>',
   '<h2>Idea</h2>',
   '<p>Describe the idea in a short paragraph.</p>',
   '<h2>Why now</h2>',
@@ -85,7 +82,6 @@ const CONCEPT = [
 ].join('');
 
 const PERFORMANCE_IMPROVEMENT_PLAN = [
-  '<h1>Performance improvement plan</h1>',
   '<p><strong>Employee:</strong> Name · <strong>Manager:</strong> Name · <strong>Period:</strong> Start date – End date</p>',
   '<h2>Purpose</h2>',
   '<p>Why this plan exists and what success looks like at the end of it.</p>',

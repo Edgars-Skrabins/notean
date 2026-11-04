@@ -1,10 +1,10 @@
 <div class="dashboardStub manageTeam">
-  <h2 class="dashboardStub__title manageTeam__title">{{ PHRASES.MANAGE_TEAM | translate }}</h2>
+  <h1 class="dashboardStub__title manageTeam__title">{{ PHRASES.MANAGE_TEAM | translate }}</h1>
 
   <p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
   <section class="manageTeam__section">
-    <h3 class="manageTeam__sectionTitle">{{ PHRASES.GENERAL | translate }}</h3>
+    <h2 class="manageTeam__sectionTitle">{{ PHRASES.GENERAL | translate }}</h2>
     <div class="authField">
       <label class="authField__label" for="teamNameInput">{{ PHRASES.TEAM_NAME | translate }}</label>
       <input [(ngModel)]="teamName" [maxlength]="TITLE_MAX_LENGTH" id="teamNameInput" type="text" />
@@ -13,7 +13,7 @@
   </section>
 
   <section class="manageTeam__section">
-    <h3 class="manageTeam__sectionTitle">{{ PHRASES.TEAM_MEMBERS | translate }}</h3>
+    <h2 class="manageTeam__sectionTitle">{{ PHRASES.TEAM_MEMBERS | translate }}</h2>
     <p class="manageTeam__invite">{{ PHRASES.TEAM_CODE_SHARE_NOTICE | translate }}</p>
     <app-team-code-display [code]="teamCode" [compact]="true"></app-team-code-display>
     <div class="manageTeam__memberList" *ngIf="!isLoadingMembers && members.length">
@@ -36,7 +36,7 @@
   </section>
 
   <section class="manageTeam__section" *ngIf="isOwner">
-    <h3 class="manageTeam__sectionTitle">{{ PHRASES.FEATURES | translate }}</h3>
+    <h2 class="manageTeam__sectionTitle">{{ PHRASES.FEATURES | translate }}</h2>
     <div class="manageTeam__features">
       <app-switch
         *ngFor="let option of featureOptions"
@@ -47,12 +47,12 @@
   </section>
 
   <section class="manageTeam__section" *ngIf="storageParams">
-    <h3 class="manageTeam__sectionTitle">{{ PHRASES.STORAGE | translate }}</h3>
+    <h2 class="manageTeam__sectionTitle">{{ PHRASES.STORAGE | translate }}</h2>
     <p class="manageTeam__storage">{{ PHRASES.STORAGE_USAGE | translate: storageParams }}</p>
   </section>
 
   <section class="manageTeam__section manageTeam__danger" *ngIf="isOwner">
-    <h3 class="manageTeam__dangerTitle">{{ PHRASES.DANGER_ZONE | translate }}</h3>
+    <h2 class="manageTeam__dangerTitle">{{ PHRASES.DANGER_ZONE | translate }}</h2>
     <app-button variant="danger" icon="trash" (pressed)="handleDeleteTeam()">{{ PHRASES.DELETE_TEAM | translate }}</app-button>
   </section>
 </div>
