@@ -88,6 +88,7 @@ Existing stack only: Angular templates, ngx-translate, the shared `ButtonCompone
 9. **Copied label keeps the existing "Copied!" text (2026-11-04):** the spec's "Code copied" wording matches the `CODE_COPIED` key, whose English text is "Copied!". Wording is left as is (copy changes belong to `ui-copy-consistency`); the test checks the key.
 10. **Translations of the shortened storage line and new headings (2026-11-04):** each language drops its own "Storage:" word into the new `STORAGE` heading and capitalises the remaining sentence where it now starts with a word (lv, et, lt, ru). `GENERAL` uses each platform's usual settings-tab word (Vispārīgi, Üldine, Bendra, Общие, Allmänt, Yleiset, Allgemein, Generelt, Général, General).
 11. **Member list spacing (2026-11-04):** the member list gets `var(--space-4)` above it so the invite line and code read as their own group before the list (Impeccable layout.md proximity).
+12. **Manual check note (2026-11-04):** done on temporary ports 3117/4217 (reverted). The copy click could not show "Copied!" there because the browser pane denies clipboard writes; the tooltip showed, and the copied state is covered by the component spec.
 
 # Part 3 — Implementation TODO
 
@@ -106,5 +107,5 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] B4. Extend `manage-team.component.spec.ts` (TestBed `render` helper): section headings appear in the order General, Members, Features, Storage, Danger zone for the owner; an admin sees General, Members and Storage but no Features or Danger zone; the team code display sits inside the Members section with `compact`; the storage line reads "13 MB of 500 MB used" in the translated text and its heading is Storage; the Danger zone's button opens the delete confirm (`showDeleteConfirm`). Keep the existing tests passing.
 
 ### Z. Wrap-up
-- [ ] Z1. Full test runs, build and lint, using the commands in `CLAUDE.md` (`npm test`, `npm run build` in `frontend/`; `bin/rails test` in `backend/` to confirm the untouched baseline).
-- [ ] Z2. Manual check in the running app: as the owner open Manage team and read the five sections top to bottom; copy the code and see the tooltip and "Code copied"; rename the team; change a member's role; toggle a feature; open Delete team and cancel; log in as an admin and confirm Features and Danger zone are absent; check Create team still shows the large code display; check light and dark mode and a 375px wide window.
+- [x] Z1. Full test runs, build and lint, using the commands in `CLAUDE.md` (`npm test`, `npm run build` in `frontend/`; `bin/rails test` in `backend/` to confirm the untouched baseline).
+- [x] Z2. Manual check in the running app: as the owner open Manage team and read the five sections top to bottom; copy the code and see the tooltip and "Code copied"; rename the team; change a member's role; toggle a feature; open Delete team and cancel; log in as an admin and confirm Features and Danger zone are absent; check Create team still shows the large code display; check light and dark mode and a 375px wide window.
