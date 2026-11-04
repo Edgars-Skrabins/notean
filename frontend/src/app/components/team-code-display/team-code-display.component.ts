@@ -2,12 +2,14 @@ import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {NgIf} from '@angular/common';
 import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
+import {TooltipDirective} from '@components/tooltip/tooltip.directive';
 
 @Component({
   selector: 'app-team-code-display',
   imports: [
     NgIf,
-    TranslatePipe
+    TranslatePipe,
+    TooltipDirective
   ],
   templateUrl: './team-code-display.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
