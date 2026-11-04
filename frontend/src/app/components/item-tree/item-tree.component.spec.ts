@@ -35,7 +35,6 @@ describe('ItemTreeComponent', () => {
     component = fixture.componentInstance;
     component.itemIcon = 'page';
     component.favoritableType = 'Page';
-    component.deleteItemConfirmMessage = 'Delete?';
     openedItems = [];
     component.openItem.subscribe((item) => openedItems.push(item));
   });
@@ -75,6 +74,18 @@ describe('ItemTreeComponent', () => {
     query<HTMLButtonElement>('.itemTree__row--item .iconButton--danger').click();
 
     expect(openedItems).toEqual([]);
+  });
+
+  it('asks to delete an item as soon as its delete button is pressed', () => {
+    const deleted: { itemId: number }[] = [];
+    component.deleteItem.subscribe((event) => deleted.push(event));
+    render([], [buildItem()]);
+
+    query<HTMLButtonElement>('.itemTree__row--item .iconButton--danger').click();
+    fixture.detectChanges();
+
+    expect(deleted).toEqual([{itemId: 10}]);
+    expect(query('app-confirm-dialog')).toBeNull();
   });
 
   it('toggles a folder from its row main and its row padding', () => {

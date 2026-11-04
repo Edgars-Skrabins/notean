@@ -136,10 +136,3 @@
   (confirmed)="handleDeleteConfirmed($event)"
   (cancelled)="handleDeleteCancelled()"
 ></app-delete-folder-dialog>
-
-<app-confirm-dialog
-  *ngIf="itemPendingDeletion"
-  [message]="deleteItemConfirmMessage"
-  (confirmed)="handleDeleteItemConfirmed()"
-  (cancelled)="handleDeleteItemCancelled()"
-></app-confirm-dialog>

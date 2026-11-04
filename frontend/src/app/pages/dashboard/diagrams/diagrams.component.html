@@ -31,7 +31,6 @@
     [itemLabel]="PHRASES.NEW_DIAGRAM | translate"
     itemIcon="diagram"
     favoritableType="Diagram"
-    [deleteItemConfirmMessage]="PHRASES.CONFIRM_DELETE_DIAGRAM | translate"
     (openItem)="handleOpenItem($event)"
     (createFolder)="handleCreateFolder($event.parentId)"
     (createItem)="handleCreateItem($event.parentId, $event.fromTemplate)"

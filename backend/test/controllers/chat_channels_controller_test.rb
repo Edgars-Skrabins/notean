@@ -129,8 +129,9 @@ class ChatChannelsControllerTest < ActionDispatch::IntegrationTest
 
     delete channels_url(channel.id), headers: headers
 
-    assert_response :no_content
+    assert_response :ok
     assert channel.reload.trashed?
+    assert_equal [ channel.trash_entry_id ], JSON.parse(response.body)["trash_entry_ids"]
     assert_equal [ "channel_removed" ], chat_broadcasts(@member).map { |message| message["type"] }
 
     get channels_url(channel.id), headers: headers

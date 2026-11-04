@@ -12,6 +12,7 @@ import {
   ChatChannelsResponse,
   ChatChannelSummary,
   ChatEmptyResponse,
+  DeleteChatChannelResponse,
   ChatMessage,
   ChatMessageResponse,
   ChatMessagesResponse,
@@ -140,8 +141,11 @@ export class ChatService {
     return this.requestChannel(axiosInstance.patch(this.channelsUrl(teamCode, id), {chat_channel: payload}));
   }
 
-  async deleteChannel(teamCode: string, id: number): Promise<ChatEmptyResponse> {
-    return apiRequest<ChatEmptyResponse>(axiosInstance.delete(this.channelsUrl(teamCode, id)), () => ({success: true}));
+  async deleteChannel(teamCode: string, id: number): Promise<DeleteChatChannelResponse> {
+    return apiRequest<DeleteChatChannelResponse>(
+      axiosInstance.delete(this.channelsUrl(teamCode, id)),
+      (data) => ({success: true, trashEntryIds: data.trash_entry_ids ?? []}),
+    );
   }
 
   async leaveChannel(teamCode: string, id: number): Promise<ChatEmptyResponse> {

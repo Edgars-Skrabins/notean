@@ -42,10 +42,3 @@
 
   <router-outlet></router-outlet>
 </div>
-
-<app-confirm-dialog
-  *ngIf="showDeleteConfirm"
-  [message]="PHRASES.CONFIRM_DELETE_BOARD | translate"
-  (confirmed)="handleConfirmDelete()"
-  (cancelled)="handleCancelDelete()"
-></app-confirm-dialog>

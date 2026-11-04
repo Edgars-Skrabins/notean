@@ -20,7 +20,7 @@ import {dashboardRoutes} from "../../../app/dashboard.routes";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 import {createBoardState, fakeTicketList, ticketDetail, ticketSummary} from "../../../testing/boardFixtures";
-import {trashServiceStub} from "../../../testing/trashServiceStub";
+import {trashServiceStub, TrashServiceStub} from "../../../testing/trashServiceStub";
 import {TrashService} from "@services/trash.service";
 
 describe('ListTabComponent', () => {
@@ -29,10 +29,12 @@ describe('ListTabComponent', () => {
   let ticketService: jasmine.SpyObj<TicketService>;
   let favoriteService: jasmine.SpyObj<FavoriteService>;
   let toastService: jasmine.SpyObj<ToastService>;
+  let trash: TrashServiceStub;
   const bob: BoardUser = {id: 5, nickname: 'bob', avatar: {color: 'blue', imageUrl: null}};
 
   beforeEach(fakeAsync(() => {
     state = createBoardState();
+    trash = trashServiceStub();
     ticketService = jasmine.createSpyObj<TicketService>('TicketService', ['list', 'createTicket', 'reorderBacklog', 'moveTicket', 'deleteTicket', 'bulkUpdate', 'bulkDelete']);
     ticketService.list.and.callFake(fakeTicketList(state));
     favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem']);
@@ -48,7 +50,7 @@ describe('ListTabComponent', () => {
       toastService,
       teamService,
       jasmine.createSpyObj<ProjectService>('ProjectService', ['getProject']),
-      trashServiceStub().service
+      trash.service
     );
     component.ngOnInit();
     flushMicrotasks();
@@ -183,16 +185,17 @@ describe('ListTabComponent', () => {
     expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: PHRASES.BULK_ACTION_FAILED});
   }));
 
-  it('bulk deletes the selected tickets after confirmation and forgets their favorites', fakeAsync(() => {
-    ticketService.bulkDelete.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
+  it('bulk deletes the selected tickets at once, forgets their favorites and counts them in the toast', fakeAsync(() => {
+    ticketService.bulkDelete.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1, 2]}));
     component.setSelected(loaded(3), true);
     component.setSelected(loaded(2), true);
-    component.requestBulkDelete();
 
-    component.handleConfirmBulkDelete();
+    component.requestBulkDelete();
+    component.requestBulkDelete();
     flushMicrotasks();
 
-    expect(ticketService.bulkDelete).toHaveBeenCalledWith('abc', 9, [3, 2]);
+    expect(ticketService.bulkDelete).toHaveBeenCalledOnceWith('abc', 9, [3, 2]);
+    expect(trash.service.notifyTrashed).toHaveBeenCalledWith('abc', [1, 2], {ticketCount: 2});
     expect(visibleIds()).toEqual([[4], [1], []]);
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Ticket', 3);
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Ticket', 2);
@@ -302,11 +305,13 @@ describe('ListTabComponent', () => {
   it('deletes a ticket, forgets its favorite and drops it from the selection', fakeAsync(() => {
     ticketService.deleteTicket.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
     component.setSelected(loaded(4), true);
-    component.requestDelete(loaded(4));
 
-    component.handleConfirmDelete();
+    component.requestDelete(loaded(4));
+    component.requestDelete(loaded(4));
     flushMicrotasks();
 
+    expect(ticketService.deleteTicket).toHaveBeenCalledTimes(1);
+    expect(trash.service.notifyTrashed).toHaveBeenCalledWith('abc', [1], {title: 'Ticket 4'});
     expect(backlogIds()).toEqual([3]);
     expect(visibleIds()[0]).toEqual([3]);
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Ticket', 4);

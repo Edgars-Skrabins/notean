@@ -10,7 +10,7 @@
     (deleteColumn)="requestDeleteColumn(column)"
     (openTicket)="handleOpenTicket($event)"
     (moveTicketToBacklog)="handleMoveToBacklog($event)"
-    (deleteTicket)="requestDeleteTicket($event, column)"
+    (deleteTicket)="requestDeleteTicket($event)"
     (addTicket)="handleAddTicket(column)"
     (ticketDropped)="handleTicketDropped($event, column)"
   ></app-kanban-column>
@@ -24,16 +24,10 @@
 
 <app-confirm-dialog
   *ngIf="columnPendingDeletion"
-  [message]="PHRASES.CONFIRM_DELETE_COLUMN | translate"
+  [message]="columnDeleteMessage | translate: {title: columnPendingDeletion.title, count: columnPendingDeletion.tickets.length}"
+  [confirmLabel]="PHRASES.DELETE_COLUMN"
   (confirmed)="handleConfirmDeleteColumn()"
   (cancelled)="handleCancelDeleteColumn()"
-></app-confirm-dialog>
-
-<app-confirm-dialog
-  *ngIf="ticketPendingDeletion"
-  [message]="PHRASES.CONFIRM_DELETE_TICKET | translate"
-  (confirmed)="handleConfirmDeleteTicket()"
-  (cancelled)="handleCancelDeleteTicket()"
 ></app-confirm-dialog>
 
 <app-create-named-item-dialog

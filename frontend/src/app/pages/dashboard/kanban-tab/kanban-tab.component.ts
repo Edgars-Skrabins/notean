@@ -46,8 +46,9 @@ export class KanbanTabComponent implements AfterViewChecked, OnDestroy {
   alertMessage = '';
   columnPendingDeletion: BoardColumn | null = null;
   isCreateColumnDialogOpen = false;
-  ticketPendingDeletion: { ticket: TicketSummary; column: BoardColumn } | null = null;
   addTicketToColumn: BoardColumn | null = null;
+
+  private deletingTicketIds = new Set<number>();
 
   private resizeObserver: ResizeObserver | null = null;
   private observedElement: HTMLElement | null = null;
@@ -63,6 +64,14 @@ export class KanbanTabComponent implements AfterViewChecked, OnDestroy {
     private toastService: ToastService,
     private trashService: TrashService
   ) {
+  }
+
+  get columnDeleteMessage(): string {
+    const count = this.columnPendingDeletion?.tickets.length ?? 0;
+    if (count === 0) {
+      return PHRASES.CONFIRM_DELETE_EMPTY_COLUMN;
+    }
+    return count === 1 ? PHRASES.CONFIRM_DELETE_COLUMN_ONE : PHRASES.CONFIRM_DELETE_COLUMN;
   }
 
   ngAfterViewChecked() {
@@ -139,7 +148,7 @@ export class KanbanTabComponent implements AfterViewChecked, OnDestroy {
 
         this.alertMessage = '';
         column.tickets.forEach((ticket) => this.favoriteService.forgetItem('Ticket', ticket.id));
-        this.trashService.notifyTrashed(this.state.teamCode, response.trashEntryIds);
+        this.trashService.notifyTrashed(this.state.teamCode, response.trashEntryIds, {ticketCount: column.tickets.length});
         if (this.state.board) {
           this.state.board.columns = this.state.board.columns.filter((existing) => existing.id !== column.id);
         }
@@ -186,32 +195,24 @@ export class KanbanTabComponent implements AfterViewChecked, OnDestroy {
       });
   }
 
-  requestDeleteTicket(ticket: TicketSummary, column: BoardColumn) {
-    this.ticketPendingDeletion = {ticket, column};
-  }
-
-  handleCancelDeleteTicket() {
-    this.ticketPendingDeletion = null;
-  }
-
-  handleConfirmDeleteTicket() {
-    const pending = this.ticketPendingDeletion;
-    this.ticketPendingDeletion = null;
-    if (!pending) {
+  requestDeleteTicket(ticket: TicketSummary) {
+    if (this.deletingTicketIds.has(ticket.id)) {
       return;
     }
 
-    this.ticketService.deleteTicket(this.state.teamCode, this.state.boardId, pending.ticket.id)
+    this.deletingTicketIds.add(ticket.id);
+    this.ticketService.deleteTicket(this.state.teamCode, this.state.boardId, ticket.id)
       .then((response) => {
+        this.deletingTicketIds.delete(ticket.id);
         if (!response.success) {
           this.alertMessage = errorPhrase(response.code);
           return;
         }
 
         this.alertMessage = '';
-        this.favoriteService.forgetItem('Ticket', pending.ticket.id);
-        this.state.removeTicket(pending.ticket.id);
-        this.trashService.notifyTrashed(this.state.teamCode, response.trashEntryIds);
+        this.favoriteService.forgetItem('Ticket', ticket.id);
+        this.state.removeTicket(ticket.id);
+        this.trashService.notifyTrashed(this.state.teamCode, response.trashEntryIds, {title: ticket.title});
       });
   }
 

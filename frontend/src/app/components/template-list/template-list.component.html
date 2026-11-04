@@ -59,7 +59,8 @@
 
 <app-confirm-dialog
   *ngIf="templatePendingDelete"
-  [message]="PHRASES.CONFIRM_DELETE_TEMPLATE | translate"
+  [message]="PHRASES.CONFIRM_DELETE_TEMPLATE | translate: {title: templatePendingDelete.title}"
+  [confirmLabel]="PHRASES.DELETE_TEMPLATE"
   (confirmed)="handleDeleteConfirmed()"
   (cancelled)="handleDeleteCancelled()"
 ></app-confirm-dialog>

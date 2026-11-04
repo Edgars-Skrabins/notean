@@ -114,17 +114,3 @@
   (moved)="handleMoveConfirmed($event)"
   (cancelled)="handleMoveCancelled()"
 ></app-move-to-board-dialog>
-
-<app-confirm-dialog
-  *ngIf="ticketPendingDeletion"
-  [message]="PHRASES.CONFIRM_DELETE_TICKET | translate"
-  (confirmed)="handleConfirmDelete()"
-  (cancelled)="handleCancelDelete()"
-></app-confirm-dialog>
-
-<app-confirm-dialog
-  *ngIf="isBulkDeleteConfirmOpen"
-  [message]="PHRASES.CONFIRM_DELETE_TICKETS | translate: {count: selectedTickets.length}"
-  (confirmed)="handleConfirmBulkDelete()"
-  (cancelled)="handleCancelBulkDelete()"
-></app-confirm-dialog>

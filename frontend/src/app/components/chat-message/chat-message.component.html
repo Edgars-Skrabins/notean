@@ -83,6 +83,7 @@
 <app-confirm-dialog
   *ngIf="isConfirmingDelete"
   [message]="PHRASES.CONFIRM_DELETE_MESSAGE | translate"
+  [confirmLabel]="PHRASES.DELETE_MESSAGE"
   (confirmed)="handleDeleteConfirmed()"
   (cancelled)="isConfirmingDelete = false"
 ></app-confirm-dialog>

@@ -22,7 +22,6 @@ import {ToastType} from "@models/toast.model";
 import {TicketDetail, TicketResponse} from "@models/ticket.model";
 import {TeamMember} from "@models/team.model";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
-import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {EditConflictDialogComponent} from "@components/edit-conflict-dialog/edit-conflict-dialog.component";
 import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
 import {TicketAssigneesComponent} from "@components/ticket-assignees/ticket-assignees.component";
@@ -55,7 +54,6 @@ import {stableMentionContext} from "@utils/mentionContext";
     CdkTrapFocus,
     TranslatePipe,
     IconButtonComponent,
-    ConfirmDialogComponent,
     EditConflictDialogComponent,
     FavoriteStarComponent,
     TicketAssigneesComponent,
@@ -79,7 +77,6 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   descriptionDraft = '';
   isLoading = true;
   alertMessage = '';
-  showDeleteConfirm = false;
   editConflict: { changes: { title: string } | { description: string }; latest: TicketDetail } | null = null;
   members: TeamMember[] = [];
   isUpdatingAssignees = false;
@@ -303,15 +300,11 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
   }
 
   handleDelete() {
-    this.showDeleteConfirm = true;
-  }
+    if (this.isDeleting) {
+      return;
+    }
 
-  handleCancelDelete() {
-    this.showDeleteConfirm = false;
-  }
-
-  handleConfirmDelete() {
-    this.showDeleteConfirm = false;
+    const title = this.ticket?.title ?? '';
     this.isDeleting = true;
 
     this.ticketService.deleteTicket(this.teamCode, this.boardId, this.ticketId)
@@ -324,7 +317,7 @@ export class TicketDetailComponent implements OnInit, OnDestroy {
 
         this.favoriteService.forgetItem('Ticket', this.ticketId);
         this.state.removeTicket(this.ticketId);
-        this.trashService.notifyTrashed(this.teamCode, response.trashEntryIds);
+        this.trashService.notifyTrashed(this.teamCode, response.trashEntryIds, {title});
         this.handleGoBack();
       });
   }

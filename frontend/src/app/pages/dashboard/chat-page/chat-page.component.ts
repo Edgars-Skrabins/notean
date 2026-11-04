@@ -15,6 +15,7 @@ import {ChatListService} from '@services/chat-list.service';
 import {TeamService} from '@services/team.service';
 import {AuthService} from '@services/auth.service';
 import {ToastService} from '@services/toast.service';
+import {TrashService} from '@services/trash.service';
 import {errorPhrase} from '@utils/errorPhrase';
 import {AvatarStackComponent} from '@components/avatar-stack/avatar-stack.component';
 import {ButtonComponent} from '@components/button/button.component';
@@ -86,7 +87,8 @@ export class ChatPageComponent implements OnInit, OnDestroy {
     private teamService: TeamService,
     private authService: AuthService,
     private toastService: ToastService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private trashService: TrashService
   ) {
     this.currentUserId = this.authService.getCurrentUser()?.id ?? null;
   }
@@ -238,13 +240,14 @@ export class ChatPageComponent implements OnInit, OnDestroy {
     this.chatListService.upsert(channel);
   }
 
-  handleSettingsDeleted() {
-    const id = this.channel?.id;
+  handleSettingsDeleted(trashEntryIds: number[]) {
+    const channel = this.channel;
     this.isSettingsOpen = false;
-    if (id) {
-      this.chatListService.remove(id);
+    if (channel) {
+      this.chatListService.remove(channel.id);
     }
-    this.leavePage(PHRASES.CHANNEL_DELETED, ToastType.SUCCESS);
+    this.router.navigate(['/', AppRoutes.DASHBOARD, AppRoutes.DASHBOARD_HOME]);
+    this.trashService.notifyTrashed(this.teamCode, trashEntryIds, {title: channel?.name ?? ''});
   }
 
   async handleLeave() {

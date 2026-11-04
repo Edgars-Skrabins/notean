@@ -31,6 +31,7 @@
 <app-confirm-dialog
   *ngIf="showDeleteConfirm"
   [message]="PHRASES.CONFIRM_DELETE_COMMENT | translate"
+  [confirmLabel]="PHRASES.DELETE_COMMENT"
   (confirmed)="confirmDelete()"
   (cancelled)="cancelDelete()"
 ></app-confirm-dialog>
