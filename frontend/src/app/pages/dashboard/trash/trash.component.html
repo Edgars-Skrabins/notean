@@ -1,6 +1,6 @@
 <div class="dashboardStub">
   <div class="trash__header">
-    <h2 class="dashboardStub__title">{{ PHRASES.TRASH | translate }}</h2>
+    <h1 class="dashboardStub__title">{{ PHRASES.TRASH | translate }}</h1>
     <app-button *ngIf="canEmpty && entries?.length" variant="danger" icon="trash" (pressed)="handleEmpty()">{{ PHRASES.EMPTY_TRASH | translate }}</app-button>
   </div>
 

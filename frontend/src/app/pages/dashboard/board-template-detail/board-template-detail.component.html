@@ -9,6 +9,7 @@
       [placeholder]="PHRASES.TEMPLATE_NAME_PLACEHOLDER | translate"
       [attr.aria-label]="PHRASES.TEMPLATE_NAME_PLACEHOLDER | translate"
     />
+    <h1 *ngIf="canEdit" class="cdk-visually-hidden">{{ title || (PHRASES.NEW_TEMPLATE | translate) }}</h1>
     <h1 *ngIf="!canEdit" class="boardTemplate__heading">{{ title }}</h1>
 
     <div class="boardTemplate__actions" *ngIf="isNew">

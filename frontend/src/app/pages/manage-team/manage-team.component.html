@@ -4,22 +4,22 @@
 </button>
 
 <div class="manageTeam">
-  <h2 class="manageTeam__title">{{ PHRASES.MANAGE_TEAM | translate }}</h2>
+  <h1 class="manageTeam__title">{{ PHRASES.MANAGE_TEAM | translate }}</h1>
 
   <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
   <section class="manageTeam__section">
-    <h3 class="manageTeam__sectionTitle">{{ PHRASES.TEAM_CODE | translate }}</h3>
+    <h2 class="manageTeam__sectionTitle">{{ PHRASES.TEAM_CODE | translate }}</h2>
     <app-team-code-display [code]="teamCode"></app-team-code-display>
   </section>
 
   <section class="manageTeam__section" *ngIf="storageParams">
-    <h3 class="manageTeam__sectionTitle">{{ PHRASES.ATTACHMENTS | translate }}</h3>
+    <h2 class="manageTeam__sectionTitle">{{ PHRASES.ATTACHMENTS | translate }}</h2>
     <p class="manageTeam__storage">{{ PHRASES.STORAGE_USAGE | translate: storageParams }}</p>
   </section>
 
   <section class="manageTeam__section">
-    <h3 class="manageTeam__sectionTitle">{{ PHRASES.RENAME_TEAM | translate }}</h3>
+    <h2 class="manageTeam__sectionTitle">{{ PHRASES.RENAME_TEAM | translate }}</h2>
     <div class="authField">
       <label class="authField__label" for="teamNameInput">{{ PHRASES.TEAM_NAME | translate }}</label>
       <input [(ngModel)]="teamName" [maxlength]="TITLE_MAX_LENGTH" id="teamNameInput" type="text" />
@@ -29,7 +29,7 @@
   </section>
 
   <section class="manageTeam__section">
-    <h3 class="manageTeam__sectionTitle">{{ PHRASES.TEAM_MEMBERS | translate }}</h3>
+    <h2 class="manageTeam__sectionTitle">{{ PHRASES.TEAM_MEMBERS | translate }}</h2>
     <div class="manageTeam__memberList" *ngIf="!isLoadingMembers && members.length">
       <div class="manageTeam__memberRow" *ngFor="let member of members">
         <span class="manageTeam__memberIdentity">
@@ -50,7 +50,7 @@
   </section>
 
   <section class="manageTeam__section" *ngIf="isOwner">
-    <h3 class="manageTeam__sectionTitle">{{ PHRASES.FEATURES | translate }}</h3>
+    <h2 class="manageTeam__sectionTitle">{{ PHRASES.FEATURES | translate }}</h2>
     <div class="manageTeam__features">
       <app-checkbox
         *ngFor="let option of featureOptions"

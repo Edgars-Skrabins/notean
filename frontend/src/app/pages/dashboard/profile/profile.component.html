@@ -4,7 +4,7 @@
 </button>
 
 <div class="profile">
-  <h2 class="profile__title">{{ PHRASES.PROFILE | translate }}</h2>
+  <h1 class="profile__title">{{ PHRASES.PROFILE | translate }}</h1>
 
   <div class="profile__avatar">
     <app-avatar
@@ -58,7 +58,7 @@
     {{ PHRASES.SAVE | translate }}
   </button>
 
-  <h3 class="profile__sectionTitle">{{ PHRASES.PASSWORD | translate }}</h3>
+  <h2 class="profile__sectionTitle">{{ PHRASES.PASSWORD | translate }}</h2>
 
   <div class="authField">
     <label class="authField__label" for="currentPasswordInput">{{ PHRASES.CURRENT_PASSWORD | translate }}</label>
@@ -100,7 +100,7 @@
   </button>
   <p class="authStatus" *ngIf="passwordError">{{ passwordError | translate }}</p>
 
-  <h3 class="profile__sectionTitle">{{ PHRASES.DELETE_ACCOUNT | translate }}</h3>
+  <h2 class="profile__sectionTitle">{{ PHRASES.DELETE_ACCOUNT | translate }}</h2>
   <app-button variant="danger" [disabled]="isDeletingAccount" (pressed)="handleDeleteAccount()">{{ PHRASES.DELETE_ACCOUNT | translate }}</app-button>
 </div>
 

@@ -1,5 +1,5 @@
 <section class="favoritesGrid" *ngIf="favoriteService.homeFavorites$ | async as favorites">
-  <h3 class="favoritesGrid__title">{{ PHRASES.FAVORITES | translate }}</h3>
+  <h2 class="favoritesGrid__title">{{ PHRASES.FAVORITES | translate }}</h2>
 
   <div
     *ngIf="favorites.length"

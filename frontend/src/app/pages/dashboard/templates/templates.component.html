@@ -1,3 +1,4 @@
+<h1 class="cdk-visually-hidden" *ngIf="itemKind">{{ PHRASES.TEMPLATES | translate }}</h1>
 <app-item-tabs *ngIf="itemKind" [itemsLabel]="itemsLabel" [itemsRoute]="itemsRoute"></app-item-tabs>
 <h1 class="templates__title" *ngIf="!itemKind">{{ PHRASES.BOARD_TEMPLATES | translate }}</h1>
 
@@ -5,6 +6,7 @@
   [kind]="kind"
   [emptyLabel]="emptyLabel"
   [showActions]="true"
+  [headingLevel]="2"
   (opened)="handleOpen($event)"
   (used)="handleUse($event)"
 >
