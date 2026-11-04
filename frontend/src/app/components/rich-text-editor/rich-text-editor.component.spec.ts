@@ -35,6 +35,34 @@ describe('RichTextEditorComponent', () => {
     fixture.destroy();
   });
 
+  describe('autofocus', () => {
+    function settle(): Promise<void> {
+      return new Promise((resolve) => setTimeout(() => requestAnimationFrame(() => resolve()), 0));
+    }
+
+    function proseMirrorHasFocus(): boolean {
+      return !!document.activeElement?.closest('.ProseMirror') && fixture.nativeElement.contains(document.activeElement);
+    }
+
+    it('focuses the editor when autofocus is on', async () => {
+      fixture.destroy();
+      fixture = TestBed.createComponent(RichTextEditorComponent);
+      fixture.componentInstance.autofocus = true;
+      fixture.detectChanges();
+      await settle();
+
+      expect(fixture.componentInstance.editor!.isFocused).toBeTrue();
+      expect(proseMirrorHasFocus()).toBeTrue();
+    });
+
+    it('leaves the editor unfocused by default', async () => {
+      await settle();
+
+      expect(fixture.componentInstance.editor!.isFocused).toBeFalse();
+      expect(proseMirrorHasFocus()).toBeFalse();
+    });
+  });
+
   it('leaves Escape unhandled so it reaches the popup', () => {
     expect(keydown('Escape', 27).defaultPrevented).toBeFalse();
   });

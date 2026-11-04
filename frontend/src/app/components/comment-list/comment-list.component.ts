@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ChangeDetectionStrategy} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {NgFor, NgIf} from '@angular/common';
 import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
@@ -38,12 +38,15 @@ export class CommentListComponent implements OnChanges {
   @Input({required: true}) target!: CommentTarget;
   @Input() title: string | null = PHRASES.COMMENTS;
   @Input() submitLabel: string = PHRASES.POST_COMMENT;
+  @Input() placeholder: string = PHRASES.COMMENT_PLACEHOLDER;
   @Input() mentionContext: MentionContext = {};
   @Output() commentAdded = new EventEmitter<Comment>();
   @Output() commentUpdated = new EventEmitter<Comment>();
   @Output() commentRemoved = new EventEmitter<Comment>();
   @Output() emptied = new EventEmitter<void>();
   @Output() loaded = new EventEmitter<void>();
+
+  @ViewChild('composerTrigger') composerTrigger?: ElementRef<HTMLButtonElement>;
 
   comments: Comment[] = [];
   hasMore = false;
@@ -52,6 +55,7 @@ export class CommentListComponent implements OnChanges {
   isPosting = false;
   draft = '';
   alertMessage = '';
+  isComposerOpen = false;
 
   readonly teamCode: string;
   private readonly currentUserId: number;
@@ -71,6 +75,8 @@ export class CommentListComponent implements OnChanges {
     if (changes['target']) {
       this.comments = [];
       this.isLoaded = false;
+      this.isComposerOpen = false;
+      this.draft = '';
       this.load();
     }
   }
@@ -89,6 +95,27 @@ export class CommentListComponent implements OnChanges {
 
   canDelete(comment: Comment): boolean {
     return this.canEdit(comment) || this.isManager;
+  }
+
+  openComposer() {
+    this.isComposerOpen = true;
+  }
+
+  cancelComposer() {
+    this.draft = '';
+    this.isComposerOpen = false;
+    this.focusTrigger();
+  }
+
+  handleComposerFocusOut(event: FocusEvent) {
+    const composer = event.currentTarget as HTMLElement | null;
+    const next = event.relatedTarget as Node | null;
+    if (next && composer?.contains(next)) {
+      return;
+    }
+    if (!hasCommentText(this.draft)) {
+      this.isComposerOpen = false;
+    }
   }
 
   async loadMore() {
@@ -121,6 +148,8 @@ export class CommentListComponent implements OnChanges {
       this.comments = [...this.comments, response.comment];
       this.draft = '';
       this.alertMessage = '';
+      this.isComposerOpen = false;
+      this.focusTrigger();
       this.commentAdded.emit(response.comment);
     } else {
       this.showError(response.code);
@@ -143,6 +172,10 @@ export class CommentListComponent implements OnChanges {
 
   showError(code: ErrorCode) {
     this.alertMessage = errorPhrase(code);
+  }
+
+  private focusTrigger() {
+    setTimeout(() => this.composerTrigger?.nativeElement.focus());
   }
 
   private async load() {
