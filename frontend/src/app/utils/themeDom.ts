@@ -4,6 +4,7 @@ export type ResolvedThemeMode = 'light' | 'dark';
 
 export const THEME_STORAGE_KEY = 'theme';
 export const THEME_MODE_STORAGE_KEY = 'themeMode';
+export const THEME_SWITCHING_ATTRIBUTE = 'data-theme-switching';
 
 export function resolveMode(mode: ThemeMode, prefersDark: boolean): ResolvedThemeMode {
   if (mode === 'system') {
