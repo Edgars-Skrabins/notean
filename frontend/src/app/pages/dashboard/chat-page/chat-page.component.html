@@ -1,7 +1,7 @@
 <div class="chatPage" *ngIf="channel">
   <header class="chatPage__header">
     <div class="chatPage__heading">
-      <h2 class="dashboardStub__title chatPage__title"># {{ channel.name }}</h2>
+      <h1 class="dashboardStub__title chatPage__title"># {{ channel.name }}</h1>
       <span class="chatPage__scope" *ngIf="channel.scope === 'project'">{{ channel.project?.name }}</span>
       <span class="chatPage__scope" *ngIf="channel.scope === 'team'">{{ PHRASES.CHANNEL_SCOPE_TEAM | translate }}</span>
       <app-avatar-stack *ngIf="channel.scope === 'users'" [users]="channel.members" [max]="5"></app-avatar-stack>
@@ -44,6 +44,6 @@
   *ngIf="isSettingsOpen && channel"
   [channel]="channel"
   (saved)="handleSettingsSaved($event)"
-  (deleted)="handleSettingsDeleted()"
+  (deleted)="handleSettingsDeleted($event)"
   (cancelled)="isSettingsOpen = false"
 ></app-chat-channel-settings-dialog>

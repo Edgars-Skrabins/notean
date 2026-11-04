@@ -43,18 +43,19 @@
   --color-input-bg-focus: rgba(255, 255, 255, 0.08);
   --color-input-border: rgba(255, 255, 255, 0.12);
   --color-input-border-focus: var(--color-primary-light);
+  --color-control-border: #877fb7;
 
   --color-primary: #6d3ef0;
-  --color-primary-light: #9c6bff;
-  --color-primary-gradient: linear-gradient(90deg, #5a2fe6 0%, #9c6bff 100%);
+  --color-primary-light: #af7fff;
+  --color-primary-gradient: linear-gradient(90deg, #5a2fe6 0%, #8955e8 100%);
   --color-on-primary: #ffffff;
 
   --color-nav-active-bg: var(--color-primary-gradient);
   --color-nav-active-text: #ffffff;
 
   --color-text-heading: #ffffff;
-  --color-text-muted: #a9a3d1;
-  --color-text-faint: #8a86b1;
+  --color-text-muted: #aba5d3;
+  --color-text-faint: #a6a2cf;
 
   --shadow-card: 0 30px 70px -15px rgba(109, 62, 240, 0.35), 0 18px 40px -20px rgba(0, 0, 0, 0.65);
   --shadow-button: 0 10px 25px -8px rgba(109, 62, 240, 0.6);
@@ -86,18 +87,19 @@
   --color-input-bg-focus: #ffffff;
   --color-input-border: rgba(109, 62, 240, 0.18);
   --color-input-border-focus: #6d3ef0;
+  --color-control-border: #756d8a;
 
   --color-primary: #5a2fe6;
-  --color-primary-light: #8a55f5;
-  --color-primary-gradient: linear-gradient(90deg, #5a2fe6 0%, #8a55f5 100%);
+  --color-primary-light: #8049e8;
+  --color-primary-gradient: linear-gradient(90deg, #5a2fe6 0%, #8049e8 100%);
   --color-on-primary: #ffffff;
 
   --color-nav-active-bg: rgba(255, 255, 255, 0.8);
   --color-nav-active-text: #4a22c9;
 
   --color-text-heading: #1e1442;
-  --color-text-muted: #574e85;
-  --color-text-faint: #6e6799;
+  --color-text-muted: #554c83;
+  --color-text-faint: #585080;
 
   --shadow-card: 0 30px 70px -20px rgba(109, 62, 240, 0.25);
   --shadow-button: 0 10px 25px -8px rgba(109, 62, 240, 0.5);

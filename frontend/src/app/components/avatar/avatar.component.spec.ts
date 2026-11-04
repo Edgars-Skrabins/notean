@@ -43,7 +43,7 @@ describe('AvatarComponent', () => {
 
     const letter: HTMLElement = fixture.nativeElement.querySelector('.avatar__letter');
     expect(letter.style.color).toBe('rgb(255, 255, 255)');
-    expect(letter.style.background).toContain('rgb(30, 136, 229)');
+    expect(letter.style.background).toContain('rgb(25, 118, 210)');
   });
 
   it('uses dark text on light colours', () => {

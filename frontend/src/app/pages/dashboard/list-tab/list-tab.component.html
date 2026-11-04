@@ -1,4 +1,4 @@
-<p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+<p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
 <div class="listTab" *ngIf="state.board">
   <div class="listTab__toolbar">
@@ -8,6 +8,7 @@
       [(ngModel)]="searchQuery"
       (ngModelChange)="handleSearchChange($event)"
       [placeholder]="PHRASES.SEARCH_TICKETS | translate"
+      [attr.aria-label]="PHRASES.SEARCH_TICKETS | translate"
     />
     <app-ticket-filter
       [members]="members"
@@ -17,20 +18,6 @@
       (filtersChange)="handleFiltersChange($event)"
     ></app-ticket-filter>
   </div>
-
-  <app-ticket-selection-bar
-    *ngIf="selectedTickets.length"
-    [count]="selectedTickets.length"
-    [statuses]="state.statuses"
-    [members]="members"
-    [assignedMembers]="assignedMembers"
-    [busy]="isBulkBusy"
-    (setStatus)="handleBulkStatus($event)"
-    (assign)="handleBulkAssign($event)"
-    (unassign)="handleBulkUnassign($event)"
-    (deleteSelected)="requestBulkDelete()"
-    (clearSelection)="clearSelection()"
-  ></app-ticket-selection-bar>
 
   <p class="listTab__empty" *ngIf="showNoTickets">{{ PHRASES.BOARD_NO_TICKETS | translate }}</p>
 
@@ -67,7 +54,6 @@
           cdkDragLockAxis="y"
           [cdkDragData]="ticket"
           [ticket]="ticket"
-          [statusTitle]="group.status.columnId === null ? (group.status.title | translate) : group.status.title"
           [priority]="state.priorityById(ticket.priorityId)"
           [tags]="state.board?.tags ?? []"
           [selected]="isSelected(ticket)"
@@ -94,6 +80,7 @@
           [(ngModel)]="newTicketTitle"
           [maxlength]="TITLE_MAX_LENGTH"
           [placeholder]="PHRASES.TICKET_TITLE_PLACEHOLDER | translate"
+          [attr.aria-label]="PHRASES.TICKET_TITLE_PLACEHOLDER | translate"
           (keydown.enter)="handleCreate()"
           (keydown.escape)="handleCloseCreate(); $event.preventDefault()"
           (blur)="handleCloseCreate()"
@@ -102,6 +89,21 @@
       </ng-container>
     </ng-container>
   </section>
+
+  <app-ticket-selection-bar
+    class="listTab__selectionBar"
+    *ngIf="selectedTickets.length"
+    [count]="selectedTickets.length"
+    [statuses]="state.statuses"
+    [members]="members"
+    [assignedMembers]="assignedMembers"
+    [busy]="isBulkBusy"
+    (setStatus)="handleBulkStatus($event)"
+    (assign)="handleBulkAssign($event)"
+    (unassign)="handleBulkUnassign($event)"
+    (deleteSelected)="requestBulkDelete()"
+    (clearSelection)="clearSelection()"
+  ></app-ticket-selection-bar>
 </div>
 
 <router-outlet></router-outlet>
@@ -112,17 +114,3 @@
   (moved)="handleMoveConfirmed($event)"
   (cancelled)="handleMoveCancelled()"
 ></app-move-to-board-dialog>
-
-<app-confirm-dialog
-  *ngIf="ticketPendingDeletion"
-  [message]="PHRASES.CONFIRM_DELETE_TICKET | translate"
-  (confirmed)="handleConfirmDelete()"
-  (cancelled)="handleCancelDelete()"
-></app-confirm-dialog>
-
-<app-confirm-dialog
-  *ngIf="isBulkDeleteConfirmOpen"
-  [message]="PHRASES.CONFIRM_DELETE_TICKETS | plural: selectedTickets.length | translate: {count: selectedTickets.length}"
-  (confirmed)="handleConfirmBulkDelete()"
-  (cancelled)="handleCancelBulkDelete()"
-></app-confirm-dialog>

@@ -1,15 +1,16 @@
-<p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+<p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
-<div class="kanbanTab" cdkDropListGroup *ngIf="state.board as board">
+<div #scroller class="kanbanTab" cdkDropListGroup *ngIf="state.board as board" (scroll)="updateOverflow()">
   <app-kanban-column
     *ngFor="let column of board.columns"
     [column]="column"
     [tags]="board.tags"
+    [priorities]="board.priorities"
     (renameColumn)="handleRenameColumn(column, $event.title)"
     (deleteColumn)="requestDeleteColumn(column)"
     (openTicket)="handleOpenTicket($event)"
     (moveTicketToBacklog)="handleMoveToBacklog($event)"
-    (deleteTicket)="requestDeleteTicket($event, column)"
+    (deleteTicket)="requestDeleteTicket($event)"
     (addTicket)="handleAddTicket(column)"
     (ticketDropped)="handleTicketDropped($event, column)"
   ></app-kanban-column>
@@ -23,16 +24,10 @@
 
 <app-confirm-dialog
   *ngIf="columnPendingDeletion"
-  [message]="PHRASES.CONFIRM_DELETE_COLUMN | translate"
+  [message]="columnDeleteMessage | translate: {title: columnPendingDeletion.title, count: columnPendingDeletion.tickets.length}"
+  [confirmLabel]="PHRASES.DELETE_COLUMN"
   (confirmed)="handleConfirmDeleteColumn()"
   (cancelled)="handleCancelDeleteColumn()"
-></app-confirm-dialog>
-
-<app-confirm-dialog
-  *ngIf="ticketPendingDeletion"
-  [message]="PHRASES.CONFIRM_DELETE_TICKET | translate"
-  (confirmed)="handleConfirmDeleteTicket()"
-  (cancelled)="handleCancelDeleteTicket()"
 ></app-confirm-dialog>
 
 <app-create-named-item-dialog

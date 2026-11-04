@@ -4,20 +4,30 @@
     <app-tag-chips class="kanbanTicket__tags" [tags]="tags" [tagIds]="ticket.tagIds" [max]="3"></app-tag-chips>
   </button>
 
-  <span
-    *ngIf="ticket.attachmentCount > 0"
-    class="kanbanTicket__attachments"
-    [appTooltip]="PHRASES.ATTACHMENT_COUNT | plural: ticket.attachmentCount | translate: {count: ticket.attachmentCount}"
-    [attr.aria-label]="PHRASES.ATTACHMENT_COUNT | plural: ticket.attachmentCount | translate: {count: ticket.attachmentCount}"
+  <div
+    *ngIf="priority || ticket.attachmentCount > 0 || ticket.assignees.length"
+    class="kanbanTicket__meta"
+    (click)="opened.emit()"
   >
-    <app-icon name="paperclip" class="kanbanTicket__attachmentsIcon"></app-icon>
-    {{ ticket.attachmentCount }}
-  </span>
+    <span *ngIf="priority" class="kanbanTicket__priority">
+      <span class="priorityDot" [attr.data-color]="priority.color"></span>
+      <span class="kanbanTicket__priorityName">{{ priority.name }}</span>
+    </span>
 
-  <app-avatar-stack class="kanbanTicket__assignees" [users]="ticket.assignees"></app-avatar-stack>
+    <span
+      *ngIf="ticket.attachmentCount > 0"
+      class="kanbanTicket__attachments"
+      [appTooltip]="PHRASES.ATTACHMENT_COUNT | plural: ticket.attachmentCount | translate: {count: ticket.attachmentCount}"
+      [attr.aria-label]="PHRASES.ATTACHMENT_COUNT | plural: ticket.attachmentCount | translate: {count: ticket.attachmentCount}"
+    >
+      <app-icon name="paperclip" class="kanbanTicket__attachmentsIcon"></app-icon>
+      {{ ticket.attachmentCount }}
+    </span>
+
+    <app-avatar-stack class="kanbanTicket__assignees" [users]="ticket.assignees"></app-avatar-stack>
+  </div>
 
   <div class="kanbanTicket__actions">
-    <app-favorite-star type="Ticket" [itemId]="ticket.id" [title]="ticket.title"></app-favorite-star>
     <app-icon-button
       icon="inbox"
       [size]="28"
@@ -31,5 +41,6 @@
       [tooltip]="PHRASES.DELETE_TICKET | translate"
       (pressed)="deleteTicket.emit()"
     ></app-icon-button>
+    <app-favorite-star type="Ticket" [itemId]="ticket.id" [title]="ticket.title"></app-favorite-star>
   </div>
 </div>

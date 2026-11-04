@@ -33,6 +33,7 @@
   --color-input-bg-focus: #161812;
   --color-input-border: #2a2d24;
   --color-input-border-focus: #f0a23b;
+  --color-control-border: #64685e;
 
   --color-primary: #f0a23b;
   --color-primary-light: #f5be70;
@@ -59,16 +60,17 @@
   --color-input-bg-focus: #ffffff;
   --color-input-border: #dad8cc;
   --color-input-border-focus: #a35c00;
+  --color-control-border: #838176;
 
   --color-primary: #a35c00;
-  --color-primary-light: #c27a1a;
+  --color-primary-light: #985300;
   --color-primary-gradient: #a35c00;
   --color-on-primary: #ffffff;
 
   --color-nav-active-bg: #ede3cf;
-  --color-nav-active-text: #a35c00;
+  --color-nav-active-text: #985200;
 
   --color-text-heading: #1f1e19;
   --color-text-muted: #5f5d52;
-  --color-text-faint: #6a685c;
+  --color-text-faint: #676559;
 }

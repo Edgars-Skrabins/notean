@@ -75,9 +75,9 @@ class ChatChannelsController < ApplicationController
 
   def destroy
     viewers = ChatAccess.user_ids_who_can_see(@chat_channel)
-    Trash.move(@chat_channel, current_user)
+    entry = Trash.move(@chat_channel, current_user)
 
-    head :no_content
+    render json: { trash_entry_ids: [ entry.id ] }
     ChatBroadcast.channel_removed(@chat_channel, viewers)
   end
 

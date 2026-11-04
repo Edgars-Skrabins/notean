@@ -9,16 +9,19 @@ import {mapBoardUser, RawBoardUser} from "@services/board.service";
 import {FavoriteService} from "@services/favorite.service";
 import {BoardListService} from "@services/board-list.service";
 import {ToastService} from "@services/toast.service";
-import {ToastType} from "@models/toast.model";
+import {ToastOptions, ToastType} from "@models/toast.model";
 import {
   DeleteTrashResponse,
   ListTrashParams,
   ListTrashResponse,
   RestoredItem,
   RestoreTrashResponse,
+  TrashedSubject,
   TrashEntry,
   TrashItemType,
 } from "@models/trash.model";
+
+const TOAST_TITLE_MAX_LENGTH = 60;
 
 interface RawTrashEntry {
   id: number;
@@ -70,14 +73,14 @@ export class TrashService {
   ) {
   }
 
-  notifyTrashed(teamCode: string, entryIds: number[]) {
+  notifyTrashed(teamCode: string, entryIds: number[], subject: TrashedSubject) {
     if (!entryIds.length) {
       return;
     }
 
     this.toastService.show({
       type: ToastType.SUCCESS,
-      message: PHRASES.MOVED_TO_TRASH,
+      ...this.trashedMessage(subject),
       action: {label: PHRASES.UNDO, run: () => this.undo(teamCode, entryIds)},
     });
   }
@@ -129,6 +132,20 @@ export class TrashService {
       axiosInstance.delete(this.trashUrl(teamCode)),
       () => ({success: true}),
     );
+  }
+
+  private trashedMessage(subject: TrashedSubject): Pick<ToastOptions, 'message' | 'messageParams'> {
+    if ('title' in subject) {
+      return {message: PHRASES.TRASHED_ITEM, messageParams: {title: this.shortTitle(subject.title)}};
+    }
+    if (subject.ticketCount === 1) {
+      return {message: PHRASES.TRASHED_TICKETS_ONE};
+    }
+    return {message: PHRASES.TRASHED_TICKETS, messageParams: {count: subject.ticketCount}};
+  }
+
+  private shortTitle(title: string): string {
+    return title.length > TOAST_TITLE_MAX_LENGTH ? `${title.slice(0, TOAST_TITLE_MAX_LENGTH - 1)}…` : title;
   }
 
   private async undo(teamCode: string, entryIds: number[]) {

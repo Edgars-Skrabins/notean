@@ -7,7 +7,8 @@ import {
   resolveMode,
   ResolvedThemeMode,
   THEME_MODE_STORAGE_KEY,
-  THEME_STORAGE_KEY
+  THEME_STORAGE_KEY,
+  THEME_SWITCHING_ATTRIBUTE
 } from "@utils/themeDom";
 
 export interface ActiveTheme {
@@ -50,7 +51,10 @@ export class ThemeService {
 
   private render() {
     const active = this.resolve();
-    applyThemeAttributes(document.documentElement, active.theme, active.resolvedMode);
+    const root = document.documentElement;
+    root.setAttribute(THEME_SWITCHING_ATTRIBUTE, '');
+    applyThemeAttributes(root, active.theme, active.resolvedMode);
+    requestAnimationFrame(() => requestAnimationFrame(() => root.removeAttribute(THEME_SWITCHING_ATTRIBUTE)));
     this.themeSubject.next(active);
   }
 }

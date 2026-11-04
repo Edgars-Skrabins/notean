@@ -50,6 +50,7 @@ function isSuggestionActive(state: EditorState): boolean {
 export class MentionTextEditorComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() value = '';
   @Input() placeholder = '';
+  @Input() ariaLabel = '';
   @Input() maxLength: number | null = null;
   @Input() mentionContext: MentionContext = {};
   @Input() inputId: string | null = null;
@@ -74,7 +75,7 @@ export class MentionTextEditorComponent implements AfterViewInit, OnChanges, OnD
       extensions: [PLAIN_TEXT_KIT, createMentionExtension(this.injector, () => this.mentionContext), this.maxLengthExtension(), this.submitExtension()],
       content: parseMentionText(this.value),
       editorProps: {
-        attributes: this.inputId ? {id: this.inputId, role: 'textbox', 'aria-multiline': 'true'} : {role: 'textbox', 'aria-multiline': 'true'},
+        attributes: () => this.editorAttributes(),
         handleDOMEvents: {
           keydown: (_view, event) => {
             if (event.key === 'Escape' && !event.defaultPrevented) {
@@ -95,6 +96,9 @@ export class MentionTextEditorComponent implements AfterViewInit, OnChanges, OnD
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if ((changes['ariaLabel'] || changes['placeholder']) && this.editor) {
+      this.editor.setOptions({});
+    }
     if (!changes['value']) {
       return;
     }
@@ -114,6 +118,16 @@ export class MentionTextEditorComponent implements AfterViewInit, OnChanges, OnD
 
   insertText(text: string) {
     this.editor?.chain().focus().insertContent(text).run();
+  }
+
+  private editorAttributes(): Record<string, string> {
+    const label = this.ariaLabel || this.placeholder;
+    return {
+      ...(this.inputId ? {id: this.inputId} : {}),
+      role: 'textbox',
+      'aria-multiline': 'true',
+      ...(label ? {'aria-label': label} : {}),
+    };
   }
 
   private submitExtension() {

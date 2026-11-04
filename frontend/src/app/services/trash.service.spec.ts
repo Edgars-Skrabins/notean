@@ -77,7 +77,7 @@ describe('TrashService', () => {
     const restored: unknown[] = [];
     service.restored$.subscribe((items) => restored.push(items));
 
-    service.notifyTrashed('abc', [7, 8]);
+    service.notifyTrashed('abc', [7, 8], {title: 'Plan'});
     const toast = toastService.show.calls.mostRecent().args[0] as ToastOptions;
     toast.action!.run();
     await new Promise((resolve) => setTimeout(resolve));
@@ -88,8 +88,35 @@ describe('TrashService', () => {
     expect(toastService.show.calls.mostRecent().args[0].message).toBe('ITEM_RESTORED');
   });
 
+  it('names the trashed item in the toast', () => {
+    service.notifyTrashed('abc', [7], {title: 'Quarterly plan'});
+
+    const toast = toastService.show.calls.mostRecent().args[0];
+    expect(toast.message).toBe('TRASHED_ITEM');
+    expect(toast.messageParams).toEqual({title: 'Quarterly plan'});
+  });
+
+  it('cuts titles longer than 60 characters to 59 plus an ellipsis', () => {
+    service.notifyTrashed('abc', [7], {title: 'a'.repeat(60)});
+    service.notifyTrashed('abc', [8], {title: 'b'.repeat(61)});
+
+    const [exact, long] = toastService.show.calls.allArgs().map(([toast]) => toast.messageParams?.['title']);
+    expect(exact).toBe('a'.repeat(60));
+    expect(long).toBe(`${'b'.repeat(59)}…`);
+  });
+
+  it('counts trashed tickets in the toast', () => {
+    service.notifyTrashed('abc', [7, 8, 9], {ticketCount: 3});
+    service.notifyTrashed('abc', [7], {ticketCount: 1});
+
+    const [several, one] = toastService.show.calls.allArgs().map(([toast]) => toast);
+    expect(several.message).toBe('TRASHED_TICKETS');
+    expect(several.messageParams).toEqual({count: 3});
+    expect(one.message).toBe('TRASHED_TICKETS_ONE');
+  });
+
   it('shows nothing when a delete trashed nothing', () => {
-    service.notifyTrashed('abc', []);
+    service.notifyTrashed('abc', [], {title: 'Plan'});
 
     expect(toastService.show).not.toHaveBeenCalled();
   });

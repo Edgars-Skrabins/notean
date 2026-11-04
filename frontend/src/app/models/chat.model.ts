@@ -87,6 +87,8 @@ export type ChatChannelResponse = Result<{ channel: ChatChannel }, ChatErrors>;
 
 export type ChatEmptyResponse = Result<object, ChatErrors>;
 
+export type DeleteChatChannelResponse = Result<{ trashEntryIds: number[] }, ChatErrors>;
+
 export type ChatMessagesResponse = Result<ChatMessagePage, ChatErrors>;
 
 export type ChatMessageResponse = Result<{ message: ChatMessage }, ChatErrors>;

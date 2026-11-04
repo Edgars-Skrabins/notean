@@ -1,4 +1,4 @@
-<h3 class="capsLabel ticketTags__title">{{ PHRASES.TAGS | translate }}</h3>
+<h2 class="capsLabel ticketTags__title">{{ PHRASES.TAGS | translate }}</h2>
 
 <div class="ticketTags__chips">
   <app-tag-chip
@@ -39,6 +39,7 @@
       [maxlength]="TAG_NAME_MAX_LENGTH"
       [(ngModel)]="searchQuery"
       [placeholder]="PHRASES.SEARCH_TAGS | translate"
+      [attr.aria-label]="PHRASES.SEARCH_TAGS | translate"
       (keydown.enter)="handleCreate()"
     />
     <app-checkbox

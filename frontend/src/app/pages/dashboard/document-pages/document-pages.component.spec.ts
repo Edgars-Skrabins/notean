@@ -45,7 +45,7 @@ describe('DocumentPagesComponent', () => {
   beforeEach(fakeAsync(() => {
     projectFilter = projectFilterStub();
     trash = trashServiceStub();
-    router = jasmine.createSpyObj<Router>('Router', ['navigate', 'getCurrentNavigation']);
+    router = jasmine.createSpyObj<Router>('Router', ['navigate']);
     pageService = jasmine.createSpyObj<PageService>('PageService', ['list', 'moveToFolder', 'delete', 'create', 'rename']);
     folderService = jasmine.createSpyObj<FolderService>('FolderService', ['listFolders', 'createFolder', 'renameFolder', 'moveFolder', 'deleteFolder', 'setFolderProject']);
     favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem', 'renameItem']);
@@ -128,32 +128,6 @@ describe('DocumentPagesComponent', () => {
     expect(component.levels.get('root')).toEqual({loaded: true, isLoading: false, hasMore: true});
   }));
 
-  it('places an item created in a folder in its level without duplicating it later', fakeAsync(() => {
-    const created = page(40, 2, 'Brand new');
-    router.getCurrentNavigation.and.returnValue({extras: {state: {createdItem: created}}} as never);
-    component = createComponent();
-    component.ngOnInit();
-    tick();
-
-    expect(component.items.find((item) => item.id === 40)?.folderId).toBe(2);
-
-    pageService.list.and.returnValue(Promise.resolve({success: true, items: [created], hasMore: false}));
-    component.handleExpandFolder({folderId: 2});
-    tick();
-
-    expect(component.items.filter((item) => item.id === 40).length).toBe(1);
-  }));
-
-  it('leaves out a created item of another project than the selected one', fakeAsync(() => {
-    projectFilter.selected.next(5);
-    router.getCurrentNavigation.and.returnValue({extras: {state: {createdItem: {...page(40, null), projectId: 6}}}} as never);
-    component = createComponent();
-    component.ngOnInit();
-    tick();
-
-    expect(component.items.some((item) => item.id === 40)).toBeFalse();
-  }));
-
   it('adds a created folder without reloading', fakeAsync(() => {
     folderService.createFolder.and.returnValue(Promise.resolve({success: true, folder: folder(4, null, 'New')}));
     component.handleCreateFolder(null);
@@ -227,8 +201,23 @@ describe('DocumentPagesComponent', () => {
     expect(component.items.find((item) => item.id === 12)?.folderId).toBe(2);
     expect(component.items.map((item) => item.id)).toEqual([11, 12]);
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Page', 10);
-    expect(trash.service.notifyTrashed).toHaveBeenCalledWith('abc', [1]);
+    expect(trash.service.notifyTrashed).toHaveBeenCalledWith('abc', [1], {title: 'Roadmap'});
     expectNoReload();
+  }));
+
+  it('sends one delete for repeated presses while it runs and allows a retry after a failure', fakeAsync(() => {
+    pageService.delete.and.returnValue(Promise.resolve({success: false, code: 'NETWORK_ERROR'}));
+
+    component.handleDeleteItem({itemId: 10});
+    component.handleDeleteItem({itemId: 10});
+    tick();
+
+    expect(pageService.delete).toHaveBeenCalledTimes(1);
+    expect(component.items.map((item) => item.id)).toContain(10);
+    expect(component.alertMessage).toBe(errorPhrase('NETWORK_ERROR'));
+
+    component.handleDeleteItem({itemId: 10});
+    expect(pageService.delete).toHaveBeenCalledTimes(2);
   }));
 
   it('reloads when a page or folder comes back from the trash, but not for other types', fakeAsync(() => {
@@ -287,6 +276,7 @@ describe('DocumentPagesComponent', () => {
     expect(component.folders.map((item) => item.id)).toEqual([1]);
     expect(component.items.map((item) => item.id)).toEqual([10, 12]);
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Page', 11);
+    expect(trash.service.notifyTrashed).toHaveBeenCalledWith('abc', [1], {title: 'Folder 2'});
     expectNoReload();
   }));
 

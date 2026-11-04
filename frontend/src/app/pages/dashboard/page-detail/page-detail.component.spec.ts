@@ -19,7 +19,7 @@ import {errorPhrase} from "@utils/errorPhrase";
 import {projectFilterStub, ProjectFilterStub} from "../../../testing/projectFilterStub";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {PageDetailComponent} from "./page-detail.component";
-import {trashServiceStub} from "../../../testing/trashServiceStub";
+import {trashServiceStub, TrashServiceStub} from "../../../testing/trashServiceStub";
 
 function createdPage(): FolderedItemDetail {
   return {
@@ -48,6 +48,7 @@ describe('PageDetailComponent', () => {
   let copyLinkService: jasmine.SpyObj<CopyLinkService>;
   let templateService: jasmine.SpyObj<TemplateService>;
   let attachmentService: jasmine.SpyObj<AttachmentService>;
+  let trash: TrashServiceStub;
 
   function createComponent(queryParams: Record<string, string> = {}, params: Record<string, string> = {}) {
     const route = {
@@ -70,7 +71,7 @@ describe('PageDetailComponent', () => {
       folderService,
       {instant: (key: string) => key} as unknown as TranslateService,
       copyLinkService,
-      trashServiceStub().service,
+      trash.service,
       attachmentService,
       templateService,
     );
@@ -78,7 +79,8 @@ describe('PageDetailComponent', () => {
   }
 
   beforeEach(() => {
-    pageService = jasmine.createSpyObj<PageService>('PageService', ['get', 'create', 'save', 'setProject']);
+    pageService = jasmine.createSpyObj<PageService>('PageService', ['get', 'create', 'save', 'setProject', 'delete']);
+    trash = trashServiceStub();
     editingService = jasmine.createSpyObj<PageEditingService>('PageEditingService', ['connect', 'disconnect', 'startEditing', 'stopEditing']);
     navigationService = jasmine.createSpyObj<NavigationService>('NavigationService', ['navigate', 'navigateWithState', 'navigateReplacingUrl']);
     copyLinkService = jasmine.createSpyObj<CopyLinkService>('CopyLinkService', ['copyCurrentLink']);
@@ -103,7 +105,7 @@ describe('PageDetailComponent', () => {
     expect(component.draftProjectId).toBe(4);
   });
 
-  it('creates with the drafts and folder, then goes back to the list with the created item', fakeAsync(() => {
+  it('creates with the drafts and folder, then opens the created item in place of the create URL', fakeAsync(() => {
     pageService.create.and.returnValue(Promise.resolve({success: true, item: createdPage()}));
     createComponent({folder: '3'});
     tick();
@@ -115,13 +117,13 @@ describe('PageDetailComponent', () => {
     tick();
 
     expect(pageService.create).toHaveBeenCalledOnceWith('abc', {title: 'Plan', content: '<p>Hi</p>', projectId: 8, folderId: 3, attachmentIds: []});
-    const createdItem = {id: 9, title: 'Plan', folderId: 3, projectId: 4, lockVersion: 0, creator: createdPage().creator, createdAt: '', updatedAt: ''};
-    expect(navigationService.navigateWithState).toHaveBeenCalledOnceWith({createdItem}, AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES);
+    expect(navigationService.navigateReplacingUrl).toHaveBeenCalledOnceWith(AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES, 9);
+    expect(navigationService.navigateWithState).not.toHaveBeenCalled();
     expect(component.isCreating).toBeFalse();
   }));
 
-  it('prefills the content from a template and keeps the folder and the untitled title', fakeAsync(() => {
-    templateService.resolve.and.returnValue(Promise.resolve({success: true, content: '<h1>Agenda</h1>'}));
+  it('prefills the title and content from a template and keeps the folder', fakeAsync(() => {
+    templateService.resolve.and.returnValue(Promise.resolve({success: true, title: 'Agenda', content: '<h1>Agenda</h1>'}));
     pageService.create.and.returnValue(Promise.resolve({success: true, item: createdPage()}));
     createComponent({template: 'builtin:meeting-notes', folder: '3'});
 
@@ -133,13 +135,24 @@ describe('PageDetailComponent', () => {
 
     expect(templateService.resolve).toHaveBeenCalledWith('abc', 'page', 'builtin:meeting-notes');
     expect(component.draftContent).toBe('<h1>Agenda</h1>');
-    expect(component.draftTitle).toBe('');
+    expect(component.draftTitle).toBe('Agenda');
     expect(component.hasCreateDraftChanges).toBeTrue();
 
     component.handleCreate();
     tick();
 
-    expect(pageService.create).toHaveBeenCalledWith('abc', jasmine.objectContaining({content: '<h1>Agenda</h1>', folderId: 3}));
+    expect(pageService.create).toHaveBeenCalledWith('abc', jasmine.objectContaining({title: 'Agenda', content: '<h1>Agenda</h1>', folderId: 3}));
+  }));
+
+  it('keeps a title typed while the template loads', fakeAsync(() => {
+    templateService.resolve.and.returnValue(Promise.resolve({success: true, title: 'Agenda', content: '<h1>Agenda</h1>'}));
+    createComponent({template: 'builtin:meeting-notes'});
+    component.draftTitle = 'Mine';
+
+    tick();
+
+    expect(component.draftTitle).toBe('Mine');
+    expect(component.draftContent).toBe('<h1>Agenda</h1>');
   }));
 
   it('opens a blank draft with the error when the template cannot be loaded', fakeAsync(() => {
@@ -149,6 +162,7 @@ describe('PageDetailComponent', () => {
 
     expect(component.mode).toBe('create');
     expect(component.draftContent).toBe('');
+    expect(component.draftTitle).toBe('');
     expect(component.alertMessage).toBe(errorPhrase('TEMPLATE_NOT_FOUND'));
   }));
 
@@ -196,6 +210,7 @@ describe('PageDetailComponent', () => {
     tick();
 
     expect(navigationService.navigate).not.toHaveBeenCalled();
+    expect(navigationService.navigateReplacingUrl).not.toHaveBeenCalled();
     expect(component.alertMessage).toBe(errorPhrase('PAGE_CREATE_FAILED'));
     expect(component.draftTitle).toBe('Plan');
     expect(component.isCreating).toBeFalse();
@@ -254,6 +269,37 @@ describe('PageDetailComponent', () => {
     expect(navigationService.navigateReplacingUrl).not.toHaveBeenCalled();
     expect(component.alertMessage).toBe(errorPhrase('NETWORK_ERROR'));
   }));
+
+  describe('on Delete', () => {
+    beforeEach(fakeAsync(() => {
+      pageService.get.and.returnValue(Promise.resolve({success: true, item: createdPage()}));
+      createComponent({}, {id: '9'});
+      tick();
+    }));
+
+    it('moves the page to the trash at once, names it in the toast and goes back', fakeAsync(() => {
+      pageService.delete.and.returnValue(Promise.resolve({success: true, trashEntryIds: [4]}));
+
+      component.handleDelete();
+      component.handleDelete();
+      tick();
+
+      expect(pageService.delete).toHaveBeenCalledOnceWith('abc', 9);
+      expect(trash.service.notifyTrashed).toHaveBeenCalledOnceWith('abc', [4], {title: 'Plan'});
+      expect(navigationService.navigate).toHaveBeenCalledWith(AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES);
+    }));
+
+    it('stays in the popup with the error when the delete fails', fakeAsync(() => {
+      pageService.delete.and.returnValue(Promise.resolve({success: false, code: 'NETWORK_ERROR'}));
+
+      component.handleDelete();
+      tick();
+
+      expect(component.alertMessage).toBe(errorPhrase('NETWORK_ERROR'));
+      expect(component.isDeleting).toBeFalse();
+      expect(navigationService.navigate).not.toHaveBeenCalled();
+    }));
+  });
 
   describe('on Escape', () => {
     function openPage() {

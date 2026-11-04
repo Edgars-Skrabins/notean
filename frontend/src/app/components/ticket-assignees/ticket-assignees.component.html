@@ -1,4 +1,4 @@
-<h3 class="ticketAssignees__title">{{ PHRASES.ASSIGNEES | translate }}</h3>
+<h2 class="ticketAssignees__title">{{ PHRASES.ASSIGNEES | translate }}</h2>
 
 <div class="ticketAssignees__row" *ngFor="let assignee of assignees">
   <app-avatar [avatar]="assignee.avatar" [nickname]="assignee.nickname"></app-avatar>
@@ -47,6 +47,7 @@
       class="ticketAssignees__search"
       [(ngModel)]="searchQuery"
       [placeholder]="PHRASES.SEARCH_MEMBERS | translate"
+      [attr.aria-label]="PHRASES.SEARCH_MEMBERS | translate"
     />
     <button type="button" class="ticketAssignees__option" *ngFor="let member of availableMembers" (click)="handlePick(member)">
       <app-avatar [avatar]="member.avatar" [nickname]="member.nickname"></app-avatar>

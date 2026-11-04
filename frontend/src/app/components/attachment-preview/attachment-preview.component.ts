@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
+import {CdkTrapFocus} from '@angular/cdk/a11y';
 import {NgIf} from '@angular/common';
 import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
@@ -7,10 +8,12 @@ import {AttachmentService} from '@services/attachment.service';
 import {EscapeService} from '@services/escape.service';
 import {ButtonComponent} from '@components/button/button.component';
 import {IconButtonComponent} from '@components/icon-button/icon-button.component';
+import {uniqueId} from '@utils/uniqueId';
 
 @Component({
   selector: 'app-attachment-preview',
   imports: [
+    CdkTrapFocus,
     NgIf,
     TranslatePipe,
     ButtonComponent,
@@ -22,6 +25,7 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
 })
 export class AttachmentPreviewComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
+  protected readonly titleId = uniqueId('attachmentPreview');
 
   @Input({required: true}) teamCode!: string;
   @Input({required: true}) attachment!: Attachment;
