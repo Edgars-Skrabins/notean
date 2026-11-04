@@ -1,0 +1,32 @@
+<div class="splitButton" [class.splitButton--compact]="compact">
+  <button
+    type="button"
+    class="splitButton__main"
+    [disabled]="disabled"
+    [attr.aria-label]="compact ? label : null"
+    [appTooltip]="compact ? label : ''"
+    (click)="pressed.emit()"
+  >
+    <app-icon *ngIf="icon" [name]="icon" class="splitButton__icon"></app-icon>
+    <span *ngIf="!compact">{{ label }}</span>
+  </button>
+  <app-menu-button
+    #menu
+    [customTrigger]="true"
+    [options]="options"
+    [disabled]="disabled"
+    (picked)="picked.emit($event)"
+  >
+    <button
+      type="button"
+      class="splitButton__toggle"
+      [disabled]="disabled"
+      aria-haspopup="menu"
+      [attr.aria-expanded]="menu.isOpen"
+      [attr.aria-label]="menuLabel"
+      [appTooltip]="menuLabel"
+    >
+      <app-icon name="chevron-right" class="splitButton__chevron"></app-icon>
+    </button>
+  </app-menu-button>
+</div>

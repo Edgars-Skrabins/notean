@@ -37,6 +37,7 @@ export class TemplateListComponent implements OnInit, OnDestroy {
   @Input({required: true}) kind!: TemplateKind;
   @Input({required: true}) emptyLabel!: string;
   @Input() showActions = false;
+  @Input() headingLevel: 2 | 3 = 3;
   @Output() opened = new EventEmitter<string>();
   @Output() used = new EventEmitter<string>();
 

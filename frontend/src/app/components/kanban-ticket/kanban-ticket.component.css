@@ -3,9 +3,9 @@
 }
 
 .kanbanTicket {
+  position: relative;
   display: flex;
-  align-items: center;
-  gap: var(--space-2);
+  flex-direction: column;
   background: var(--color-input-bg);
   border: 1px solid var(--color-input-border);
   border-radius: var(--radius-sm);
@@ -17,7 +17,6 @@
 }
 
 .kanbanTicket__main {
-  flex: 1;
   min-width: 0;
   background: none;
   border: none;
@@ -26,18 +25,49 @@
   cursor: pointer;
 }
 
+.kanbanTicket:has(.favoriteStar--favorited) .kanbanTicket__main {
+  padding-right: 40px;
+}
+
 .kanbanTicket__title {
-  display: block;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+  overflow-wrap: anywhere;
   color: var(--color-text-heading);
   font-size: var(--font-sm);
   font-weight: 500;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  line-height: 1.35;
 }
 
 .kanbanTicket__tags {
   margin-top: 6px;
+}
+
+.kanbanTicket__meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 12px 10px;
+  color: var(--color-text-muted);
+  font-size: var(--font-xs);
+  cursor: pointer;
+}
+
+.kanbanTicket__priority {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.kanbanTicket__priorityName {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .kanbanTicket__attachments {
@@ -45,8 +75,6 @@
   flex-shrink: 0;
   align-items: center;
   gap: 2px;
-  color: var(--color-text-faint);
-  font-size: var(--font-xs);
 }
 
 .kanbanTicket__attachmentsIcon {
@@ -56,21 +84,43 @@
 
 .kanbanTicket__assignees {
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 .kanbanTicket__actions {
+  position: absolute;
+  top: 6px;
+  right: 6px;
   display: flex;
   gap: 2px;
-  flex-shrink: 0;
-  padding-right: var(--space-2);
+  padding: 2px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  pointer-events: none;
 }
 
 .kanbanTicket__actions > * {
   opacity: 0;
+  pointer-events: none;
   transition: opacity var(--transition-fast);
 }
 
+.kanbanTicket:hover .kanbanTicket__actions,
+.kanbanTicket:focus-within .kanbanTicket__actions {
+  background: var(--color-card-bg);
+  border-color: var(--color-input-border);
+  box-shadow: var(--shadow-card);
+}
+
 .kanbanTicket:hover .kanbanTicket__actions > *,
+.kanbanTicket:focus-within .kanbanTicket__actions > *,
 .kanbanTicket__actions > .favoriteStar--favorited {
   opacity: 1;
+  pointer-events: auto;
+}
+
+@media (hover: none) {
+  .kanbanTicket__actions {
+    display: none;
+  }
 }

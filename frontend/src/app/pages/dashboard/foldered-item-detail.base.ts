@@ -233,9 +233,7 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
         }
 
         this.isCreated = true;
-        const {id, title, folderId, projectId, lockVersion, creator, createdAt, updatedAt} = response.item;
-        const createdItem = {id, title, folderId, projectId, lockVersion, creator, createdAt, updatedAt};
-        this.navigationService.navigateWithState({createdItem}, AppRoutes.DASHBOARD, this.listRoute);
+        this.navigationService.navigateReplacingUrl(AppRoutes.DASHBOARD, this.listRoute, response.item.id);
       });
   }
 
@@ -334,6 +332,9 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
         }
 
         this.draftContent = response.content;
+        if (this.draftTitle === '') {
+          this.draftTitle = response.title;
+        }
       });
   }
 

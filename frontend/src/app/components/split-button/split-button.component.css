@@ -1,0 +1,96 @@
+:host {
+  display: inline-flex;
+}
+
+.splitButton {
+  display: inline-flex;
+  align-items: stretch;
+  border-radius: var(--radius-sm);
+  background: var(--color-primary-gradient);
+  box-shadow: var(--shadow-button);
+}
+
+.splitButton app-menu-button {
+  display: flex;
+}
+
+.splitButton button {
+  min-height: var(--control-height);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--color-on-primary);
+  font-family: var(--font-ui);
+  font-size: var(--font-sm);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color var(--transition-fast);
+}
+
+.splitButton__main {
+  gap: var(--space-2);
+  padding: 9px 14px 9px 20px;
+  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+}
+
+.splitButton .splitButton__toggle {
+  width: 32px;
+  padding: 0;
+  border-left: 1px solid color-mix(in srgb, var(--color-on-primary) 30%, transparent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.splitButton button:hover:not(:disabled),
+.splitButton__toggle[aria-expanded="true"] {
+  background: color-mix(in srgb, var(--color-on-primary) 12%, transparent);
+}
+
+.splitButton button:focus-visible {
+  outline: 2px solid var(--color-input-border-focus);
+  outline-offset: 2px;
+}
+
+.splitButton button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.splitButton__icon {
+  width: 16px;
+  height: 16px;
+}
+
+.splitButton__chevron {
+  width: 14px;
+  height: 14px;
+  transform: rotate(90deg);
+}
+
+.splitButton--compact {
+  background: none;
+  box-shadow: none;
+}
+
+.splitButton--compact button {
+  min-height: 28px;
+  background: color-mix(in srgb, var(--color-tint) 6%, transparent);
+  color: var(--color-text-muted);
+}
+
+.splitButton--compact .splitButton__main {
+  width: 28px;
+  padding: 0;
+}
+
+.splitButton--compact .splitButton__toggle {
+  width: 24px;
+  border-left-color: color-mix(in srgb, var(--color-tint) 16%, transparent);
+}
+
+.splitButton--compact button:hover:not(:disabled),
+.splitButton--compact .splitButton__toggle[aria-expanded="true"] {
+  background: color-mix(in srgb, var(--color-tint) 12%, transparent);
+  color: var(--color-text-heading);
+}

@@ -1,4 +1,5 @@
 import {fakeAsync, flushMicrotasks} from '@angular/core/testing';
+import {ElementRef} from "@angular/core";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CdkDragDrop} from "@angular/cdk/drag-drop";
 import {KanbanTabComponent} from "./kanban-tab.component";
@@ -40,6 +41,18 @@ describe('KanbanTabComponent', () => {
     router = jasmine.createSpyObj<Router>('Router', ['navigate']);
     component = new KanbanTabComponent(route, router, state, columnService, ticketService, favoriteService, toastService, trash.service);
   });
+
+  function fakeScroller(metrics: { scrollLeft: number; clientWidth: number; scrollWidth: number }) {
+    const element = document.createElement('div');
+    Object.defineProperty(element, 'scrollLeft', {value: metrics.scrollLeft});
+    Object.defineProperty(element, 'clientWidth', {value: metrics.clientWidth});
+    Object.defineProperty(element, 'scrollWidth', {value: metrics.scrollWidth});
+    const scrollTo = spyOn(element, 'scrollTo');
+    component.scroller = new ElementRef(element);
+    return {element, scrollTo};
+  }
+
+  afterEach(() => component.ngOnDestroy());
 
   function columnIds(index: number): number[] {
     return state.board!.columns[index].tickets.map((ticket) => ticket.id);
@@ -171,5 +184,38 @@ describe('KanbanTabComponent', () => {
 
     column.tickets = [];
     expect(component.columnDeleteMessage).toBe(PHRASES.CONFIRM_DELETE_EMPTY_COLUMN);
+  });
+
+  it('scrolls to the end once after creating a column', fakeAsync(() => {
+    columnService.createColumn.and.returnValue(Promise.resolve({success: true, column: {id: 12, title: 'Review', position: 2, tickets: []}}));
+    const {scrollTo} = fakeScroller({scrollLeft: 0, clientWidth: 800, scrollWidth: 1400});
+
+    component.handleCreateColumnConfirmed({title: 'Review'});
+    flushMicrotasks();
+    component.ngAfterViewChecked();
+    component.ngAfterViewChecked();
+
+    expect(scrollTo).toHaveBeenCalledTimes(1);
+    expect(scrollTo.calls.mostRecent().args[0]).toEqual(jasmine.objectContaining({left: 1400}));
+  }));
+
+  it('does not scroll when creating a column fails', fakeAsync(() => {
+    columnService.createColumn.and.returnValue(Promise.resolve({success: false, code: 'COLUMN_CREATE_FAILED'}));
+    const {scrollTo} = fakeScroller({scrollLeft: 0, clientWidth: 800, scrollWidth: 1400});
+
+    component.handleCreateColumnConfirmed({title: 'Review'});
+    flushMicrotasks();
+    component.ngAfterViewChecked();
+
+    expect(scrollTo).not.toHaveBeenCalled();
+  }));
+
+  it('fades only the end edge at the start of an overflowing board', () => {
+    const {element} = fakeScroller({scrollLeft: 0, clientWidth: 800, scrollWidth: 1400});
+
+    component.updateOverflow();
+
+    expect(element.classList.contains('kanbanTab--fadeEnd')).toBeTrue();
+    expect(element.classList.contains('kanbanTab--fadeStart')).toBeFalse();
   });
 });

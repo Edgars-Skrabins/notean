@@ -3,13 +3,10 @@ import {Router} from '@angular/router';
 import {NgFor, NgIf} from '@angular/common';
 import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
-import {chartColor} from "@config/chartColors";
 import {defaultLanguage} from "@config/translationConfig";
 import {BoardService} from "@services/board.service";
 import {BoardOverview, RecentTicket} from "@models/board.model";
-import {PieChartComponent, PieSlice} from "@components/pie-chart/pie-chart.component";
-import {PriorityListComponent} from "@components/priority-list/priority-list.component";
-import {TagListComponent} from "@components/tag-list/tag-list.component";
+import {BarListComponent, BarListRow} from "@components/bar-list/bar-list.component";
 import {errorPhrase} from "@utils/errorPhrase";
 import {relativeDate} from "@utils/relativeDate";
 import {ticketRoute} from "@utils/ticketRoute";
@@ -21,9 +18,7 @@ import {BoardPageStateService} from "../board-page/board-page-state.service";
     NgFor,
     NgIf,
     TranslatePipe,
-    PieChartComponent,
-    PriorityListComponent,
-    TagListComponent
+    BarListComponent
   ],
   templateUrl: './board-overview-tab.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -33,6 +28,8 @@ export class BoardOverviewTabComponent implements OnInit {
   protected readonly PHRASES = PHRASES;
 
   overview: BoardOverview | null = null;
+  statusRows: BarListRow[] = [];
+  assigneeRows: BarListRow[] = [];
   alertMessage = '';
 
   constructor(
@@ -43,26 +40,6 @@ export class BoardOverviewTabComponent implements OnInit {
   ) {
   }
 
-  get columnSlices(): PieSlice[] {
-    return (this.overview?.columns ?? []).map((column, index) => ({
-      label: column.title,
-      value: column.ticketCount,
-      color: chartColor(index),
-    }));
-  }
-
-  get assigneeSlices(): PieSlice[] {
-    return (this.overview?.assignees ?? []).map((row, index) => ({
-      label: row.user?.nickname ?? this.translateService.instant(PHRASES.UNASSIGNED),
-      value: row.ticketCount,
-      color: chartColor(index),
-    }));
-  }
-
-  get maxColumnCount(): number {
-    return Math.max(1, ...(this.overview?.columns ?? []).map((column) => column.ticketCount));
-  }
-
   ngOnInit() {
     this.boardService.getOverview(this.state.teamCode, this.state.boardId)
       .then((response) => {
@@ -71,7 +48,24 @@ export class BoardOverviewTabComponent implements OnInit {
           return;
         }
         this.overview = response.overview;
+        this.statusRows = this.buildStatusRows(response.overview);
+        this.assigneeRows = this.buildAssigneeRows(response.overview);
       });
+  }
+
+  private buildStatusRows(overview: BoardOverview): BarListRow[] {
+    return [
+      {label: this.translateService.instant(PHRASES.BACKLOG), value: overview.backlogTickets},
+      ...overview.columns.map((column) => ({label: column.title, value: column.ticketCount})),
+    ];
+  }
+
+  private buildAssigneeRows(overview: BoardOverview): BarListRow[] {
+    const rows = overview.assignees.filter((row) => row.ticketCount > 0);
+    return [...rows.filter((row) => row.user !== null), ...rows.filter((row) => row.user === null)].map((row) => ({
+      label: row.user?.nickname ?? this.translateService.instant(PHRASES.UNASSIGNED),
+      value: row.ticketCount,
+    }));
   }
 
   updatedAgo(ticket: RecentTicket): string {

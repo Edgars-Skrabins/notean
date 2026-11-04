@@ -1,6 +1,6 @@
 <section class="attachmentList">
   <div class="attachmentList__header">
-    <h3 class="attachmentList__title capsLabel">{{ PHRASES.ATTACHMENTS | translate }}</h3>
+    <h2 class="attachmentList__title capsLabel">{{ PHRASES.ATTACHMENTS | translate }}</h2>
     <app-button variant="ghost" icon="upload" (pressed)="openPicker()">{{ PHRASES.UPLOAD_FILES | translate }}</app-button>
     <input #fileInput type="file" multiple hidden (change)="handlePicked(fileInput)">
   </div>

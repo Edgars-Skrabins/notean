@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {discardPeriodicTasks, fakeAsync, flushMicrotasks, TestBed, tick} from '@angular/core/testing';
 import {ActivatedRoute, provideRouter, Route, Router} from "@angular/router";
 import {CdkDragDrop} from "@angular/cdk/drag-drop";
+import {provideTranslateService} from "@ngx-translate/core";
 import {ListTabComponent} from "./list-tab.component";
 import {TicketService} from "@services/ticket.service";
 import {FavoriteService} from "@services/favorite.service";
@@ -20,6 +21,7 @@ import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 import {createBoardState, fakeTicketList, ticketDetail, ticketSummary} from "../../../testing/boardFixtures";
 import {trashServiceStub, TrashServiceStub} from "../../../testing/trashServiceStub";
+import {TrashService} from "@services/trash.service";
 
 describe('ListTabComponent', () => {
   let component: ListTabComponent;
@@ -422,6 +424,52 @@ describe('ListTabComponent', () => {
 
     expect(ticketService.list).toHaveBeenCalledTimes(3);
   }));
+});
+
+describe('ListTabComponent selection bar', () => {
+  beforeEach(async () => {
+    const state = createBoardState();
+    const ticketService = jasmine.createSpyObj<TicketService>('TicketService', ['list']);
+    ticketService.list.and.callFake(fakeTicketList(state));
+    const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['fetchTeamMembers']);
+    teamService.fetchTeamMembers.and.returnValue(Promise.resolve([]));
+    const favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['isFavorited', 'toggle', 'forgetItem']);
+    favoriteService.isFavorited.and.returnValue(false);
+
+    await TestBed.configureTestingModule({
+      imports: [ListTabComponent],
+      providers: [
+        provideRouter([]),
+        provideTranslateService(),
+        {provide: BoardPageStateService, useValue: state},
+        {provide: TicketService, useValue: ticketService},
+        {provide: FavoriteService, useValue: favoriteService},
+        {provide: ToastService, useValue: jasmine.createSpyObj<ToastService>('ToastService', ['show'])},
+        {provide: TeamService, useValue: teamService},
+        {provide: ProjectService, useValue: jasmine.createSpyObj<ProjectService>('ProjectService', ['getProject'])},
+        {provide: TrashService, useValue: trashServiceStub().service},
+      ],
+    }).compileComponents();
+  });
+
+  it('renders the bar after every group, so selecting inserts nothing above the rows', async () => {
+    const fixture = TestBed.createComponent(ListTabComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const listTab = fixture.nativeElement.querySelector('.listTab') as HTMLElement;
+    expect(listTab.querySelector('app-ticket-selection-bar')).toBeNull();
+
+    (listTab.querySelector('app-list-row .listRow__checkbox input') as HTMLInputElement).click();
+    fixture.detectChanges();
+
+    const bar = listTab.querySelector('app-ticket-selection-bar');
+    expect(bar).not.toBeNull();
+    expect(listTab.lastElementChild).toBe(bar);
+    const groups = Array.from(listTab.querySelectorAll('.listTab__group'));
+    expect(groups.length).toBe(3);
+    groups.forEach((group) => expect(group.compareDocumentPosition(bar!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy());
+  });
 });
 
 describe('board tab routes', () => {

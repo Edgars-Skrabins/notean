@@ -3,6 +3,7 @@
   [item]="layoutItem"
   favoriteType="Page"
   [titlePlaceholder]="PHRASES.TEMPLATE_NAME_PLACEHOLDER"
+  [createHeading]="PHRASES.NEW_TEMPLATE"
   [editingBannerText]="PHRASES.BEING_EDITED_BY"
   [confirmDeleteMessage]="PHRASES.CONFIRM_DELETE_TEMPLATE"
   [confirmDeleteLabel]="PHRASES.DELETE_TEMPLATE"
@@ -52,6 +53,7 @@
         [content]="draftContent"
         [editable]="true"
         [mentionContext]="{}"
+        [ariaLabel]="PHRASES.PAGE_CONTENT | translate"
         (contentChange)="handleContentChange($event)"
       ></app-rich-text-editor>
     }

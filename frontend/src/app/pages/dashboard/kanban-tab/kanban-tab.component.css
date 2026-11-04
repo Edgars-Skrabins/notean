@@ -12,6 +12,17 @@
   overflow-x: auto;
   overflow-y: hidden;
   padding-bottom: var(--space-2);
+  --kanbanTab-fadeStart: 0px;
+  --kanbanTab-fadeEnd: 0px;
+  mask-image: linear-gradient(to right, transparent 0, var(--color-text-heading) var(--kanbanTab-fadeStart), var(--color-text-heading) calc(100% - var(--kanbanTab-fadeEnd)), transparent 100%);
+}
+
+.kanbanTab--fadeStart {
+  --kanbanTab-fadeStart: var(--space-7);
+}
+
+.kanbanTab--fadeEnd {
+  --kanbanTab-fadeEnd: var(--space-7);
 }
 
 .kanbanTab__addColumn {

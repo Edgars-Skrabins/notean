@@ -7,28 +7,32 @@
     <span class="authCornerLink__arrow" aria-hidden="true">&rarr;</span>
   </button>
 
-  <div class="authField">
-    <label class="authField__label" for="emailInput">{{ PHRASES.EMAIL | translate }}</label>
-    <input
-      [(ngModel)]="email"
-      [placeholder]="PHRASES.ENTER_EMAIL | translate"
-      id="emailInput"
-      (keydown.enter)="handleLogin()"
-      type="email"
-    />
-  </div>
+  <form class="authForm" novalidate (ngSubmit)="handleLogin()">
+    <div class="authField">
+      <label class="authField__label" for="emailInput">{{ PHRASES.EMAIL | translate }}</label>
+      <input
+        [(ngModel)]="email"
+        name="email"
+        autocomplete="username"
+        [placeholder]="PHRASES.ENTER_EMAIL | translate"
+        id="emailInput"
+        type="email"
+      />
+    </div>
 
-  <div class="authField">
-    <label class="authField__label" for="passwordInput">{{ PHRASES.PASSWORD | translate }}</label>
-    <input
-      [(ngModel)]="password"
-      [placeholder]="PHRASES.ENTER_PASSWORD | translate"
-      id="passwordInput"
-      (keydown.enter)="handleLogin()"
-      type="password"
-    />
-  </div>
+    <div class="authField">
+      <label class="authField__label" for="passwordInput">{{ PHRASES.PASSWORD | translate }}</label>
+      <input
+        [(ngModel)]="password"
+        name="password"
+        autocomplete="current-password"
+        [placeholder]="PHRASES.ENTER_PASSWORD | translate"
+        id="passwordInput"
+        type="password"
+      />
+    </div>
 
-  <button class="authButton" [disabled]="isSubmitting" (click)="handleLogin()">{{ PHRASES.LOGIN | translate }}</button>
-  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+    <button type="submit" class="authButton" [disabled]="isSubmitting">{{ PHRASES.LOGIN | translate }}</button>
+  </form>
+  <p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 </app-auth-card>
