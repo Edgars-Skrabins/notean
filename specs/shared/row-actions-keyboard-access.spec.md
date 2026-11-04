@@ -1,7 +1,7 @@
 # Row actions keyboard and touch access — Spec
 
 **Type:** bug fix
-**Status:** ready for implementation
+**Status:** in progress
 **Last updated:** 2026-11-04
 
 # Part 1 — Business logic and usage
@@ -93,8 +93,8 @@ Read Part 1 and Part 2 before starting. Work through the tasks in order and tick
 Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 assertions, 0 failures (master f15abdf, 2026-11-04).
 
 ### A. Item tree and Kanban column
-- [ ] A1. In `frontend/src/app/components/item-tree/item-tree.component.css`, add `.itemTree__row:focus-within .itemTree__rowActions > *` to the existing reveal rule (next to `.itemTree__row:hover .itemTree__rowActions > *`), and add a `@media (hover: none)` block that sets `.itemTree__rowActions > *` to `opacity: 1`. Done when tabbing from a row title onto its actions shows them, and the mobile preset in the browser pane shows them without hover.
-- [ ] A2. In `frontend/src/app/components/kanban-column/kanban-column.component.css`, add `.kanbanColumn__header:focus-within .kanbanColumn__actions` to the reveal rule and the same `@media (hover: none)` block for `.kanbanColumn__actions`. Done when tabbing into a column header shows Rename / Delete.
+- [x] A1. In `frontend/src/app/components/item-tree/item-tree.component.css`, add `.itemTree__row:focus-within .itemTree__rowActions > *` to the existing reveal rule (next to `.itemTree__row:hover .itemTree__rowActions > *`), and add a `@media (hover: none)` block that sets `.itemTree__rowActions > *` to `opacity: 1`. Done when tabbing from a row title onto its actions shows them, and the mobile preset in the browser pane shows them without hover.
+- [x] A2. In `frontend/src/app/components/kanban-column/kanban-column.component.css`, add `.kanbanColumn__header:focus-within .kanbanColumn__actions` to the reveal rule and the same `@media (hover: none)` block for `.kanbanColumn__actions`. Done when tabbing into a column header shows Rename / Delete.
 
 ### B. Chat messages
 - [ ] B1. In `frontend/src/app/components/chat-message/chat-message.component.ts`, inject `ElementRef`, add `isHovered` and `hasFocus` with `@HostListener`s for `mouseenter`, `mouseleave`, `focusin` and `focusout` (clear `hasFocus` only when `relatedTarget` is not inside the host), and add the `actionsRevealed` and `accessibleLabel` getters described in Part 2.2.
