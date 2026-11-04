@@ -16,7 +16,8 @@ export class IconButtonComponent {
   @Input({required: true}) icon!: IconName;
   @Input({required: true}) tooltip!: string;
   @Input() variant: 'ghost' | 'danger' = 'ghost';
-  @Input() size: 28 | 36 = 36;
+  @Input() size: 28 | 36 | 44 = 36;
   @Input() disabled = false;
+  @Input() expanded: boolean | null = null;
   @Output() pressed = new EventEmitter<void>();
 }

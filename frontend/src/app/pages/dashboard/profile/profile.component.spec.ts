@@ -14,7 +14,6 @@ import {PHRASES} from "@config/phrases";
 import {AVATAR_IMAGE_MAX_BYTES} from "@config/avatarColors";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {errorPhrase} from "@utils/errorPhrase";
-import {escapeServiceStub} from "../../../testing/escapeServiceStub";
 
 describe('ProfileComponent', () => {
   let component: ProfileComponent;
@@ -60,7 +59,6 @@ describe('ProfileComponent', () => {
       teamService,
       toastService,
       avatarService,
-      escapeServiceStub().service,
       authService,
       sessionService,
       translateService

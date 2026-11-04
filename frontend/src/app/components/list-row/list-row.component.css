@@ -45,18 +45,14 @@
   white-space: nowrap;
 }
 
-.listRow__status,
 .listRow__date {
   flex-shrink: 0;
+  min-width: 8em;
   color: var(--color-text-muted);
   font-size: var(--font-xs);
+  font-variant-numeric: tabular-nums;
+  text-align: end;
   white-space: nowrap;
-}
-
-.listRow__status {
-  max-width: 120px;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .listRow__tags {

@@ -26,10 +26,13 @@ describe('AvatarStackComponent', () => {
     expect(fixture.nativeElement.querySelector('.avatarStack__more').textContent.trim()).toBe('+2');
   });
 
-  it('lists every nickname in the tooltip', () => {
+  it('names the stack as one image with every nickname and no native title', () => {
     render([user(1, 'Ann'), user(2, 'Ben'), user(3, 'Cat'), user(4, 'Dan')]);
+    const stack: HTMLElement = fixture.nativeElement.querySelector('.avatarStack');
 
-    expect(fixture.nativeElement.querySelector('.avatarStack').getAttribute('title')).toBe('Ann, Ben, Cat, Dan');
+    expect(stack.getAttribute('role')).toBe('img');
+    expect(stack.getAttribute('aria-label')).toBe('Ann, Ben, Cat, Dan');
+    expect(stack.hasAttribute('title')).toBeFalse();
   });
 
   it('shows no +N circle with three or fewer users', () => {

@@ -1,5 +1,6 @@
 import {NavigationEnd, Router, RouterOutlet} from '@angular/router';
 import {Component, ChangeDetectionStrategy} from "@angular/core";
+import {NgIf} from "@angular/common";
 import {filter} from "rxjs";
 import {LanguageService} from "@services/language.service";
 import {AuthService} from "@services/auth.service";
@@ -11,6 +12,7 @@ import {ToastContainerComponent} from "@components/toast-container/toast-contain
 @Component({
   selector: 'app-root',
   imports: [
+    NgIf,
     RouterOutlet,
     ToastContainerComponent,
   ],

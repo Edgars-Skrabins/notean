@@ -1,8 +1,8 @@
-<div class="editConflictDialogOverlay">
+<div class="editConflictDialogOverlay" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
   <div class="editConflictDialogOverlay__backdrop" (click)="handleCancel()"></div>
 
-  <div class="editConflictDialog">
-    <p class="editConflictDialog__message">{{ PHRASES.EDIT_CONFLICT_MESSAGE | translate }}</p>
+  <div class="editConflictDialog" role="alertdialog" aria-modal="true" [attr.aria-labelledby]="messageId" tabindex="-1" cdkFocusInitial>
+    <p class="editConflictDialog__message" [id]="messageId">{{ PHRASES.EDIT_CONFLICT_MESSAGE | translate }}</p>
 
     <div class="editConflictDialog__actions">
       <app-button variant="ghost" (pressed)="handleLoadLatest()">{{ PHRASES.EDIT_CONFLICT_LOAD_LATEST | translate }}</app-button>
