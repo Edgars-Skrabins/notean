@@ -1,10 +1,12 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
+import {CdkTrapFocus} from '@angular/cdk/a11y';
 import {NgFor} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ButtonComponent} from '@components/button/button.component';
 import {EscapeService} from '@services/escape.service';
+import {uniqueId} from '@utils/uniqueId';
 
 export interface MoveTargetColumn {
   id: number;
@@ -14,6 +16,7 @@ export interface MoveTargetColumn {
 @Component({
   selector: 'app-move-to-board-dialog',
   imports: [
+    CdkTrapFocus,
     NgFor,
     FormsModule,
     TranslatePipe,
@@ -25,6 +28,7 @@ export interface MoveTargetColumn {
 })
 export class MoveToBoardDialogComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
+  protected readonly titleId = uniqueId('moveToBoardDialog');
 
   @Input({required: true}) columns: MoveTargetColumn[] = [];
   @Output() moved = new EventEmitter<{ columnId: number }>();

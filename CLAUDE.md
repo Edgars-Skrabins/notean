@@ -93,7 +93,7 @@ src/app/
 ├── guards/       functional route guards
 ├── config/       axios instance, i18n config, language options, overlay positions, PHRASES, themes.ts, errorCodes/
 ├── testing/      shared spec fixtures (e.g. boardFixtures.ts)
-└── utils/        small pure helpers (themeDom.ts applies and reads themes)
+└── utils/        small pure helpers (themeDom.ts applies and reads themes, uniqueId.ts makes element ids)
 public/assets/translations/   one <code>.json per language (en, lv, et, lt, ru, sv, fi, de, da, fr, es)
 src/themes/                   modes.css plus one CSS file per theme
 src/environments/             environment.ts (apiUrl)
@@ -117,6 +117,7 @@ src/environments/             environment.ts (apiUrl)
 - When a component's stylesheet outgrows the style budget after removing duplication, split a self-contained part into its own component (as `ItemTreeRowComponent` and `ItemDetailSidebarComponent` were).
 - Title and name inputs bind `[maxlength]="TITLE_MAX_LENGTH"` and description textareas `[maxlength]="DESCRIPTION_MAX_LENGTH"`, from `config/contentLimits.ts`, matching the backend's `ContentLimits`.
 - Icon-only controls get a styled tooltip with the `appTooltip` directive (`components/tooltip/`) plus an `aria-label`, never a native `title`. `app-icon-button` applies it from its `tooltip` input.
+- Dialogs and popups are modal for keyboard and screen readers: the overlay wrapper (backdrop plus panel) has `cdkTrapFocus [cdkTrapFocusAutoCapture]="true"`, which moves focus in on open and back to the previously focused element on close, and the panel has `role="dialog"` (`alertdialog` for message-only confirms), `aria-modal="true"`, `tabindex="-1"` and `aria-labelledby` a title id from `uniqueId` (`@utils/uniqueId`). Mark the initial focus with `cdkFocusInitial` (on the panel for content popups, on the first field for forms) or `app-button [initialFocus]="true"` (*Cancel* when the main action is destructive). `MenuButtonComponent` refocuses its trigger before emitting `picked`, so a dialog opened from a menu returns focus there.
 
 #### Services and HTTP
 - All HTTP goes through `axiosInstance` from `@config/axiosConfig`, not Angular's `HttpClient`. `HttpClient` is only used to load translation files.

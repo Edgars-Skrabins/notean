@@ -1,4 +1,5 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
+import {CdkTrapFocus} from '@angular/cdk/a11y';
 import {NgIf} from '@angular/common';
 import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
@@ -16,6 +17,7 @@ import {ConfirmDialogComponent} from '@components/confirm-dialog/confirm-dialog.
 import {DeleteProjectDialogComponent} from '@components/delete-project-dialog/delete-project-dialog.component';
 import {errorPhrase} from '@utils/errorPhrase';
 import {EscapeService} from '@services/escape.service';
+import {uniqueId} from '@utils/uniqueId';
 
 function toParams(project: ProjectDetail): ProjectParams {
   return {
@@ -39,6 +41,7 @@ function sameParams(a: ProjectParams, b: ProjectParams): boolean {
 @Component({
   selector: 'app-project-settings-dialog',
   imports: [
+    CdkTrapFocus,
     NgIf,
     TranslatePipe,
     ProjectFormComponent,
@@ -53,6 +56,7 @@ function sameParams(a: ProjectParams, b: ProjectParams): boolean {
 })
 export class ProjectSettingsDialogComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
+  protected readonly titleId = uniqueId('projectSettingsDialog');
 
   @Input({required: true}) project!: ProjectDetail;
   @Input({required: true}) members: TeamMember[] = [];

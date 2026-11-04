@@ -3,6 +3,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
 import {CdkScrollable} from '@angular/cdk/scrolling';
+import {CdkTrapFocus} from '@angular/cdk/a11y';
 import {Subscription} from 'rxjs';
 import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
@@ -53,6 +54,7 @@ import {stableMentionContext} from "@utils/mentionContext";
     FormsModule,
     NgIf,
     CdkScrollable,
+    CdkTrapFocus,
     TranslatePipe,
     IconButtonComponent,
     ButtonComponent,
