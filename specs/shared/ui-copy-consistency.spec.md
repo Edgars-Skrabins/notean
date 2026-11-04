@@ -1,7 +1,7 @@
 # UI copy consistency — Spec
 
 **Type:** bug fix
-**Status:** ready for implementation
+**Status:** in progress
 **Last updated:** 2026-11-04
 
 # Part 1 — Business logic and usage
@@ -122,8 +122,8 @@ Read Part 1 and Part 2 before starting. Work through the tasks in order and tick
 Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 assertions, 0 failures (master f15abdf, 2026-11-04).
 
 ### A. Buttons and verbs
-- [ ] A1. In `frontend/src/styles.css` remove `letter-spacing` and `text-transform` from `.authButton` and set `font-weight: 600`.
-- [ ] A2. In `en.json` set `LOGIN` to "Log in" and `LOGOUT` to "Log out". Check that no spec asserts the old English text (grep the spec files for `'Login'` / `'Logout'`).
+- [x] A1. In `frontend/src/styles.css` remove `letter-spacing` and `text-transform` from `.authButton` and set `font-weight: 600`.
+- [x] A2. In `en.json` set `LOGIN` to "Log in" and `LOGOUT` to "Log out". Check that no spec asserts the old English text (grep the spec files for `'Login'` / `'Logout'`).
 
 ### B. Plural helper
 - [ ] B1. Create `frontend/src/app/utils/plural.ts` (`pluralCategory`, `pluralKey`) and `utils/plural.spec.ts` with the cases from Part 2.2.
