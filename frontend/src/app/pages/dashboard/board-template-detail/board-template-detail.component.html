@@ -58,7 +58,8 @@
 
 <app-confirm-dialog
   *ngIf="showDeleteConfirm"
-  [message]="PHRASES.CONFIRM_DELETE_TEMPLATE | translate"
+  [message]="PHRASES.CONFIRM_DELETE_TEMPLATE | translate: {title: template?.title}"
+  [confirmLabel]="PHRASES.DELETE_TEMPLATE"
   (confirmed)="handleConfirmDelete()"
   (cancelled)="handleCancelDelete()"
 ></app-confirm-dialog>

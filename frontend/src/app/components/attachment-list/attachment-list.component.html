@@ -34,7 +34,8 @@
 
 <app-confirm-dialog
   *ngIf="pendingDelete"
-  [message]="PHRASES.CONFIRM_DELETE_ATTACHMENT | translate"
+  [message]="PHRASES.CONFIRM_DELETE_ATTACHMENT | translate: {name: pendingDelete.filename}"
+  [confirmLabel]="PHRASES.DELETE_ATTACHMENT"
   (confirmed)="confirmDelete()"
   (cancelled)="pendingDelete = null"
 ></app-confirm-dialog>

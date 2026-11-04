@@ -2,7 +2,7 @@
   <div class="deleteFolderDialogOverlay__backdrop" (click)="handleCancel()"></div>
 
   <div class="deleteFolderDialog">
-    <h3 class="deleteFolderDialog__title">{{ PHRASES.DELETE_FOLDER_CONFIRM_TITLE | translate }} '{{ folderTitle }}'?</h3>
+    <h3 class="deleteFolderDialog__title">{{ PHRASES.DELETE_FOLDER_CONFIRM_TITLE | translate: {title: folderTitle} }}</h3>
 
     <app-checkbox
       class="deleteFolderDialog__checkboxRow"

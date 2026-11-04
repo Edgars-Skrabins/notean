@@ -67,7 +67,8 @@
 
 <app-confirm-dialog
   *ngIf="showDeleteConfirm"
-  [message]="PHRASES.CONFIRM_DELETE_TEAM | translate"
+  [message]="PHRASES.CONFIRM_DELETE_TEAM | translate: {name: teamName}"
+  [confirmLabel]="PHRASES.DELETE_TEAM"
   (confirmed)="handleConfirmDeleteTeam()"
   (cancelled)="handleCancelDeleteTeam()"
 ></app-confirm-dialog>
