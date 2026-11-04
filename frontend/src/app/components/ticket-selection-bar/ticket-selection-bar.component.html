@@ -1,5 +1,5 @@
 <div class="ticketSelectionBar">
-  <span class="ticketSelectionBar__count">{{ PHRASES.SELECTED_COUNT | translate: {count: count} }}</span>
+  <span class="ticketSelectionBar__count">{{ PHRASES.SELECTED_COUNT | plural: count | translate: {count: count} }}</span>
 
   <app-menu-button [label]="PHRASES.SET_STATUS" [options]="statusOptions" [disabled]="busy" (picked)="handleSetStatus($event)"></app-menu-button>
   <app-menu-button [label]="PHRASES.ASSIGN" [options]="memberOptions" [disabled]="busy" (picked)="handleAssign($event)"></app-menu-button>

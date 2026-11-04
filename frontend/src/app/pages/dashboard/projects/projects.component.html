@@ -1,6 +1,6 @@
 <div class="dashboardStub">
   <div class="projects__header">
-    <h2 class="dashboardStub__title">{{ PHRASES.PROJECTS | translate }}</h2>
+    <h1 class="dashboardStub__title">{{ PHRASES.PROJECTS | translate }}</h1>
     <app-button *ngIf="canCreate" variant="primary" icon="plus" (pressed)="handleNewProject()">{{ PHRASES.NEW_PROJECT | translate }}</app-button>
   </div>
 
@@ -10,6 +10,7 @@
     [(ngModel)]="searchQuery"
     (ngModelChange)="handleSearchChange($event)"
     [placeholder]="PHRASES.SEARCH_PROJECTS | translate"
+    [attr.aria-label]="PHRASES.SEARCH_PROJECTS | translate"
   />
 
   <ng-container *ngIf="projects">
@@ -21,7 +22,7 @@
         </span>
         <span class="projects__meta">
           <app-avatar [avatar]="project.owner.avatar" [nickname]="project.owner.nickname"></app-avatar>
-          {{ project.owner.nickname }} · {{ PHRASES.MEMBER_COUNT | translate: {count: project.memberCount} }}
+          {{ project.owner.nickname }} · {{ PHRASES.MEMBER_COUNT | plural: project.memberCount | translate: {count: project.memberCount} }}
         </span>
       </button>
       <app-load-more *ngIf="hasMore" [loading]="isLoadingMore" (pressed)="handleLoadMore()"></app-load-more>

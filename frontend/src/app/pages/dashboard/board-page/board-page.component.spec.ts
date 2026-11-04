@@ -14,8 +14,8 @@ import {BoardPageStateService} from "./board-page-state.service";
 import {BoardChannelService} from "@services/board-channel.service";
 import {CopyLinkService} from "@services/copy-link.service";
 import {errorPhrase} from "@utils/errorPhrase";
-import {boardDetail, createBoardState} from "../../../testing/boardFixtures";
-import {trashServiceStub} from "../../../testing/trashServiceStub";
+import {boardDetail, createBoardState, TEST_TEAM_CODE} from "../../../testing/boardFixtures";
+import {trashServiceStub, TrashServiceStub} from "../../../testing/trashServiceStub";
 
 describe('BoardPageComponent', () => {
   let component: BoardPageComponent;
@@ -26,9 +26,11 @@ describe('BoardPageComponent', () => {
   let navigationService: jasmine.SpyObj<NavigationService>;
   let toastService: jasmine.SpyObj<ToastService>;
   let boardChannelService: jasmine.SpyObj<BoardChannelService>;
+  let trash: TrashServiceStub;
 
   beforeEach(() => {
     state = createBoardState();
+    trash = trashServiceStub();
     boardService = jasmine.createSpyObj<BoardService>('BoardService', ['renameBoard', 'deleteBoard', 'setBoardProject']);
     boardListService = jasmine.createSpyObj<BoardListService>('BoardListService', ['rename', 'remove', 'load']);
     favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['renameItem', 'forgetItem']);
@@ -36,7 +38,7 @@ describe('BoardPageComponent', () => {
     toastService = jasmine.createSpyObj<ToastService>('ToastService', ['show']);
     boardChannelService = jasmine.createSpyObj<BoardChannelService>('BoardChannelService', ['connect', 'disconnect']);
     const route = {paramMap: of(convertToParamMap({id: '9'}))} as unknown as ActivatedRoute;
-    component = new BoardPageComponent(route, state, boardService, boardListService, favoriteService, navigationService, toastService, boardChannelService, {} as CopyLinkService, trashServiceStub().service);
+    component = new BoardPageComponent(route, state, boardService, boardListService, favoriteService, navigationService, toastService, boardChannelService, {} as CopyLinkService, trash.service);
   });
 
   it('loads the board from the route and follows its live updates until destroyed', fakeAsync(() => {
@@ -106,12 +108,12 @@ describe('BoardPageComponent', () => {
 
   it('deletes the board, removes it from the sidebar and favorites and goes home', fakeAsync(() => {
     boardService.deleteBoard.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
-    component.handleDelete();
 
-    component.handleConfirmDelete();
+    component.handleDelete();
     flushMicrotasks();
 
     expect(boardChannelService.disconnect).toHaveBeenCalledBefore(boardService.deleteBoard);
+    expect(trash.service.notifyTrashed).toHaveBeenCalledWith(TEST_TEAM_CODE, [1], {title: 'Sprint 12'});
     expect(boardListService.remove).toHaveBeenCalledWith(9);
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Board', 9);
     expect(navigationService.navigate).toHaveBeenCalledWith(AppRoutes.DASHBOARD, AppRoutes.DASHBOARD_HOME);
@@ -120,12 +122,22 @@ describe('BoardPageComponent', () => {
   it('stays on the board and shows the error when deleting fails', fakeAsync(() => {
     boardService.deleteBoard.and.returnValue(Promise.resolve({success: false, code: 'BOARD_NOT_FOUND'}));
 
-    component.handleConfirmDelete();
+    component.handleDelete();
     flushMicrotasks();
 
     expect(component.alertMessage).toBe('ERRORS.BOARDS.BOARD_NOT_FOUND');
     expect(navigationService.navigate).not.toHaveBeenCalled();
     expect(boardChannelService.connect).toHaveBeenCalledWith(9);
+  }));
+
+  it('sends one delete for repeated presses while it runs', fakeAsync(() => {
+    boardService.deleteBoard.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
+
+    component.handleDelete();
+    component.handleDelete();
+    flushMicrotasks();
+
+    expect(boardService.deleteBoard).toHaveBeenCalledTimes(1);
   }));
 
   it('moves the board to another project and refreshes the sidebar', fakeAsync(() => {

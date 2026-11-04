@@ -38,7 +38,7 @@
 .createNamedItemDialog__input {
   min-height: var(--control-height);
   background: var(--color-input-bg);
-  border: 1px solid var(--color-input-border);
+  border: 1px solid var(--color-control-border);
   border-radius: var(--radius-sm);
   padding: 10px;
   color: var(--color-text-heading);
@@ -49,10 +49,6 @@
   width: 100%;
   margin-bottom: var(--space-5);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
-}
-
-.createNamedItemDialog__input::placeholder {
-  color: var(--color-text-faint);
 }
 
 .createNamedItemDialog__input:focus {
@@ -68,8 +64,6 @@
 
 .createNamedItemDialog__error {
   margin: 0 0 var(--space-4);
-  color: var(--color-text-muted);
-  font-size: var(--font-sm);
 }
 
 .createNamedItemDialog__actions {

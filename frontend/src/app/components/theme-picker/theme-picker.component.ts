@@ -1,14 +1,17 @@
 import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
-import {NgForOf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
 import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
 import {DEFAULT_THEME, ThemeKey, THEMES} from "@config/themes";
 import {ResolvedThemeMode} from "@utils/themeDom";
+import {IconComponent} from "@components/icon/icon.component";
 
 @Component({
   selector: 'app-theme-picker',
   imports: [
     NgForOf,
+    NgIf,
+    IconComponent,
     TranslatePipe
   ],
   templateUrl: './theme-picker.component.html',

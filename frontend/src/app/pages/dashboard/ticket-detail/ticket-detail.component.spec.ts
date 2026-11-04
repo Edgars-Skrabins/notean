@@ -1,4 +1,4 @@
-import {fakeAsync, flushMicrotasks, TestBed} from '@angular/core/testing';
+import {ComponentFixture, fakeAsync, flushMicrotasks, TestBed} from '@angular/core/testing';
 import {ActivatedRoute, Router} from "@angular/router";
 import {provideTranslateService} from "@ngx-translate/core";
 import {TicketDetailComponent} from "./ticket-detail.component";
@@ -21,11 +21,12 @@ import {CopyLinkService} from "@services/copy-link.service";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {AttachmentService} from "@services/attachment.service";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
-import {createBoardState, ticketDetail} from "../../../testing/boardFixtures";
+import {createBoardState, ticketDetail, ticketSummary} from "../../../testing/boardFixtures";
 import {escapeServiceStub, EscapeServiceStub} from "../../../testing/escapeServiceStub";
-import {trashServiceStub} from "../../../testing/trashServiceStub";
+import {trashServiceStub, TrashServiceStub} from "../../../testing/trashServiceStub";
 import {By} from '@angular/platform-browser';
 import {MentionTextEditorComponent} from '@components/mention-text-editor/mention-text-editor.component';
+import {DropdownComponent} from '@components/dropdown/dropdown.component';
 
 describe('TicketDetailComponent editing', () => {
   let component: TicketDetailComponent;
@@ -40,6 +41,7 @@ describe('TicketDetailComponent editing', () => {
   let ticket: TicketDetail;
   let escape: EscapeServiceStub;
   let attachmentService: jasmine.SpyObj<AttachmentService>;
+  let trash: TrashServiceStub;
   const route = {snapshot: {paramMap: new Map([['ticketId', '1']])}} as unknown as ActivatedRoute;
 
   beforeEach(() => {
@@ -56,8 +58,9 @@ describe('TicketDetailComponent editing', () => {
     authService.getCurrentUser.and.returnValue({id: 1, email: 'alice@example.com'});
     state = createBoardState();
     escape = escapeServiceStub();
+    trash = trashServiceStub();
     attachmentService = jasmine.createSpyObj<AttachmentService>('AttachmentService', ['uploadToTicket', 'deleteFromTicket']);
-    component = new TicketDetailComponent(route, router, state, ticketService, tagService, favoriteService, toastService, teamService, projectService, authService, escape.service, {} as CopyLinkService, trashServiceStub().service, attachmentService);
+    component = new TicketDetailComponent(route, router, state, ticketService, tagService, favoriteService, toastService, teamService, projectService, authService, escape.service, {} as CopyLinkService, trash.service, attachmentService);
 
     ticket = {...ticketDetail(1, 10), title: 'My Ticket'};
     component.ticket = ticket;
@@ -275,49 +278,88 @@ describe('TicketDetailComponent editing', () => {
     expect(ticketService.getTicket).toHaveBeenCalledWith('abc', 9, 1);
   }));
 
-  it('moves a board ticket to the backlog and updates the board', fakeAsync(() => {
+  it('offers the Backlog and then the board columns in order as statuses', () => {
+    expect(component.statusOptions).toEqual([
+      {value: null, labelKey: PHRASES.BACKLOG},
+      {value: 10, label: 'To Do'},
+      {value: 11, label: 'Done'},
+    ]);
+  });
+
+  it('moves a column ticket to the bottom of the backlog when Backlog is chosen', fakeAsync(() => {
     ticketService.moveToBacklog.and.returnValue(Promise.resolve({success: true, ticket: ticketDetail(1, null, 2)}));
     component.ngOnInit();
 
-    component.handleMoveToBacklog();
+    component.handleStatusChange(null);
     flushMicrotasks();
 
+    expect(ticketService.moveToBacklog).toHaveBeenCalledWith('abc', 9, 1);
     expect(component.ticket?.columnId).toBeNull();
     expect(state.board!.backlog.map((item) => item.id)).toEqual([3, 4, 1]);
+    expect(state.board!.columns[0].tickets.map((item) => item.id)).toEqual([2]);
   }));
 
   it('moves a backlog ticket to the chosen column', fakeAsync(() => {
-    ticketService.moveTicket.and.returnValue(Promise.resolve({success: true, ticket: ticketDetail(1, 11, 0)}));
+    component.ticket = ticketDetail(3, null, 0);
+    ticketService.moveTicket.and.returnValue(Promise.resolve({success: true, ticket: ticketDetail(3, 11, 0)}));
     component.ngOnInit();
-    component.handleOpenMoveDialog();
 
-    component.handleMoveToColumn({columnId: 11});
+    component.handleStatusChange(11);
     flushMicrotasks();
 
-    expect(component.isMoveDialogOpen).toBeFalse();
     expect(ticketService.moveTicket).toHaveBeenCalledWith('abc', 9, 1, {columnId: 11});
+    expect(component.ticket?.columnId).toBe(11);
+    expect(state.board!.columns[1].tickets.map((item) => item.id)).toEqual([3]);
+    expect(state.board!.backlog.map((item) => item.id)).toEqual([4]);
+  }));
+
+  it('moves a column ticket to another column', fakeAsync(() => {
+    ticketService.moveTicket.and.returnValue(Promise.resolve({success: true, ticket: ticketDetail(1, 11, 0)}));
+    component.ngOnInit();
+
+    component.handleStatusChange(11);
+    flushMicrotasks();
+
+    expect(ticketService.moveTicket).toHaveBeenCalledWith('abc', 9, 1, {columnId: 11});
+    expect(ticketService.moveToBacklog).not.toHaveBeenCalled();
+    expect(state.board!.columns[0].tickets.map((item) => item.id)).toEqual([2]);
     expect(state.board!.columns[1].tickets.map((item) => item.id)).toEqual([1]);
   }));
 
-  it('shows a toast when a move fails', fakeAsync(() => {
-    ticketService.moveToBacklog.and.returnValue(Promise.resolve({success: false, code: 'TICKET_UPDATE_FAILED'}));
+  it('sends nothing when the current status is chosen', () => {
+    component.handleStatusChange(10);
 
-    component.handleMoveToBacklog();
+    component.ticket = ticketDetail(3, null, 0);
+    component.handleStatusChange(null);
+
+    expect(ticketService.moveTicket).not.toHaveBeenCalled();
+    expect(ticketService.moveToBacklog).not.toHaveBeenCalled();
+  });
+
+  it('shows a toast and keeps the status when a move fails', fakeAsync(() => {
+    ticketService.moveTicket.and.returnValue(Promise.resolve({success: false, code: 'COLUMN_NOT_FOUND'}));
+
+    component.handleStatusChange(11);
     flushMicrotasks();
 
     expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: PHRASES.TICKET_MOVE_FAILED});
+    expect(component.ticket?.columnId).toBe(10);
     expect(state.board!.columns[0].tickets.map((item) => item.id)).toEqual([1, 2]);
+    expect(state.board!.columns[1].tickets).toEqual([]);
   }));
 
   it('deletes the ticket, removes it from the board and closes back to the tab', fakeAsync(() => {
     ticketService.deleteTicket.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
     component.ngOnInit();
 
-    component.handleConfirmDelete();
+    component.handleDelete();
+    component.handleDelete();
     flushMicrotasks();
 
+    expect(ticketService.deleteTicket).toHaveBeenCalledTimes(1);
     expect(state.findTicket(1)).toBeNull();
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Ticket', 1);
+    expect(trash.service.notifyTrashed).toHaveBeenCalledWith('abc', [1], {title: 'My Ticket'});
     expect(router.navigate).toHaveBeenCalledWith(['../..'], {relativeTo: route});
   }));
 
@@ -444,6 +486,14 @@ describe('TicketDetailComponent editing', () => {
     expect(component.descriptionDraft).toBe('New details');
   });
 
+  it('follows a remote move so the Status field shows the new column', () => {
+    state.placeTicket(ticketSummary(1, 11, 0));
+
+    component.applyRemoteChange(new Map());
+
+    expect(component.ticket?.columnId).toBe(11);
+  });
+
   it('keeps a focused title draft but updates the saved title behind it', () => {
     component.handleTitleFocus();
     component.titleDraft = 'My draft';
@@ -505,7 +555,7 @@ describe('TicketDetailComponent editing', () => {
     ticketService.deleteTicket.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
     component.ngOnInit();
 
-    component.handleConfirmDelete();
+    component.handleDelete();
     state.removeTickets([1]);
     state.remoteChanges$.next(new Map());
     flushMicrotasks();
@@ -606,8 +656,10 @@ describe('TicketDetailComponent editing', () => {
   });
 });
 
-describe('TicketDetailComponent input limits', () => {
-  it('limits the title input and the description editor to the content limits', async () => {
+describe('TicketDetailComponent rendering', () => {
+  let fixture: ComponentFixture<TicketDetailComponent>;
+
+  beforeEach(async () => {
     const ticketService = jasmine.createSpyObj<TicketService>('TicketService', ['getTicket']);
     ticketService.getTicket.and.returnValue(Promise.resolve({success: true, ticket: ticketDetail(1, 10)}));
     const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['fetchTeamMembers', 'getCurrentTeamCode', 'getCurrentRole']);
@@ -637,14 +689,34 @@ describe('TicketDetailComponent input limits', () => {
       ],
     }).compileComponents();
 
-    const fixture = TestBed.createComponent(TicketDetailComponent);
+    fixture = TestBed.createComponent(TicketDetailComponent);
     fixture.detectChanges();
     await fixture.whenStable();
     fixture.detectChanges();
+  });
 
+  it('limits the title input and the description editor to the content limits', () => {
     const title: HTMLInputElement = fixture.nativeElement.querySelector('.ticketDetail__titleInput');
     const description = fixture.debugElement.query(By.directive(MentionTextEditorComponent)).componentInstance as MentionTextEditorComponent;
     expect(title.maxLength).toBe(TITLE_MAX_LENGTH);
     expect(description.maxLength).toBe(DESCRIPTION_MAX_LENGTH);
+  });
+
+  it('starts the sidebar with a Status dropdown showing the ticket column', () => {
+    const firstField = fixture.debugElement.query(By.css('.ticketDetail__side > .ticketDetail__field'));
+    const title: HTMLElement = firstField.nativeElement.querySelector('.ticketDetail__fieldTitle');
+    const dropdown = firstField.query(By.directive(DropdownComponent)).componentInstance as DropdownComponent;
+
+    expect(title.textContent?.trim()).toBe(PHRASES.STATUS);
+    expect(dropdown.value).toBe(10);
+    expect(dropdown.options.map((option) => option.value)).toEqual([null, 10, 11]);
+  });
+
+  it('has no move buttons in the header', () => {
+    const header: HTMLElement = fixture.nativeElement.querySelector('.ticketDetail__headerActions');
+
+    expect(header.querySelector('app-button')).toBeNull();
+    expect(header.textContent).not.toContain(PHRASES.MOVE_TO_BACKLOG);
+    expect(header.textContent).not.toContain(PHRASES.MOVE_TO_BOARD);
   });
 });

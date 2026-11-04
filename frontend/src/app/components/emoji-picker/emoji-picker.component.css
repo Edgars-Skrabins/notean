@@ -13,7 +13,7 @@
   --button-hover-background: color-mix(in srgb, var(--color-tint) 8%, transparent);
   --category-font-color: var(--color-text-muted);
   --indicator-color: var(--color-primary);
-  --input-border-color: var(--color-input-border);
+  --input-border-color: var(--color-control-border);
   --input-font-color: var(--color-text-heading);
   --input-placeholder-color: var(--color-text-faint);
   --outline-color: var(--color-input-border-focus);

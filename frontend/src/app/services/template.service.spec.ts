@@ -1,6 +1,6 @@
 import {AxiosError, AxiosResponse} from "axios";
 import {axiosInstance} from "@config/axiosConfig";
-import {mapTemplateDetail, TemplateService} from "./template.service";
+import {builtInTemplate, mapTemplateDetail, TemplateService} from "./template.service";
 
 const raw = {
   id: 4,
@@ -52,7 +52,7 @@ describe('TemplateService', () => {
     const response = await service.resolve('abc', 'page', 'builtin:meeting-notes');
 
     expect(get).not.toHaveBeenCalled();
-    expect(response.success && response.content).toContain('Meeting notes');
+    expect(response).toEqual({success: true, title: 'Meeting notes', content: builtInTemplate('page', 'meeting-notes')!.content});
   });
 
   it('rejects an unknown built-in key and a built-in of another kind', async () => {
@@ -63,7 +63,7 @@ describe('TemplateService', () => {
   it('resolves a team template only when it has the requested kind', async () => {
     spyOn(axiosInstance, 'get').and.returnValue(Promise.resolve({data: {template: raw}}));
 
-    expect(await service.resolve('abc', 'page', '4')).toEqual({success: true, content: '<p>Went well</p>'});
+    expect(await service.resolve('abc', 'page', '4')).toEqual({success: true, title: 'Retro', content: '<p>Went well</p>'});
     expect(await service.resolve('abc', 'diagram', '4')).toEqual({success: false, code: 'TEMPLATE_NOT_FOUND'});
   });
 });

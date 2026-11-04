@@ -3,6 +3,7 @@ import {FormsModule} from '@angular/forms';
 import {NgFor, NgIf} from '@angular/common';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
+import {defaultLanguage} from '@config/translationConfig';
 import {TagService} from '@services/tag.service';
 import {ToastService} from '@services/toast.service';
 import {ToastType} from '@models/toast.model';
@@ -15,6 +16,7 @@ import {PriorityColorPickerComponent} from '@components/priority-color-picker/pr
 import {TagChipComponent} from '@components/tag-chip/tag-chip.component';
 import {TooltipDirective} from '@components/tooltip/tooltip.directive';
 import {errorPhrase} from '@utils/errorPhrase';
+import {pluralKey} from '@utils/plural';
 import {nextTagColor, sortTags} from '@utils/tagOrder';
 import {BoardPageStateService} from '@pages/dashboard/board-page/board-page-state.service';
 
@@ -69,10 +71,8 @@ export class TagListComponent {
     if (!count) {
       return this.translateService.instant(PHRASES.CONFIRM_DELETE_UNUSED_TAG, {name: tag.name});
     }
-    if (count === 1) {
-      return this.translateService.instant(PHRASES.CONFIRM_DELETE_TAG_ONE, {name: tag.name});
-    }
-    return this.translateService.instant(PHRASES.CONFIRM_DELETE_TAG, {name: tag.name, count});
+    const language = this.translateService.getCurrentLang() ?? this.translateService.getFallbackLang() ?? defaultLanguage;
+    return this.translateService.instant(pluralKey(PHRASES.CONFIRM_DELETE_TAG, count, language), {name: tag.name, count});
   }
 
   trackById(_index: number, tag: Tag): number {

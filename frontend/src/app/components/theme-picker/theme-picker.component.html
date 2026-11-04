@@ -1,12 +1,17 @@
-<div class="themePicker" role="group" [attr.aria-label]="PHRASES.THEME | translate">
-  <button
+<div class="themePicker" role="radiogroup" [attr.aria-label]="PHRASES.THEME | translate">
+  <label
     *ngFor="let option of themes"
-    type="button"
     class="themePicker__card"
     [class.themePicker__card--selected]="option.key === theme"
-    [attr.aria-pressed]="option.key === theme"
-    (click)="select(option.key)"
   >
+    <input
+      type="radio"
+      class="cdk-visually-hidden"
+      name="theme"
+      [value]="option.key"
+      [checked]="option.key === theme"
+      (change)="select(option.key)"
+    />
     <span class="themePicker__preview" [attr.data-theme]="option.key" [attr.data-mode]="resolvedMode" aria-hidden="true">
       <span class="themePicker__sidebar"></span>
       <span class="themePicker__surface">
@@ -14,6 +19,6 @@
         <span class="themePicker__pill"></span>
       </span>
     </span>
-    <span class="themePicker__name">{{ option.phrase | translate }}</span>
-  </button>
+    <span class="themePicker__name"><app-icon *ngIf="option.key === theme" class="themePicker__check" name="check" aria-hidden="true"></app-icon>{{ option.phrase | translate }}</span>
+  </label>
 </div>

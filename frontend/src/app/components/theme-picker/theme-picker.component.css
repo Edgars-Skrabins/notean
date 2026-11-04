@@ -15,6 +15,7 @@
 }
 
 .themePicker__card {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
@@ -40,7 +41,7 @@
   color: var(--color-text-heading);
 }
 
-.themePicker__card:focus-visible {
+.themePicker__card:has(:focus-visible) {
   outline: 2px solid var(--color-input-border-focus);
   outline-offset: 2px;
 }
@@ -88,5 +89,18 @@
 }
 
 .themePicker__name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
   padding: 0 var(--space-1) var(--space-1);
+}
+
+.themePicker__check {
+  width: 14px;
+  height: 14px;
+  color: var(--color-input-border-focus);
+}
+
+.themePicker__card--selected .themePicker__name {
+  font-weight: 600;
 }

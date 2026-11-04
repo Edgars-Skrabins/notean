@@ -1,6 +1,6 @@
 <ng-container *ngIf="teamService.features$ | async as features">
   <div class="dashboardStub" *ngIf="settingsService.settings$ | async as settings">
-    <h2 class="dashboardStub__title">{{ PHRASES.HOME | translate }}</h2>
+    <h1 class="dashboardStub__title">{{ PHRASES.HOME | translate }}</h1>
     <app-home-get-started
       *ngIf="showGetStarted(features, (favoriteService.homeFavorites$ | async)?.length)"
       (dismissed)="handleGetStartedDismissed()"

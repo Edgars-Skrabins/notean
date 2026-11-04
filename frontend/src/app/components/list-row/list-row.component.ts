@@ -31,7 +31,6 @@ export class ListRowComponent {
   protected readonly PHRASES = PHRASES;
 
   @Input({required: true}) ticket!: TicketSummary;
-  @Input({required: true}) statusTitle = '';
   @Input() priority: BoardPriority | null = null;
   @Input() tags: Tag[] = [];
   @Input() selected = false;

@@ -4,7 +4,6 @@ import {TranslateService} from "@ngx-translate/core";
 import {BoardOverviewTabComponent} from "./board-overview-tab.component";
 import {BoardService} from "@services/board.service";
 import {BoardOverview} from "@models/board.model";
-import {chartColor} from "@config/chartColors";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {createBoardState} from "../../../testing/boardFixtures";
 
@@ -20,8 +19,10 @@ const overview: BoardOverview = {
     {id: 3, title: 'Idea', columnId: null, columnTitle: null, updatedAt: '2026-10-09T00:00:00Z'},
   ],
   assignees: [
+    {user: null, ticketCount: 4},
     {user: {id: 1, nickname: 'alice', avatar: {color: 'red', imageUrl: null}}, ticketCount: 3},
-    {user: null, ticketCount: 2},
+    {user: {id: 2, nickname: 'bob', avatar: {color: 'blue', imageUrl: null}}, ticketCount: 1},
+    {user: {id: 3, nickname: 'carol', avatar: {color: 'green', imageUrl: null}}, ticketCount: 0},
   ],
 };
 
@@ -55,24 +56,40 @@ describe('BoardOverviewTabComponent', () => {
     expect(component.alertMessage).toBe('ERRORS.BOARDS.BOARD_NOT_FOUND');
   }));
 
-  it('builds one pie slice per column with the chart palette', () => {
-    component.overview = overview;
+  it('lists the backlog first, then each column in board order', fakeAsync(() => {
+    boardService.getOverview.and.returnValue(Promise.resolve({success: true, overview}));
 
-    expect(component.columnSlices).toEqual([
-      {label: 'To Do', value: 4, color: chartColor(0)},
-      {label: 'Done', value: 0, color: chartColor(1)},
+    component.ngOnInit();
+    flushMicrotasks();
+
+    expect(component.statusRows).toEqual([
+      {label: 'BACKLOG', value: 1},
+      {label: 'To Do', value: 4},
+      {label: 'Done', value: 0},
     ]);
-    expect(component.maxColumnCount).toBe(4);
-  });
+  }));
 
-  it('builds one assignee slice per person plus Unassigned', () => {
-    component.overview = overview;
+  it('lists assignees with tickets largest first and Unassigned last', fakeAsync(() => {
+    boardService.getOverview.and.returnValue(Promise.resolve({success: true, overview}));
 
-    expect(component.assigneeSlices).toEqual([
-      {label: 'alice', value: 3, color: chartColor(0)},
-      {label: 'UNASSIGNED', value: 2, color: chartColor(1)},
+    component.ngOnInit();
+    flushMicrotasks();
+
+    expect(component.assigneeRows).toEqual([
+      {label: 'alice', value: 3},
+      {label: 'bob', value: 1},
+      {label: 'UNASSIGNED', value: 4},
     ]);
-  });
+  }));
+
+  it('leaves Unassigned out when every ticket has an assignee', fakeAsync(() => {
+    boardService.getOverview.and.returnValue(Promise.resolve({success: true, overview: {...overview, assignees: [{user: null, ticketCount: 0}, ...overview.assignees.slice(1)]}}));
+
+    component.ngOnInit();
+    flushMicrotasks();
+
+    expect(component.assigneeRows.map((row) => row.label)).toEqual(['alice', 'bob']);
+  }));
 
   it('opens a recent ticket over the tab it lives on', () => {
     component.handleOpenTicket(overview.recentTickets[0]);

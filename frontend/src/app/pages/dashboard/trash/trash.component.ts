@@ -22,6 +22,7 @@ import {LoadMoreComponent} from "@components/load-more/load-more.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {errorPhrase} from "@utils/errorPhrase";
 import {relativeDate} from "@utils/relativeDate";
+import {PluralPipe} from "@pipes/plural.pipe";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
@@ -41,6 +42,7 @@ const TYPE_ICONS: Record<TrashItemType, IconName> = {
     NgFor,
     NgIf,
     TranslatePipe,
+    PluralPipe,
     ButtonComponent,
     IconButtonComponent,
     IconComponent,

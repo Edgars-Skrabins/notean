@@ -1,10 +1,5 @@
-<button type="button" class="pageBackButton" (click)="handleGoBack()">
-  <span class="pageBackButton__arrow" aria-hidden="true">&larr;</span>
-  {{ PHRASES.BACK_TO_DASHBOARD | translate }}
-</button>
-
-<div class="profile">
-  <h2 class="profile__title">{{ PHRASES.PROFILE | translate }}</h2>
+<div class="dashboardStub profile">
+  <h1 class="dashboardStub__title profile__title">{{ PHRASES.PROFILE | translate }}</h1>
 
   <div class="profile__avatar">
     <app-avatar
@@ -28,18 +23,25 @@
   </div>
 
   <div class="authField">
-    <span class="authField__label">{{ PHRASES.AVATAR_COLOR | translate }}</span>
-    <div class="profile__swatches">
-      <button
+    <span class="authField__label" id="avatarColorLabel">{{ PHRASES.AVATAR_COLOR | translate }}</span>
+    <div class="profile__swatches" role="radiogroup" aria-labelledby="avatarColorLabel">
+      <label
         *ngFor="let color of AVATAR_COLORS"
-        type="button"
         class="profile__swatch"
         [class.profile__swatch--selected]="color.key === pendingColor"
         [style.background]="color.hex"
-        [title]="color.phrase | translate"
-        [attr.aria-label]="color.phrase | translate"
-        (click)="handleSelectColor(color.key)"
-      ></button>
+        [appTooltip]="color.phrase | translate"
+      >
+        <input
+          type="radio"
+          class="cdk-visually-hidden"
+          name="avatarColor"
+          [value]="color.key"
+          [checked]="color.key === pendingColor"
+          [attr.aria-label]="color.phrase | translate"
+          (change)="handleSelectColor(color.key)"
+        />
+      </label>
     </div>
   </div>
 
@@ -58,7 +60,7 @@
     {{ PHRASES.SAVE | translate }}
   </button>
 
-  <h3 class="profile__sectionTitle">{{ PHRASES.PASSWORD | translate }}</h3>
+  <h2 class="profile__sectionTitle">{{ PHRASES.PASSWORD | translate }}</h2>
 
   <div class="authField">
     <label class="authField__label" for="currentPasswordInput">{{ PHRASES.CURRENT_PASSWORD | translate }}</label>
@@ -98,9 +100,9 @@
   <button class="authButton" [disabled]="!canChangePassword" (click)="handleChangePassword()">
     {{ PHRASES.CHANGE_PASSWORD | translate }}
   </button>
-  <p class="authStatus" *ngIf="passwordError">{{ passwordError | translate }}</p>
+  <p class="errorMessage" role="alert" *ngIf="passwordError">{{ passwordError | translate }}</p>
 
-  <h3 class="profile__sectionTitle">{{ PHRASES.DELETE_ACCOUNT | translate }}</h3>
+  <h2 class="profile__sectionTitle">{{ PHRASES.DELETE_ACCOUNT | translate }}</h2>
   <app-button variant="danger" [disabled]="isDeletingAccount" (pressed)="handleDeleteAccount()">{{ PHRASES.DELETE_ACCOUNT | translate }}</app-button>
 </div>
 

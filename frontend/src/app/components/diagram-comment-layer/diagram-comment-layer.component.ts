@@ -18,6 +18,7 @@ import {RichTextEditorComponent} from '@components/rich-text-editor/rich-text-ed
 import {errorPhrase} from '@utils/errorPhrase';
 import {commentExcerpt, hasCommentText} from '@utils/commentText';
 import {MentionContext} from "@models/mention.model";
+import {PluralPipe} from '@pipes/plural.pipe';
 
 type PanelOrigin = Element | { x: number; y: number; width: number; height: number };
 
@@ -35,6 +36,7 @@ interface PinDraft {
     NgIf,
     OverlayModule,
     TranslatePipe,
+    PluralPipe,
     AvatarComponent,
     ButtonComponent,
     CheckboxComponent,

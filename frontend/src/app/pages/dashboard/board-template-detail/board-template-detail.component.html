@@ -9,6 +9,7 @@
       [placeholder]="PHRASES.TEMPLATE_NAME_PLACEHOLDER | translate"
       [attr.aria-label]="PHRASES.TEMPLATE_NAME_PLACEHOLDER | translate"
     />
+    <h1 *ngIf="canEdit" class="cdk-visually-hidden">{{ title || (PHRASES.NEW_TEMPLATE | translate) }}</h1>
     <h1 *ngIf="!canEdit" class="boardTemplate__heading">{{ title }}</h1>
 
     <div class="boardTemplate__actions" *ngIf="isNew">
@@ -22,7 +23,7 @@
     <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE | translate" (pressed)="handleBack()"></app-icon-button>
   </div>
 
-  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+  <p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
   <div class="boardTemplate__sections" *ngIf="!isLoading && (isNew || template)">
     <app-template-rows
@@ -58,7 +59,8 @@
 
 <app-confirm-dialog
   *ngIf="showDeleteConfirm"
-  [message]="PHRASES.CONFIRM_DELETE_TEMPLATE | translate"
+  [message]="PHRASES.CONFIRM_DELETE_TEMPLATE | translate: {title: template?.title}"
+  [confirmLabel]="PHRASES.DELETE_TEMPLATE"
   (confirmed)="handleConfirmDelete()"
   (cancelled)="handleCancelDelete()"
 ></app-confirm-dialog>

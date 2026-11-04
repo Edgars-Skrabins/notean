@@ -19,7 +19,6 @@ import {BoardUser} from "@models/board.model";
 import {TeamMember} from "@models/team.model";
 import {ListRowComponent} from "@components/list-row/list-row.component";
 import {MoveToBoardDialogComponent} from "@components/move-to-board-dialog/move-to-board-dialog.component";
-import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {IconComponent} from "@components/icon/icon.component";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
 import {CheckboxComponent} from "@components/checkbox/checkbox.component";
@@ -31,6 +30,7 @@ import {assignableMembers} from "@utils/assignableMembers";
 import {shiftedPosition} from "@utils/ticketShifts";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
+import {PluralPipe} from "@pipes/plural.pipe";
 
 interface GroupData {
   tickets: TicketSummary[];
@@ -60,11 +60,11 @@ function byPosition(first: TicketSummary, second: TicketSummary): number {
     NgIf,
     RouterOutlet,
     TranslatePipe,
+    PluralPipe,
     CdkDropList,
     CdkDrag,
     ListRowComponent,
     MoveToBoardDialogComponent,
-    ConfirmDialogComponent,
     IconComponent,
     IconButtonComponent,
     CheckboxComponent,
@@ -84,19 +84,18 @@ export class ListTabComponent implements OnInit, OnDestroy {
   isCreating = false;
   newTicketTitle = '';
   ticketToMove: TicketSummary | null = null;
-  ticketPendingDeletion: TicketSummary | null = null;
   members: TeamMember[] = [];
   searchQuery = '';
   filters: TicketFilters = {assigneeIds: new Set(), tagIds: new Set(), columnIds: new Set()};
   collapsedStatuses = new Set<number | null>();
   selectedIds = new Set<number>();
   isBulkBusy = false;
-  isBulkDeleteConfirmOpen = false;
   activeSearch = '';
 
   private groupData = new Map<number | null, GroupData>();
   private loadGeneration = 0;
   private searchTerms = new Subject<string>();
+  private deletingTicketIds = new Set<number>();
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -311,22 +310,14 @@ export class ListTabComponent implements OnInit, OnDestroy {
   }
 
   requestDelete(ticket: TicketSummary) {
-    this.ticketPendingDeletion = ticket;
-  }
-
-  handleCancelDelete() {
-    this.ticketPendingDeletion = null;
-  }
-
-  handleConfirmDelete() {
-    const ticket = this.ticketPendingDeletion;
-    this.ticketPendingDeletion = null;
-    if (!ticket) {
+    if (this.deletingTicketIds.has(ticket.id)) {
       return;
     }
 
+    this.deletingTicketIds.add(ticket.id);
     this.ticketService.deleteTicket(this.state.teamCode, this.state.boardId, ticket.id)
       .then((response) => {
+        this.deletingTicketIds.delete(ticket.id);
         if (!response.success) {
           this.alertMessage = errorPhrase(response.code);
           return;
@@ -336,7 +327,7 @@ export class ListTabComponent implements OnInit, OnDestroy {
         this.favoriteService.forgetItem('Ticket', ticket.id);
         this.selectedIds.delete(ticket.id);
         this.state.removeTicket(ticket.id);
-        this.trashService.notifyTrashed(this.state.teamCode, response.trashEntryIds);
+        this.trashService.notifyTrashed(this.state.teamCode, response.trashEntryIds, {title: ticket.title});
       });
   }
 
@@ -353,17 +344,8 @@ export class ListTabComponent implements OnInit, OnDestroy {
   }
 
   requestBulkDelete() {
-    this.isBulkDeleteConfirmOpen = true;
-  }
-
-  handleCancelBulkDelete() {
-    this.isBulkDeleteConfirmOpen = false;
-  }
-
-  handleConfirmBulkDelete() {
-    this.isBulkDeleteConfirmOpen = false;
     const ids = this.selectedTickets.map((ticket) => ticket.id);
-    if (!ids.length) {
+    if (!ids.length || this.isBulkBusy) {
       return;
     }
 
@@ -379,7 +361,7 @@ export class ListTabComponent implements OnInit, OnDestroy {
         ids.forEach((id) => this.favoriteService.forgetItem('Ticket', id));
         this.state.removeTickets(ids);
         this.clearSelection();
-        this.trashService.notifyTrashed(this.state.teamCode, response.trashEntryIds);
+        this.trashService.notifyTrashed(this.state.teamCode, response.trashEntryIds, {ticketCount: ids.length});
       });
   }
 

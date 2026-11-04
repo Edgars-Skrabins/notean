@@ -52,10 +52,10 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   private projectSubscription: Subscription | null = null;
   private levelBoundaries = new Map<ItemLevel, TitledItem>();
   private loadGeneration = 0;
-  private createdItem: FolderedItemSummary | null;
   private searchDisplayItems: TreeItem[] = [];
   private searchGeneration = 0;
   private searchTerms = new Subject<string>();
+  private deletingItemIds = new Set<number>();
   private searchSubscription: Subscription | null = null;
   private restoredSubscription: Subscription | null = null;
 
@@ -69,7 +69,6 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
     private trashService: TrashService
   ) {
     this.teamCode = this.teamService.getCurrentTeamCode();
-    this.createdItem = this.router.getCurrentNavigation()?.extras.state?.['createdItem'] ?? null;
   }
 
   handleOpenItem(item: TreeItem) {
@@ -278,6 +277,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
 
   handleDeleteFolder(event: { folderId: number; mode: FolderDeleteMode }) {
     const deletedItemIds = event.mode === 'cascade' ? itemIdsWithin(this.folders, this.items, event.folderId) : [];
+    const title = this.folders.find((folder) => folder.id === event.folderId)?.title ?? '';
 
     this.folderService.deleteFolder(this.teamCode, event.folderId, event.mode)
       .then((response) => {
@@ -288,7 +288,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
 
         this.alertMessage = '';
         deletedItemIds.forEach((itemId) => this.favoriteService.forgetItem(this.itemType, itemId));
-        this.trashService.notifyTrashed(this.teamCode, response.trashEntryIds);
+        this.trashService.notifyTrashed(this.teamCode, response.trashEntryIds, {title});
         const updated = event.mode === 'cascade'
           ? removeFolderCascade(this.folders, this.items, event.folderId)
           : promoteFolderContents(this.folders, this.items, event.folderId);
@@ -344,8 +344,15 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   }
 
   handleDeleteItem(event: { itemId: number }) {
+    const item = [...this.items, ...this.searchItems].find((candidate) => candidate.id === event.itemId);
+    if (!item || this.deletingItemIds.has(event.itemId)) {
+      return;
+    }
+
+    this.deletingItemIds.add(event.itemId);
     this.itemService.delete(this.teamCode, event.itemId)
       .then((response) => {
+        this.deletingItemIds.delete(event.itemId);
         if (!response.success) {
           this.alertMessage = errorPhrase(response.code);
           return;
@@ -353,7 +360,7 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
 
         this.alertMessage = '';
         this.favoriteService.forgetItem(this.itemType, event.itemId);
-        this.trashService.notifyTrashed(this.teamCode, response.trashEntryIds);
+        this.trashService.notifyTrashed(this.teamCode, response.trashEntryIds, {title: item.title});
         this.items = this.items.filter((item) => item.id !== event.itemId);
         this.setSearchItems(this.searchItems.filter((item) => item.id !== event.itemId));
       });
@@ -386,7 +393,6 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
       this.folders = foldersResponse.folders.map((folder) => this.toTreeFolder(folder));
       this.items = [];
       this.applyLevelPage('root', itemsResponse.items, itemsResponse.hasMore);
-      this.insertCreatedItem(projectId);
     });
   }
 
@@ -437,16 +443,6 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
 
   private setLevel(level: ItemLevel, state: ItemLevelState) {
     this.levels = new Map(this.levels).set(level, state);
-  }
-
-  private insertCreatedItem(projectId: number | null) {
-    const created = this.createdItem;
-    this.createdItem = null;
-    if (!created || (projectId !== null && created.projectId !== projectId) || this.items.some((item) => item.id === created.id)) {
-      return;
-    }
-
-    this.items = [...this.items, this.toTreeItem(created)];
   }
 
   private startSearch(term: string) {

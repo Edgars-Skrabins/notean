@@ -3,5 +3,7 @@
     *ngFor="let toast of toastService.toasts$ | async; trackBy: trackById"
     [toast]="toast"
     (closed)="toastService.dismiss(toast.id)"
+    (paused)="toastService.pause(toast.id)"
+    (resumed)="toastService.resume(toast.id)"
   ></app-toast>
 </div>

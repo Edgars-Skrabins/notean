@@ -4,6 +4,7 @@ import {NgFor, NgIf} from '@angular/common';
 import {CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
 import {TranslatePipe, TranslateService} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
+import {defaultLanguage} from '@config/translationConfig';
 import {PriorityService} from '@services/priority.service';
 import {ToastService} from '@services/toast.service';
 import {ToastType} from '@models/toast.model';
@@ -14,6 +15,7 @@ import {ConfirmDialogComponent} from '@components/confirm-dialog/confirm-dialog.
 import {PriorityColorPickerComponent} from '@components/priority-color-picker/priority-color-picker.component';
 import {TooltipDirective} from '@components/tooltip/tooltip.directive';
 import {errorPhrase} from '@utils/errorPhrase';
+import {pluralKey} from '@utils/plural';
 import {BoardPageStateService} from '@pages/dashboard/board-page/board-page-state.service';
 
 @Component({
@@ -65,10 +67,8 @@ export class PriorityListComponent {
     if (!count) {
       return this.translateService.instant(PHRASES.CONFIRM_DELETE_UNUSED_PRIORITY, {name: priority.name});
     }
-    if (count === 1) {
-      return this.translateService.instant(PHRASES.CONFIRM_DELETE_PRIORITY_ONE, {name: priority.name});
-    }
-    return this.translateService.instant(PHRASES.CONFIRM_DELETE_PRIORITY, {name: priority.name, count});
+    const language = this.translateService.getCurrentLang() ?? this.translateService.getFallbackLang() ?? defaultLanguage;
+    return this.translateService.instant(pluralKey(PHRASES.CONFIRM_DELETE_PRIORITY, count, language), {name: priority.name, count});
   }
 
   trackById(_index: number, priority: BoardPriority): number {

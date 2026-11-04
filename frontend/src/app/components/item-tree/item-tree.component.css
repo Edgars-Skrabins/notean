@@ -19,8 +19,7 @@
   border-radius: var(--radius-sm);
   padding-right: var(--space-2);
   touch-action: none;
-  transition: var(--transition-fast);
-  transition-property: background, border-color;
+  transition: background var(--transition-fast), border-color var(--transition-fast);
 }
 
 .itemTree__row:hover {
@@ -67,13 +66,13 @@
 }
 
 .itemTree__rowActions > * {
-  opacity: 0;
   transition: opacity var(--transition-fast);
 }
 
-.itemTree__row:hover .itemTree__rowActions > *,
-.itemTree__rowActions > .favoriteStar--favorited {
-  opacity: 1;
+@media (hover: hover) {
+  .itemTree__row:not(:hover, :focus-within) .itemTree__rowActions > :not(.favoriteStar--favorited) {
+    opacity: 0;
+  }
 }
 
 .itemTree__rootDropZone {
@@ -81,8 +80,7 @@
   border-radius: var(--radius-sm);
   border: 1px dashed transparent;
   overflow: hidden;
-  transition: var(--transition-fast);
-  transition-property: height, border-color, background;
+  transition: height var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
 }
 
 .itemTree__rootDropZone--active {

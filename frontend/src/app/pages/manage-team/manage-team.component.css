@@ -1,18 +1,9 @@
 .manageTeam {
-  width: 560px;
-  max-width: calc(100vw - 48px);
-  box-sizing: border-box;
-  color: var(--color-text-heading);
-  background: linear-gradient(160deg, var(--color-card-bg) 0%, var(--color-card-bg-alt) 100%);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
-  padding: var(--space-5);
+  max-width: 640px;
 }
 
 .manageTeam__title {
   margin: 0 0 var(--space-5);
-  font-size: var(--font-xl);
-  font-weight: 700;
 }
 
 .manageTeam__section {
@@ -23,6 +14,17 @@
   margin-bottom: 0;
 }
 
+.manageTeam__section + .manageTeam__section:not(.manageTeam__danger) {
+  border-top: 1px solid var(--color-input-border);
+  padding-top: var(--space-5);
+}
+
+.manageTeam__invite {
+  margin: 0 0 var(--space-2);
+  color: var(--color-text-muted);
+  font-size: var(--font-sm);
+}
+
 .manageTeam__features {
   display: flex;
   flex-direction: column;
@@ -30,7 +32,7 @@
 }
 
 .manageTeam__sectionTitle {
-  margin: 0 0 var(--space-4);
+  margin: 0 0 var(--space-3);
   font-size: var(--font-lg);
   font-weight: 600;
   color: var(--color-text-heading);
@@ -39,11 +41,9 @@
 .manageTeam__memberList {
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
-  background: color-mix(in srgb, var(--color-tint) 3%, transparent);
+  margin-top: var(--space-4);
   border: 1px solid var(--color-input-border);
   border-radius: var(--radius-md);
-  padding: var(--space-3);
 }
 
 .manageTeam__memberRow {
@@ -51,10 +51,11 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-4);
-  background: var(--color-input-bg);
-  border: 1px solid var(--color-input-border);
-  border-radius: var(--radius-sm);
-  padding: 16px 20px;
+  padding: var(--space-3) var(--space-4);
+}
+
+.manageTeam__memberRow + .manageTeam__memberRow {
+  border-top: 1px solid var(--color-input-border);
 }
 
 .manageTeam__memberIdentity {
@@ -80,21 +81,16 @@
   font-size: var(--font-xs);
 }
 
-.manageTeam__deleteButton {
-  border: 1px solid color-mix(in srgb, var(--color-error) 40%, transparent);
-  border-radius: var(--radius-sm);
-  padding: 14px 20px;
-  background: color-mix(in srgb, var(--color-error) 14%, transparent);
-  color: var(--color-error);
-  font-weight: 600;
-  font-size: var(--font-sm);
-  font-family: var(--font-ui);
-  cursor: pointer;
-  transition: background var(--transition-fast);
+.manageTeam__danger {
+  padding: var(--space-4);
+  border: 1px solid color-mix(in srgb, var(--color-error) 35%, transparent);
+  border-radius: var(--radius-md);
 }
 
-.manageTeam__deleteButton:hover {
-  background: color-mix(in srgb, var(--color-error) 22%, transparent);
+.manageTeam__dangerTitle {
+  margin: 0 0 var(--space-3);
+  color: var(--color-error);
+  font-size: var(--font-md);
 }
 
 @media (max-width: 480px) {
