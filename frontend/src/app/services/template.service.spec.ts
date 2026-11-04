@@ -1,6 +1,6 @@
 import {AxiosError, AxiosResponse} from "axios";
 import {axiosInstance} from "@config/axiosConfig";
-import {mapTemplateDetail, TemplateService} from "./template.service";
+import {builtInTemplate, mapTemplateDetail, TemplateService} from "./template.service";
 
 const raw = {
   id: 4,
@@ -52,7 +52,7 @@ describe('TemplateService', () => {
     const response = await service.resolve('abc', 'page', 'builtin:meeting-notes');
 
     expect(get).not.toHaveBeenCalled();
-    expect(response.success && response.content).toContain('Meeting notes');
+    expect(response.success && response.content).toBe(builtInTemplate('page', 'meeting-notes')!.content);
   });
 
   it('rejects an unknown built-in key and a built-in of another kind', async () => {

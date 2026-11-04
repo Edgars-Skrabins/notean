@@ -78,15 +78,21 @@
 .itemDetail__title {
   margin: 0;
   color: var(--color-text-heading);
-  font-size: var(--font-xl);
+  font-size: var(--font-3xl);
   font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 
 .itemDetail__titleInput {
   width: 100%;
   padding: 10px;
-  font-size: var(--font-xl);
+  font-size: var(--font-3xl);
   font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
   font-family: var(--font-heading);
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
