@@ -35,6 +35,34 @@ describe('RichTextEditorComponent', () => {
     fixture.destroy();
   });
 
+  describe('autofocus', () => {
+    function settle(): Promise<void> {
+      return new Promise((resolve) => setTimeout(() => requestAnimationFrame(() => resolve()), 0));
+    }
+
+    function proseMirrorHasFocus(): boolean {
+      return !!document.activeElement?.closest('.ProseMirror') && fixture.nativeElement.contains(document.activeElement);
+    }
+
+    it('focuses the editor when autofocus is on', async () => {
+      fixture.destroy();
+      fixture = TestBed.createComponent(RichTextEditorComponent);
+      fixture.componentInstance.autofocus = true;
+      fixture.detectChanges();
+      await settle();
+
+      expect(fixture.componentInstance.editor!.isFocused).toBeTrue();
+      expect(proseMirrorHasFocus()).toBeTrue();
+    });
+
+    it('leaves the editor unfocused by default', async () => {
+      await settle();
+
+      expect(fixture.componentInstance.editor!.isFocused).toBeFalse();
+      expect(proseMirrorHasFocus()).toBeFalse();
+    });
+  });
+
   it('leaves Escape unhandled so it reaches the popup', () => {
     expect(keydown('Escape', 27).defaultPrevented).toBeFalse();
   });
@@ -78,6 +106,52 @@ describe('RichTextEditorComponent', () => {
     expect(names).not.toContain('link');
     expect(names).not.toContain('listKeymap');
     expect(names).not.toContain('trailingNode');
+  });
+
+  describe('accessible name and state', () => {
+    function prose(): HTMLElement {
+      return fixture.nativeElement.querySelector('.ProseMirror');
+    }
+
+    it('names an editable editor as a multi-line textbox', () => {
+      fixture.componentRef.setInput('ariaLabel', 'Write a comment');
+      fixture.detectChanges();
+
+      expect(prose().getAttribute('role')).toBe('textbox');
+      expect(prose().getAttribute('aria-multiline')).toBe('true');
+      expect(prose().getAttribute('aria-label')).toBe('Write a comment');
+    });
+
+    it('follows a changed name', () => {
+      fixture.componentRef.setInput('ariaLabel', 'Write a comment');
+      fixture.detectChanges();
+      fixture.componentRef.setInput('ariaLabel', 'Edit comment');
+      fixture.detectChanges();
+
+      expect(prose().getAttribute('aria-label')).toBe('Edit comment');
+    });
+
+    it('gives a read-only editor no textbox role', () => {
+      fixture.componentRef.setInput('ariaLabel', 'Page content');
+      fixture.componentRef.setInput('editable', false);
+      fixture.detectChanges();
+
+      expect(prose().getAttribute('role')).toBe('presentation');
+      expect(prose().hasAttribute('aria-multiline')).toBeFalse();
+      expect(prose().hasAttribute('aria-label')).toBeFalse();
+    });
+
+    it('exposes the bold state on its toolbar button without a native title', () => {
+      const bold: HTMLButtonElement = fixture.nativeElement.querySelector('.richTextEditor__toolbarButton');
+      expect(bold.getAttribute('aria-pressed')).toBe('false');
+
+      fixture.componentInstance.editor!.commands.selectAll();
+      fixture.componentInstance.toggleBold();
+      fixture.detectChanges();
+
+      expect(bold.getAttribute('aria-pressed')).toBe('true');
+      expect(bold.hasAttribute('title')).toBeFalse();
+    });
   });
 
   describe('attachment images', () => {

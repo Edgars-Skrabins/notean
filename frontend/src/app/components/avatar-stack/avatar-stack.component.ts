@@ -2,13 +2,15 @@ import {Component, Input, ChangeDetectionStrategy} from '@angular/core';
 import {NgFor, NgIf} from '@angular/common';
 import {BoardUser} from '@models/board.model';
 import {AvatarComponent} from '@components/avatar/avatar.component';
+import {TooltipDirective} from '@components/tooltip/tooltip.directive';
 
 @Component({
   selector: 'app-avatar-stack',
   imports: [
     NgFor,
     NgIf,
-    AvatarComponent
+    AvatarComponent,
+    TooltipDirective
   ],
   templateUrl: './avatar-stack.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
