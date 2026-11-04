@@ -1,9 +1,14 @@
-<div class="ticketDetailOverlay" *ngIf="ticket">
+<div class="ticketDetailOverlay" *ngIf="ticket" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
   <div class="ticketDetailOverlay__backdrop" (click)="handleGoBack()"></div>
 
   <div
     class="ticketDetail"
     [class.ticketDetail--dropping]="isDraggingFiles"
+    role="dialog"
+    aria-modal="true"
+    tabindex="-1"
+    [attr.aria-label]="ticket.title || (PHRASES.TICKET_TITLE_PLACEHOLDER | translate)"
+    cdkFocusInitial
     (dragenter)="handleDragEnter($event)"
     (dragover)="handleDragOver($event)"
     (dragleave)="handleDragLeave($event)"
