@@ -117,6 +117,10 @@ describe('theme contrast', () => {
         expectOn('--color-nav-active-text', over(named('nav-active-bg', stops('--color-nav-active-bg')), sidebar()), TEXT_FLOOR);
       });
 
+      it(`${label} control border reaches ${NON_TEXT_FLOOR}:1 on every surface a control sits on`, () => {
+        expectOn('--color-control-border', [card(), cardAlt(), input(), ...page(), ...dashboard(), ...header()], NON_TEXT_FLOOR);
+      });
+
       it(`${label} focus border reaches ${NON_TEXT_FLOOR}:1 on cards and inputs`, () => {
         expectOn('--color-input-border-focus', [card(), input()], NON_TEXT_FLOOR);
       });

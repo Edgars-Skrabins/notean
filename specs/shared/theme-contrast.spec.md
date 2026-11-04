@@ -252,9 +252,9 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] B1. Add `describe('theme contrast')` to `frontend/src/app/config/themes.spec.ts` with the nine pair checks of Part 2.2, but without check 6 yet (the token doesn't exist). Run `npm test` and confirm it fails exactly on the pairs Part 1 lists (faint in 13 combinations, primary-light in light modes, Purple haze gradient, Terminal light nav item). This proves the test measures what the critique measured. Result (2026-11-04): 23 failing checks, all on pairs the table changes; text tokens fail in 12 combinations, because Graphite light and Nature dark faint text already reach 4.5:1 and their table values only add the 4.6 margin.
 
 ### C. Token values
-- [ ] C1. Add `'--color-control-border'` to `THEME_TOKENS` in `config/themes.ts` after `'--color-input-border-focus'`.
-- [ ] C2. Update all nine files in `frontend/src/themes/` with the values from the Part 2.2 table, adding `--color-control-border` on the line after `--color-input-border-focus` in both mode blocks.
-- [ ] C3. Add check 6 (control border) to the contrast tests. Run `npm test`; every contrast and token test passes. If one value fails in the browser, adjust it as Part 2.2 describes and update the table in this spec.
+- [x] C1. Add `'--color-control-border'` to `THEME_TOKENS` in `config/themes.ts` after `'--color-input-border-focus'`.
+- [x] C2. Update all nine files in `frontend/src/themes/` with the values from the Part 2.2 table, adding `--color-control-border` on the line after `--color-input-border-focus` in both mode blocks.
+- [x] C3. Add check 6 (control border) to the contrast tests. Run `npm test`; every contrast and token test passes. If one value fails in the browser, adjust it as Part 2.2 describes and update the table in this spec.
 
 ### D. Using the tokens
 - [ ] D1. Switch the control-border rules listed in Part 2.2 (styles.css `.authField input` and `.textInput`, the component rules, the emoji picker variable, the checkbox's unchecked border per Parallel work), then grep for remaining text-field borders as described and switch those that qualify.

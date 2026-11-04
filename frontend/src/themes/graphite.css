@@ -33,6 +33,7 @@
   --color-input-bg-focus: #1d1f23;
   --color-input-border: #26282d;
   --color-input-border-focus: #8c97f7;
+  --color-control-border: #686a70;
 
   --color-primary: #8c97f7;
   --color-primary-light: #aeb6fa;
@@ -44,7 +45,7 @@
 
   --color-text-heading: #e8e9ec;
   --color-text-muted: #8b8f98;
-  --color-text-faint: #7d818b;
+  --color-text-faint: #848892;
 }
 
 [data-theme='graphite'][data-mode='light'] {
@@ -59,9 +60,10 @@
   --color-input-bg-focus: #ffffff;
   --color-input-border: #e3e4e8;
   --color-input-border-focus: #4f5bd5;
+  --color-control-border: #8b8c90;
 
   --color-primary: #4f5bd5;
-  --color-primary-light: #6e78e0;
+  --color-primary-light: #5c64ca;
   --color-primary-gradient: #4f5bd5;
   --color-on-primary: #ffffff;
 
@@ -70,5 +72,5 @@
 
   --color-text-heading: #17181b;
   --color-text-muted: #5f636c;
-  --color-text-faint: #6b6f78;
+  --color-text-faint: #6a6e77;
 }
