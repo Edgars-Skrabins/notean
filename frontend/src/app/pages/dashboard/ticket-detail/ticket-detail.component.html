@@ -50,6 +50,7 @@
           [value]="descriptionDraft"
           [maxLength]="DESCRIPTION_MAX_LENGTH"
           [placeholder]="PHRASES.TICKET_DESCRIPTION_PLACEHOLDER | translate"
+          [ariaLabel]="PHRASES.TICKET_DESCRIPTION | translate"
           [mentionContext]="mentionContext"
           (valueChange)="descriptionDraft = $event"
           (escape)="cancelDescriptionEdit($event)"

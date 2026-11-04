@@ -19,6 +19,7 @@
     inputId="projectDescription"
     [value]="params.description"
     [maxLength]="DESCRIPTION_MAX_LENGTH"
+    [ariaLabel]="PHRASES.PROJECT_DESCRIPTION | translate"
     [mentionContext]="mentionContext"
     (valueChange)="handleDescriptionChange($event)"
   ></app-mention-text-editor>
