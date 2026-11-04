@@ -110,6 +110,8 @@ Removed (replaced by the forms above): `CONFIRM_DELETE_PRIORITY_ONE`, `CONFIRM_D
 5. **A `plural` pipe that returns a key, chained before `translate`** (2026-11-04). Reason: keeps `TranslatePipe` in charge of loading, parameters and language changes; the pipe is a few lines and testable on its own. Impure so a language switch with an unchanged count still re-picks the category (Polish of the existing pattern: `TranslatePipe` is impure for the same reason). Rejected: component methods per screen (repeats the language lookup in every component).
 6. **`SELECTED_COUNT` gets forms though English doesn't change** (2026-11-04). Reason: the participle agrees with the number in Latvian, Lithuanian, Russian and French; the test treats every count string the same.
 7. **The translation test derives plural keys from `en.json`** (2026-11-04). Reason: no second list to keep in sync; any future count string written as forms is checked in all languages automatically.
+8. **The removed `_ONE` key check lands with C1, not B3** (2026-11-04). Reason: B3 requires the test to pass while no key is plural yet, which the removed-key check can't do before the keys are deleted; it was added to `translationConfig.spec.ts` together with the deletions.
+9. **Natural count wording in every language** (2026-11-04). Reason: with real plural forms the "Label: {{count}}" workaround is no longer needed where a natural form reads better (German, Spanish, French "Réponses : N" → "N réponses"; Latvian, Lithuanian and Russian counts), matching the English pattern "{{count}} replies". Kept "Label: {{count}}" only for Lithuanian and Russian `SELECTED_COUNT` ("Pasirinkta", "Выбрано"), which is idiomatic there. Latvian `zero` uses the same nominative plural as `other` (10 dalībnieki); Lithuanian `many` and Russian `other` (fractions) use the genitive singular.
 
 ### Decisions to double-check
 
@@ -131,10 +133,10 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] B3. Create `frontend/src/app/config/translationConfig.spec.ts` with the coverage test from Part 2.2. Run `npm test`: it passes trivially while no key is plural yet; temporarily turn `MEMBER_COUNT` in `en.json` into `{one, other}` without changing `lv.json` and confirm the test fails, then revert.
 
 ### C. Plural strings and call sites
-- [ ] C1. Convert the nine keys in Part 2.2 to plural objects in all 11 translation files, in place, with grammatical forms for every category of each language; delete the four `_ONE` keys from the translation files and `config/phrases.ts`.
-- [ ] C2. Update the template call sites (projects, kanban-ticket, diagram-comment-layer, ticket-selection-bar, list-tab, trash) to use `| plural:` and import `PluralPipe`.
-- [ ] C3. Update `priority-list.component.ts` and `tag-list.component.ts` to `pluralKey` and drop their `count === 1` branches; update `priority-list.component.spec.ts` (and any tag-list spec) expectations.
-- [ ] C4. Grep for missed count call sites as described in Part 2.2; fix existing specs that read changed text. Run `npm test`; the translation coverage test passes for all 11 languages.
+- [x] C1. Convert the nine keys in Part 2.2 to plural objects in all 11 translation files, in place, with grammatical forms for every category of each language; delete the four `_ONE` keys from the translation files and `config/phrases.ts`.
+- [x] C2. Update the template call sites (projects, kanban-ticket, diagram-comment-layer, ticket-selection-bar, list-tab, trash) to use `| plural:` and import `PluralPipe`.
+- [x] C3. Update `priority-list.component.ts` and `tag-list.component.ts` to `pluralKey` and drop their `count === 1` branches; update `priority-list.component.spec.ts` (and any tag-list spec) expectations.
+- [x] C4. Grep for missed count call sites as described in Part 2.2; fix existing specs that read changed text. Run `npm test`; the translation coverage test passes for all 11 languages.
 
 ### D. Docs
 - [ ] D1. Update `CLAUDE.md` (Structure tree, Path aliases, i18n) as described in Part 2.2.

@@ -22,7 +22,7 @@ describe('PriorityListComponent', () => {
     state = createBoardState();
     priorityService = jasmine.createSpyObj<PriorityService>('PriorityService', ['create', 'update', 'delete']);
     toastService = jasmine.createSpyObj<ToastService>('ToastService', ['show']);
-    translateService = jasmine.createSpyObj<TranslateService>('TranslateService', ['instant']);
+    translateService = jasmine.createSpyObj<TranslateService>('TranslateService', ['instant', 'getCurrentLang', 'getFallbackLang']);
     translateService.instant.and.callFake((key: string | string[], params?: object) => `${key} ${JSON.stringify(params ?? {})}`);
     component = new PriorityListComponent(
       {nativeElement: document.createElement('div')} as ElementRef<HTMLElement>,
@@ -92,7 +92,7 @@ describe('PriorityListComponent', () => {
 
     component.requestDelete(priority(21));
 
-    expect(component.deleteMessage).toBe(`${PHRASES.CONFIRM_DELETE_PRIORITY} {"name":"High","count":2}`);
+    expect(component.deleteMessage).toBe(`${PHRASES.CONFIRM_DELETE_PRIORITY}.other {"name":"High","count":2}`);
   });
 
   it('uses the singular message when exactly one ticket uses the priority', () => {
@@ -100,7 +100,7 @@ describe('PriorityListComponent', () => {
 
     component.requestDelete(priority(21));
 
-    expect(component.deleteMessage).toBe(`${PHRASES.CONFIRM_DELETE_PRIORITY_ONE} {"name":"High"}`);
+    expect(component.deleteMessage).toBe(`${PHRASES.CONFIRM_DELETE_PRIORITY}.one {"name":"High","count":1}`);
   });
 
   it('asks a plain confirmation when no ticket uses the priority', () => {
