@@ -19,8 +19,8 @@ import {TeamCodeDisplayComponent} from "@components/team-code-display/team-code-
 import {AvatarComponent} from "@components/avatar/avatar.component";
 import {SwitchComponent} from "@components/switch/switch.component";
 import {MenuButtonComponent} from "@components/menu-button/menu-button.component";
+import {ButtonComponent} from "@components/button/button.component";
 import {errorPhrase} from "@utils/errorPhrase";
-import {EscapeService} from "@services/escape.service";
 import {AttachmentService} from "@services/attachment.service";
 import {StorageUsage} from "@models/attachment.model";
 import {formatBytes} from "@utils/formatBytes";
@@ -59,7 +59,8 @@ const MEMBER_ACTION_TOASTS: Record<MemberAction, string> = {
     TeamCodeDisplayComponent,
     AvatarComponent,
     SwitchComponent,
-    MenuButtonComponent
+    MenuButtonComponent,
+    ButtonComponent
   ],
   templateUrl: './manage-team.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
@@ -89,7 +90,6 @@ export class ManageTeamComponent implements OnInit, OnDestroy {
 
   protected teamCode: string;
 
-  private unregisterEscape = () => {};
   private membersChangedSubscription: Subscription | null = null;
 
   constructor(
@@ -97,7 +97,6 @@ export class ManageTeamComponent implements OnInit, OnDestroy {
     private teamService: TeamService,
     private translateService: TranslateService,
     private toastService: ToastService,
-    private escapeService: EscapeService,
     private teamChannelService: TeamChannelService,
     private attachmentService: AttachmentService
   ) {
@@ -133,17 +132,13 @@ export class ManageTeamComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.unregisterEscape = this.escapeService.push(() => this.handleGoBack());
-    this.teamChannelService.connect(this.teamCode);
     this.membersChangedSubscription = this.teamChannelService.membersChanged$.subscribe(() => this.loadMembers());
     this.loadMembers();
     this.loadStorage();
   }
 
   ngOnDestroy() {
-    this.unregisterEscape();
     this.membersChangedSubscription?.unsubscribe();
-    this.teamChannelService.disconnect();
   }
 
   actionsFor(member: TeamMember): MemberAction[] {
@@ -243,13 +238,14 @@ export class ManageTeamComponent implements OnInit, OnDestroy {
         }
 
         this.teamService.fetchMyTeam().then((nextTeam) => {
-          this.navigationService.navigate(nextTeam ? AppRoutes.DASHBOARD : AppRoutes.TEAM_SELECTION);
+          if (nextTeam) {
+            this.navigationService.reloadAt(`/${AppRoutes.DASHBOARD}/${AppRoutes.DASHBOARD_HOME}`);
+            return;
+          }
+
+          this.navigationService.navigate(AppRoutes.TEAM_SELECTION);
         });
       });
-  }
-
-  handleGoBack() {
-    this.navigationService.navigate(AppRoutes.DASHBOARD);
   }
 
   private loadMembers() {

@@ -1,6 +1,6 @@
 import {Component, ChangeDetectionStrategy, OnDestroy} from '@angular/core';
 import {ActivatedRoute} from '@angular/router';
-import {TranslateService} from "@ngx-translate/core";
+import {TranslatePipe, TranslateService} from "@ngx-translate/core";
 import {NgIf} from '@angular/common';
 import {PageService} from "@services/page.service";
 import {PageEditingService} from "@services/page-editing.service";
@@ -34,6 +34,7 @@ import {FolderedItemDetailComponent} from "../foldered-item-detail.base";
   selector: 'app-page-detail',
   imports: [
     NgIf,
+    TranslatePipe,
     RichTextEditorComponent,
     ItemDetailLayoutComponent,
     CommentListComponent,

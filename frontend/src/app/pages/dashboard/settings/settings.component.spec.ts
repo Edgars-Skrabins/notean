@@ -1,13 +1,11 @@
 import {fakeAsync, tick} from "@angular/core/testing";
 import {BehaviorSubject} from "rxjs";
 import {SettingsComponent} from "./settings.component";
-import {NavigationService} from "@services/navigation.service";
 import {SettingsService} from "@services/settings.service";
 import {ToastService} from "@services/toast.service";
 import {ToastType} from "@models/toast.model";
 import {SettingsResponse, UserSettings} from "@models/settings.model";
 import {PHRASES} from "@config/phrases";
-import {escapeServiceStub} from "../../../testing/escapeServiceStub";
 import {ActiveTheme, ThemeService} from "@services/theme.service";
 
 describe('SettingsComponent', () => {
@@ -25,7 +23,7 @@ describe('SettingsComponent', () => {
     settingsService.getSettings.and.callFake(() => settings$.value);
     toastService = jasmine.createSpyObj('ToastService', ['show']);
     themeService = jasmine.createSpyObj<ThemeService>('ThemeService', ['apply', 'preview'], {theme$});
-    component = new SettingsComponent({} as NavigationService, settingsService, toastService, escapeServiceStub().service, themeService);
+    component = new SettingsComponent(settingsService, toastService, themeService);
   });
 
   afterEach(() => {

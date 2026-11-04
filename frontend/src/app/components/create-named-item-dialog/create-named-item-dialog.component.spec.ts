@@ -28,4 +28,20 @@ describe('CreateNamedItemDialogComponent', () => {
     const input: HTMLInputElement = fixture.nativeElement.querySelector('.createNamedItemDialog__input');
     expect(input.maxLength).toBe(TITLE_MAX_LENGTH);
   });
+
+  it('is a dialog named by its title that focuses the name input', async () => {
+    const fixture = TestBed.createComponent(CreateNamedItemDialogComponent);
+    fixture.componentRef.setInput('dialogTitle', 'New board');
+    fixture.componentRef.setInput('defaultValue', 'Untitled');
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const panel: HTMLElement = fixture.nativeElement.querySelector('.createNamedItemDialog');
+    const title: HTMLElement = fixture.nativeElement.querySelector('.createNamedItemDialog__title');
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('.createNamedItemDialog__input');
+    expect(panel.getAttribute('role')).toBe('dialog');
+    expect(panel.getAttribute('aria-labelledby')).toBe(title.id);
+    expect(input.getAttribute('aria-labelledby')).toBe(title.id);
+    expect(document.activeElement).toBe(input);
+  });
 });

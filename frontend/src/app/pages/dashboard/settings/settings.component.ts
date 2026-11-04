@@ -1,9 +1,8 @@
-import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {Component, OnDestroy, ChangeDetectionStrategy} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {Subscription} from "rxjs";
 import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
-import {NavigationService} from "@services/navigation.service";
 import {SettingsService} from "@services/settings.service";
 import {ToastService} from "@services/toast.service";
 import {ToastType} from "@models/toast.model";
@@ -13,11 +12,10 @@ import {SwitchComponent} from "@components/switch/switch.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {ThemeModeSwitchComponent} from "@components/theme-mode-switch/theme-mode-switch.component";
 import {ThemePickerComponent} from "@components/theme-picker/theme-picker.component";
+import {LanguageSwitcherComponent} from "@components/language-switcher/language-switcher.component";
 import {ThemeService} from "@services/theme.service";
 import {ThemeKey, ThemeMode} from "@config/themes";
 import {ResolvedThemeMode} from "@utils/themeDom";
-import {AppRoutes} from "../../../app/app-routes.enum";
-import {EscapeService} from "@services/escape.service";
 
 @Component({
   selector: 'app-settings',
@@ -27,13 +25,14 @@ import {EscapeService} from "@services/escape.service";
     SwitchComponent,
     ConfirmDialogComponent,
     ThemeModeSwitchComponent,
-    ThemePickerComponent
+    ThemePickerComponent,
+    LanguageSwitcherComponent
   ],
   templateUrl: './settings.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './settings.component.css'
 })
-export class SettingsComponent implements HasUnsavedChanges, OnInit, OnDestroy {
+export class SettingsComponent implements HasUnsavedChanges, OnDestroy {
   protected readonly PHRASES = PHRASES;
 
   savedSettings: UserSettings;
@@ -48,13 +47,9 @@ export class SettingsComponent implements HasUnsavedChanges, OnInit, OnDestroy {
   private settingsSubscription: Subscription;
   private themeSubscription: Subscription;
 
-  private unregisterEscape = () => {};
-
   constructor(
-    private navigationService: NavigationService,
     private settingsService: SettingsService,
     private toastService: ToastService,
-    private escapeService: EscapeService,
     private themeService: ThemeService
   ) {
     this.savedSettings = this.settingsService.getSettings();
@@ -75,12 +70,7 @@ export class SettingsComponent implements HasUnsavedChanges, OnInit, OnDestroy {
       || this.settings.themeMode !== this.savedSettings.themeMode;
   }
 
-  ngOnInit() {
-    this.unregisterEscape = this.escapeService.push(() => this.handleGoBack());
-  }
-
   ngOnDestroy() {
-    this.unregisterEscape();
     this.settingsSubscription.unsubscribe();
     this.themeSubscription.unsubscribe();
     this.themeService.apply(this.savedSettings.theme, this.savedSettings.themeMode);
@@ -143,10 +133,6 @@ export class SettingsComponent implements HasUnsavedChanges, OnInit, OnDestroy {
 
   handleCancelLeave() {
     this.closeLeaveConfirm(false);
-  }
-
-  handleGoBack() {
-    this.navigationService.navigate(AppRoutes.DASHBOARD);
   }
 
   private saveToggles() {

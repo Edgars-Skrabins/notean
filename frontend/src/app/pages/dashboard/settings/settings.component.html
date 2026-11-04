@@ -1,10 +1,5 @@
-<button type="button" class="pageBackButton" (click)="handleGoBack()">
-  <span class="pageBackButton__arrow" aria-hidden="true">&larr;</span>
-  {{ PHRASES.BACK_TO_DASHBOARD | translate }}
-</button>
-
-<div class="settings">
-  <h2 class="settings__title">{{ PHRASES.SETTINGS | translate }}</h2>
+<div class="dashboardStub settings">
+  <h2 class="dashboardStub__title settings__title">{{ PHRASES.SETTINGS | translate }}</h2>
 
   <section class="settings__appearance">
     <h3 class="settings__sectionTitle">{{ PHRASES.APPEARANCE | translate }}</h3>
@@ -22,6 +17,11 @@
         [resolvedMode]="resolvedMode"
         (themeChange)="handleThemeChange($event)"
       ></app-theme-picker>
+    </div>
+    <div class="settings__field">
+      <span class="settings__label">{{ PHRASES.LANGUAGE | translate }}</span>
+      <app-language-switcher></app-language-switcher>
+      <span class="settings__hint">{{ PHRASES.LANGUAGE_DEVICE_HINT | translate }}</span>
     </div>
   </section>
 
