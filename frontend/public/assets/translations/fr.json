@@ -421,6 +421,7 @@
   "NEW_TEMPLATE": "Nouveau modèle",
   "BLANK": "Vide",
   "FROM_TEMPLATE": "À partir d’un modèle",
+  "CREATION_OPTIONS": "Options de création",
   "FROM_EXISTING_BOARD": "À partir d’un tableau existant",
   "USE_TEMPLATE": "Utiliser le modèle",
   "DUPLICATE": "Dupliquer",

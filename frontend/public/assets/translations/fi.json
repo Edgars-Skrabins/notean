@@ -421,6 +421,7 @@
   "NEW_TEMPLATE": "Uusi malli",
   "BLANK": "Tyhjä",
   "FROM_TEMPLATE": "Mallista",
+  "CREATION_OPTIONS": "Luontivaihtoehdot",
   "FROM_EXISTING_BOARD": "Olemassa olevasta taulusta",
   "USE_TEMPLATE": "Käytä mallia",
   "DUPLICATE": "Monista",
