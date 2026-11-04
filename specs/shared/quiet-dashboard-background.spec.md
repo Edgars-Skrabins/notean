@@ -1,7 +1,7 @@
 # Quiet dashboard background — Spec
 
 **Type:** feature
-**Status:** ready for implementation
+**Status:** in progress
 **Last updated:** 2026-11-04
 
 # Part 1 — Business logic and usage
@@ -75,14 +75,14 @@ Read Part 1 and Part 2 before starting. Work through the tasks in order and tick
 Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 assertions, 0 failures (master f15abdf, 2026-11-04).
 
 ### A. Dashboard
-- [ ] A1. `frontend/src/app/pages/dashboard/dashboard.component.html` / `.css`: delete the backdrop block, the wave rules, `dashboardWaveDrift` and the wave-only reduced-motion block (Part 2.2). Check nothing else references `dashboardShell__backdrop` or `dashboardShell__wave` (`grep -rn "dashboardShell__wave\|dashboardShell__backdrop" frontend/src`).
+- [x] A1. `frontend/src/app/pages/dashboard/dashboard.component.html` / `.css`: delete the backdrop block, the wave rules, `dashboardWaveDrift` and the wave-only reduced-motion block (Part 2.2). Check nothing else references `dashboardShell__backdrop` or `dashboardShell__wave` (`grep -rn "dashboardShell__wave\|dashboardShell__backdrop" frontend/src`).
 
 ### B. App backdrop and auth card
-- [ ] B1. `frontend/src/app/app/app.component.*`: render `.pageBackdrop` only when `!isDashboardRoute` (import `NgIf`); remove the wave drift animations, `pageWaveDrift` and their reduced-motion block.
-- [ ] B2. Add `frontend/src/app/app/app.component.spec.ts`: the backdrop renders when `isDashboardRoute` is false and is absent when true.
-- [ ] B3. `frontend/src/app/components/auth-card/auth-card.component.css`: remove the wave drift animations and `waveDriftSlow`; change the entrance to 200ms / 8px / `cubic-bezier(0.25, 1, 0.5, 1)`; reduce the reduced-motion block to `.authCard { animation: none; }`.
+- [x] B1. `frontend/src/app/app/app.component.*`: render `.pageBackdrop` only when `!isDashboardRoute` (import `NgIf`); remove the wave drift animations, `pageWaveDrift` and their reduced-motion block.
+- [x] B2. Add `frontend/src/app/app/app.component.spec.ts`: the backdrop renders when `isDashboardRoute` is false and is absent when true.
+- [x] B3. `frontend/src/app/components/auth-card/auth-card.component.css`: remove the wave drift animations and `waveDriftSlow`; change the entrance to 200ms / 8px / `cubic-bezier(0.25, 1, 0.5, 1)`; reduce the reduced-motion block to `.authCard { animation: none; }`.
 
 ### Z. Wrap-up
-- [ ] Z1. Update the root `CLAUDE.md` Themes section only if it describes the waves; otherwise add one sentence there: the `--page-waves-display` / wave tokens are used only by the app backdrop (off the dashboard) and the auth card, the dashboard shell has no decorative background, and no wave animates.
-- [ ] Z2. Full test runs, build and lint, using the commands in `CLAUDE.md` (`npm test`, `npm run build` in `frontend/`).
-- [ ] Z3. Manual check in the running app with Purple haze dark and light: Home, a board's List and Overview tabs and a chat channel show no waves at the bottom, and content reads the same at the bottom as at the top; Paper light and Graphite dark look unchanged; login, register and team selection still show static waves behind the page and in the card, with nothing drifting; the auth card appears quickly with a small rise, and not at all animated with the OS reduced-motion setting on; in the browser inspector no `.pageBackdrop` element exists on `/dashboard/...` routes.
+- [x] Z1. Update the root `CLAUDE.md` Themes section only if it describes the waves; otherwise add one sentence there: the `--page-waves-display` / wave tokens are used only by the app backdrop (off the dashboard) and the auth card, the dashboard shell has no decorative background, and no wave animates.
+- [x] Z2. Full test runs, build and lint, using the commands in `CLAUDE.md` (`npm test`, `npm run build` in `frontend/`).
+- [x] Z3. Manual check in the running app with Purple haze dark and light: Home, a board's List and Overview tabs and a chat channel show no waves at the bottom, and content reads the same at the bottom as at the top; Paper light and Graphite dark look unchanged; login, register and team selection still show static waves behind the page and in the card, with nothing drifting; the auth card appears quickly with a small rise, and not at all animated with the OS reduced-motion setting on; in the browser inspector no `.pageBackdrop` element exists on `/dashboard/...` routes.
