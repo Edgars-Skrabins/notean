@@ -1,7 +1,7 @@
 # Manage team structure — Spec
 
 **Type:** feature
-**Status:** ready for implementation
+**Status:** in progress
 **Last updated:** 2026-11-04
 
 # Part 1 — Business logic and usage
@@ -93,8 +93,8 @@ Read Part 1 and Part 2 before starting. Work through the tasks in order and tick
 Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 assertions, 0 failures (master f15abdf, 2026-11-04).
 
 ### A. Team code display
-- [ ] A1. In `frontend/src/app/components/team-code-display/`, add the `compact` input and `.teamCodeDisplay--compact` styles, and replace the copy button's `[title]` with `[appTooltip]` (import `TooltipDirective` from `@components/tooltip/tooltip.directive`).
-- [ ] A2. Add `team-code-display.component.spec.ts`: compact class only with `compact = true`; the copy button has an `aria-label` and no `title`; clicking it copies the code (stub `navigator.clipboard.writeText` with a spy) and switches the label to "Code copied".
+- [x] A1. In `frontend/src/app/components/team-code-display/`, add the `compact` input and `.teamCodeDisplay--compact` styles, and replace the copy button's `[title]` with `[appTooltip]` (import `TooltipDirective` from `@components/tooltip/tooltip.directive`).
+- [x] A2. Add `team-code-display.component.spec.ts`: compact class only with `compact = true`; the copy button has an `aria-label` and no `title`; clicking it copies the code (stub `navigator.clipboard.writeText` with a spy) and switches the label to "Code copied".
 
 ### B. Page structure
 - [ ] B1. Translations: add `GENERAL` and `STORAGE`, change `STORAGE_USAGE` to drop its prefix, and remove `RENAME_TEAM` if unused, in `frontend/src/app/config/phrases.ts` and all 11 translation files, next to the related keys.
