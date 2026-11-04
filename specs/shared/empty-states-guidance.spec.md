@@ -161,7 +161,7 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] D6. Remove `NO_PAGES_YET` and `NO_DIAGRAMS_YET` from `phrases.ts` and every translation file. Remove `NO_SEARCH_RESULTS` only if a grep shows it unused (see 2.2). *(Kept: global search still uses it on 2026-11-04.)*
 
 ### E. Docs
-- [ ] E1. Update `CLAUDE.md`: list `EmptyStateComponent` (`app-empty-state`) as the shared empty state for lists and searches, `CreateBoardDialogComponent` as the create-board dialog shared by the sidebar and Home, and Home's get-started block (its show rule and `homeGetStartedDismissed:<team>` key) in the Home bullet.
+- [x] E1. Update `CLAUDE.md`: list `EmptyStateComponent` (`app-empty-state`) as the shared empty state for lists and searches, `CreateBoardDialogComponent` as the create-board dialog shared by the sidebar and Home, and Home's get-started block (its show rule and `homeGetStartedDismissed:<team>` key) in the Home bullet.
 
 ### Z. Wrap-up
 - [ ] Z1. Full test runs, build and lint, using the commands in `CLAUDE.md` (`npm test` and `npm run build` in `frontend/`; the backend suite is unaffected but run `bin/rails test` once).
