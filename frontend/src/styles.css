@@ -347,6 +347,11 @@ textarea {
   padding: var(--space-2);
 }
 
+[role='dialog'][tabindex='-1']:focus,
+[role='alertdialog'][tabindex='-1']:focus {
+  outline: none;
+}
+
 .textInput {
   box-sizing: border-box;
   background: var(--color-input-bg);

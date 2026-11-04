@@ -10,7 +10,7 @@ import {ConfirmDialogComponent} from '@components/confirm-dialog/confirm-dialog.
 import {FavoriteStarComponent} from '@components/favorite-star/favorite-star.component';
 import {LoadMoreComponent} from '@components/load-more/load-more.component';
 import {ItemTreeRowComponent} from '@components/item-tree-row/item-tree-row.component';
-import {MenuButtonComponent} from '@components/menu-button/menu-button.component';
+import {SplitButtonComponent} from '@components/split-button/split-button.component';
 import {MenuButtonOption} from '@models/menu-button.model';
 import {FolderDeleteMode} from "@models/folder.model";
 import {compareByTitle} from '@utils/titleOrder';
@@ -69,7 +69,7 @@ type DropTarget =
     FavoriteStarComponent,
     LoadMoreComponent,
     ItemTreeRowComponent,
-    MenuButtonComponent,
+    SplitButtonComponent,
     CdkDrag
   ],
   templateUrl: './item-tree.component.html',

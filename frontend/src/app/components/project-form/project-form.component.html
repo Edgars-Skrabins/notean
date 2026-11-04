@@ -9,6 +9,7 @@
     [maxlength]="TITLE_MAX_LENGTH"
     [attr.aria-invalid]="nameError ? true : null"
     [attr.aria-describedby]="nameError ? 'projectNameError' : null"
+    cdkFocusInitial
   />
   <p class="projectForm__value" *ngIf="readonly">{{ params.name }}</p>
   <p class="errorMessage projectForm__error" role="alert" id="projectNameError" *ngIf="nameError">{{ nameError | translate }}</p>
@@ -21,6 +22,7 @@
     inputId="projectDescription"
     [value]="params.description"
     [maxLength]="DESCRIPTION_MAX_LENGTH"
+    [ariaLabel]="PHRASES.PROJECT_DESCRIPTION | translate"
     [mentionContext]="mentionContext"
     (valueChange)="handleDescriptionChange($event)"
   ></app-mention-text-editor>

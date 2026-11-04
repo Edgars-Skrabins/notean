@@ -43,6 +43,9 @@ export class MenuButtonComponent {
   }
 
   toggle() {
+    if (this.disabled) {
+      return;
+    }
     this.isOpen = !this.isOpen;
   }
 
@@ -51,8 +54,15 @@ export class MenuButtonComponent {
   }
 
   pick(option: MenuButtonOption) {
+    this.focusTrigger();
     this.close();
     this.picked.emit(option.value);
+  }
+
+  handlePanelEscape(event: Event) {
+    this.focusTrigger();
+    this.close();
+    event.preventDefault();
   }
 
   handleOutsideClick(event: MouseEvent) {
@@ -61,6 +71,14 @@ export class MenuButtonComponent {
       return;
     }
     this.close();
+  }
+
+  private focusTrigger() {
+    const origin = this.trigger();
+    const focusable = origin?.querySelector<HTMLElement>(
+      ".menuButton__trigger, .menuButton__custom button, .menuButton__custom [href], .menuButton__custom [tabindex]:not([tabindex='-1'])"
+    );
+    focusable?.focus();
   }
 
   private trigger(): HTMLElement | null {

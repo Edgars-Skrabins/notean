@@ -1,0 +1,11 @@
+<ul class="barList" *ngIf="hasData; else empty">
+  <li class="barList__row" *ngFor="let row of rows">
+    <span class="barList__label">{{ row.label }}</span>
+    <span class="barList__track" aria-hidden="true"><span class="barList__fill" [style.width.%]="width(row)"></span></span>
+    <span class="barList__value">{{ row.value }}</span>
+  </li>
+</ul>
+
+<ng-template #empty>
+  <p class="barList__empty">{{ emptyText }}</p>
+</ng-template>

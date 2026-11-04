@@ -1,8 +1,8 @@
-<div class="createNamedItemDialogOverlay">
+<div class="createNamedItemDialogOverlay" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
   <div class="createNamedItemDialogOverlay__backdrop" (click)="handleCancel()"></div>
 
-  <div class="createNamedItemDialog">
-    <h3 class="createNamedItemDialog__title">{{ dialogTitle }}</h3>
+  <div class="createNamedItemDialog" role="dialog" aria-modal="true" [attr.aria-labelledby]="titleId" tabindex="-1">
+    <h3 class="createNamedItemDialog__title" [id]="titleId">{{ dialogTitle }}</h3>
 
     <input
       type="text"
@@ -12,7 +12,8 @@
       [placeholder]="defaultValue"
       [attr.aria-invalid]="errorMessage ? true : null"
       [attr.aria-describedby]="errorMessage ? 'createNamedItemError' : null"
-      autofocus
+      [attr.aria-labelledby]="titleId"
+      cdkFocusInitial
     />
 
     <app-project-select

@@ -1,51 +1,18 @@
 <p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
 <div class="boardOverview" *ngIf="overview">
-  <div class="boardOverview__tiles">
-    <div class="boardOverview__tile">
-      <span class="boardOverview__tileValue">{{ overview.totalTickets }}</span>
-      <span class="boardOverview__tileLabel">{{ PHRASES.TOTAL_TICKETS | translate }}</span>
-    </div>
-    <div class="boardOverview__tile">
-      <span class="boardOverview__tileValue">{{ overview.boardTickets }}</span>
-      <span class="boardOverview__tileLabel">{{ PHRASES.TICKETS_ON_BOARD | translate }}</span>
-    </div>
-    <div class="boardOverview__tile">
-      <span class="boardOverview__tileValue">{{ overview.backlogTickets }}</span>
-      <span class="boardOverview__tileLabel">{{ PHRASES.TICKETS_IN_BACKLOG | translate }}</span>
-    </div>
+  <div class="boardOverview__charts">
+    <section class="boardOverview__section">
+      <h2 class="boardOverview__heading">{{ PHRASES.TICKETS_BY_STATUS | translate }}</h2>
+      <p class="boardOverview__total">{{ PHRASES.TOTAL_TICKETS | translate }}: {{ overview.totalTickets }}</p>
+      <app-bar-list [rows]="statusRows" [emptyText]="PHRASES.NO_TICKETS_YET | translate"></app-bar-list>
+    </section>
+
+    <section class="boardOverview__section">
+      <h2 class="boardOverview__heading">{{ PHRASES.TICKETS_PER_ASSIGNEE | translate }}</h2>
+      <app-bar-list [rows]="assigneeRows" [emptyText]="PHRASES.NO_TICKETS_YET | translate"></app-bar-list>
+    </section>
   </div>
-
-  <section class="boardOverview__section">
-    <h2 class="boardOverview__heading">{{ PHRASES.TICKETS_PER_COLUMN | translate }}</h2>
-    <div class="boardOverview__perColumn">
-      <app-pie-chart [slices]="columnSlices" [emptyText]="PHRASES.NO_TICKETS_YET | translate"></app-pie-chart>
-      <div class="boardOverview__bars" *ngIf="overview.totalTickets">
-        <div class="boardOverview__bar" *ngFor="let column of overview.columns">
-          <span class="boardOverview__barLabel">{{ column.title }}</span>
-          <span class="boardOverview__barTrack">
-            <span class="boardOverview__barFill" [style.width.%]="column.ticketCount / maxColumnCount * 100"></span>
-          </span>
-          <span class="boardOverview__barValue">{{ column.ticketCount }}</span>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="boardOverview__section">
-    <h2 class="boardOverview__heading">{{ PHRASES.TICKETS_PER_ASSIGNEE | translate }}</h2>
-    <app-pie-chart [slices]="assigneeSlices" [emptyText]="PHRASES.NO_TICKETS_YET | translate"></app-pie-chart>
-  </section>
-
-  <section class="boardOverview__section">
-    <h2 class="boardOverview__heading">{{ PHRASES.PRIORITIES | translate }}</h2>
-    <app-priority-list></app-priority-list>
-  </section>
-
-  <section class="boardOverview__section">
-    <h2 class="boardOverview__heading">{{ PHRASES.TAGS | translate }}</h2>
-    <app-tag-list></app-tag-list>
-  </section>
 
   <section class="boardOverview__section">
     <h2 class="boardOverview__heading">{{ PHRASES.RECENT_ACTIVITY | translate }}</h2>

@@ -1,10 +1,11 @@
 <p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
-<div class="kanbanTab" cdkDropListGroup *ngIf="state.board as board">
+<div #scroller class="kanbanTab" cdkDropListGroup *ngIf="state.board as board" (scroll)="updateOverflow()">
   <app-kanban-column
     *ngFor="let column of board.columns"
     [column]="column"
     [tags]="board.tags"
+    [priorities]="board.priorities"
     (renameColumn)="handleRenameColumn(column, $event.title)"
     (deleteColumn)="requestDeleteColumn(column)"
     (openTicket)="handleOpenTicket($event)"

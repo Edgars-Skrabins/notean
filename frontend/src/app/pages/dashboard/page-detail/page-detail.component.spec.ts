@@ -103,7 +103,7 @@ describe('PageDetailComponent', () => {
     expect(component.draftProjectId).toBe(4);
   });
 
-  it('creates with the drafts and folder, then goes back to the list with the created item', fakeAsync(() => {
+  it('creates with the drafts and folder, then opens the created item in place of the create URL', fakeAsync(() => {
     pageService.create.and.returnValue(Promise.resolve({success: true, item: createdPage()}));
     createComponent({folder: '3'});
     tick();
@@ -115,13 +115,13 @@ describe('PageDetailComponent', () => {
     tick();
 
     expect(pageService.create).toHaveBeenCalledOnceWith('abc', {title: 'Plan', content: '<p>Hi</p>', projectId: 8, folderId: 3, attachmentIds: []});
-    const createdItem = {id: 9, title: 'Plan', folderId: 3, projectId: 4, lockVersion: 0, creator: createdPage().creator, createdAt: '', updatedAt: ''};
-    expect(navigationService.navigateWithState).toHaveBeenCalledOnceWith({createdItem}, AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES);
+    expect(navigationService.navigateReplacingUrl).toHaveBeenCalledOnceWith(AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES, 9);
+    expect(navigationService.navigateWithState).not.toHaveBeenCalled();
     expect(component.isCreating).toBeFalse();
   }));
 
-  it('prefills the content from a template and keeps the folder and the untitled title', fakeAsync(() => {
-    templateService.resolve.and.returnValue(Promise.resolve({success: true, content: '<h1>Agenda</h1>'}));
+  it('prefills the title and content from a template and keeps the folder', fakeAsync(() => {
+    templateService.resolve.and.returnValue(Promise.resolve({success: true, title: 'Agenda', content: '<h1>Agenda</h1>'}));
     pageService.create.and.returnValue(Promise.resolve({success: true, item: createdPage()}));
     createComponent({template: 'builtin:meeting-notes', folder: '3'});
 
@@ -133,13 +133,24 @@ describe('PageDetailComponent', () => {
 
     expect(templateService.resolve).toHaveBeenCalledWith('abc', 'page', 'builtin:meeting-notes');
     expect(component.draftContent).toBe('<h1>Agenda</h1>');
-    expect(component.draftTitle).toBe('');
+    expect(component.draftTitle).toBe('Agenda');
     expect(component.hasCreateDraftChanges).toBeTrue();
 
     component.handleCreate();
     tick();
 
-    expect(pageService.create).toHaveBeenCalledWith('abc', jasmine.objectContaining({content: '<h1>Agenda</h1>', folderId: 3}));
+    expect(pageService.create).toHaveBeenCalledWith('abc', jasmine.objectContaining({title: 'Agenda', content: '<h1>Agenda</h1>', folderId: 3}));
+  }));
+
+  it('keeps a title typed while the template loads', fakeAsync(() => {
+    templateService.resolve.and.returnValue(Promise.resolve({success: true, title: 'Agenda', content: '<h1>Agenda</h1>'}));
+    createComponent({template: 'builtin:meeting-notes'});
+    component.draftTitle = 'Mine';
+
+    tick();
+
+    expect(component.draftTitle).toBe('Mine');
+    expect(component.draftContent).toBe('<h1>Agenda</h1>');
   }));
 
   it('opens a blank draft with the error when the template cannot be loaded', fakeAsync(() => {
@@ -149,6 +160,7 @@ describe('PageDetailComponent', () => {
 
     expect(component.mode).toBe('create');
     expect(component.draftContent).toBe('');
+    expect(component.draftTitle).toBe('');
     expect(component.alertMessage).toBe(errorPhrase('TEMPLATE_NOT_FOUND'));
   }));
 
@@ -196,6 +208,7 @@ describe('PageDetailComponent', () => {
     tick();
 
     expect(navigationService.navigate).not.toHaveBeenCalled();
+    expect(navigationService.navigateReplacingUrl).not.toHaveBeenCalled();
     expect(component.alertMessage).toBe(errorPhrase('PAGE_CREATE_FAILED'));
     expect(component.draftTitle).toBe('Plan');
     expect(component.isCreating).toBeFalse();
