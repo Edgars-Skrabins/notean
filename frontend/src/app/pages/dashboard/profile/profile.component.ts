@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, ChangeDetectionStrategy} from '@angular/core';
+import {Component, OnDestroy, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {NgFor, NgIf} from "@angular/common";
 import {Subscription} from "rxjs";
@@ -22,7 +22,6 @@ import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.
 import {AvatarComponent} from "@components/avatar/avatar.component";
 import {ButtonComponent} from "@components/button/button.component";
 import {AppRoutes} from "../../../app/app-routes.enum";
-import {EscapeService} from "@services/escape.service";
 
 @Component({
   selector: 'app-profile',
@@ -39,7 +38,7 @@ import {EscapeService} from "@services/escape.service";
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './profile.component.css'
 })
-export class ProfileComponent implements HasUnsavedChanges, OnInit, OnDestroy {
+export class ProfileComponent implements HasUnsavedChanges, OnDestroy {
   protected readonly PHRASES = PHRASES;
   protected readonly AVATAR_COLORS = AVATAR_COLORS;
   protected readonly AVATAR_IMAGE_TYPES = AVATAR_IMAGE_TYPES;
@@ -65,14 +64,11 @@ export class ProfileComponent implements HasUnsavedChanges, OnInit, OnDestroy {
   private resolveLeave: ((canLeave: boolean) => void) | null = null;
   private avatarSubscription: Subscription;
 
-  private unregisterEscape = () => {};
-
   constructor(
     private navigationService: NavigationService,
     private teamService: TeamService,
     private toastService: ToastService,
     private avatarService: AvatarService,
-    private escapeService: EscapeService,
     private authService: AuthService,
     private sessionService: SessionService,
     private translateService: TranslateService
@@ -123,12 +119,7 @@ export class ProfileComponent implements HasUnsavedChanges, OnInit, OnDestroy {
     return this.pendingImage !== null || (!this.pendingRemoveImage && !!this.savedAvatar?.imageUrl);
   }
 
-  ngOnInit() {
-    this.unregisterEscape = this.escapeService.push(() => this.handleGoBack());
-  }
-
   ngOnDestroy() {
-    this.unregisterEscape();
     this.avatarSubscription.unsubscribe();
     this.revokePreviewUrl();
   }
@@ -304,10 +295,6 @@ export class ProfileComponent implements HasUnsavedChanges, OnInit, OnDestroy {
     this.sessionService.clear();
     this.navigationService.navigate(AppRoutes.LOGIN);
     this.toastService.show({type: ToastType.SUCCESS, message: PHRASES.ACCOUNT_DELETED});
-  }
-
-  handleGoBack() {
-    this.navigationService.navigate(AppRoutes.DASHBOARD);
   }
 
   private buildAvatarUpdate(): AvatarUpdate {

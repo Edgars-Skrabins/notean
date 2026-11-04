@@ -1,14 +1,17 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
+import {CdkTrapFocus} from '@angular/cdk/a11y';
 import {FormsModule} from '@angular/forms';
 import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {DeleteProjectMode} from '@models/project.model';
 import {ButtonComponent} from '@components/button/button.component';
 import {EscapeService} from '@services/escape.service';
+import {uniqueId} from '@utils/uniqueId';
 
 @Component({
   selector: 'app-delete-project-dialog',
   imports: [
+    CdkTrapFocus,
     FormsModule,
     TranslatePipe,
     ButtonComponent
@@ -19,6 +22,7 @@ import {EscapeService} from '@services/escape.service';
 })
 export class DeleteProjectDialogComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
+  protected readonly titleId = uniqueId('deleteProjectDialog');
 
   @Input({required: true}) projectName!: string;
   @Input() busy = false;

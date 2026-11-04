@@ -228,6 +228,7 @@
   "COLLAPSE_GROUP": "Réduire le groupe",
   "EXPAND_GROUP": "Développer le groupe",
   "BULK_ACTION_FAILED": "Impossible de mettre à jour les tickets sélectionnés",
+  "STATUS": "Statut",
   "PRIORITY": "Priorité",
   "PRIORITIES": "Priorités",
   "NO_PRIORITY": "Aucune priorité",
