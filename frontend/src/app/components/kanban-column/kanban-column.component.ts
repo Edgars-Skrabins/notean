@@ -11,6 +11,7 @@ import {IconButtonComponent} from '@components/icon-button/icon-button.component
 import {ButtonComponent} from '@components/button/button.component';
 import {KanbanTicketComponent} from '@components/kanban-ticket/kanban-ticket.component';
 import {Tag} from '@models/tag.model';
+import {BoardPriority} from '@models/priority.model';
 
 @Component({
   selector: 'app-kanban-column',
@@ -35,6 +36,7 @@ export class KanbanColumnComponent {
 
   @Input({required: true}) column!: BoardColumn;
   @Input() tags: Tag[] = [];
+  @Input() priorities: BoardPriority[] = [];
   @Output() renameColumn = new EventEmitter<{ title: string }>();
   @Output() deleteColumn = new EventEmitter<void>();
   @Output() openTicket = new EventEmitter<TicketSummary>();
@@ -68,5 +70,9 @@ export class KanbanColumnComponent {
 
   cancelRename() {
     this.isRenaming = false;
+  }
+
+  priorityOf(ticket: TicketSummary): BoardPriority | null {
+    return this.priorities.find((priority) => priority.id === ticket.priorityId) ?? null;
   }
 }

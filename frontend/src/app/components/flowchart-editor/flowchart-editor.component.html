@@ -26,6 +26,7 @@
       [style.left.px]="editingLabel.left"
       [style.width.px]="editingLabel.width"
       [(ngModel)]="editingLabel.value"
+      [attr.aria-label]="PHRASES.DIAGRAM_LABEL | translate"
       (blur)="handleLabelInputBlur()"
       (keydown)="handleLabelInputKeydown($event)"
       autofocus

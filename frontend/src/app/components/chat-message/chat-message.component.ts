@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
+import {Component, ElementRef, EventEmitter, HostListener, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {NgFor, NgIf} from '@angular/common';
 import {CdkConnectedOverlay, CdkOverlayOrigin} from '@angular/cdk/overlay';
 import {TranslatePipe} from '@ngx-translate/core';
@@ -62,13 +62,46 @@ export class ChatMessageComponent {
   draft = '';
   isEmojiOpen = false;
   isConfirmingDelete = false;
+  isHovered = false;
+  hasFocus = false;
 
   constructor(
+    private elementRef: ElementRef<HTMLElement>,
     private chatService: ChatService,
     private teamService: TeamService,
     private toastService: ToastService,
     protected recentReactionsService: RecentReactionsService
   ) {
+  }
+
+  @HostListener('mouseenter')
+  handleMouseEnter() {
+    this.isHovered = true;
+  }
+
+  @HostListener('mouseleave')
+  handleMouseLeave() {
+    this.isHovered = false;
+  }
+
+  @HostListener('focusin')
+  handleFocusIn() {
+    this.hasFocus = true;
+  }
+
+  @HostListener('focusout', ['$event'])
+  handleFocusOut(event: FocusEvent) {
+    if (!this.elementRef.nativeElement.contains(event.relatedTarget as Node | null)) {
+      this.hasFocus = false;
+    }
+  }
+
+  get actionsRevealed(): boolean {
+    return this.isHovered || this.hasFocus || this.isEmojiOpen;
+  }
+
+  get accessibleLabel(): string {
+    return `${this.message.author.nickname}, ${this.exactTime}`;
   }
 
   get isOwn(): boolean {

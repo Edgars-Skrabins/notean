@@ -17,6 +17,7 @@
   [draftProjectId]="draftProjectId"
   [projectSetByFolder]="isProjectSetByFolder"
   [busy]="isCreating"
+  [autofocusTitle]="mode === 'create' && !isLoading"
   (closed)="handleClose()"
   (escapePressed)="handleEscape()"
   (editRequested)="handleEdit()"

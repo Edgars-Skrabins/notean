@@ -28,7 +28,7 @@ export class NavigationService {
     this.track(this.router.navigate(routeSegments, {queryParams}));
   }
 
-  navigateReplacingUrl(...routeSegments: AppRoutes[]) {
+  navigateReplacingUrl(...routeSegments: (AppRoutes | number)[]) {
     this.track(this.router.navigate(routeSegments, {replaceUrl: true}));
   }
 
