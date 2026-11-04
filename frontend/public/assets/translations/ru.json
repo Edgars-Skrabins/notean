@@ -228,6 +228,7 @@
   "COLLAPSE_GROUP": "Свернуть группу",
   "EXPAND_GROUP": "Развернуть группу",
   "BULK_ACTION_FAILED": "Не удалось обновить выбранные задачи",
+  "STATUS": "Статус",
   "PRIORITY": "Приоритет",
   "PRIORITIES": "Приоритеты",
   "NO_PRIORITY": "Без приоритета",
