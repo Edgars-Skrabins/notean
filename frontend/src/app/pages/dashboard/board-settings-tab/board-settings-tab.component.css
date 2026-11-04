@@ -1,0 +1,18 @@
+.boardSettings {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.boardSettings__section {
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4) var(--space-5);
+}
+
+.boardSettings__heading {
+  margin: 0 0 var(--space-4);
+  color: var(--color-text-heading);
+  font-size: var(--font-lg);
+}
