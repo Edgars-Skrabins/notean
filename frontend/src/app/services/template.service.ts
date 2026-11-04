@@ -100,7 +100,7 @@ export class TemplateService {
   async resolve(teamCode: string, kind: TemplateKind, ref: string): Promise<TemplateContentResponse> {
     if (ref.startsWith(BUILT_IN_TEMPLATE_PREFIX)) {
       const template = builtInTemplate(kind, ref.slice(BUILT_IN_TEMPLATE_PREFIX.length));
-      return template ? {success: true, content: template.content} : {success: false, code: 'TEMPLATE_NOT_FOUND'};
+      return template ? {success: true, title: template.title, content: template.content} : {success: false, code: 'TEMPLATE_NOT_FOUND'};
     }
 
     const response = await this.get(teamCode, Number(ref));
@@ -110,7 +110,7 @@ export class TemplateService {
     if (response.template.kind !== kind) {
       return {success: false, code: 'TEMPLATE_NOT_FOUND'};
     }
-    return {success: true, content: response.template.content};
+    return {success: true, title: response.template.title, content: response.template.content};
   }
 
   private requestTemplate(request: Promise<AxiosResponse>): Promise<TemplateResponse> {
