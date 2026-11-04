@@ -100,7 +100,7 @@
   <button class="authButton" [disabled]="!canChangePassword" (click)="handleChangePassword()">
     {{ PHRASES.CHANGE_PASSWORD | translate }}
   </button>
-  <p class="authStatus" *ngIf="passwordError">{{ passwordError | translate }}</p>
+  <p class="errorMessage" role="alert" *ngIf="passwordError">{{ passwordError | translate }}</p>
 
   <h3 class="profile__sectionTitle">{{ PHRASES.DELETE_ACCOUNT | translate }}</h3>
   <app-button variant="danger" [disabled]="isDeletingAccount" (pressed)="handleDeleteAccount()">{{ PHRASES.DELETE_ACCOUNT | translate }}</app-button>

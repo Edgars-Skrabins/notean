@@ -21,7 +21,7 @@
     ></app-split-button>
   </div>
 
-  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+  <p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
   <app-item-tree
     *ngIf="!isLoading"

@@ -82,7 +82,6 @@ export class ManageTeamComponent implements OnInit, OnDestroy {
   memberActions: Record<number, MenuButtonOption[]> = {};
   isLoadingMembers = true;
   alertMessage = '';
-  renameStatusMessage = '';
   showDeleteConfirm = false;
   pendingAction: { member: TeamMember; action: MemberAction } | null = null;
   features: TeamFeatures;
@@ -194,13 +193,12 @@ export class ManageTeamComponent implements OnInit, OnDestroy {
     this.teamService.renameTeam(this.teamCode, this.teamName)
       .then((response) => {
         if (!response.success) {
-          this.renameStatusMessage = '';
           this.alertMessage = errorPhrase(response.code);
           return;
         }
 
         this.alertMessage = '';
-        this.renameStatusMessage = this.translateService.instant(PHRASES.TEAM_NAME_UPDATED);
+        this.toastService.show({type: ToastType.SUCCESS, message: PHRASES.TEAM_NAME_UPDATED});
       });
   }
 

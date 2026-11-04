@@ -10,7 +10,7 @@
   <ng-content></ng-content>
 </div>
 
-<p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+<p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
 <ng-container *ngIf="builtIns.length">
   <h3 class="templateList__group capsLabel">{{ PHRASES.BUILT_IN | translate }}</h3>

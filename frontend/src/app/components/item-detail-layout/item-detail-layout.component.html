@@ -37,7 +37,7 @@
       <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE | translate" (pressed)="closed.emit()"></app-icon-button>
     </div>
 
-    <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+    <p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
     <div class="itemDetail__body">
       <div class="itemDetail__main">

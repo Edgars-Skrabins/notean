@@ -19,7 +19,7 @@ import {TeamCodeDisplayComponent} from "@components/team-code-display/team-code-
 import {ButtonComponent} from "@components/button/button.component";
 
 function teamServiceSpy() {
-  const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeam', 'getCurrentRole', 'fetchTeamMembers', 'isFeatureEnabled', 'updateFeatures', 'removeMember', 'updateMemberRole', 'transferOwnership', 'deleteTeam', 'fetchMyTeam']);
+  const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeam', 'getCurrentRole', 'fetchTeamMembers', 'isFeatureEnabled', 'updateFeatures', 'removeMember', 'updateMemberRole', 'transferOwnership', 'renameTeam', 'deleteTeam', 'fetchMyTeam']);
   teamService.getCurrentTeam.and.returnValue(testTeam({id: 1, name: 'Team A', code: 'aaa'}));
   teamService.fetchTeamMembers.and.returnValue(Promise.resolve([]));
   teamService.isFeatureEnabled.and.callFake((feature) => feature !== 'diagrams');
@@ -316,6 +316,32 @@ describe('ManageTeamComponent member actions', () => {
     await component.handleConfirmMemberAction();
 
     expect(component.alertMessage).toBe('ERRORS.TEAMS.CANNOT_MANAGE_ADMIN');
+    expect(toastService.show).not.toHaveBeenCalled();
+  });
+
+  it('shows a success toast and clears the error after renaming the team', async () => {
+    teamService.renameTeam.and.returnValue(Promise.resolve({success: true, team: testTeam({id: 1, name: 'Team B', code: 'aaa'})}));
+    build('owner');
+    component.alertMessage = 'ERRORS.COMMON.FORBIDDEN';
+    component.teamName = 'Team B';
+
+    component.handleRenameTeam();
+    await Promise.resolve();
+
+    expect(teamService.renameTeam).toHaveBeenCalledOnceWith('aaa', 'Team B');
+    expect(component.alertMessage).toBe('');
+    expect(toastService.show).toHaveBeenCalledOnceWith({type: ToastType.SUCCESS, message: PHRASES.TEAM_NAME_UPDATED});
+  });
+
+  it('shows a rename failure inline without a toast', async () => {
+    teamService.renameTeam.and.returnValue(Promise.resolve({success: false, code: 'FORBIDDEN'}));
+    build('owner');
+    component.teamName = 'Team B';
+
+    component.handleRenameTeam();
+    await Promise.resolve();
+
+    expect(component.alertMessage).toBe('ERRORS.COMMON.FORBIDDEN');
     expect(toastService.show).not.toHaveBeenCalled();
   });
 

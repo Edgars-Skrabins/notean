@@ -29,6 +29,30 @@ describe('CreateNamedItemDialogComponent', () => {
     expect(input.maxLength).toBe(TITLE_MAX_LENGTH);
   });
 
+  it('marks the title input invalid and points it at the announced error', () => {
+    const fixture = TestBed.createComponent(CreateNamedItemDialogComponent);
+    fixture.componentRef.setInput('dialogTitle', 'New board');
+    fixture.componentRef.setInput('errorMessage', 'ERRORS.BOARDS.BOARD_CREATE_FAILED');
+    fixture.detectChanges();
+
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('.createNamedItemDialog__input');
+    const error = fixture.nativeElement.querySelector('#' + input.getAttribute('aria-describedby'));
+    expect(input.getAttribute('aria-invalid')).toBe('true');
+    expect(error.getAttribute('role')).toBe('alert');
+    expect(error.textContent.trim()).toBe('ERRORS.BOARDS.BOARD_CREATE_FAILED');
+  });
+
+  it('leaves the title input without error attributes when there is no error', () => {
+    const fixture = TestBed.createComponent(CreateNamedItemDialogComponent);
+    fixture.componentRef.setInput('dialogTitle', 'New board');
+    fixture.detectChanges();
+
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('.createNamedItemDialog__input');
+    expect(input.hasAttribute('aria-invalid')).toBeFalse();
+    expect(input.hasAttribute('aria-describedby')).toBeFalse();
+    expect(fixture.nativeElement.querySelector('[role="alert"]')).toBeNull();
+  });
+
   it('is a dialog named by its title that focuses the name input', async () => {
     const fixture = TestBed.createComponent(CreateNamedItemDialogComponent);
     fixture.componentRef.setInput('dialogTitle', 'New board');
