@@ -1,7 +1,8 @@
-import {Component, ElementRef, ChangeDetectionStrategy} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
 import {TranslatePipe} from "@ngx-translate/core";
 import {AsyncPipe, NgIf} from "@angular/common";
 import {OverlayModule} from "@angular/cdk/overlay";
+import {A11yModule} from "@angular/cdk/a11y";
 import {PHRASES} from "@config/phrases";
 import {MENU_POSITIONS} from "@config/overlayPositions";
 import {NavigationService} from "@services/navigation.service";
@@ -9,8 +10,8 @@ import {AuthService} from "@services/auth.service";
 import {TeamService} from "@services/team.service";
 import {SessionService} from "@services/session.service";
 import {AvatarService} from "@services/avatar.service";
-import {LanguageSwitcherComponent} from "@components/language-switcher/language-switcher.component";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
+import {IconComponent} from "@components/icon/icon.component";
 import {AvatarComponent} from "@components/avatar/avatar.component";
 import {ProjectSelectorComponent} from "@components/project-selector/project-selector.component";
 import {GlobalSearchComponent} from "@components/global-search/global-search.component";
@@ -23,8 +24,9 @@ import {AppRoutes} from "../../app/app-routes.enum";
     NgIf,
     AsyncPipe,
     OverlayModule,
-    LanguageSwitcherComponent,
+    A11yModule,
     IconButtonComponent,
+    IconComponent,
     AvatarComponent,
     ProjectSelectorComponent,
     GlobalSearchComponent
@@ -36,6 +38,10 @@ import {AppRoutes} from "../../app/app-routes.enum";
 export class DashboardHeaderComponent {
   protected readonly PHRASES = PHRASES;
   protected readonly MENU_POSITIONS = MENU_POSITIONS;
+
+  @Input() compact = false;
+  @Input() navOpen = false;
+  @Output() navToggle = new EventEmitter<void>();
 
   isMenuOpen = false;
 
