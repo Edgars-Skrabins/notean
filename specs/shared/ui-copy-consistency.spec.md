@@ -126,9 +126,9 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] A2. In `en.json` set `LOGIN` to "Log in" and `LOGOUT` to "Log out". Check that no spec asserts the old English text (grep the spec files for `'Login'` / `'Logout'`).
 
 ### B. Plural helper
-- [ ] B1. Create `frontend/src/app/utils/plural.ts` (`pluralCategory`, `pluralKey`) and `utils/plural.spec.ts` with the cases from Part 2.2.
-- [ ] B2. Add the `@pipes/*` alias to `frontend/tsconfig.json`, create `frontend/src/app/pipes/plural.pipe.ts` and `pipes/plural.pipe.spec.ts` as described.
-- [ ] B3. Create `frontend/src/app/config/translationConfig.spec.ts` with the coverage test from Part 2.2. Run `npm test`: it passes trivially while no key is plural yet; temporarily turn `MEMBER_COUNT` in `en.json` into `{one, other}` without changing `lv.json` and confirm the test fails, then revert.
+- [x] B1. Create `frontend/src/app/utils/plural.ts` (`pluralCategory`, `pluralKey`) and `utils/plural.spec.ts` with the cases from Part 2.2.
+- [x] B2. Add the `@pipes/*` alias to `frontend/tsconfig.json`, create `frontend/src/app/pipes/plural.pipe.ts` and `pipes/plural.pipe.spec.ts` as described.
+- [x] B3. Create `frontend/src/app/config/translationConfig.spec.ts` with the coverage test from Part 2.2. Run `npm test`: it passes trivially while no key is plural yet; temporarily turn `MEMBER_COUNT` in `en.json` into `{one, other}` without changing `lv.json` and confirm the test fails, then revert.
 
 ### C. Plural strings and call sites
 - [ ] C1. Convert the nine keys in Part 2.2 to plural objects in all 11 translation files, in place, with grammatical forms for every category of each language; delete the four `_ONE` keys from the translation files and `config/phrases.ts`.
