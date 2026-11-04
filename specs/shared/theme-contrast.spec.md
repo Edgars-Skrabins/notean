@@ -274,7 +274,7 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 
 ### G. Selected state in Settings
 - [x] G1. Update `theme-mode-switch.component.css` as in Part 2.2.
-- [ ] G2. Add the check icon to `theme-picker.component.html` / `.ts` and the CSS rules to `theme-picker.component.css`; add the "only the selected card has a check" test to `theme-picker.component.spec.ts`.
+- [x] G2. Add the check icon to `theme-picker.component.html` / `.ts` and the CSS rules to `theme-picker.component.css`; add the "only the selected card has a check" test to `theme-picker.component.spec.ts`.
 
 ### H. Docs
 - [ ] H1. Update `CLAUDE.md` (Themes section and the `testing/` line) as described in Part 2.2.

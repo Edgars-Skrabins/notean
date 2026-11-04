@@ -88,5 +88,18 @@
 }
 
 .themePicker__name {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
   padding: 0 var(--space-1) var(--space-1);
+}
+
+.themePicker__check {
+  width: 14px;
+  height: 14px;
+  color: var(--color-input-border-focus);
+}
+
+.themePicker__card--selected .themePicker__name {
+  font-weight: 600;
 }
