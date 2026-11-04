@@ -404,6 +404,7 @@
   "NEW_TEMPLATE": "Новый шаблон",
   "BLANK": "Пустой",
   "FROM_TEMPLATE": "Из шаблона",
+  "CREATION_OPTIONS": "Варианты создания",
   "FROM_EXISTING_BOARD": "Из существующей доски",
   "USE_TEMPLATE": "Использовать шаблон",
   "DUPLICATE": "Дублировать",
