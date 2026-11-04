@@ -227,8 +227,23 @@ describe('DocumentPagesComponent', () => {
     expect(component.items.find((item) => item.id === 12)?.folderId).toBe(2);
     expect(component.items.map((item) => item.id)).toEqual([11, 12]);
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Page', 10);
-    expect(trash.service.notifyTrashed).toHaveBeenCalledWith('abc', [1]);
+    expect(trash.service.notifyTrashed).toHaveBeenCalledWith('abc', [1], {title: 'Roadmap'});
     expectNoReload();
+  }));
+
+  it('sends one delete for repeated presses while it runs and allows a retry after a failure', fakeAsync(() => {
+    pageService.delete.and.returnValue(Promise.resolve({success: false, code: 'NETWORK_ERROR'}));
+
+    component.handleDeleteItem({itemId: 10});
+    component.handleDeleteItem({itemId: 10});
+    tick();
+
+    expect(pageService.delete).toHaveBeenCalledTimes(1);
+    expect(component.items.map((item) => item.id)).toContain(10);
+    expect(component.alertMessage).toBe(errorPhrase('NETWORK_ERROR'));
+
+    component.handleDeleteItem({itemId: 10});
+    expect(pageService.delete).toHaveBeenCalledTimes(2);
   }));
 
   it('reloads when a page or folder comes back from the trash, but not for other types', fakeAsync(() => {
@@ -287,6 +302,7 @@ describe('DocumentPagesComponent', () => {
     expect(component.folders.map((item) => item.id)).toEqual([1]);
     expect(component.items.map((item) => item.id)).toEqual([10, 12]);
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Page', 11);
+    expect(trash.service.notifyTrashed).toHaveBeenCalledWith('abc', [1], {title: 'Folder 2'});
     expectNoReload();
   }));
 

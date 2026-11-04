@@ -43,7 +43,7 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
   editingUser: FolderedItemEditingUser | null = null;
   isLoading = true;
   alertMessage = '';
-  showDeleteConfirm = false;
+  isDeleting = false;
   showDiscardConfirm = false;
   editConflict: FolderedItemDetail | null = null;
   isCreating = false;
@@ -153,37 +153,29 @@ export abstract class FolderedItemDetailComponent implements OnInit, OnDestroy {
   }
 
   handleDelete() {
-    this.showDeleteConfirm = true;
-  }
-
-  handleCopyLink() {
-    this.copyLinkService.copyCurrentLink();
-  }
-
-  handleCancelDelete() {
-    this.showDeleteConfirm = false;
-  }
-
-  handleConfirmDelete() {
-    this.showDeleteConfirm = false;
-
-    if (!this.item) {
+    if (!this.item || this.isDeleting) {
       return;
     }
 
-    const itemId = this.item.id;
+    const {id: itemId, title} = this.item;
+    this.isDeleting = true;
 
     this.itemService.delete(this.teamCode, itemId)
       .then((response) => {
+        this.isDeleting = false;
         if (!response.success) {
           this.alertMessage = errorPhrase(response.code);
           return;
         }
 
         this.favoriteService.forgetItem(this.favoriteType, itemId);
-        this.trashService.notifyTrashed(this.teamCode, response.trashEntryIds);
+        this.trashService.notifyTrashed(this.teamCode, response.trashEntryIds, {title});
         this.handleGoBack();
       });
+  }
+
+  handleCopyLink() {
+    this.copyLinkService.copyCurrentLink();
   }
 
   handleSave() {

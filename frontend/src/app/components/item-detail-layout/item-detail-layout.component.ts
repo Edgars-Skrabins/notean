@@ -41,7 +41,8 @@ export class ItemDetailLayoutComponent implements OnInit, OnDestroy {
   @Input({required: true}) favoriteType!: FavoritableType;
   @Input({required: true}) titlePlaceholder!: string;
   @Input({required: true}) editingBannerText!: string;
-  @Input({required: true}) confirmDeleteMessage!: string;
+  @Input() confirmDeleteMessage = '';
+  @Input() confirmDeleteLabel: string = PHRASES.DELETE;
   @Input() discardConfirmMessage = '';
   @Input() mode: 'view' | 'edit' | 'create' = 'view';
   @Input() draftTitle = '';

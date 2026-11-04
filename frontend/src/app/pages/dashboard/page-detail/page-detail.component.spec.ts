@@ -19,7 +19,7 @@ import {errorPhrase} from "@utils/errorPhrase";
 import {projectFilterStub, ProjectFilterStub} from "../../../testing/projectFilterStub";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {PageDetailComponent} from "./page-detail.component";
-import {trashServiceStub} from "../../../testing/trashServiceStub";
+import {trashServiceStub, TrashServiceStub} from "../../../testing/trashServiceStub";
 
 function createdPage(): FolderedItemDetail {
   return {
@@ -48,6 +48,7 @@ describe('PageDetailComponent', () => {
   let copyLinkService: jasmine.SpyObj<CopyLinkService>;
   let templateService: jasmine.SpyObj<TemplateService>;
   let attachmentService: jasmine.SpyObj<AttachmentService>;
+  let trash: TrashServiceStub;
 
   function createComponent(queryParams: Record<string, string> = {}, params: Record<string, string> = {}) {
     const route = {
@@ -70,7 +71,7 @@ describe('PageDetailComponent', () => {
       folderService,
       {instant: (key: string) => key} as unknown as TranslateService,
       copyLinkService,
-      trashServiceStub().service,
+      trash.service,
       attachmentService,
       templateService,
     );
@@ -78,7 +79,8 @@ describe('PageDetailComponent', () => {
   }
 
   beforeEach(() => {
-    pageService = jasmine.createSpyObj<PageService>('PageService', ['get', 'create', 'save', 'setProject']);
+    pageService = jasmine.createSpyObj<PageService>('PageService', ['get', 'create', 'save', 'setProject', 'delete']);
+    trash = trashServiceStub();
     editingService = jasmine.createSpyObj<PageEditingService>('PageEditingService', ['connect', 'disconnect', 'startEditing', 'stopEditing']);
     navigationService = jasmine.createSpyObj<NavigationService>('NavigationService', ['navigate', 'navigateWithState', 'navigateReplacingUrl']);
     copyLinkService = jasmine.createSpyObj<CopyLinkService>('CopyLinkService', ['copyCurrentLink']);
@@ -254,6 +256,37 @@ describe('PageDetailComponent', () => {
     expect(navigationService.navigateReplacingUrl).not.toHaveBeenCalled();
     expect(component.alertMessage).toBe(errorPhrase('NETWORK_ERROR'));
   }));
+
+  describe('on Delete', () => {
+    beforeEach(fakeAsync(() => {
+      pageService.get.and.returnValue(Promise.resolve({success: true, item: createdPage()}));
+      createComponent({}, {id: '9'});
+      tick();
+    }));
+
+    it('moves the page to the trash at once, names it in the toast and goes back', fakeAsync(() => {
+      pageService.delete.and.returnValue(Promise.resolve({success: true, trashEntryIds: [4]}));
+
+      component.handleDelete();
+      component.handleDelete();
+      tick();
+
+      expect(pageService.delete).toHaveBeenCalledOnceWith('abc', 9);
+      expect(trash.service.notifyTrashed).toHaveBeenCalledOnceWith('abc', [4], {title: 'Plan'});
+      expect(navigationService.navigate).toHaveBeenCalledWith(AppRoutes.DASHBOARD, AppRoutes.DOCUMENT_PAGES);
+    }));
+
+    it('stays in the popup with the error when the delete fails', fakeAsync(() => {
+      pageService.delete.and.returnValue(Promise.resolve({success: false, code: 'NETWORK_ERROR'}));
+
+      component.handleDelete();
+      tick();
+
+      expect(component.alertMessage).toBe(errorPhrase('NETWORK_ERROR'));
+      expect(component.isDeleting).toBeFalse();
+      expect(navigationService.navigate).not.toHaveBeenCalled();
+    }));
+  });
 
   describe('on Escape', () => {
     function openPage() {

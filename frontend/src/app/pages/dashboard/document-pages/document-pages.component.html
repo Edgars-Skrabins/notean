@@ -24,7 +24,6 @@
     [itemLabel]="PHRASES.NEW_PAGE | translate"
     itemIcon="page"
     favoritableType="Page"
-    [deleteItemConfirmMessage]="PHRASES.CONFIRM_DELETE_PAGE | translate"
     (openItem)="handleOpenItem($event)"
     (createFolder)="handleCreateFolder($event.parentId)"
     (createItem)="handleCreateItem($event.parentId, $event.fromTemplate)"
