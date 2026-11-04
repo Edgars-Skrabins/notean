@@ -257,7 +257,7 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] C3. Add check 6 (control border) to the contrast tests. Run `npm test`; every contrast and token test passes. If one value fails in the browser, adjust it as Part 2.2 describes and update the table in this spec.
 
 ### D. Using the tokens
-- [ ] D1. Switch the control-border rules listed in Part 2.2 (styles.css `.authField input` and `.textInput`, the component rules, the emoji picker variable, the checkbox's unchecked border per Parallel work), then grep for remaining text-field borders as described and switch those that qualify.
+- [x] D1. Switch the control-border rules listed in Part 2.2 (styles.css `.authField input` and `.textInput`, the component rules, the emoji picker variable, the checkbox's unchecked border per Parallel work), then grep for remaining text-field borders as described and switch those that qualify.
 - [ ] D2. Add the global `input::placeholder, textarea::placeholder` rule to `styles.css` next to `.textInput`, and delete the five local placeholder rules named in Part 2.2.
 - [ ] D3. Check the style budget: `npm run build` shows no component style over 4kB.
 

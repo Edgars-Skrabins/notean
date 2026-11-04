@@ -165,7 +165,7 @@ textarea {
 
 .authField input {
   background: var(--color-input-bg);
-  border: 1px solid var(--color-input-border);
+  border: 1px solid var(--color-control-border);
   border-radius: var(--radius-sm);
   padding: 10px;
   color: var(--color-text-heading);
@@ -345,7 +345,7 @@ textarea {
 .textInput {
   box-sizing: border-box;
   background: var(--color-input-bg);
-  border: 1px solid var(--color-input-border);
+  border: 1px solid var(--color-control-border);
   border-radius: var(--radius-sm);
   color: var(--color-text-heading);
   font-family: var(--font-ui);
