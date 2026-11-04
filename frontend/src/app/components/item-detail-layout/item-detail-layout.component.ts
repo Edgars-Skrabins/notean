@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
 import {CdkScrollable} from '@angular/cdk/scrolling';
@@ -33,7 +33,7 @@ import {EscapeService} from "@services/escape.service";
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './item-detail-layout.component.css'
 })
-export class ItemDetailLayoutComponent implements OnInit, OnDestroy {
+export class ItemDetailLayoutComponent implements OnInit, OnChanges, OnDestroy {
   protected readonly PHRASES = PHRASES;
   protected readonly TITLE_MAX_LENGTH = TITLE_MAX_LENGTH;
 
@@ -57,6 +57,7 @@ export class ItemDetailLayoutComponent implements OnInit, OnDestroy {
   @Input() isTemplate = false;
   @Input() canManage = true;
   @Input() showSidebar = true;
+  @Input() autofocusTitle = false;
   @Output() draftTitleChange = new EventEmitter<string>();
   @Output() closed = new EventEmitter<void>();
   @Output() editRequested = new EventEmitter<void>();
@@ -76,6 +77,8 @@ export class ItemDetailLayoutComponent implements OnInit, OnDestroy {
   @Output() draftProjectChange = new EventEmitter<number | null>();
   @Output() escapePressed = new EventEmitter<void>();
 
+  @ViewChild('titleInput') titleInput?: ElementRef<HTMLInputElement>;
+
   private unregisterEscape = () => {};
 
   constructor(private escapeService: EscapeService) {
@@ -83,6 +86,18 @@ export class ItemDetailLayoutComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.unregisterEscape = this.escapeService.push(() => this.escapePressed.emit());
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    const autofocus = changes['autofocusTitle'];
+    if (!autofocus?.currentValue || autofocus.previousValue) {
+      return;
+    }
+
+    setTimeout(() => {
+      this.titleInput?.nativeElement.focus();
+      this.titleInput?.nativeElement.select();
+    });
   }
 
   ngOnDestroy() {
