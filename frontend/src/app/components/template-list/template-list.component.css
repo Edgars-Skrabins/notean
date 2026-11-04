@@ -18,6 +18,8 @@
 
 .templateList__group {
   margin: var(--space-4) 0 var(--space-2);
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
 }
 
 .templateList__row {

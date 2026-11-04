@@ -3,6 +3,7 @@
   class="iconButton iconButton--{{ variant }} iconButton--size{{ size }}"
   [appTooltip]="tooltip"
   [attr.aria-label]="tooltip"
+  [attr.aria-expanded]="expanded"
   [disabled]="disabled"
   (click)="pressed.emit()"
 >

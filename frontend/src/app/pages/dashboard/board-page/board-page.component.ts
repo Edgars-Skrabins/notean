@@ -12,7 +12,6 @@ import {TrashService} from "@services/trash.service";
 import {FavoriteService} from "@services/favorite.service";
 import {NavigationService} from "@services/navigation.service";
 import {IconButtonComponent} from "@components/icon-button/icon-button.component";
-import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {FavoriteStarComponent} from "@components/favorite-star/favorite-star.component";
 import {ProjectSelectComponent} from "@components/project-select/project-select.component";
 import {ToastService} from "@services/toast.service";
@@ -33,7 +32,6 @@ import {CopyLinkService} from "@services/copy-link.service";
     RouterOutlet,
     TranslatePipe,
     IconButtonComponent,
-    ConfirmDialogComponent,
     FavoriteStarComponent,
     ProjectSelectComponent
   ],
@@ -49,7 +47,7 @@ export class BoardPageComponent implements OnInit, OnDestroy {
 
   isRenaming = false;
   renameDraft = '';
-  showDeleteConfirm = false;
+  isDeleting = false;
   alertMessage = '';
 
   private paramSubscription: Subscription | null = null;
@@ -154,20 +152,18 @@ export class BoardPageComponent implements OnInit, OnDestroy {
   }
 
   handleDelete() {
-    this.showDeleteConfirm = true;
-  }
+    if (this.isDeleting) {
+      return;
+    }
 
-  handleCancelDelete() {
-    this.showDeleteConfirm = false;
-  }
-
-  handleConfirmDelete() {
-    this.showDeleteConfirm = false;
     const boardId = this.state.boardId;
+    const title = this.state.board?.title ?? '';
+    this.isDeleting = true;
     this.boardChannelService.disconnect();
 
     this.boardService.deleteBoard(this.state.teamCode, boardId)
       .then((response) => {
+        this.isDeleting = false;
         if (!response.success) {
           this.alertMessage = errorPhrase(response.code);
           this.boardChannelService.connect(boardId);
@@ -176,7 +172,7 @@ export class BoardPageComponent implements OnInit, OnDestroy {
 
         this.boardListService.remove(boardId);
         this.favoriteService.forgetItem('Board', boardId);
-        this.trashService.notifyTrashed(this.state.teamCode, response.trashEntryIds);
+        this.trashService.notifyTrashed(this.state.teamCode, response.trashEntryIds, {title});
         this.navigationService.navigate(AppRoutes.DASHBOARD, AppRoutes.DASHBOARD_HOME);
       });
   }

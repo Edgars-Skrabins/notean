@@ -2,6 +2,7 @@
   [type]="type"
   class="button button--{{ variant }}"
   [disabled]="disabled"
+  [attr.cdkFocusInitial]="initialFocus ? '' : null"
   (click)="pressed.emit()"
 >
   <app-icon *ngIf="icon" [name]="icon" class="button__icon"></app-icon>

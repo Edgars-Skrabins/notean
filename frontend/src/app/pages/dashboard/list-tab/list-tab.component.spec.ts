@@ -2,6 +2,7 @@ import {Component} from '@angular/core';
 import {discardPeriodicTasks, fakeAsync, flushMicrotasks, TestBed, tick} from '@angular/core/testing';
 import {ActivatedRoute, provideRouter, Route, Router} from "@angular/router";
 import {CdkDragDrop} from "@angular/cdk/drag-drop";
+import {provideTranslateService} from "@ngx-translate/core";
 import {ListTabComponent} from "./list-tab.component";
 import {TicketService} from "@services/ticket.service";
 import {FavoriteService} from "@services/favorite.service";
@@ -19,7 +20,8 @@ import {dashboardRoutes} from "../../../app/dashboard.routes";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
 import {createBoardState, fakeTicketList, ticketDetail, ticketSummary} from "../../../testing/boardFixtures";
-import {trashServiceStub} from "../../../testing/trashServiceStub";
+import {trashServiceStub, TrashServiceStub} from "../../../testing/trashServiceStub";
+import {TrashService} from "@services/trash.service";
 
 describe('ListTabComponent', () => {
   let component: ListTabComponent;
@@ -27,10 +29,12 @@ describe('ListTabComponent', () => {
   let ticketService: jasmine.SpyObj<TicketService>;
   let favoriteService: jasmine.SpyObj<FavoriteService>;
   let toastService: jasmine.SpyObj<ToastService>;
+  let trash: TrashServiceStub;
   const bob: BoardUser = {id: 5, nickname: 'bob', avatar: {color: 'blue', imageUrl: null}};
 
   beforeEach(fakeAsync(() => {
     state = createBoardState();
+    trash = trashServiceStub();
     ticketService = jasmine.createSpyObj<TicketService>('TicketService', ['list', 'createTicket', 'reorderBacklog', 'moveTicket', 'deleteTicket', 'bulkUpdate', 'bulkDelete']);
     ticketService.list.and.callFake(fakeTicketList(state));
     favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['forgetItem']);
@@ -46,7 +50,7 @@ describe('ListTabComponent', () => {
       toastService,
       teamService,
       jasmine.createSpyObj<ProjectService>('ProjectService', ['getProject']),
-      trashServiceStub().service
+      trash.service
     );
     component.ngOnInit();
     flushMicrotasks();
@@ -181,16 +185,17 @@ describe('ListTabComponent', () => {
     expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: PHRASES.BULK_ACTION_FAILED});
   }));
 
-  it('bulk deletes the selected tickets after confirmation and forgets their favorites', fakeAsync(() => {
-    ticketService.bulkDelete.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
+  it('bulk deletes the selected tickets at once, forgets their favorites and counts them in the toast', fakeAsync(() => {
+    ticketService.bulkDelete.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1, 2]}));
     component.setSelected(loaded(3), true);
     component.setSelected(loaded(2), true);
-    component.requestBulkDelete();
 
-    component.handleConfirmBulkDelete();
+    component.requestBulkDelete();
+    component.requestBulkDelete();
     flushMicrotasks();
 
-    expect(ticketService.bulkDelete).toHaveBeenCalledWith('abc', 9, [3, 2]);
+    expect(ticketService.bulkDelete).toHaveBeenCalledOnceWith('abc', 9, [3, 2]);
+    expect(trash.service.notifyTrashed).toHaveBeenCalledWith('abc', [1, 2], {ticketCount: 2});
     expect(visibleIds()).toEqual([[4], [1], []]);
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Ticket', 3);
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Ticket', 2);
@@ -300,11 +305,13 @@ describe('ListTabComponent', () => {
   it('deletes a ticket, forgets its favorite and drops it from the selection', fakeAsync(() => {
     ticketService.deleteTicket.and.returnValue(Promise.resolve({success: true, trashEntryIds: [1]}));
     component.setSelected(loaded(4), true);
-    component.requestDelete(loaded(4));
 
-    component.handleConfirmDelete();
+    component.requestDelete(loaded(4));
+    component.requestDelete(loaded(4));
     flushMicrotasks();
 
+    expect(ticketService.deleteTicket).toHaveBeenCalledTimes(1);
+    expect(trash.service.notifyTrashed).toHaveBeenCalledWith('abc', [1], {title: 'Ticket 4'});
     expect(backlogIds()).toEqual([3]);
     expect(visibleIds()[0]).toEqual([3]);
     expect(favoriteService.forgetItem).toHaveBeenCalledWith('Ticket', 4);
@@ -417,6 +424,52 @@ describe('ListTabComponent', () => {
 
     expect(ticketService.list).toHaveBeenCalledTimes(3);
   }));
+});
+
+describe('ListTabComponent selection bar', () => {
+  beforeEach(async () => {
+    const state = createBoardState();
+    const ticketService = jasmine.createSpyObj<TicketService>('TicketService', ['list']);
+    ticketService.list.and.callFake(fakeTicketList(state));
+    const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['fetchTeamMembers']);
+    teamService.fetchTeamMembers.and.returnValue(Promise.resolve([]));
+    const favoriteService = jasmine.createSpyObj<FavoriteService>('FavoriteService', ['isFavorited', 'toggle', 'forgetItem']);
+    favoriteService.isFavorited.and.returnValue(false);
+
+    await TestBed.configureTestingModule({
+      imports: [ListTabComponent],
+      providers: [
+        provideRouter([]),
+        provideTranslateService(),
+        {provide: BoardPageStateService, useValue: state},
+        {provide: TicketService, useValue: ticketService},
+        {provide: FavoriteService, useValue: favoriteService},
+        {provide: ToastService, useValue: jasmine.createSpyObj<ToastService>('ToastService', ['show'])},
+        {provide: TeamService, useValue: teamService},
+        {provide: ProjectService, useValue: jasmine.createSpyObj<ProjectService>('ProjectService', ['getProject'])},
+        {provide: TrashService, useValue: trashServiceStub().service},
+      ],
+    }).compileComponents();
+  });
+
+  it('renders the bar after every group, so selecting inserts nothing above the rows', async () => {
+    const fixture = TestBed.createComponent(ListTabComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    const listTab = fixture.nativeElement.querySelector('.listTab') as HTMLElement;
+    expect(listTab.querySelector('app-ticket-selection-bar')).toBeNull();
+
+    (listTab.querySelector('app-list-row .listRow__checkbox input') as HTMLInputElement).click();
+    fixture.detectChanges();
+
+    const bar = listTab.querySelector('app-ticket-selection-bar');
+    expect(bar).not.toBeNull();
+    expect(listTab.lastElementChild).toBe(bar);
+    const groups = Array.from(listTab.querySelectorAll('.listTab__group'));
+    expect(groups.length).toBe(3);
+    groups.forEach((group) => expect(group.compareDocumentPosition(bar!) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy());
+  });
 });
 
 describe('board tab routes', () => {

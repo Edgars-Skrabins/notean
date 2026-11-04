@@ -6,11 +6,10 @@ import {PHRASES} from '@config/phrases';
 import {IconName} from '@components/icon/icon.component';
 import {IconButtonComponent} from '@components/icon-button/icon-button.component';
 import {DeleteFolderDialogComponent} from '@components/delete-folder-dialog/delete-folder-dialog.component';
-import {ConfirmDialogComponent} from '@components/confirm-dialog/confirm-dialog.component';
 import {FavoriteStarComponent} from '@components/favorite-star/favorite-star.component';
 import {LoadMoreComponent} from '@components/load-more/load-more.component';
 import {ItemTreeRowComponent} from '@components/item-tree-row/item-tree-row.component';
-import {MenuButtonComponent} from '@components/menu-button/menu-button.component';
+import {SplitButtonComponent} from '@components/split-button/split-button.component';
 import {MenuButtonOption} from '@models/menu-button.model';
 import {FolderDeleteMode} from "@models/folder.model";
 import {compareByTitle} from '@utils/titleOrder';
@@ -65,11 +64,10 @@ type DropTarget =
     TranslatePipe,
     IconButtonComponent,
     DeleteFolderDialogComponent,
-    ConfirmDialogComponent,
     FavoriteStarComponent,
     LoadMoreComponent,
     ItemTreeRowComponent,
-    MenuButtonComponent,
+    SplitButtonComponent,
     CdkDrag
   ],
   templateUrl: './item-tree.component.html',
@@ -88,7 +86,6 @@ export class ItemTreeComponent implements OnChanges {
   @Input() itemLabel = '';
   @Input({required: true}) itemIcon!: IconName;
   @Input({required: true}) favoritableType!: 'Page' | 'Diagram';
-  @Input({required: true}) deleteItemConfirmMessage!: string;
   @Input() canChangeFolderProject = false;
   @Input() levels: ReadonlyMap<ItemLevel, ItemLevelState> = new Map();
 
@@ -108,7 +105,6 @@ export class ItemTreeComponent implements OnChanges {
   rootFolders: BuiltFolder[] = [];
   rootItems: TreeItem[] = [];
   folderPendingDeletion: TreeFolder | null = null;
-  itemPendingDeletion: TreeItem | null = null;
   renamingFolderId: number | null = null;
   renameDraftTitle = '';
   renamingItemId: number | null = null;
@@ -183,20 +179,7 @@ export class ItemTreeComponent implements OnChanges {
   }
 
   requestDeleteItem(item: TreeItem) {
-    this.itemPendingDeletion = item;
-  }
-
-  handleDeleteItemConfirmed() {
-    if (!this.itemPendingDeletion) {
-      return;
-    }
-
-    this.deleteItem.emit({itemId: this.itemPendingDeletion.id});
-    this.itemPendingDeletion = null;
-  }
-
-  handleDeleteItemCancelled() {
-    this.itemPendingDeletion = null;
+    this.deleteItem.emit({itemId: item.id});
   }
 
   startRenameFolder(folder: TreeFolder) {

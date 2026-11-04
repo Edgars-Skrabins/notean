@@ -7,30 +7,34 @@
     <span class="authCornerLink__arrow" aria-hidden="true">&rarr;</span>
   </button>
 
-  <div class="authField">
-    <label class="authField__label" for="emailInput">{{ PHRASES.EMAIL | translate }}</label>
-    <input
-      [(ngModel)]="email"
-      [placeholder]="PHRASES.ENTER_EMAIL | translate"
-      id="emailInput"
-      (keydown.enter)="handleRegister()"
-      type="email"
-    />
-  </div>
+  <form class="authForm" novalidate (ngSubmit)="handleRegister()">
+    <div class="authField">
+      <label class="authField__label" for="emailInput">{{ PHRASES.EMAIL | translate }}</label>
+      <input
+        [(ngModel)]="email"
+        name="email"
+        autocomplete="username"
+        [placeholder]="PHRASES.ENTER_EMAIL | translate"
+        id="emailInput"
+        type="email"
+      />
+    </div>
 
-  <div class="authField">
-    <label class="authField__label" for="passwordInput">{{ PHRASES.PASSWORD | translate }}</label>
-    <input
-      [(ngModel)]="password"
-      [placeholder]="PHRASES.ENTER_PASSWORD | translate"
-      id="passwordInput"
-      (keydown.enter)="handleRegister()"
-      type="password"
-      aria-describedby="passwordHint"
-    />
-    <span class="authField__hint" id="passwordHint">{{ PHRASES.PASSWORD_HINT | translate }}</span>
-  </div>
+    <div class="authField">
+      <label class="authField__label" for="passwordInput">{{ PHRASES.PASSWORD | translate }}</label>
+      <input
+        [(ngModel)]="password"
+        name="password"
+        autocomplete="new-password"
+        [placeholder]="PHRASES.ENTER_PASSWORD | translate"
+        id="passwordInput"
+        type="password"
+        aria-describedby="passwordHint"
+      />
+      <span class="authField__hint" id="passwordHint">{{ PHRASES.PASSWORD_HINT | translate }}</span>
+    </div>
 
-  <button class="authButton" [disabled]="isSubmitting" (click)="handleRegister()">{{ PHRASES.REGISTER | translate }}</button>
-  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+    <button type="submit" class="authButton" [disabled]="isSubmitting">{{ PHRASES.REGISTER | translate }}</button>
+  </form>
+  <p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 </app-auth-card>

@@ -61,9 +61,36 @@
   margin: 0 0 var(--space-3);
 }
 
+.richTextEditor__host .ProseMirror > :first-child {
+  margin-top: 0;
+}
+
+.richTextEditor__host h1 {
+  margin: var(--space-5) 0 var(--space-2);
+  font-size: var(--font-2xl);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
 .richTextEditor__host h2 {
   margin: var(--space-4) 0 var(--space-2);
   font-size: var(--font-xl);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.richTextEditor__host h3 {
+  margin: var(--space-4) 0 var(--space-2);
+  font-size: var(--font-lg);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.richTextEditor__host h4,
+.richTextEditor__host h5,
+.richTextEditor__host h6 {
+  margin: var(--space-3) 0 var(--space-1);
+  font-size: var(--font-md);
   font-weight: 700;
 }
 

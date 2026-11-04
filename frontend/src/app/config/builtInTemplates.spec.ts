@@ -10,7 +10,10 @@ describe('BUILT_IN_TEMPLATES', () => {
     const pages = BUILT_IN_TEMPLATES.filter((template) => template.kind === 'page');
 
     expect(pages.length).toBe(4);
-    pages.forEach((template) => expect(template.content).toMatch(/^<h1>/));
+    pages.forEach((template) => {
+      expect(template.content).toMatch(/^<(p|h2)>/);
+      expect(template.content).not.toContain('<h1');
+    });
   });
 
   it('ships diagram templates whose edges connect existing nodes', () => {

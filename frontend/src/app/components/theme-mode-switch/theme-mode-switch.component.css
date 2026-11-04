@@ -12,6 +12,9 @@
 }
 
 .themeModeSwitch__option {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
   min-height: var(--control-height-sm);
   padding: 0 var(--space-4);
   background: none;
@@ -35,7 +38,7 @@
   color: var(--color-text-heading);
 }
 
-.themeModeSwitch__option:focus-visible {
+.themeModeSwitch__option:has(:focus-visible) {
   outline: 2px solid var(--color-input-border-focus);
   outline-offset: 1px;
 }

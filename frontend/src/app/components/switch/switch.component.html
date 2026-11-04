@@ -1,0 +1,13 @@
+<label class="switch" [class.switch--disabled]="disabled">
+  <input
+    type="checkbox"
+    role="switch"
+    class="switch__input"
+    [checked]="checked"
+    [disabled]="disabled"
+    [attr.aria-label]="ariaLabel || null"
+    (change)="handleChange($any($event.target).checked)"
+  />
+  <span class="switch__label"><ng-content></ng-content></span>
+  <span class="switch__track" aria-hidden="true"><span class="switch__thumb"></span></span>
+</label>

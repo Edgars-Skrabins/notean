@@ -7,6 +7,6 @@
     [attr.aria-label]="ariaLabel || null"
     (change)="handleChange($any($event.target).checked)"
   />
-  <span class="checkbox__circle"></span>
+  <span class="checkbox__box"><app-icon class="checkbox__check" name="check" aria-hidden="true"></app-icon></span>
   <span class="checkbox__label"><ng-content></ng-content></span>
 </label>

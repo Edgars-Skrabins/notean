@@ -13,13 +13,15 @@ describe('ThemePickerComponent', () => {
     fixture.componentRef.setInput('theme', 'coffee');
     fixture.componentRef.setInput('resolvedMode', 'light');
     fixture.detectChanges();
-    const cards = Array.from(fixture.nativeElement.querySelectorAll('.themePicker__card')) as HTMLButtonElement[];
-    return {fixture, cards};
+    const cards = Array.from(fixture.nativeElement.querySelectorAll('.themePicker__card')) as HTMLLabelElement[];
+    const radios = Array.from(fixture.nativeElement.querySelectorAll('input[type="radio"]')) as HTMLInputElement[];
+    return {fixture, cards, radios};
   }
 
-  it('renders the nine themes in order with the selected one pressed', async () => {
-    const {cards} = await render();
+  it('renders the nine themes in order as a radio group with the selected one checked', async () => {
+    const {fixture, cards, radios} = await render();
 
+    expect(fixture.nativeElement.querySelector('.themePicker').getAttribute('role')).toBe('radiogroup');
     expect(cards.length).toBe(9);
     expect(cards.map((card) => card.querySelector('.themePicker__name')?.textContent?.trim())).toEqual([
       'THEME_PURPLE_HAZE',
@@ -32,8 +34,9 @@ describe('ThemePickerComponent', () => {
       'THEME_WINTER_FOREST',
       'THEME_NATURE',
     ]);
-    expect(cards.filter((card) => card.getAttribute('aria-pressed') === 'true').length).toBe(1);
-    expect(cards[3].getAttribute('aria-pressed')).toBe('true');
+    expect(radios.length).toBe(9);
+    expect(radios.filter((radio) => radio.checked).length).toBe(1);
+    expect(radios[3].checked).toBeTrue();
   });
 
   it('shows a check only on the selected card', async () => {
@@ -50,6 +53,17 @@ describe('ThemePickerComponent', () => {
 
     expect(preview.getAttribute('data-theme')).toBe('terminal');
     expect(preview.getAttribute('data-mode')).toBe('light');
+  });
+
+  it('emits the theme of a newly checked radio', async () => {
+    const {fixture, radios} = await render();
+    const emitted: ThemeKey[] = [];
+    fixture.componentInstance.themeChange.subscribe((theme) => emitted.push(theme));
+
+    radios[1].checked = true;
+    radios[1].dispatchEvent(new Event('change'));
+
+    expect(emitted).toEqual(['midnight_purple']);
   });
 
   it('emits the clicked theme key, but not for the selected one', async () => {

@@ -1,8 +1,8 @@
-<div class="newProjectDialogOverlay">
+<div class="newProjectDialogOverlay" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
   <div class="newProjectDialogOverlay__backdrop" (click)="cancelled.emit()"></div>
 
-  <div class="newProjectDialog">
-    <h3 class="newProjectDialog__title">{{ PHRASES.NEW_PROJECT | translate }}</h3>
+  <div class="newProjectDialog" role="dialog" aria-modal="true" [attr.aria-labelledby]="titleId" tabindex="-1">
+    <h3 class="newProjectDialog__title" [id]="titleId">{{ PHRASES.NEW_PROJECT | translate }}</h3>
 
     <app-project-form [params]="params" [members]="members" [nameError]="nameError" (paramsChange)="params = $event"></app-project-form>
 
