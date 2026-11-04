@@ -1,4 +1,4 @@
-import {fakeAsync, flushMicrotasks, TestBed} from '@angular/core/testing';
+import {TestBed} from '@angular/core/testing';
 import {provideRouter, Router} from "@angular/router";
 import {BehaviorSubject} from "rxjs";
 import {provideTranslateService} from "@ngx-translate/core";
@@ -17,16 +17,12 @@ import {TemplateService} from "@services/template.service";
 describe('SidebarBoardsComponent', () => {
   let component: SidebarBoardsComponent;
   let router: jasmine.SpyObj<Router>;
-  let boardService: jasmine.SpyObj<BoardService>;
   let boardListService: jasmine.SpyObj<BoardListService>;
 
   beforeEach(() => {
     router = jasmine.createSpyObj<Router>('Router', ['navigate']);
-    boardService = jasmine.createSpyObj<BoardService>('BoardService', ['createBoard']);
     boardListService = jasmine.createSpyObj<BoardListService>('BoardListService', ['load', 'move', 'add', 'toggleOpen']);
-    const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeamCode']);
-    teamService.getCurrentTeamCode.and.returnValue('abc');
-    component = new SidebarBoardsComponent(router, boardListService, boardService, teamService, projectFilterStub(4).service);
+    component = new SidebarBoardsComponent(router, boardListService);
   });
 
   it('loads the boards on init', () => {
@@ -48,42 +44,14 @@ describe('SidebarBoardsComponent', () => {
     expect(boardListService.move).toHaveBeenCalledOnceWith(2, 0);
   });
 
-  it('creates a board, adds it to the top and opens it', fakeAsync(() => {
-    boardService.createBoard.and.returnValue(Promise.resolve({success: true, board: boardDetail()}));
+  it('closes the create dialog and opens the created board', () => {
     component.handleCreate();
 
-    component.handleCreateConfirmed({title: 'Sprint 12'});
-    flushMicrotasks();
+    component.handleCreated(boardDetail());
 
     expect(component.isCreateDialogOpen).toBeFalse();
-    expect(boardService.createBoard).toHaveBeenCalledWith('abc', 'Sprint 12', 4, null);
-    expect(boardListService.add).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith([AppRoutes.DASHBOARD, AppRoutes.BOARDS, 9, AppRoutes.KANBAN]);
-  }));
-
-  it('creates the board from the chosen template', fakeAsync(() => {
-    boardService.createBoard.and.returnValue(Promise.resolve({success: true, board: boardDetail()}));
-    component.handleCreate();
-    component.selectedTemplateId = 5;
-
-    component.handleCreateConfirmed({title: 'Roadmap'});
-    flushMicrotasks();
-
-    expect(boardService.createBoard).toHaveBeenCalledWith('abc', 'Roadmap', 4, 5);
-  }));
-
-  it('keeps the dialog open with the error when the template no longer exists', fakeAsync(() => {
-    boardService.createBoard.and.returnValue(Promise.resolve({success: false, code: 'TEMPLATE_NOT_FOUND'}));
-    component.handleCreate();
-    component.selectedTemplateId = 5;
-
-    component.handleCreateConfirmed({title: 'Roadmap'});
-    flushMicrotasks();
-
-    expect(component.isCreateDialogOpen).toBeTrue();
-    expect(component.createErrorMessage).toBe('ERRORS.TEMPLATES.TEMPLATE_NOT_FOUND');
-    expect(boardListService.add).not.toHaveBeenCalled();
-  }));
+  });
 });
 
 describe('SidebarBoardsComponent create row', () => {
@@ -122,6 +90,6 @@ describe('SidebarBoardsComponent create row', () => {
     (fixture.nativeElement.querySelector('.sidebarList__create') as HTMLElement).click();
     fixture.detectChanges();
 
-    expect(fixture.nativeElement.querySelector('app-create-named-item-dialog')).not.toBeNull();
+    expect(fixture.nativeElement.querySelector('app-create-board-dialog')).not.toBeNull();
   });
 });

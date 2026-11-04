@@ -1,0 +1,9 @@
+<app-create-named-item-dialog
+  [dialogTitle]="PHRASES.NEW_BOARD | translate"
+  [defaultValue]="PHRASES.UNTITLED_BOARD | translate"
+  [errorMessage]="createErrorMessage"
+  (confirmed)="handleCreateConfirmed($event)"
+  (cancelled)="cancelled.emit()"
+>
+  <app-board-template-select [(templateId)]="selectedTemplateId"></app-board-template-select>
+</app-create-named-item-dialog>
