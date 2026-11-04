@@ -1,7 +1,7 @@
 # Accessible control names — Spec
 
 **Type:** bug fix
-**Status:** ready for implementation
+**Status:** in progress
 **Last updated:** 2026-11-04
 
 # Part 1 — Business logic and usage
@@ -138,8 +138,8 @@ Read Part 1 and Part 2 before starting. Work through the tasks in order and tick
 Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 assertions, 0 failures.
 
 ### A. Setup and phrases
-- [ ] A1. Add `node_modules/@angular/cdk/a11y-prebuilt.css` after `overlay-prebuilt.css` in both `styles` arrays of `frontend/angular.json`.
-- [ ] A2. Add `WRITE_COMMENT`, `PAGE_CONTENT`, `TICKET_DESCRIPTION`, `DIAGRAM_LABEL` and `EDIT_MESSAGE` to `config/phrases.ts` and to all 11 files in `frontend/public/assets/translations/`, each next to the key named in Part 2.2.
+- [x] A1. Add `node_modules/@angular/cdk/a11y-prebuilt.css` after `overlay-prebuilt.css` in both `styles` arrays of `frontend/angular.json`.
+- [x] A2. Add `WRITE_COMMENT`, `PAGE_CONTENT`, `TICKET_DESCRIPTION`, `DIAGRAM_LABEL` and `EDIT_MESSAGE` to `config/phrases.ts` and to all 11 files in `frontend/public/assets/translations/`, each next to the key named in Part 2.2.
 
 ### B. Text inputs
 - [ ] B1. Add the `[attr.aria-label]` bindings from the text-input table in Part 2.2 to all 16 inputs. Afterwards, rerun the sweep (every `<input>`/`<textarea>` in `src/app/**/*.html` that isn't a radio, checkbox or file input has an `aria-label`, `aria-labelledby`, a wrapping `<label>` or a `<label for>`). The only exception left is the create-named-item dialog input, which `dialog-accessibility` labels.
