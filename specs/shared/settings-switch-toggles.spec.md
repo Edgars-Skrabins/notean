@@ -1,7 +1,7 @@
 # Settings switch toggles — Spec
 
 **Type:** feature
-**Status:** ready for implementation
+**Status:** in progress
 **Last updated:** 2026-11-04
 
 # Part 1 — Business logic and usage
@@ -126,6 +126,8 @@ Generate with `npm run newcomponent switch` (no spec file is generated; add `swi
 6. **Label left, switch right, the whole row clickable** (2026-11-04). Reason: the settings-list layout users know from OS and app settings (Impeccable operate.md "earned familiarity"); the full-row hit target meets touch sizes without enlarging the track.
 7. **Colours: primary track and on-primary thumb when on, input background with a control border and muted thumb when off** (2026-11-04). Reason: accent for the "on" state only (Impeccable operate.md "Accent color used for … state indicators only"); the off state's boundary uses the control border so the control is visible (WCAG 1.4.11), and the thumb's position, not colour alone, carries the state (WCAG 1.4.1).
 8. **Fixed 4px checkbox radius** (2026-11-04). Reason: theme radii (`--radius-sm` up to 8px) would turn a 20px box back into a near-circle in some themes, recreating the bug.
+9. **Border token at implementation time: `--color-input-border`** (2026-11-04). `--color-control-border` was not in `THEME_TOKENS` on master when this was built, so the switch track and checkbox box use `--color-input-border`; whichever of this spec and `theme-contrast` merges second switches both to `--color-control-border`.
+10. **A switch flipped while a save fails is reverted with it** (2026-11-04). A failed save restores all three toggles to the saved values and drops any queued save, as Part 2.2 describes, so the user sees one consistent state and one error toast (Impeccable harden: predictable failure state).
 
 ### Decisions to double-check
 
@@ -138,23 +140,23 @@ Read Part 1 and Part 2 before starting. Work through the tasks in order and tick
 Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 assertions, 0 failures (master f15abdf, 2026-11-04).
 
 ### A. Switch component
-- [ ] A1. Generate `components/switch/` with `npm run newcomponent switch` and write the TS, HTML and CSS from Part 2.2 (pick the border token as described).
-- [ ] A2. Add `components/switch/switch.component.spec.ts` with the tests from Part 2.2. Run `npm test`.
+- [x] A1. Generate `components/switch/` with `npm run newcomponent switch` and write the TS, HTML and CSS from Part 2.2 (pick the border token as described).
+- [x] A2. Add `components/switch/switch.component.spec.ts` with the tests from Part 2.2. Run `npm test`.
 
 ### B. Square checkbox
-- [ ] B1. Update `checkbox.component.html` / `.ts` / `.css` to the square box with the check icon (Part 2.2) and rename any `checkbox__circle` references found by grep. Run `npm test` and `npm run build` (style budget).
+- [x] B1. Update `checkbox.component.html` / `.ts` / `.css` to the square box with the check icon (Part 2.2) and rename any `checkbox__circle` references found by grep. Run `npm test` and `npm run build` (style budget).
 
 ### C. Settings
-- [ ] C1. Add `ToggleSetting` to `models/settings.model.ts`; swap the three `app-checkbox` for `app-switch` in `settings.component.html` and the import in `settings.component.ts`.
-- [ ] C2. Implement the immediate save with the queue, the narrowed `hasUnsavedChanges` and the `settings$` skip in `settings.component.ts` (Part 2.2).
-- [ ] C3. Update `settings.component.spec.ts` as described in Part 2.2. Run `npm test`.
+- [x] C1. Add `ToggleSetting` to `models/settings.model.ts`; swap the three `app-checkbox` for `app-switch` in `settings.component.html` and the import in `settings.component.ts`.
+- [x] C2. Implement the immediate save with the queue, the narrowed `hasUnsavedChanges` and the `settings$` skip in `settings.component.ts` (Part 2.2).
+- [x] C3. Update `settings.component.spec.ts` as described in Part 2.2. Run `npm test`.
 
 ### D. Manage team
-- [ ] D1. Swap `app-checkbox` for `app-switch` in the features section of `manage-team.component.html` and the import in `manage-team.component.ts`; update the features test in `manage-team.component.spec.ts`. Run `npm test`.
+- [x] D1. Swap `app-checkbox` for `app-switch` in the features section of `manage-team.component.html` and the import in `manage-team.component.ts`; update the features test in `manage-team.component.spec.ts`. Run `npm test`.
 
 ### E. Docs
-- [ ] E1. Update `CLAUDE.md` (Components bullet and the Themes sentence) as described in Part 2.2.
+- [x] E1. Update `CLAUDE.md` (Components bullet and the Themes sentence) as described in Part 2.2.
 
 ### Z. Wrap-up
-- [ ] Z1. Full test runs (`npm test` in `frontend/`, `bin/rails test` in `backend/`) and `npm run build`; run `/Users/edgarsskrabins/.claude/skills/impeccable/scripts/impeccable detect --json frontend/src/app/components/switch frontend/src/app/components/checkbox` once and fix real findings.
-- [ ] Z2. Manual check in the running app, in Purple haze dark and Paper light: Settings shows three switch rows; flip one, reload the page, it kept its state; flip all three quickly, reload, all three kept; preview another theme, flip a switch, the preview stays and Save is still enabled; leave the page, the unsaved-changes question appears only because of the theme. With the API stopped, flip a switch: it flips back and the error toast shows. Manage team (as owner): feature switches turn a feature off and on with the toast. Tab to a switch and a checkbox: the focus ring is visible, Space toggles. Ticket filter, List tab rows, project members and the delete-folder dialog show square checkboxes with a check mark. Check 375px width: switch rows don't overflow.
+- [x] Z1. Full test runs (`npm test` in `frontend/`, `bin/rails test` in `backend/`) and `npm run build`; run `/Users/edgarsskrabins/.claude/skills/impeccable/scripts/impeccable detect --json frontend/src/app/components/switch frontend/src/app/components/checkbox` once and fix real findings.
+- [ ] Z2. Manual check in the running app, in Purple haze dark and Paper light: Settings shows three switch rows; flip one, reload the page, it kept its state; flip all three quickly, reload, all three kept; preview another theme, flip a switch, the preview stays and Save is still enabled; leave the page, the unsaved-changes question appears only because of the theme. With the API stopped, flip a switch: it flips back and the error toast shows. Manage team (as owner): feature switches turn a feature off and on with the toast. Tab to a switch and a checkbox: the focus ring is visible, Space toggles. Ticket filter, List tab rows, project members and the delete-folder dialog show square checkboxes with a check mark. Check 375px width: switch rows don't overflow. (2026-11-04: not done yet; the preview tool's limit of 5 dev servers per folder was taken by other sessions' servers.)
