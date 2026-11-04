@@ -16,7 +16,7 @@ import {ButtonComponent} from "@components/button/button.component";
 import {ItemTreeComponent} from "@components/item-tree/item-tree.component";
 import {CreateNamedItemDialogComponent} from "@components/create-named-item-dialog/create-named-item-dialog.component";
 import {FolderProjectDialogComponent} from "@components/folder-project-dialog/folder-project-dialog.component";
-import {MenuButtonComponent} from "@components/menu-button/menu-button.component";
+import {SplitButtonComponent} from "@components/split-button/split-button.component";
 import {ItemTabsComponent} from "@components/item-tabs/item-tabs.component";
 import {TemplatePickerDialogComponent} from "@components/template-picker-dialog/template-picker-dialog.component";
 import {FolderedListPageComponent} from "../foldered-list-page.base";
@@ -32,7 +32,7 @@ import {FolderedListPageComponent} from "../foldered-list-page.base";
     ItemTreeComponent,
     CreateNamedItemDialogComponent,
     FolderProjectDialogComponent,
-    MenuButtonComponent,
+    SplitButtonComponent,
     ItemTabsComponent,
     TemplatePickerDialogComponent
   ],
