@@ -178,10 +178,6 @@ textarea {
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast), background var(--transition-fast);
 }
 
-.authField input::placeholder {
-  color: var(--color-text-faint);
-}
-
 .authField__hint {
   color: var(--color-text-faint);
   font-size: var(--font-xs);
@@ -354,6 +350,12 @@ textarea {
 
 .textInput:focus {
   border-color: var(--color-input-border-focus);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--color-text-faint);
+  opacity: 1;
 }
 
 .capsLabel {

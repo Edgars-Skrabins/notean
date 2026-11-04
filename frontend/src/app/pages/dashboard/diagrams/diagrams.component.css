@@ -20,10 +20,6 @@
   transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
 }
 
-.diagramsView__search::placeholder {
-  color: var(--color-text-faint);
-}
-
 .diagramsView__search:focus {
   border-color: var(--color-input-border-focus);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-input-border-focus) 18%, transparent);

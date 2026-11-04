@@ -258,8 +258,8 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 
 ### D. Using the tokens
 - [x] D1. Switch the control-border rules listed in Part 2.2 (styles.css `.authField input` and `.textInput`, the component rules, the emoji picker variable, the checkbox's unchecked border per Parallel work), then grep for remaining text-field borders as described and switch those that qualify.
-- [ ] D2. Add the global `input::placeholder, textarea::placeholder` rule to `styles.css` next to `.textInput`, and delete the five local placeholder rules named in Part 2.2.
-- [ ] D3. Check the style budget: `npm run build` shows no component style over 4kB.
+- [x] D2. Add the global `input::placeholder, textarea::placeholder` rule to `styles.css` next to `.textInput`, and delete the five local placeholder rules named in Part 2.2.
+- [x] D3. Check the style budget: `npm run build` shows no component style over 4kB.
 
 ### E. Avatar colours
 - [ ] E1. Change red, orange, green and blue in `config/avatarColors.ts` as in Part 2.2; update `utils/mentionChip.spec.ts`'s expected red.
