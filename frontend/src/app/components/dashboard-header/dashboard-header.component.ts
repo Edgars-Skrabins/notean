@@ -82,12 +82,12 @@ export class DashboardHeaderComponent {
 
   handleGoToProfile() {
     this.closeMenu();
-    this.navigationService.navigate(AppRoutes.PROFILE);
+    this.navigationService.navigate(AppRoutes.DASHBOARD, AppRoutes.PROFILE);
   }
 
   handleGoToSettings() {
     this.closeMenu();
-    this.navigationService.navigate(AppRoutes.SETTINGS);
+    this.navigationService.navigate(AppRoutes.DASHBOARD, AppRoutes.SETTINGS);
   }
 
   handleGoToTeams() {
@@ -97,7 +97,7 @@ export class DashboardHeaderComponent {
 
   handleGoToManageTeam() {
     this.closeMenu();
-    this.navigationService.navigate(AppRoutes.MANAGE_TEAM);
+    this.navigationService.navigate(AppRoutes.DASHBOARD, AppRoutes.MANAGE_TEAM);
   }
 
   handleLogout() {

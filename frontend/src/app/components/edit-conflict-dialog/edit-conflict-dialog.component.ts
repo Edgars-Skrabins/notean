@@ -1,12 +1,15 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
+import {CdkTrapFocus} from '@angular/cdk/a11y';
 import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ButtonComponent} from '@components/button/button.component';
 import {EscapeService} from '@services/escape.service';
+import {uniqueId} from '@utils/uniqueId';
 
 @Component({
   selector: 'app-edit-conflict-dialog',
   imports: [
+    CdkTrapFocus,
     TranslatePipe,
     ButtonComponent
   ],
@@ -16,6 +19,7 @@ import {EscapeService} from '@services/escape.service';
 })
 export class EditConflictDialogComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
+  protected readonly messageId = uniqueId('editConflictDialog');
 
   @Output() loadLatest = new EventEmitter<void>();
   @Output() overwrite = new EventEmitter<void>();

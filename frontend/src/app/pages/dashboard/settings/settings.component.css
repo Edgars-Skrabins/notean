@@ -1,18 +1,9 @@
 .settings {
-  width: 560px;
-  max-width: calc(100vw - 48px);
-  box-sizing: border-box;
-  color: var(--color-text-heading);
-  background: linear-gradient(160deg, var(--color-card-bg) 0%, var(--color-card-bg-alt) 100%);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
-  padding: var(--space-5);
+  max-width: 640px;
 }
 
 .settings__title {
   margin: 0 0 var(--space-5);
-  font-size: var(--font-xl);
-  font-weight: 700;
 }
 
 .settings__appearance {

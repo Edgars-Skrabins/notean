@@ -10,6 +10,7 @@
         class="boardPage__titleInput"
         [(ngModel)]="renameDraft"
         [maxlength]="TITLE_MAX_LENGTH"
+        [attr.aria-label]="PHRASES.RENAME_BOARD | translate"
         (keydown.enter)="commitRename()"
         (keydown.escape)="cancelRename(); $event.preventDefault()"
         (blur)="commitRename()"
