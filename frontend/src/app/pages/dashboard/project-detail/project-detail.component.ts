@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {DatePipe, NgFor, NgIf} from '@angular/common';
+import {AsyncPipe, DatePipe, NgFor, NgIf} from '@angular/common';
 import {Subscription} from 'rxjs';
 import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
@@ -30,6 +30,8 @@ import {AppRoutes} from "../../../app/app-routes.enum";
 import {EscapeService} from "@services/escape.service";
 import {CopyLinkService} from "@services/copy-link.service";
 import {MentionContentComponent} from "@components/mention-content/mention-content.component";
+import {EmptyStateComponent} from "@components/empty-state/empty-state.component";
+import {ProjectFilterService} from "@services/project-filter.service";
 
 export interface ProjectItem {
   id: number;
@@ -61,12 +63,14 @@ function newestFirst(items: ProjectItem[]): ProjectItem[] {
 @Component({
   selector: 'app-project-detail',
   imports: [
+    AsyncPipe,
     DatePipe,
     NgFor,
     NgIf,
     TranslatePipe,
     AvatarComponent,
     ButtonComponent,
+    EmptyStateComponent,
     IconButtonComponent,
     LoadMoreComponent,
     ProjectItemRowComponent,
@@ -87,6 +91,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChan
   alertMessage = '';
   features: TeamFeatures = ALL_FEATURES_ENABLED;
   itemsLoaded = false;
+  hasItemsLoadError = false;
   isSettingsOpen = false;
   groups: ProjectItemGroup[] = [
     {feature: 'pages', label: PHRASES.DOCUMENT_PAGES, icon: 'page', items: [], hasMore: false, isLoading: false},
@@ -111,7 +116,8 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChan
     private toastService: ToastService,
     private navigationService: NavigationService,
     private escapeService: EscapeService,
-    private copyLinkService: CopyLinkService
+    private copyLinkService: CopyLinkService,
+    protected projectFilterService: ProjectFilterService
   ) {
   }
 
@@ -229,7 +235,12 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChan
     return this.settingsDialog?.confirmLeave() ?? true;
   }
 
+  handleSelectThisProject() {
+    this.projectFilterService.select(this.projectId);
+  }
+
   private loadItems() {
+    this.hasItemsLoadError = false;
     Promise.all(this.groups.map((group) => this.teamService.isFeatureEnabled(group.feature) ? this.loadGroupPage(group.feature, 0) : Promise.resolve(null)))
       .then((pages) => {
         this.groups = this.groups.map((group, index) => ({...group, items: pages[index]?.items ?? [], hasMore: pages[index]?.hasMore ?? false}));
@@ -257,6 +268,7 @@ export class ProjectDetailComponent implements OnInit, OnDestroy, HasUnsavedChan
   }
 
   private failedPage(code: ErrorCode): null {
+    this.hasItemsLoadError = true;
     this.toastService.show({type: ToastType.ERROR, message: errorPhrase(code)});
     return null;
   }

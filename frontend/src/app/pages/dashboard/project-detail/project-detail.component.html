@@ -22,7 +22,17 @@
         <app-load-more *ngIf="group.hasMore" [loading]="group.isLoading" (pressed)="handleLoadMore(group)"></app-load-more>
       </div>
 
-      <p class="projectDetail__empty" *ngIf="itemsLoaded && !visibleGroups.length">{{ PHRASES.NO_PROJECT_ITEMS | translate }}</p>
+      <app-empty-state
+        *ngIf="itemsLoaded && !hasItemsLoadError && !visibleGroups.length"
+        [title]="PHRASES.NO_PROJECT_ITEMS"
+        [hint]="PHRASES.NO_PROJECT_ITEMS_HINT"
+      >
+        <app-button
+          *ngIf="(projectFilterService.selectedProjectId$ | async) !== project.id"
+          variant="ghost"
+          (pressed)="handleSelectThisProject()"
+        >{{ PHRASES.SELECT_THIS_PROJECT | translate }}</app-button>
+      </app-empty-state>
     </section>
   </div>
 

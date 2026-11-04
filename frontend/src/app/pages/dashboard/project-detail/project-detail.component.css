@@ -61,12 +61,6 @@
   letter-spacing: 0.06em;
 }
 
-.projectDetail__empty {
-  margin: 0;
-  color: var(--color-text-muted);
-  font-size: var(--font-md);
-}
-
 .projectDetail__actions {
   display: flex;
   gap: var(--space-2);
