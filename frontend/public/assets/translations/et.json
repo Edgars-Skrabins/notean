@@ -217,12 +217,18 @@
   "FILTER_ASSIGNEE": "Täitja",
   "FILTER_STATUS": "Olek",
   "CLEAR_FILTERS": "Tühjenda",
-  "SELECTED_COUNT": "{{count}} valitud",
+  "SELECTED_COUNT": {
+    "one": "{{count}} valitud",
+    "other": "{{count}} valitud"
+  },
   "SET_STATUS": "Määra olek",
   "ASSIGN": "Määra",
   "UNASSIGN": "Eemalda määramine",
   "CLEAR_SELECTION": "Tühista valik",
-  "CONFIRM_DELETE_TICKETS": "Kas teisaldada {{count}} ülesannet prügikasti?",
+  "CONFIRM_DELETE_TICKETS": {
+    "one": "Kas teisaldada {{count}} ülesanne prügikasti?",
+    "other": "Kas teisaldada {{count}} ülesannet prügikasti?"
+  },
   "SELECT_TICKET": "Vali ülesanne",
   "SELECT_GROUP": "Vali kõik grupis",
   "COLLAPSE_GROUP": "Ahenda grupp",
@@ -237,8 +243,10 @@
   "CHANGE_PRIORITY_COLOR": "Muuda värvi",
   "DELETE_PRIORITY": "Kustuta prioriteet",
   "REORDER_PRIORITY": "Lohista ümberjärjestamiseks",
-  "CONFIRM_DELETE_PRIORITY": "Kas kustutada '{{name}}'? {{count}} ülesandel ei ole enam prioriteeti",
-  "CONFIRM_DELETE_PRIORITY_ONE": "Kas kustutada '{{name}}'? 1 ülesandel ei ole enam prioriteeti",
+  "CONFIRM_DELETE_PRIORITY": {
+    "one": "Kas kustutada '{{name}}'? {{count}} ülesandel ei ole enam prioriteeti",
+    "other": "Kas kustutada '{{name}}'? {{count}} ülesandel ei ole enam prioriteeti"
+  },
   "CONFIRM_DELETE_UNUSED_PRIORITY": "Kas kustutada '{{name}}'?",
   "TAGS": "Sildid",
   "ADD_TAG": "Lisa silt",
@@ -250,8 +258,10 @@
   "NO_TAGS": "Silte pole",
   "NO_TAGS_YET": "Silte veel pole",
   "SEARCH_TAGS": "Otsi silte",
-  "CONFIRM_DELETE_TAG": "Eemaldada '{{name}}' {{count}} piletilt?",
-  "CONFIRM_DELETE_TAG_ONE": "Eemaldada '{{name}}' 1 piletilt?",
+  "CONFIRM_DELETE_TAG": {
+    "one": "Eemaldada '{{name}}' {{count}} piletilt?",
+    "other": "Eemaldada '{{name}}' {{count}} piletilt?"
+  },
   "CONFIRM_DELETE_UNUSED_TAG": "Kustutada '{{name}}'?",
   "TAG_MORE": "+{{count}}",
   "MOVE_TO_BOARD": "Teisalda tahvlile",
@@ -292,7 +302,10 @@
   "PROJECT_DESCRIPTION": "Kirjeldus",
   "PROJECT_OWNER": "Omanik",
   "PROJECT_MEMBERS": "Liikmed",
-  "MEMBER_COUNT": "{{count}} liiget",
+  "MEMBER_COUNT": {
+    "one": "{{count}} liige",
+    "other": "{{count}} liiget"
+  },
   "NO_PROJECTS_YET": "Projekte veel pole.",
   "CREATE_PROJECT_HINT": "Loo projekt, et rühmitada lehti, diagramme ja tahvleid.",
   "PROJECT_SAVED": "Projekt salvestatud",
@@ -342,7 +355,10 @@
   "SHOW_RESOLVED": "Näita lahendatuid",
   "RESOLVE": "Lahenda",
   "REOPEN": "Ava uuesti",
-  "COMMENT_REPLIES": "Vastuseid: {{count}}",
+  "COMMENT_REPLIES": {
+    "one": "{{count}} vastus",
+    "other": "{{count}} vastust"
+  },
   "COMMENT_ACTIONS": "Kommentaari toimingud",
   "TRASH": "Prügikast",
   "TRASH_EMPTY": "Prügikast on tühi",
@@ -356,10 +372,14 @@
   "EMPTY_TRASH": "Tühjenda prügikast",
   "CONFIRM_EMPTY_TRASH": "Kas kustutada kõik prügikastis jäädavalt? Seda ei saa tagasi võtta.",
   "TRASH_DELETED_BY": "Kustutas {{name}}",
-  "TRASH_DAYS_LEFT": "Jäänud {{count}} päeva",
-  "TRASH_DAYS_LEFT_ONE": "Jäänud 1 päev",
-  "TRASH_ITEMS_INSIDE": "Sees {{count}} üksust",
-  "TRASH_ITEMS_INSIDE_ONE": "Sees 1 üksus",
+  "TRASH_DAYS_LEFT": {
+    "one": "Jäänud {{count}} päev",
+    "other": "Jäänud {{count}} päeva"
+  },
+  "TRASH_ITEMS_INSIDE": {
+    "one": "Sees {{count}} üksus",
+    "other": "Sees {{count}} üksust"
+  },
   "TRASH_BOARD_IN_TRASH_HINT": "Tahvel on prügikastis",
   "TRASH_TYPE_ALL": "Kõik tüübid",
   "TRASH_TYPE_FOLDERS": "Kaustad",
@@ -374,7 +394,10 @@
   "STORAGE_USAGE": "Salvestusruum: kasutatud {{used}} / {{quota}}",
   "UPLOADING": "Üleslaadimine {{progress}}%",
   "CLOSE_PREVIEW": "Sulge eelvaade",
-  "ATTACHMENT_COUNT": "{{count}} manust",
+  "ATTACHMENT_COUNT": {
+    "one": "{{count}} manus",
+    "other": "{{count}} manust"
+  },
   "DROP_FILES_HERE": "Lohista failid siia, et lisada",
   "ACTIVITY": "Tegevus",
   "ACTIVITY_ALL": "Kõik",

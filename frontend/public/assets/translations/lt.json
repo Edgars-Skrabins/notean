@@ -217,12 +217,22 @@
   "FILTER_ASSIGNEE": "Vykdytojas",
   "FILTER_STATUS": "Būsena",
   "CLEAR_FILTERS": "Išvalyti",
-  "SELECTED_COUNT": "Pasirinkta: {{count}}",
+  "SELECTED_COUNT": {
+    "one": "Pasirinkta: {{count}}",
+    "few": "Pasirinkta: {{count}}",
+    "many": "Pasirinkta: {{count}}",
+    "other": "Pasirinkta: {{count}}"
+  },
   "SET_STATUS": "Nustatyti būseną",
   "ASSIGN": "Priskirti",
   "UNASSIGN": "Atšaukti priskyrimą",
   "CLEAR_SELECTION": "Išvalyti pasirinkimą",
-  "CONFIRM_DELETE_TICKETS": "Perkelti užduotis ({{count}}) į šiukšlinę?",
+  "CONFIRM_DELETE_TICKETS": {
+    "one": "Perkelti {{count}} užduotį į šiukšlinę?",
+    "few": "Perkelti {{count}} užduotis į šiukšlinę?",
+    "many": "Perkelti {{count}} užduoties į šiukšlinę?",
+    "other": "Perkelti {{count}} užduočių į šiukšlinę?"
+  },
   "SELECT_TICKET": "Pasirinkti užduotį",
   "SELECT_GROUP": "Pasirinkti visas grupėje",
   "COLLAPSE_GROUP": "Sutraukti grupę",
@@ -237,8 +247,12 @@
   "CHANGE_PRIORITY_COLOR": "Keisti spalvą",
   "DELETE_PRIORITY": "Ištrinti prioritetą",
   "REORDER_PRIORITY": "Vilkite, kad pakeistumėte tvarką",
-  "CONFIRM_DELETE_PRIORITY": "Ištrinti „{{name}}“? {{count}} užduotys liks be prioriteto",
-  "CONFIRM_DELETE_PRIORITY_ONE": "Ištrinti „{{name}}“? 1 užduotis liks be prioriteto",
+  "CONFIRM_DELETE_PRIORITY": {
+    "one": "Ištrinti „{{name}}“? {{count}} užduotis liks be prioriteto",
+    "few": "Ištrinti „{{name}}“? {{count}} užduotys liks be prioriteto",
+    "many": "Ištrinti „{{name}}“? {{count}} užduoties liks be prioriteto",
+    "other": "Ištrinti „{{name}}“? {{count}} užduočių liks be prioriteto"
+  },
   "CONFIRM_DELETE_UNUSED_PRIORITY": "Ištrinti „{{name}}“?",
   "TAGS": "Žymos",
   "ADD_TAG": "Pridėti žymą",
@@ -250,8 +264,12 @@
   "NO_TAGS": "Žymų nėra",
   "NO_TAGS_YET": "Žymų dar nėra",
   "SEARCH_TAGS": "Ieškoti žymų",
-  "CONFIRM_DELETE_TAG": "Pašalinti „{{name}}“ iš {{count}} užduočių?",
-  "CONFIRM_DELETE_TAG_ONE": "Pašalinti „{{name}}“ iš 1 užduoties?",
+  "CONFIRM_DELETE_TAG": {
+    "one": "Pašalinti „{{name}}“ iš {{count}} užduoties?",
+    "few": "Pašalinti „{{name}}“ iš {{count}} užduočių?",
+    "many": "Pašalinti „{{name}}“ iš {{count}} užduoties?",
+    "other": "Pašalinti „{{name}}“ iš {{count}} užduočių?"
+  },
   "CONFIRM_DELETE_UNUSED_TAG": "Ištrinti „{{name}}“?",
   "TAG_MORE": "+{{count}}",
   "MOVE_TO_BOARD": "Perkelti į lentą",
@@ -292,7 +310,12 @@
   "PROJECT_DESCRIPTION": "Aprašymas",
   "PROJECT_OWNER": "Savininkas",
   "PROJECT_MEMBERS": "Nariai",
-  "MEMBER_COUNT": "Narių: {{count}}",
+  "MEMBER_COUNT": {
+    "one": "{{count}} narys",
+    "few": "{{count}} nariai",
+    "many": "{{count}} nario",
+    "other": "{{count}} narių"
+  },
   "NO_PROJECTS_YET": "Projektų dar nėra.",
   "CREATE_PROJECT_HINT": "Sukurkite projektą, kad sugrupuotumėte puslapius, diagramas ir lentas.",
   "PROJECT_SAVED": "Projektas išsaugotas",
@@ -342,7 +365,12 @@
   "SHOW_RESOLVED": "Rodyti išspręstus",
   "RESOLVE": "Išspręsti",
   "REOPEN": "Atidaryti iš naujo",
-  "COMMENT_REPLIES": "Atsakymų: {{count}}",
+  "COMMENT_REPLIES": {
+    "one": "{{count}} atsakymas",
+    "few": "{{count}} atsakymai",
+    "many": "{{count}} atsakymo",
+    "other": "{{count}} atsakymų"
+  },
   "COMMENT_ACTIONS": "Komentaro veiksmai",
   "TRASH": "Šiukšlinė",
   "TRASH_EMPTY": "Šiukšlinė tuščia",
@@ -356,10 +384,18 @@
   "EMPTY_TRASH": "Ištuštinti šiukšlinę",
   "CONFIRM_EMPTY_TRASH": "Ištrinti viską šiukšlinėje visam laikui? To negalima atšaukti.",
   "TRASH_DELETED_BY": "Ištrynė {{name}}",
-  "TRASH_DAYS_LEFT": "Liko {{count}} d.",
-  "TRASH_DAYS_LEFT_ONE": "Liko 1 d.",
-  "TRASH_ITEMS_INSIDE": "Viduje elementų: {{count}}",
-  "TRASH_ITEMS_INSIDE_ONE": "Viduje 1 elementas",
+  "TRASH_DAYS_LEFT": {
+    "one": "Liko {{count}} diena",
+    "few": "Liko {{count}} dienos",
+    "many": "Liko {{count}} dienos",
+    "other": "Liko {{count}} dienų"
+  },
+  "TRASH_ITEMS_INSIDE": {
+    "one": "Viduje {{count}} elementas",
+    "few": "Viduje {{count}} elementai",
+    "many": "Viduje {{count}} elemento",
+    "other": "Viduje {{count}} elementų"
+  },
   "TRASH_BOARD_IN_TRASH_HINT": "Lenta yra šiukšlinėje",
   "TRASH_TYPE_ALL": "Visi tipai",
   "TRASH_TYPE_FOLDERS": "Aplankai",
@@ -374,7 +410,12 @@
   "STORAGE_USAGE": "Saugykla: panaudota {{used}} iš {{quota}}",
   "UPLOADING": "Įkeliama {{progress}}%",
   "CLOSE_PREVIEW": "Uždaryti peržiūrą",
-  "ATTACHMENT_COUNT": "Priedų: {{count}}",
+  "ATTACHMENT_COUNT": {
+    "one": "{{count}} priedas",
+    "few": "{{count}} priedai",
+    "many": "{{count}} priedo",
+    "other": "{{count}} priedų"
+  },
   "DROP_FILES_HERE": "Numeskite failus, kad pridėtumėte",
   "ACTIVITY": "Veikla",
   "ACTIVITY_ALL": "Visi",

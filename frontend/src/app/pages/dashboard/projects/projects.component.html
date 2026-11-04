@@ -21,7 +21,7 @@
         </span>
         <span class="projects__meta">
           <app-avatar [avatar]="project.owner.avatar" [nickname]="project.owner.nickname"></app-avatar>
-          {{ project.owner.nickname }} · {{ PHRASES.MEMBER_COUNT | translate: {count: project.memberCount} }}
+          {{ project.owner.nickname }} · {{ PHRASES.MEMBER_COUNT | plural: project.memberCount | translate: {count: project.memberCount} }}
         </span>
       </button>
       <app-load-more *ngIf="hasMore" [loading]="isLoadingMore" (pressed)="handleLoadMore()"></app-load-more>

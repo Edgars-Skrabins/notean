@@ -217,12 +217,18 @@
   "FILTER_ASSIGNEE": "Zuständig",
   "FILTER_STATUS": "Status",
   "CLEAR_FILTERS": "Zurücksetzen",
-  "SELECTED_COUNT": "{{count}} ausgewählt",
+  "SELECTED_COUNT": {
+    "one": "{{count}} ausgewählt",
+    "other": "{{count}} ausgewählt"
+  },
   "SET_STATUS": "Status setzen",
   "ASSIGN": "Zuweisen",
   "UNASSIGN": "Zuweisung entfernen",
   "CLEAR_SELECTION": "Auswahl aufheben",
-  "CONFIRM_DELETE_TICKETS": "{{count}} Tickets in den Papierkorb verschieben?",
+  "CONFIRM_DELETE_TICKETS": {
+    "one": "{{count}} Ticket in den Papierkorb verschieben?",
+    "other": "{{count}} Tickets in den Papierkorb verschieben?"
+  },
   "SELECT_TICKET": "Ticket auswählen",
   "SELECT_GROUP": "Alle in der Gruppe auswählen",
   "COLLAPSE_GROUP": "Gruppe einklappen",
@@ -237,8 +243,10 @@
   "CHANGE_PRIORITY_COLOR": "Farbe ändern",
   "DELETE_PRIORITY": "Priorität löschen",
   "REORDER_PRIORITY": "Zum Sortieren ziehen",
-  "CONFIRM_DELETE_PRIORITY": "'{{name}}' löschen? {{count}} Tickets haben dann keine Priorität",
-  "CONFIRM_DELETE_PRIORITY_ONE": "'{{name}}' löschen? 1 Ticket hat dann keine Priorität",
+  "CONFIRM_DELETE_PRIORITY": {
+    "one": "'{{name}}' löschen? {{count}} Ticket hat dann keine Priorität",
+    "other": "'{{name}}' löschen? {{count}} Tickets haben dann keine Priorität"
+  },
   "CONFIRM_DELETE_UNUSED_PRIORITY": "'{{name}}' löschen?",
   "TAGS": "Tags",
   "ADD_TAG": "Tag hinzufügen",
@@ -250,8 +258,10 @@
   "NO_TAGS": "Keine Tags",
   "NO_TAGS_YET": "Noch keine Tags",
   "SEARCH_TAGS": "Tags suchen",
-  "CONFIRM_DELETE_TAG": "„{{name}}“ von {{count}} Tickets entfernen?",
-  "CONFIRM_DELETE_TAG_ONE": "„{{name}}“ von 1 Ticket entfernen?",
+  "CONFIRM_DELETE_TAG": {
+    "one": "„{{name}}“ von {{count}} Ticket entfernen?",
+    "other": "„{{name}}“ von {{count}} Tickets entfernen?"
+  },
   "CONFIRM_DELETE_UNUSED_TAG": "„{{name}}“ löschen?",
   "TAG_MORE": "+{{count}}",
   "MOVE_TO_BOARD": "Aufs Board verschieben",
@@ -292,7 +302,10 @@
   "PROJECT_DESCRIPTION": "Beschreibung",
   "PROJECT_OWNER": "Eigentümer",
   "PROJECT_MEMBERS": "Mitglieder",
-  "MEMBER_COUNT": "{{count}} Mitglieder",
+  "MEMBER_COUNT": {
+    "one": "{{count}} Mitglied",
+    "other": "{{count}} Mitglieder"
+  },
   "NO_PROJECTS_YET": "Noch keine Projekte.",
   "CREATE_PROJECT_HINT": "Erstelle eines, um Seiten, Diagramme und Boards zu gruppieren.",
   "PROJECT_SAVED": "Projekt gespeichert",
@@ -342,7 +355,10 @@
   "SHOW_RESOLVED": "Erledigte anzeigen",
   "RESOLVE": "Erledigen",
   "REOPEN": "Wieder öffnen",
-  "COMMENT_REPLIES": "Antworten: {{count}}",
+  "COMMENT_REPLIES": {
+    "one": "{{count}} Antwort",
+    "other": "{{count}} Antworten"
+  },
   "COMMENT_ACTIONS": "Kommentaraktionen",
   "TRASH": "Papierkorb",
   "TRASH_EMPTY": "Der Papierkorb ist leer",
@@ -356,10 +372,14 @@
   "EMPTY_TRASH": "Papierkorb leeren",
   "CONFIRM_EMPTY_TRASH": "Alles im Papierkorb endgültig löschen? Das kann nicht rückgängig gemacht werden.",
   "TRASH_DELETED_BY": "Gelöscht von {{name}}",
-  "TRASH_DAYS_LEFT": "Noch {{count}} Tage",
-  "TRASH_DAYS_LEFT_ONE": "Noch 1 Tag",
-  "TRASH_ITEMS_INSIDE": "{{count}} Elemente darin",
-  "TRASH_ITEMS_INSIDE_ONE": "1 Element darin",
+  "TRASH_DAYS_LEFT": {
+    "one": "Noch {{count}} Tag",
+    "other": "Noch {{count}} Tage"
+  },
+  "TRASH_ITEMS_INSIDE": {
+    "one": "{{count}} Element darin",
+    "other": "{{count}} Elemente darin"
+  },
   "TRASH_BOARD_IN_TRASH_HINT": "Das Board liegt im Papierkorb",
   "TRASH_TYPE_ALL": "Alle Typen",
   "TRASH_TYPE_FOLDERS": "Ordner",
@@ -374,7 +394,10 @@
   "STORAGE_USAGE": "Speicher: {{used}} von {{quota}} belegt",
   "UPLOADING": "Wird hochgeladen {{progress}} %",
   "CLOSE_PREVIEW": "Vorschau schließen",
-  "ATTACHMENT_COUNT": "{{count}} Anhänge",
+  "ATTACHMENT_COUNT": {
+    "one": "{{count}} Anhang",
+    "other": "{{count}} Anhänge"
+  },
   "DROP_FILES_HERE": "Dateien zum Anhängen hier ablegen",
   "ACTIVITY": "Aktivität",
   "ACTIVITY_ALL": "Alle",

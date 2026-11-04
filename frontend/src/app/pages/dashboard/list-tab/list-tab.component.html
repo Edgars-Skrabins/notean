@@ -122,7 +122,7 @@
 
 <app-confirm-dialog
   *ngIf="isBulkDeleteConfirmOpen"
-  [message]="PHRASES.CONFIRM_DELETE_TICKETS | translate: {count: selectedTickets.length}"
+  [message]="PHRASES.CONFIRM_DELETE_TICKETS | plural: selectedTickets.length | translate: {count: selectedTickets.length}"
   (confirmed)="handleConfirmBulkDelete()"
   (cancelled)="handleCancelBulkDelete()"
 ></app-confirm-dialog>

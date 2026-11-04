@@ -10,12 +10,14 @@ import {TagChipsComponent} from '@components/tag-chips/tag-chips.component';
 import {Tag} from '@models/tag.model';
 import {IconComponent} from '@components/icon/icon.component';
 import {TooltipDirective} from '@components/tooltip/tooltip.directive';
+import {PluralPipe} from '@pipes/plural.pipe';
 
 @Component({
   selector: 'app-kanban-ticket',
   imports: [
     NgIf,
     TranslatePipe,
+    PluralPipe,
     IconButtonComponent,
     FavoriteStarComponent,
     AvatarStackComponent,

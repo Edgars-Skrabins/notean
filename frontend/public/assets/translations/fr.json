@@ -217,12 +217,20 @@
   "FILTER_ASSIGNEE": "Responsable",
   "FILTER_STATUS": "Statut",
   "CLEAR_FILTERS": "Effacer",
-  "SELECTED_COUNT": "{{count}} sélectionné(s)",
+  "SELECTED_COUNT": {
+    "one": "{{count}} sélectionné",
+    "many": "{{count}} sélectionnés",
+    "other": "{{count}} sélectionnés"
+  },
   "SET_STATUS": "Définir le statut",
   "ASSIGN": "Assigner",
   "UNASSIGN": "Désassigner",
   "CLEAR_SELECTION": "Effacer la sélection",
-  "CONFIRM_DELETE_TICKETS": "Déplacer {{count}} tickets dans la corbeille ?",
+  "CONFIRM_DELETE_TICKETS": {
+    "one": "Déplacer {{count}} ticket dans la corbeille ?",
+    "many": "Déplacer {{count}} de tickets dans la corbeille ?",
+    "other": "Déplacer {{count}} tickets dans la corbeille ?"
+  },
   "SELECT_TICKET": "Sélectionner le ticket",
   "SELECT_GROUP": "Tout sélectionner dans le groupe",
   "COLLAPSE_GROUP": "Réduire le groupe",
@@ -237,8 +245,11 @@
   "CHANGE_PRIORITY_COLOR": "Changer la couleur",
   "DELETE_PRIORITY": "Supprimer la priorité",
   "REORDER_PRIORITY": "Glisser pour réordonner",
-  "CONFIRM_DELETE_PRIORITY": "Supprimer « {{name}} » ? {{count}} tickets n'auront plus de priorité",
-  "CONFIRM_DELETE_PRIORITY_ONE": "Supprimer « {{name}} » ? 1 ticket n'aura plus de priorité",
+  "CONFIRM_DELETE_PRIORITY": {
+    "one": "Supprimer « {{name}} » ? {{count}} ticket n'aura plus de priorité",
+    "many": "Supprimer « {{name}} » ? {{count}} de tickets n'auront plus de priorité",
+    "other": "Supprimer « {{name}} » ? {{count}} tickets n'auront plus de priorité"
+  },
   "CONFIRM_DELETE_UNUSED_PRIORITY": "Supprimer « {{name}} » ?",
   "TAGS": "Étiquettes",
   "ADD_TAG": "Ajouter une étiquette",
@@ -250,8 +261,11 @@
   "NO_TAGS": "Sans étiquette",
   "NO_TAGS_YET": "Aucune étiquette pour l’instant",
   "SEARCH_TAGS": "Rechercher des étiquettes",
-  "CONFIRM_DELETE_TAG": "Retirer « {{name}} » de {{count}} tickets ?",
-  "CONFIRM_DELETE_TAG_ONE": "Retirer « {{name}} » de 1 ticket ?",
+  "CONFIRM_DELETE_TAG": {
+    "one": "Retirer « {{name}} » de {{count}} ticket ?",
+    "many": "Retirer « {{name}} » de {{count}} de tickets ?",
+    "other": "Retirer « {{name}} » de {{count}} tickets ?"
+  },
   "CONFIRM_DELETE_UNUSED_TAG": "Supprimer « {{name}} » ?",
   "TAG_MORE": "+{{count}}",
   "MOVE_TO_BOARD": "Déplacer vers le tableau",
@@ -292,7 +306,11 @@
   "PROJECT_DESCRIPTION": "Description",
   "PROJECT_OWNER": "Propriétaire",
   "PROJECT_MEMBERS": "Membres",
-  "MEMBER_COUNT": "{{count}} membres",
+  "MEMBER_COUNT": {
+    "one": "{{count}} membre",
+    "many": "{{count}} de membres",
+    "other": "{{count}} membres"
+  },
   "NO_PROJECTS_YET": "Aucun projet pour l'instant.",
   "CREATE_PROJECT_HINT": "Créez-en un pour regrouper des pages, des diagrammes et des tableaux.",
   "PROJECT_SAVED": "Projet enregistré",
@@ -342,7 +360,11 @@
   "SHOW_RESOLVED": "Afficher les résolus",
   "RESOLVE": "Résoudre",
   "REOPEN": "Rouvrir",
-  "COMMENT_REPLIES": "Réponses : {{count}}",
+  "COMMENT_REPLIES": {
+    "one": "{{count}} réponse",
+    "many": "{{count}} de réponses",
+    "other": "{{count}} réponses"
+  },
   "COMMENT_ACTIONS": "Actions du commentaire",
   "TRASH": "Corbeille",
   "TRASH_EMPTY": "La corbeille est vide",
@@ -356,10 +378,16 @@
   "EMPTY_TRASH": "Vider la corbeille",
   "CONFIRM_EMPTY_TRASH": "Supprimer définitivement tout le contenu de la corbeille ? Cette action est irréversible.",
   "TRASH_DELETED_BY": "Supprimé par {{name}}",
-  "TRASH_DAYS_LEFT": "Encore {{count}} jours",
-  "TRASH_DAYS_LEFT_ONE": "Encore 1 jour",
-  "TRASH_ITEMS_INSIDE": "{{count}} éléments à l'intérieur",
-  "TRASH_ITEMS_INSIDE_ONE": "1 élément à l'intérieur",
+  "TRASH_DAYS_LEFT": {
+    "one": "Encore {{count}} jour",
+    "many": "Encore {{count}} de jours",
+    "other": "Encore {{count}} jours"
+  },
+  "TRASH_ITEMS_INSIDE": {
+    "one": "{{count}} élément à l'intérieur",
+    "many": "{{count}} d'éléments à l'intérieur",
+    "other": "{{count}} éléments à l'intérieur"
+  },
   "TRASH_BOARD_IN_TRASH_HINT": "Le tableau est dans la corbeille",
   "TRASH_TYPE_ALL": "Tous les types",
   "TRASH_TYPE_FOLDERS": "Dossiers",
@@ -374,7 +402,11 @@
   "STORAGE_USAGE": "Stockage : {{used}} sur {{quota}} utilisés",
   "UPLOADING": "Importation {{progress}} %",
   "CLOSE_PREVIEW": "Fermer l'aperçu",
-  "ATTACHMENT_COUNT": "{{count}} pièces jointes",
+  "ATTACHMENT_COUNT": {
+    "one": "{{count}} pièce jointe",
+    "many": "{{count}} de pièces jointes",
+    "other": "{{count}} pièces jointes"
+  },
   "DROP_FILES_HERE": "Déposez des fichiers pour les joindre",
   "ACTIVITY": "Activité",
   "ACTIVITY_ALL": "Tout",

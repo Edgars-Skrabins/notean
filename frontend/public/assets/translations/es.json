@@ -217,12 +217,20 @@
   "FILTER_ASSIGNEE": "Asignado",
   "FILTER_STATUS": "Estado",
   "CLEAR_FILTERS": "Borrar",
-  "SELECTED_COUNT": "{{count}} seleccionados",
+  "SELECTED_COUNT": {
+    "one": "{{count}} seleccionado",
+    "many": "{{count}} seleccionados",
+    "other": "{{count}} seleccionados"
+  },
   "SET_STATUS": "Cambiar estado",
   "ASSIGN": "Asignar",
   "UNASSIGN": "Desasignar",
   "CLEAR_SELECTION": "Borrar selección",
-  "CONFIRM_DELETE_TICKETS": "¿Mover {{count}} tickets a la papelera?",
+  "CONFIRM_DELETE_TICKETS": {
+    "one": "¿Mover {{count}} ticket a la papelera?",
+    "many": "¿Mover {{count}} de tickets a la papelera?",
+    "other": "¿Mover {{count}} tickets a la papelera?"
+  },
   "SELECT_TICKET": "Seleccionar ticket",
   "SELECT_GROUP": "Seleccionar todos en el grupo",
   "COLLAPSE_GROUP": "Contraer grupo",
@@ -237,8 +245,11 @@
   "CHANGE_PRIORITY_COLOR": "Cambiar color",
   "DELETE_PRIORITY": "Eliminar prioridad",
   "REORDER_PRIORITY": "Arrastra para reordenar",
-  "CONFIRM_DELETE_PRIORITY": "¿Eliminar «{{name}}»? {{count}} tickets quedarán sin prioridad",
-  "CONFIRM_DELETE_PRIORITY_ONE": "¿Eliminar «{{name}}»? 1 ticket quedará sin prioridad",
+  "CONFIRM_DELETE_PRIORITY": {
+    "one": "¿Eliminar «{{name}}»? {{count}} ticket quedará sin prioridad",
+    "many": "¿Eliminar «{{name}}»? {{count}} de tickets quedarán sin prioridad",
+    "other": "¿Eliminar «{{name}}»? {{count}} tickets quedarán sin prioridad"
+  },
   "CONFIRM_DELETE_UNUSED_PRIORITY": "¿Eliminar «{{name}}»?",
   "TAGS": "Etiquetas",
   "ADD_TAG": "Añadir etiqueta",
@@ -250,8 +261,11 @@
   "NO_TAGS": "Sin etiquetas",
   "NO_TAGS_YET": "Aún no hay etiquetas",
   "SEARCH_TAGS": "Buscar etiquetas",
-  "CONFIRM_DELETE_TAG": "¿Quitar «{{name}}» de {{count}} tickets?",
-  "CONFIRM_DELETE_TAG_ONE": "¿Quitar «{{name}}» de 1 ticket?",
+  "CONFIRM_DELETE_TAG": {
+    "one": "¿Quitar «{{name}}» de {{count}} ticket?",
+    "many": "¿Quitar «{{name}}» de {{count}} de tickets?",
+    "other": "¿Quitar «{{name}}» de {{count}} tickets?"
+  },
   "CONFIRM_DELETE_UNUSED_TAG": "¿Eliminar «{{name}}»?",
   "TAG_MORE": "+{{count}}",
   "MOVE_TO_BOARD": "Mover al tablero",
@@ -292,7 +306,11 @@
   "PROJECT_DESCRIPTION": "Descripción",
   "PROJECT_OWNER": "Propietario",
   "PROJECT_MEMBERS": "Miembros",
-  "MEMBER_COUNT": "{{count}} miembros",
+  "MEMBER_COUNT": {
+    "one": "{{count}} miembro",
+    "many": "{{count}} de miembros",
+    "other": "{{count}} miembros"
+  },
   "NO_PROJECTS_YET": "Aún no hay proyectos.",
   "CREATE_PROJECT_HINT": "Crea uno para agrupar páginas, diagramas y tableros.",
   "PROJECT_SAVED": "Proyecto guardado",
@@ -342,7 +360,11 @@
   "SHOW_RESOLVED": "Mostrar resueltos",
   "RESOLVE": "Resolver",
   "REOPEN": "Reabrir",
-  "COMMENT_REPLIES": "Respuestas: {{count}}",
+  "COMMENT_REPLIES": {
+    "one": "{{count}} respuesta",
+    "many": "{{count}} de respuestas",
+    "other": "{{count}} respuestas"
+  },
   "COMMENT_ACTIONS": "Acciones del comentario",
   "TRASH": "Papelera",
   "TRASH_EMPTY": "La papelera está vacía",
@@ -356,10 +378,16 @@
   "EMPTY_TRASH": "Vaciar papelera",
   "CONFIRM_EMPTY_TRASH": "¿Eliminar para siempre todo lo que hay en la papelera? No se puede deshacer.",
   "TRASH_DELETED_BY": "Eliminado por {{name}}",
-  "TRASH_DAYS_LEFT": "Quedan {{count}} días",
-  "TRASH_DAYS_LEFT_ONE": "Queda 1 día",
-  "TRASH_ITEMS_INSIDE": "{{count}} elementos dentro",
-  "TRASH_ITEMS_INSIDE_ONE": "1 elemento dentro",
+  "TRASH_DAYS_LEFT": {
+    "one": "Queda {{count}} día",
+    "many": "Quedan {{count}} de días",
+    "other": "Quedan {{count}} días"
+  },
+  "TRASH_ITEMS_INSIDE": {
+    "one": "{{count}} elemento dentro",
+    "many": "{{count}} de elementos dentro",
+    "other": "{{count}} elementos dentro"
+  },
   "TRASH_BOARD_IN_TRASH_HINT": "El tablero está en la papelera",
   "TRASH_TYPE_ALL": "Todos los tipos",
   "TRASH_TYPE_FOLDERS": "Carpetas",
@@ -374,7 +402,11 @@
   "STORAGE_USAGE": "Almacenamiento: {{used}} de {{quota}} usados",
   "UPLOADING": "Subiendo {{progress}} %",
   "CLOSE_PREVIEW": "Cerrar vista previa",
-  "ATTACHMENT_COUNT": "{{count}} adjuntos",
+  "ATTACHMENT_COUNT": {
+    "one": "{{count}} adjunto",
+    "many": "{{count}} de adjuntos",
+    "other": "{{count}} adjuntos"
+  },
   "DROP_FILES_HERE": "Suelta archivos para adjuntarlos",
   "ACTIVITY": "Actividad",
   "ACTIVITY_ALL": "Todo",

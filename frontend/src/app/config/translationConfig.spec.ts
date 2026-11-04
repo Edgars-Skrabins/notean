@@ -2,6 +2,8 @@ import {supportedTranslations} from './translationConfig';
 
 type Translations = Record<string, unknown>;
 
+const REMOVED_KEYS = ['CONFIRM_DELETE_PRIORITY_ONE', 'CONFIRM_DELETE_TAG_ONE', 'TRASH_DAYS_LEFT_ONE', 'TRASH_ITEMS_INSIDE_ONE'];
+
 async function loadTranslations(code: string): Promise<Translations> {
   const response = await fetch(`/assets/translations/${code}.json`);
   return response.json();
@@ -25,8 +27,8 @@ describe('translation files', () => {
     english = await loadTranslations('en');
   });
 
-  it('loads en.json', () => {
-    expect(Object.keys(english).length).toBeGreaterThan(0);
+  it('finds the plural keys in en.json', () => {
+    expect(pluralKeys(english)).toContain('MEMBER_COUNT');
   });
 
   supportedTranslations.forEach((code) => {
@@ -45,6 +47,10 @@ describe('translation files', () => {
           expect(typeof form).withContext(`${code} ${key}.${category}`).toBe('string');
           expect(String(form)).withContext(`${code} ${key}.${category}`).toContain('{{count}}');
         });
+      });
+
+      REMOVED_KEYS.forEach((key) => {
+        expect(key in translations).withContext(`${code} ${key}`).toBeFalse();
       });
     });
   });

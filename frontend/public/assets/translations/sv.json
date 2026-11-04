@@ -217,12 +217,18 @@
   "FILTER_ASSIGNEE": "Tilldelad",
   "FILTER_STATUS": "Status",
   "CLEAR_FILTERS": "Rensa",
-  "SELECTED_COUNT": "{{count}} valda",
+  "SELECTED_COUNT": {
+    "one": "{{count}} vald",
+    "other": "{{count}} valda"
+  },
   "SET_STATUS": "Ange status",
   "ASSIGN": "Tilldela",
   "UNASSIGN": "Ta bort tilldelning",
   "CLEAR_SELECTION": "Rensa markering",
-  "CONFIRM_DELETE_TICKETS": "Flytta {{count}} ärenden till papperskorgen?",
+  "CONFIRM_DELETE_TICKETS": {
+    "one": "Flytta {{count}} ärende till papperskorgen?",
+    "other": "Flytta {{count}} ärenden till papperskorgen?"
+  },
   "SELECT_TICKET": "Välj ärende",
   "SELECT_GROUP": "Välj alla i gruppen",
   "COLLAPSE_GROUP": "Fäll ihop gruppen",
@@ -237,8 +243,10 @@
   "CHANGE_PRIORITY_COLOR": "Ändra färg",
   "DELETE_PRIORITY": "Ta bort prioritet",
   "REORDER_PRIORITY": "Dra för att ändra ordning",
-  "CONFIRM_DELETE_PRIORITY": "Ta bort '{{name}}'? {{count}} ärenden får ingen prioritet",
-  "CONFIRM_DELETE_PRIORITY_ONE": "Ta bort '{{name}}'? 1 ärende får ingen prioritet",
+  "CONFIRM_DELETE_PRIORITY": {
+    "one": "Ta bort '{{name}}'? {{count}} ärende får ingen prioritet",
+    "other": "Ta bort '{{name}}'? {{count}} ärenden får ingen prioritet"
+  },
   "CONFIRM_DELETE_UNUSED_PRIORITY": "Ta bort '{{name}}'?",
   "TAGS": "Etiketter",
   "ADD_TAG": "Lägg till etikett",
@@ -250,8 +258,10 @@
   "NO_TAGS": "Inga etiketter",
   "NO_TAGS_YET": "Inga etiketter än",
   "SEARCH_TAGS": "Sök etiketter",
-  "CONFIRM_DELETE_TAG": "Ta bort '{{name}}' från {{count}} ärenden?",
-  "CONFIRM_DELETE_TAG_ONE": "Ta bort '{{name}}' från 1 ärende?",
+  "CONFIRM_DELETE_TAG": {
+    "one": "Ta bort '{{name}}' från {{count}} ärende?",
+    "other": "Ta bort '{{name}}' från {{count}} ärenden?"
+  },
   "CONFIRM_DELETE_UNUSED_TAG": "Radera '{{name}}'?",
   "TAG_MORE": "+{{count}}",
   "MOVE_TO_BOARD": "Flytta till tavlan",
@@ -292,7 +302,10 @@
   "PROJECT_DESCRIPTION": "Beskrivning",
   "PROJECT_OWNER": "Ägare",
   "PROJECT_MEMBERS": "Medlemmar",
-  "MEMBER_COUNT": "{{count}} medlemmar",
+  "MEMBER_COUNT": {
+    "one": "{{count}} medlem",
+    "other": "{{count}} medlemmar"
+  },
   "NO_PROJECTS_YET": "Inga projekt ännu.",
   "CREATE_PROJECT_HINT": "Skapa ett för att gruppera sidor, diagram och tavlor.",
   "PROJECT_SAVED": "Projektet har sparats",
@@ -342,7 +355,10 @@
   "SHOW_RESOLVED": "Visa lösta",
   "RESOLVE": "Lös",
   "REOPEN": "Öppna igen",
-  "COMMENT_REPLIES": "{{count}} svar",
+  "COMMENT_REPLIES": {
+    "one": "{{count}} svar",
+    "other": "{{count}} svar"
+  },
   "COMMENT_ACTIONS": "Kommentarsåtgärder",
   "TRASH": "Papperskorg",
   "TRASH_EMPTY": "Papperskorgen är tom",
@@ -356,10 +372,14 @@
   "EMPTY_TRASH": "Töm papperskorgen",
   "CONFIRM_EMPTY_TRASH": "Radera allt i papperskorgen permanent? Det går inte att ångra.",
   "TRASH_DELETED_BY": "Borttagen av {{name}}",
-  "TRASH_DAYS_LEFT": "{{count}} dagar kvar",
-  "TRASH_DAYS_LEFT_ONE": "1 dag kvar",
-  "TRASH_ITEMS_INSIDE": "{{count}} objekt inuti",
-  "TRASH_ITEMS_INSIDE_ONE": "1 objekt inuti",
+  "TRASH_DAYS_LEFT": {
+    "one": "{{count}} dag kvar",
+    "other": "{{count}} dagar kvar"
+  },
+  "TRASH_ITEMS_INSIDE": {
+    "one": "{{count}} objekt inuti",
+    "other": "{{count}} objekt inuti"
+  },
   "TRASH_BOARD_IN_TRASH_HINT": "Tavlan ligger i papperskorgen",
   "TRASH_TYPE_ALL": "Alla typer",
   "TRASH_TYPE_FOLDERS": "Mappar",
@@ -374,7 +394,10 @@
   "STORAGE_USAGE": "Lagring: {{used}} av {{quota}} använt",
   "UPLOADING": "Laddar upp {{progress}} %",
   "CLOSE_PREVIEW": "Stäng förhandsvisning",
-  "ATTACHMENT_COUNT": "{{count}} bilagor",
+  "ATTACHMENT_COUNT": {
+    "one": "{{count}} bilaga",
+    "other": "{{count}} bilagor"
+  },
   "DROP_FILES_HERE": "Släpp filer för att bifoga",
   "ACTIVITY": "Aktivitet",
   "ACTIVITY_ALL": "Alla",

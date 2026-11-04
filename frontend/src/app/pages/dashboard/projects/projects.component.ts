@@ -21,6 +21,7 @@ import {errorPhrase} from "@utils/errorPhrase";
 import {mentionLabelText} from "@utils/mentionTokens";
 import {mentionTypePhrase} from "@utils/mentionChip";
 import {AppRoutes} from "../../../app/app-routes.enum";
+import {PluralPipe} from "@pipes/plural.pipe";
 
 @Component({
   selector: 'app-projects',
@@ -29,6 +30,7 @@ import {AppRoutes} from "../../../app/app-routes.enum";
     NgFor,
     NgIf,
     TranslatePipe,
+    PluralPipe,
     AvatarComponent,
     ButtonComponent,
     LoadMoreComponent,

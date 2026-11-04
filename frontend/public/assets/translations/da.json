@@ -217,12 +217,18 @@
   "FILTER_ASSIGNEE": "Ansvarlig",
   "FILTER_STATUS": "Status",
   "CLEAR_FILTERS": "Ryd",
-  "SELECTED_COUNT": "{{count}} valgt",
+  "SELECTED_COUNT": {
+    "one": "{{count}} valgt",
+    "other": "{{count}} valgte"
+  },
   "SET_STATUS": "Angiv status",
   "ASSIGN": "Tildel",
   "UNASSIGN": "Fjern tildeling",
   "CLEAR_SELECTION": "Ryd markering",
-  "CONFIRM_DELETE_TICKETS": "Flyt {{count}} opgaver til papirkurven?",
+  "CONFIRM_DELETE_TICKETS": {
+    "one": "Flyt {{count}} opgave til papirkurven?",
+    "other": "Flyt {{count}} opgaver til papirkurven?"
+  },
   "SELECT_TICKET": "Vælg opgave",
   "SELECT_GROUP": "Vælg alle i gruppen",
   "COLLAPSE_GROUP": "Skjul gruppe",
@@ -237,8 +243,10 @@
   "CHANGE_PRIORITY_COLOR": "Skift farve",
   "DELETE_PRIORITY": "Slet prioritet",
   "REORDER_PRIORITY": "Træk for at ændre rækkefølge",
-  "CONFIRM_DELETE_PRIORITY": "Slet '{{name}}'? {{count}} opgaver får ingen prioritet",
-  "CONFIRM_DELETE_PRIORITY_ONE": "Slet '{{name}}'? 1 opgave får ingen prioritet",
+  "CONFIRM_DELETE_PRIORITY": {
+    "one": "Slet '{{name}}'? {{count}} opgave får ingen prioritet",
+    "other": "Slet '{{name}}'? {{count}} opgaver får ingen prioritet"
+  },
   "CONFIRM_DELETE_UNUSED_PRIORITY": "Slet '{{name}}'?",
   "TAGS": "Tags",
   "ADD_TAG": "Tilføj tag",
@@ -250,8 +258,10 @@
   "NO_TAGS": "Ingen tags",
   "NO_TAGS_YET": "Ingen tags endnu",
   "SEARCH_TAGS": "Søg i tags",
-  "CONFIRM_DELETE_TAG": "Fjern '{{name}}' fra {{count}} opgaver?",
-  "CONFIRM_DELETE_TAG_ONE": "Fjern '{{name}}' fra 1 opgave?",
+  "CONFIRM_DELETE_TAG": {
+    "one": "Fjern '{{name}}' fra {{count}} opgave?",
+    "other": "Fjern '{{name}}' fra {{count}} opgaver?"
+  },
   "CONFIRM_DELETE_UNUSED_TAG": "Slet '{{name}}'?",
   "TAG_MORE": "+{{count}}",
   "MOVE_TO_BOARD": "Flyt til tavlen",
@@ -292,7 +302,10 @@
   "PROJECT_DESCRIPTION": "Beskrivelse",
   "PROJECT_OWNER": "Ejer",
   "PROJECT_MEMBERS": "Medlemmer",
-  "MEMBER_COUNT": "{{count}} medlemmer",
+  "MEMBER_COUNT": {
+    "one": "{{count}} medlem",
+    "other": "{{count}} medlemmer"
+  },
   "NO_PROJECTS_YET": "Ingen projekter endnu.",
   "CREATE_PROJECT_HINT": "Opret et for at samle sider, diagrammer og tavler.",
   "PROJECT_SAVED": "Projekt gemt",
@@ -342,7 +355,10 @@
   "SHOW_RESOLVED": "Vis løste",
   "RESOLVE": "Løs",
   "REOPEN": "Genåbn",
-  "COMMENT_REPLIES": "{{count}} svar",
+  "COMMENT_REPLIES": {
+    "one": "{{count}} svar",
+    "other": "{{count}} svar"
+  },
   "COMMENT_ACTIONS": "Kommentarhandlinger",
   "TRASH": "Papirkurv",
   "TRASH_EMPTY": "Papirkurven er tom",
@@ -356,10 +372,14 @@
   "EMPTY_TRASH": "Tøm papirkurven",
   "CONFIRM_EMPTY_TRASH": "Slet alt i papirkurven permanent? Det kan ikke fortrydes.",
   "TRASH_DELETED_BY": "Slettet af {{name}}",
-  "TRASH_DAYS_LEFT": "{{count}} dage tilbage",
-  "TRASH_DAYS_LEFT_ONE": "1 dag tilbage",
-  "TRASH_ITEMS_INSIDE": "{{count}} elementer indeni",
-  "TRASH_ITEMS_INSIDE_ONE": "1 element indeni",
+  "TRASH_DAYS_LEFT": {
+    "one": "{{count}} dag tilbage",
+    "other": "{{count}} dage tilbage"
+  },
+  "TRASH_ITEMS_INSIDE": {
+    "one": "{{count}} element indeni",
+    "other": "{{count}} elementer indeni"
+  },
   "TRASH_BOARD_IN_TRASH_HINT": "Tavlen ligger i papirkurven",
   "TRASH_TYPE_ALL": "Alle typer",
   "TRASH_TYPE_FOLDERS": "Mapper",
@@ -374,7 +394,10 @@
   "STORAGE_USAGE": "Lagerplads: {{used}} af {{quota}} brugt",
   "UPLOADING": "Uploader {{progress}} %",
   "CLOSE_PREVIEW": "Luk forhåndsvisning",
-  "ATTACHMENT_COUNT": "{{count}} vedhæftninger",
+  "ATTACHMENT_COUNT": {
+    "one": "{{count}} vedhæftning",
+    "other": "{{count}} vedhæftninger"
+  },
   "DROP_FILES_HERE": "Slip filer for at vedhæfte",
   "ACTIVITY": "Aktivitet",
   "ACTIVITY_ALL": "Alle",
