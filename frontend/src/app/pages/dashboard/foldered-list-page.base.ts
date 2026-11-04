@@ -17,7 +17,7 @@ import {ProjectFilterService} from "@services/project-filter.service";
 import {PHRASES} from "@config/phrases";
 import {MenuButtonOption} from "@models/menu-button.model";
 import {TemplateKind} from "@models/template.model";
-import {createFromTemplateRoute} from "@utils/templateRoute";
+import {createFromTemplateRoute, templatesRoute} from "@utils/templateRoute";
 import {AppRoutes} from "../../app/app-routes.enum";
 
 @Directive()
@@ -25,6 +25,9 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
   protected abstract readonly itemType: FolderItemType;
   protected abstract readonly itemRoute: AppRoutes;
   protected abstract readonly templateKind: Exclude<TemplateKind, 'board'>;
+  protected abstract readonly emptyTitle: string;
+  protected abstract readonly emptyInProjectTitle: string;
+  protected abstract readonly emptyHint: string;
   protected readonly createOptions: MenuButtonOption[] = [
     {value: 'blank', labelKey: PHRASES.BLANK},
     {value: 'template', labelKey: PHRASES.FROM_TEMPLATE},
@@ -114,6 +117,11 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
     return this.isSearching ? this.searchLevels : this.levels;
   }
 
+  get selectedProjectName(): string | null {
+    const projectId = this.projectFilterService.getSelectedProjectId();
+    return projectId === null ? null : this.projectFilterService.getProjects().find((project) => project.id === projectId)?.name ?? null;
+  }
+
   get hasNoSearchResults(): boolean {
     const state = this.searchLevels.get('root');
     return this.isSearching && !!state?.loaded && !state.isLoading && !this.searchItems.length;
@@ -144,6 +152,19 @@ export abstract class FolderedListPageComponent implements OnInit, OnDestroy {
 
   handleSearchChange(query: string) {
     this.searchTerms.next(query);
+  }
+
+  clearSearch() {
+    this.searchQuery = '';
+    this.searchTerms.next('');
+  }
+
+  showAllProjects() {
+    this.projectFilterService.select(null);
+  }
+
+  handleBrowseTemplates() {
+    this.router.navigate(templatesRoute(this.templateKind));
   }
 
   handleExpandFolder(event: { folderId: number }) {
