@@ -273,7 +273,7 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] F4. Add to `services/theme.service.spec.ts`: after `preview(...)` the root has `data-theme-switching`; after two `await new Promise(requestAnimationFrame)` it doesn't; the `data-theme` and `data-mode` values are set while the attribute is present. Restore the attribute in `afterEach` like the existing theme attributes.
 
 ### G. Selected state in Settings
-- [ ] G1. Update `theme-mode-switch.component.css` as in Part 2.2.
+- [x] G1. Update `theme-mode-switch.component.css` as in Part 2.2.
 - [ ] G2. Add the check icon to `theme-picker.component.html` / `.ts` and the CSS rules to `theme-picker.component.css`; add the "only the selected card has a check" test to `theme-picker.component.spec.ts`.
 
 ### H. Docs
