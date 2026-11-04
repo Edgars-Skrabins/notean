@@ -1,7 +1,7 @@
 # Board overview focus — Spec
 
 **Type:** feature
-**Status:** ready for implementation
+**Status:** in progress
 **Last updated:** 2026-11-04
 
 # Part 1 — Business logic and usage
@@ -80,6 +80,10 @@ Existing stack only (Angular, ngx-translate, router child routes, theme tokens).
 7. **Shared bar component (2026-11-04):** a new presentational `BarListComponent` replaces `PieChartComponent`. Reason: two charts with the same look (CLAUDE.md "Reuse the shared components"), and it keeps the overview stylesheet small.
 8. **API untouched (2026-11-04):** the overview response is unchanged and the model keeps `boardTickets`. Reason: the change is about presentation; trimming the endpoint would be a separate backend change for no user-visible gain.
 
+9. **Rows built once on load (2026-11-04, during implementation):** `statusRows` and `assigneeRows` are fields filled when the overview loads, not getters. Reason: getters would hand `*ngFor` new row objects on every change detection, rebuilding the bar DOM each time.
+10. **Chart grid on phones (2026-11-04, during implementation):** the grid uses `minmax(min(320px, 100%), 1fr)` so a chart never forces horizontal scroll below 320px of content width (WCAG 1.4.10 Reflow).
+11. **Translations (2026-11-04, during implementation):** `TAB_SETTINGS` reuses each language's existing `SETTINGS` text; `TICKETS_BY_STATUS` follows the wording of the existing `TICKETS_PER_ASSIGNEE` in each language.
+
 ### Decisions to double-check
 - **New "Settings" tab and route** (`/dashboard/boards/:id/settings`, label "Settings"): a new navigation concept and name. An alternative name would be "Setup".
 - **`--color-chart-1…8` tokens left in place though unused:** removing them touches all nine theme files and `THEME_TOKENS`, which `theme-contrast` owns in parallel; a follow-up can delete them.
@@ -91,23 +95,23 @@ Read Part 1 and Part 2 before starting. Work through the tasks in order and tick
 Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 assertions, 0 failures (master f15abdf, 2026-11-04).
 
 ### A. Bar list component
-- [ ] A1. Create `frontend/src/app/components/bar-list/` (`npm run newcomponent bar-list`) with `BarListRow`, the `rows` / `emptyText` inputs, `hasData`, `max`, `width()`, the template and CSS from Part 2.2 (`ChangeDetectionStrategy.Eager`, camelCase BEM, tokens only).
-- [ ] A2. Add `bar-list.component.spec.ts`: one row per input row with label and value, widths relative to the largest value (largest 100%), zero rows get a 0% fill, and the empty text shows when every value is 0 or there are no rows.
+- [x] A1. Create `frontend/src/app/components/bar-list/` (`npm run newcomponent bar-list`) with `BarListRow`, the `rows` / `emptyText` inputs, `hasData`, `max`, `width()`, the template and CSS from Part 2.2 (`ChangeDetectionStrategy.Eager`, camelCase BEM, tokens only).
+- [x] A2. Add `bar-list.component.spec.ts`: one row per input row with label and value, widths relative to the largest value (largest 100%), zero rows get a 0% fill, and the empty text shows when every value is 0 or there are no rows.
 
 ### B. Overview tab
-- [ ] B1. In `frontend/src/app/pages/dashboard/board-overview-tab/board-overview-tab.component.ts`, replace `columnSlices`, `assigneeSlices` and `maxColumnCount` with `statusRows` and `assigneeRows` as in Part 2.2, and swap the imports (`BarListComponent` in; `PieChartComponent`, `PriorityListComponent`, `TagListComponent`, `chartColor` out).
-- [ ] B2. Rewrite `board-overview-tab.component.html` and `.css`: no tiles, a `.boardOverview__charts` grid with "Tickets by status" (with the Total line) and "Tickets per assignee", then Recent activity unchanged; no Priorities / Tags sections.
-- [ ] B3. Update `board-overview-tab.component.spec.ts`: replace the pie slice tests with tests that `statusRows` starts with Backlog and follows column order, and that `assigneeRows` drops zero rows and puts Unassigned last with the translated label; keep the load, error and recent ticket tests.
+- [x] B1. In `frontend/src/app/pages/dashboard/board-overview-tab/board-overview-tab.component.ts`, replace `columnSlices`, `assigneeSlices` and `maxColumnCount` with `statusRows` and `assigneeRows` as in Part 2.2, and swap the imports (`BarListComponent` in; `PieChartComponent`, `PriorityListComponent`, `TagListComponent`, `chartColor` out).
+- [x] B2. Rewrite `board-overview-tab.component.html` and `.css`: no tiles, a `.boardOverview__charts` grid with "Tickets by status" (with the Total line) and "Tickets per assignee", then Recent activity unchanged; no Priorities / Tags sections.
+- [x] B3. Update `board-overview-tab.component.spec.ts`: replace the pie slice tests with tests that `statusRows` starts with Backlog and follows column order, and that `assigneeRows` drops zero rows and puts Unassigned last with the translated label; keep the load, error and recent ticket tests.
 
 ### C. Settings tab
-- [ ] C1. Create `frontend/src/app/pages/dashboard/board-settings-tab/` with `BoardSettingsTabComponent` (Priorities and Tags sections, own stylesheet) and a spec that renders both `app-priority-list` and `app-tag-list` (with stubbed children or `NO_ERRORS_SCHEMA`, as other tab specs do).
-- [ ] C2. Add the `AppRoutes.SETTINGS` child route after List in `frontend/src/app/app/dashboard.routes.ts`, and the Settings link in `pages/dashboard/board-page/board-page.component.html`.
-- [ ] C3. Translations: add `TAB_SETTINGS` and `TICKETS_BY_STATUS`, remove `TICKETS_PER_COLUMN`, `TICKETS_ON_BOARD` and `TICKETS_IN_BACKLOG` in `config/phrases.ts` and all 11 translation files (in place, next to the related keys).
+- [x] C1. Create `frontend/src/app/pages/dashboard/board-settings-tab/` with `BoardSettingsTabComponent` (Priorities and Tags sections, own stylesheet) and a spec that renders both `app-priority-list` and `app-tag-list` (with stubbed children or `NO_ERRORS_SCHEMA`, as other tab specs do).
+- [x] C2. Add the `AppRoutes.SETTINGS` child route after List in `frontend/src/app/app/dashboard.routes.ts`, and the Settings link in `pages/dashboard/board-page/board-page.component.html`.
+- [x] C3. Translations: add `TAB_SETTINGS` and `TICKETS_BY_STATUS`, remove `TICKETS_PER_COLUMN`, `TICKETS_ON_BOARD` and `TICKETS_IN_BACKLOG` in `config/phrases.ts` and all 11 translation files (in place, next to the related keys).
 
 ### D. Cleanup
-- [ ] D1. Delete `frontend/src/app/components/pie-chart/` and `frontend/src/app/config/chartColors.ts` + `chartColors.spec.ts` after confirming with grep that nothing else imports them.
-- [ ] D2. Update `CLAUDE.md` as described under Docs in Part 2.2.
+- [x] D1. Delete `frontend/src/app/components/pie-chart/` and `frontend/src/app/config/chartColors.ts` + `chartColors.spec.ts` after confirming with grep that nothing else imports them.
+- [x] D2. Update `CLAUDE.md` as described under Docs in Part 2.2.
 
 ### Z. Wrap-up
-- [ ] Z1. Full test runs, build and lint, using the commands in `CLAUDE.md` (`npm test`, `npm run build` in `frontend/`; `bin/rails test` in `backend/` to confirm the untouched baseline). Check the build reports no style budget warning for the changed components.
-- [ ] Z2. Manual check in the running app: open a board with tickets in the backlog and columns, some with two assignees and some unassigned; on Overview see one status chart (Backlog first), one assignee chart (Unassigned last) side by side, no pies or tiles; narrow the window and see them stack; open a brand-new board and see "No tickets yet." in both; open Settings, add, rename, reorder and delete a priority and a tag, and see the Kanban and List tabs and the ticket popup pick them up; check light and dark mode.
+- [x] Z1. Full test runs, build and lint, using the commands in `CLAUDE.md` (`npm test`, `npm run build` in `frontend/`; `bin/rails test` in `backend/` to confirm the untouched baseline). Check the build reports no style budget warning for the changed components.
+- [x] Z2. Manual check in the running app: open a board with tickets in the backlog and columns, some with two assignees and some unassigned; on Overview see one status chart (Backlog first), one assignee chart (Unassigned last) side by side, no pies or tiles; narrow the window and see them stack; open a brand-new board and see "No tickets yet." in both; open Settings, add, rename, reorder and delete a priority and a tag, and see the Kanban and List tabs and the ticket popup pick them up; check light and dark mode.
