@@ -59,7 +59,6 @@
   "SEARCH_SHOW_MORE": "Показать ещё",
   "LOAD_MORE": "Загрузить ещё",
   "SEARCH_IN_PROJECT": "Сейчас поиск в проекте '{{project}}'",
-  "SEARCH_INCLUDE_ALL_PROJECTS": "Включить все проекты",
   "SEARCH_FAILED": "Не удалось выполнить поиск",
   "SEARCH_NO_MATCHES": "Ничего не найдено по запросу '{{query}}'",
   "SEARCH_NO_MATCHES_IN_PROJECT": "В проекте '{{project}}' ничего не найдено по запросу '{{query}}'",

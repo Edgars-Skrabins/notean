@@ -59,7 +59,6 @@
   "SEARCH_SHOW_MORE": "Mehr anzeigen",
   "LOAD_MORE": "Mehr laden",
   "SEARCH_IN_PROJECT": "Suche jetzt in '{{project}}'",
-  "SEARCH_INCLUDE_ALL_PROJECTS": "Alle Projekte einbeziehen",
   "SEARCH_FAILED": "Suche fehlgeschlagen",
   "SEARCH_NO_MATCHES": "Nichts passt zu '{{query}}'",
   "SEARCH_NO_MATCHES_IN_PROJECT": "Nichts in '{{project}}' passt zu '{{query}}'",

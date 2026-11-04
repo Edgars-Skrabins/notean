@@ -59,7 +59,6 @@
   "SEARCH_SHOW_MORE": "Rodyti daugiau",
   "LOAD_MORE": "Įkelti daugiau",
   "SEARCH_IN_PROJECT": "Šiuo metu ieškoma projekte '{{project}}'",
-  "SEARCH_INCLUDE_ALL_PROJECTS": "Įtraukti visus projektus",
   "SEARCH_FAILED": "Paieška nepavyko",
   "SEARCH_NO_MATCHES": "Niekas neatitinka '{{query}}'",
   "SEARCH_NO_MATCHES_IN_PROJECT": "Projekte '{{project}}' niekas neatitinka '{{query}}'",

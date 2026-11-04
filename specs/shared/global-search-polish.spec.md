@@ -127,8 +127,8 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] D3. Add the reduced-motion rule and `overflow-wrap` on messages. Check the stylesheet is under the 4 kB error budget (`npm run build`).
 
 ### E. Cleanup and docs
-- [ ] E1. Remove `SEARCH_INCLUDE_ALL_PROJECTS` from `phrases.ts` and every translation file after grepping that it's unused. Remove `NO_SEARCH_RESULTS` only if a grep shows no use left.
-- [ ] E2. Update the `GlobalSearchComponent` bullet in `CLAUDE.md`: it's an ARIA combobox with a listbox of grouped options (focus stays in the input, `aria-activedescendant`), shows a `/` hint, announces result counts, and offers "Search all projects" as the last option when a project is selected.
+- [x] E1. Remove `SEARCH_INCLUDE_ALL_PROJECTS` from `phrases.ts` and every translation file after grepping that it's unused. Remove `NO_SEARCH_RESULTS` only if a grep shows no use left.
+- [x] E2. Update the `GlobalSearchComponent` bullet in `CLAUDE.md`: it's an ARIA combobox with a listbox of grouped options (focus stays in the input, `aria-activedescendant`), shows a `/` hint, announces result counts, and offers "Search all projects" as the last option when a project is selected.
 
 ### Z. Wrap-up
 - [ ] Z1. Full test runs, build and lint, using the commands in `CLAUDE.md` (`npm test` and `npm run build` in `frontend/`).

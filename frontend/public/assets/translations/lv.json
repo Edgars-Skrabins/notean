@@ -59,7 +59,6 @@
   "SEARCH_SHOW_MORE": "Rādīt vairāk",
   "LOAD_MORE": "Ielādēt vairāk",
   "SEARCH_IN_PROJECT": "Pašlaik meklē projektā '{{project}}'",
-  "SEARCH_INCLUDE_ALL_PROJECTS": "Iekļaut visus projektus",
   "SEARCH_FAILED": "Meklēšana neizdevās",
   "SEARCH_NO_MATCHES": "Nekas neatbilst '{{query}}'",
   "SEARCH_NO_MATCHES_IN_PROJECT": "Projektā '{{project}}' nekas neatbilst '{{query}}'",
