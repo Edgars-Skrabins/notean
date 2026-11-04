@@ -25,3 +25,48 @@
   overflow-y: auto;
   padding: var(--space-6);
 }
+
+.dashboardShell__nav {
+  display: flex;
+  flex-shrink: 0;
+  height: 100%;
+}
+
+@media (max-width: 767px) {
+  .dashboardShell__content {
+    padding: var(--space-4);
+  }
+
+  .dashboardShell__nav {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 40;
+    width: min(280px, 85vw);
+    background: var(--dashboard-background);
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform 200ms cubic-bezier(0.25, 1, 0.5, 1), visibility 0s linear 200ms;
+  }
+
+  .dashboardShell__nav--open {
+    transform: none;
+    visibility: visible;
+    transition-delay: 0s;
+    box-shadow: var(--shadow-card);
+  }
+
+  .dashboardShell__scrim {
+    position: fixed;
+    inset: 0;
+    z-index: 39;
+    background: var(--color-overlay);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboardShell__nav {
+    transition: none;
+  }
+}

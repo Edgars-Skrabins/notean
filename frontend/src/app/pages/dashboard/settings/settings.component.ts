@@ -12,6 +12,7 @@ import {CheckboxComponent} from "@components/checkbox/checkbox.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {ThemeModeSwitchComponent} from "@components/theme-mode-switch/theme-mode-switch.component";
 import {ThemePickerComponent} from "@components/theme-picker/theme-picker.component";
+import {LanguageSwitcherComponent} from "@components/language-switcher/language-switcher.component";
 import {ThemeService} from "@services/theme.service";
 import {ThemeKey, ThemeMode} from "@config/themes";
 import {ResolvedThemeMode} from "@utils/themeDom";
@@ -24,7 +25,8 @@ import {ResolvedThemeMode} from "@utils/themeDom";
     CheckboxComponent,
     ConfirmDialogComponent,
     ThemeModeSwitchComponent,
-    ThemePickerComponent
+    ThemePickerComponent,
+    LanguageSwitcherComponent
   ],
   templateUrl: './settings.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
