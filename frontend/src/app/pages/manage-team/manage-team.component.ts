@@ -17,7 +17,7 @@ import {AppRoutes} from "../../app/app-routes.enum";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {TeamCodeDisplayComponent} from "@components/team-code-display/team-code-display.component";
 import {AvatarComponent} from "@components/avatar/avatar.component";
-import {CheckboxComponent} from "@components/checkbox/checkbox.component";
+import {SwitchComponent} from "@components/switch/switch.component";
 import {MenuButtonComponent} from "@components/menu-button/menu-button.component";
 import {ButtonComponent} from "@components/button/button.component";
 import {errorPhrase} from "@utils/errorPhrase";
@@ -58,7 +58,7 @@ const MEMBER_ACTION_TOASTS: Record<MemberAction, string> = {
     ConfirmDialogComponent,
     TeamCodeDisplayComponent,
     AvatarComponent,
-    CheckboxComponent,
+    SwitchComponent,
     MenuButtonComponent,
     ButtonComponent
   ],

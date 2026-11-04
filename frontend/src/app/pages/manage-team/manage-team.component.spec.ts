@@ -110,12 +110,12 @@ describe('ManageTeamComponent features', () => {
 
   it('shows the Features toggles with the current flags to the owner only', () => {
     const owner = render('owner');
-    const checkboxes = Array.from(owner.nativeElement.querySelectorAll('app-checkbox')) as HTMLElement[];
-    expect(checkboxes.length).toBe(4);
+    const switches = Array.from(owner.nativeElement.querySelectorAll('app-switch')) as HTMLElement[];
+    expect(switches.length).toBe(4);
     expect(owner.componentInstance.features).toEqual({pages: true, diagrams: false, boards: true, chat: true});
 
-    expect(render('admin').nativeElement.querySelectorAll('app-checkbox').length).toBe(0);
-    expect(render('user').nativeElement.querySelectorAll('app-checkbox').length).toBe(0);
+    expect(render('admin').nativeElement.querySelectorAll('app-switch').length).toBe(0);
+    expect(render('user').nativeElement.querySelectorAll('app-switch').length).toBe(0);
   });
 
   it('saves a toggle with updateFeatures and shows a success toast', async () => {

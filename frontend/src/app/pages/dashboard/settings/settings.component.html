@@ -26,18 +26,18 @@
   </section>
 
   <div class="settings__options">
-    <app-checkbox
+    <app-switch
       [checked]="settings.showFavoritesOnHome"
       (checkedChange)="handleSettingChange('showFavoritesOnHome', $event)"
-    >{{ PHRASES.SHOW_FAVORITES_ON_HOME | translate }}</app-checkbox>
-    <app-checkbox
+    >{{ PHRASES.SHOW_FAVORITES_ON_HOME | translate }}</app-switch>
+    <app-switch
       [checked]="settings.showFavoritesInSidebar"
       (checkedChange)="handleSettingChange('showFavoritesInSidebar', $event)"
-    >{{ PHRASES.SHOW_FAVORITES_IN_SIDEBAR | translate }}</app-checkbox>
-    <app-checkbox
+    >{{ PHRASES.SHOW_FAVORITES_IN_SIDEBAR | translate }}</app-switch>
+    <app-switch
       [checked]="settings.showMyWorkOnHome"
       (checkedChange)="handleSettingChange('showMyWorkOnHome', $event)"
-    >{{ PHRASES.SHOW_MY_WORK_ON_HOME | translate }}</app-checkbox>
+    >{{ PHRASES.SHOW_MY_WORK_ON_HOME | translate }}</app-switch>
   </div>
 
   <button class="authButton" [disabled]="!hasUnsavedChanges || isSaving" (click)="handleSave()">

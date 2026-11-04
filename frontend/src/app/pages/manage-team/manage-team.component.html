@@ -39,11 +39,11 @@
   <section class="manageTeam__section" *ngIf="isOwner">
     <h3 class="manageTeam__sectionTitle">{{ PHRASES.FEATURES | translate }}</h3>
     <div class="manageTeam__features">
-      <app-checkbox
+      <app-switch
         *ngFor="let option of featureOptions"
         [checked]="features[option.feature]"
         (checkedChange)="handleFeatureChange(option.feature, $event)"
-      >{{ option.label | translate }}</app-checkbox>
+      >{{ option.label | translate }}</app-switch>
     </div>
   </section>
 

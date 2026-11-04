@@ -6,9 +6,9 @@ import {PHRASES} from "@config/phrases";
 import {SettingsService} from "@services/settings.service";
 import {ToastService} from "@services/toast.service";
 import {ToastType} from "@models/toast.model";
-import {UserSettings} from "@models/settings.model";
+import {ToggleSetting, UserSettings} from "@models/settings.model";
 import {HasUnsavedChanges} from "@models/unsaved-changes.model";
-import {CheckboxComponent} from "@components/checkbox/checkbox.component";
+import {SwitchComponent} from "@components/switch/switch.component";
 import {ConfirmDialogComponent} from "@components/confirm-dialog/confirm-dialog.component";
 import {ThemeModeSwitchComponent} from "@components/theme-mode-switch/theme-mode-switch.component";
 import {ThemePickerComponent} from "@components/theme-picker/theme-picker.component";
@@ -22,7 +22,7 @@ import {ResolvedThemeMode} from "@utils/themeDom";
   imports: [
     NgIf,
     TranslatePipe,
-    CheckboxComponent,
+    SwitchComponent,
     ConfirmDialogComponent,
     ThemeModeSwitchComponent,
     ThemePickerComponent,
@@ -38,9 +38,11 @@ export class SettingsComponent implements HasUnsavedChanges, OnDestroy {
   savedSettings: UserSettings;
   settings: UserSettings;
   isSaving = false;
+  isSavingToggles = false;
   isLeaveConfirmOpen = false;
   resolvedMode: ResolvedThemeMode = 'dark';
 
+  private hasQueuedToggleSave = false;
   private resolveLeave: ((canLeave: boolean) => void) | null = null;
   private settingsSubscription: Subscription;
   private themeSubscription: Subscription;
@@ -53,7 +55,7 @@ export class SettingsComponent implements HasUnsavedChanges, OnDestroy {
     this.savedSettings = this.settingsService.getSettings();
     this.settings = {...this.savedSettings};
     this.settingsSubscription = this.settingsService.settings$.subscribe((settings) => {
-      if (!this.hasUnsavedChanges) {
+      if (!this.hasUnsavedChanges && !this.isSavingToggles) {
         this.savedSettings = settings;
         this.settings = {...settings};
       }
@@ -64,8 +66,8 @@ export class SettingsComponent implements HasUnsavedChanges, OnDestroy {
   }
 
   get hasUnsavedChanges(): boolean {
-    return (Object.keys(this.settings) as (keyof UserSettings)[])
-      .some((key) => this.settings[key] !== this.savedSettings[key]);
+    return this.settings.theme !== this.savedSettings.theme
+      || this.settings.themeMode !== this.savedSettings.themeMode;
   }
 
   ngOnDestroy() {
@@ -74,8 +76,9 @@ export class SettingsComponent implements HasUnsavedChanges, OnDestroy {
     this.themeService.apply(this.savedSettings.theme, this.savedSettings.themeMode);
   }
 
-  handleSettingChange(key: keyof UserSettings, checked: boolean) {
+  handleSettingChange(key: ToggleSetting, checked: boolean) {
     this.settings = {...this.settings, [key]: checked};
+    this.saveToggles();
   }
 
   handleThemeChange(theme: ThemeKey) {
@@ -130,6 +133,47 @@ export class SettingsComponent implements HasUnsavedChanges, OnDestroy {
 
   handleCancelLeave() {
     this.closeLeaveConfirm(false);
+  }
+
+  private saveToggles() {
+    if (this.isSavingToggles) {
+      this.hasQueuedToggleSave = true;
+      return;
+    }
+
+    this.isSavingToggles = true;
+
+    this.settingsService.update({
+      ...this.savedSettings,
+      showFavoritesOnHome: this.settings.showFavoritesOnHome,
+      showFavoritesInSidebar: this.settings.showFavoritesInSidebar,
+      showMyWorkOnHome: this.settings.showMyWorkOnHome
+    })
+      .then((response) => {
+        if (!response.success) {
+          this.settings = {
+            ...this.settings,
+            showFavoritesOnHome: this.savedSettings.showFavoritesOnHome,
+            showFavoritesInSidebar: this.savedSettings.showFavoritesInSidebar,
+            showMyWorkOnHome: this.savedSettings.showMyWorkOnHome
+          };
+          this.hasQueuedToggleSave = false;
+          this.toastService.show({type: ToastType.ERROR, message: PHRASES.SETTINGS_SAVE_FAILED});
+          return;
+        }
+
+        this.savedSettings = response.settings;
+        if (this.hasUnsavedChanges) {
+          this.themeService.preview(this.settings.theme, this.settings.themeMode);
+        }
+      })
+      .finally(() => {
+        this.isSavingToggles = false;
+        if (this.hasQueuedToggleSave) {
+          this.hasQueuedToggleSave = false;
+          this.saveToggles();
+        }
+      });
   }
 
   private closeLeaveConfirm(canLeave: boolean) {

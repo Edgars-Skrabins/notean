@@ -1,8 +1,9 @@
 import {Component, EventEmitter, Input, Output, ChangeDetectionStrategy} from '@angular/core';
+import {IconComponent} from '@components/icon/icon.component';
 
 @Component({
   selector: 'app-checkbox',
-  imports: [],
+  imports: [IconComponent],
   templateUrl: './checkbox.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,
   styleUrl: './checkbox.component.css'
