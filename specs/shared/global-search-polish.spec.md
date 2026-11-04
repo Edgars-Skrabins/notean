@@ -131,5 +131,7 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] E2. Update the `GlobalSearchComponent` bullet in `CLAUDE.md`: it's an ARIA combobox with a listbox of grouped options (focus stays in the input, `aria-activedescendant`), shows a `/` hint, announces result counts, and offers "Search all projects" as the last option when a project is selected.
 
 ### Z. Wrap-up
-- [ ] Z1. Full test runs, build and lint, using the commands in `CLAUDE.md` (`npm test` and `npm run build` in `frontend/`).
+- [x] Z1. Full test runs, build and lint, using the commands in `CLAUDE.md` (`npm test` and `npm run build` in `frontend/`).
+  - 2026-11-04: frontend 995 specs passing (980 baseline + 15 new); the build passes with one budget warning (decision 12). The backend is untouched.
 - [ ] Z2. Manual check in the running app: see the `/` hint, press `/`, type a query, arrow through results and *Show more*, and open one with Enter. Select a project, search for something that only exists elsewhere, and press Enter to widen the search. Tab out and check the panel closes. Repeat with VoiceOver: the combobox role, the highlighted options and the result count are announced. Check light and dark mode, and that the hint is gone at 375 px with touch emulation.
+  - Not done yet (2026-11-04): the app's dev-server limit for this folder was used up by the parallel sessions, so the browser and VoiceOver check is left for the PR review.
