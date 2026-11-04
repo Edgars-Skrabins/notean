@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, ChangeDetectionStrategy} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, ChangeDetectionStrategy} from '@angular/core';
 import {FormsModule} from '@angular/forms';
 import {NgIf} from '@angular/common';
 import {CdkScrollable} from '@angular/cdk/scrolling';
@@ -61,6 +61,7 @@ export class ItemDetailLayoutComponent implements OnInit, OnChanges, OnDestroy {
   @Input() isTemplate = false;
   @Input() canManage = true;
   @Input() showSidebar = true;
+  @Input() autofocusTitle = false;
   @Output() draftTitleChange = new EventEmitter<string>();
   @Output() closed = new EventEmitter<void>();
   @Output() editRequested = new EventEmitter<void>();
@@ -80,6 +81,8 @@ export class ItemDetailLayoutComponent implements OnInit, OnChanges, OnDestroy {
   @Output() draftProjectChange = new EventEmitter<number | null>();
   @Output() escapePressed = new EventEmitter<void>();
 
+  @ViewChild('titleInput') titleInput?: ElementRef<HTMLInputElement>;
+
   @ViewChild(CdkTrapFocus) trapFocus?: CdkTrapFocus;
 
   private unregisterEscape = () => {};
@@ -89,6 +92,18 @@ export class ItemDetailLayoutComponent implements OnInit, OnChanges, OnDestroy {
 
   ngOnInit() {
     this.unregisterEscape = this.escapeService.push(() => this.escapePressed.emit());
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    const autofocus = changes['autofocusTitle'];
+    if (!autofocus?.currentValue || autofocus.previousValue) {
+      return;
+    }
+
+    setTimeout(() => {
+      this.titleInput?.nativeElement.focus();
+      this.titleInput?.nativeElement.select();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
