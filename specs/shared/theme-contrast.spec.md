@@ -1,7 +1,7 @@
 # Theme contrast — Spec
 
 **Type:** bug fix
-**Status:** ready for implementation
+**Status:** in progress
 **Last updated:** 2026-11-04
 
 # Part 1 — Business logic and usage
@@ -231,6 +231,7 @@ Switch `border` / `border-color` from `var(--color-input-border)` to `var(--colo
 10. **Mode switch selected segment: raised card-coloured segment with a control border and heading text** (2026-11-04). Reason: the selected state must be ≥ 3:1 against its neighbours (WCAG 1.4.11 for state); the `--color-control-border` test guarantees that in all 18 combinations, while a primary fill fails in Purple haze dark (2.27:1 against the surfaces). It is the familiar segmented-control look (Impeccable operate.md "earned familiarity"). Weight stays 500 so the segments never change width. Rejected: `--color-nav-active-bg` (the weak state the critique found); primary fill (fails in Purple haze dark).
 11. **Theme picker: check icon and bold name on the selected card, ring kept** (2026-11-04). Reason: colour alone can't mark selection when every preview is itself colourful (Impeccable colorize.md "Information conveyed by color also needs text, shape, iconography, or position"; WCAG 1.4.1). Rejected: a stronger ring only (Purple haze's purple preview still competes with it).
 12. **Contrast helper lives in `testing/`** (2026-11-04). Reason: only specs use it; `testing/` holds shared spec helpers per CLAUDE.md; production code never needs contrast maths.
+13. **`composite` rounds each channel to an integer** (2026-11-04). Reason: browsers paint 8-bit colours, and the known value above (`rgba(0, 0, 0, 0.5)` on white is `#808080`, 3.95:1) only holds when rounded (unrounded 127.5 gives 3.98).
 
 ### Decisions to double-check
 
@@ -244,8 +245,8 @@ Read Part 1 and Part 2 before starting. Work through the tasks in order and tick
 Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 assertions, 0 failures (master f15abdf, 2026-11-04).
 
 ### A. Contrast helper
-- [ ] A1. Create `frontend/src/app/testing/contrast.ts` with `Rgba`, `parseColor`, `colorStops`, `composite`, `relativeLuminance`, `contrastRatio` and `worstContrast` as described in Part 2.2.
-- [ ] A2. Create `frontend/src/app/testing/contrast.spec.ts` with the known-value tests from Part 2.2. Run `npm test`; they pass.
+- [x] A1. Create `frontend/src/app/testing/contrast.ts` with `Rgba`, `parseColor`, `colorStops`, `composite`, `relativeLuminance`, `contrastRatio` and `worstContrast` as described in Part 2.2.
+- [x] A2. Create `frontend/src/app/testing/contrast.spec.ts` with the known-value tests from Part 2.2. Run `npm test`; they pass.
 
 ### B. Contrast checks (red first)
 - [ ] B1. Add `describe('theme contrast')` to `frontend/src/app/config/themes.spec.ts` with the nine pair checks of Part 2.2, but without check 6 yet (the token doesn't exist). Run `npm test` and confirm it fails exactly on the pairs Part 1 lists (faint in 13 combinations, primary-light in light modes, Purple haze gradient, Terminal light nav item). This proves the test measures what the critique measured.
