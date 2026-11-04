@@ -277,7 +277,7 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] G2. Add the check icon to `theme-picker.component.html` / `.ts` and the CSS rules to `theme-picker.component.css`; add the "only the selected card has a check" test to `theme-picker.component.spec.ts`.
 
 ### H. Docs
-- [ ] H1. Update `CLAUDE.md` (Themes section and the `testing/` line) as described in Part 2.2.
+- [x] H1. Update `CLAUDE.md` (Themes section and the `testing/` line) as described in Part 2.2.
 
 ### Z. Wrap-up
 - [ ] Z1. Full test runs (`npm test` in `frontend/`, `bin/rails test` in `backend/`) and `npm run build`; run `/Users/edgarsskrabins/.claude/skills/impeccable/scripts/impeccable detect --json frontend/src/themes frontend/src/styles.css frontend/src/app/components/theme-picker frontend/src/app/components/theme-mode-switch` once and fix real findings.

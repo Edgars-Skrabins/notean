@@ -92,7 +92,7 @@ src/app/
 ├── models/       TypeScript interfaces and response union types
 ├── guards/       functional route guards
 ├── config/       axios instance, i18n config, language options, overlay positions, PHRASES, themes.ts, errorCodes/
-├── testing/      shared spec fixtures (e.g. boardFixtures.ts)
+├── testing/      shared spec fixtures (e.g. boardFixtures.ts) and contrast.ts (WCAG contrast helpers)
 └── utils/        small pure helpers (themeDom.ts applies and reads themes)
 public/assets/translations/   one <code>.json per language (en, lv, et, lt, ru, sv, fi, de, da, fr, es)
 src/themes/                   modes.css plus one CSS file per theme
@@ -152,10 +152,10 @@ src/environments/             environment.ts (apiUrl)
 
 #### Themes
 - Each user picks one of nine themes (`THEMES` in `config/themes.ts`) and a mode (`system`, `light` or `dark`) on the Settings page. Both are saved with the other settings and cached in `localStorage` (`theme`, `themeMode`) for first paint.
-- A theme is design tokens only. `data-theme` and `data-mode` on `<html>` select the tokens. `main.ts` applies the cached theme before bootstrap (the CSP forbids inline scripts), and `ThemeService` applies, previews and follows the OS in System mode, emitting `theme$`.
-- Every theme provides every token in `THEME_TOKENS` (`config/themes.spec.ts` checks this). `src/themes/modes.css` holds shared per-mode defaults. Each theme file has three attribute-only blocks: `[data-theme='<key>']` for fonts, radii, spacing and heights, then `[data-theme='<key>'][data-mode='dark']` and `[data-mode='light']` for colours. Font sizes and transitions stay global in `styles.css`.
-- Component CSS never hardcodes colours. Use the tokens, and write translucent shades as `color-mix(in srgb, var(--token) N%, transparent)` (`--color-tint` for hover and divider shades). Buttons, inputs and dropdown triggers use `--control-height`, and list rows use `--row-height`.
-- To add a theme: create its CSS file with the three blocks, add it to both `styles` arrays in `angular.json`, add its key to `THEMES` and to `User::THEMES` on the backend, and add its name to `PHRASES` and every translation file.
+- A theme is design tokens only. `data-theme` and `data-mode` on `<html>` select the tokens. `main.ts` applies the cached theme before bootstrap (the CSP forbids inline scripts), and `ThemeService` applies, previews and follows the OS in System mode, emitting `theme$`. It sets `data-theme-switching` on `<html>` for two animation frames around each change, and a `styles.css` rule turns every transition off while it is there, so a theme change never animates.
+- Every theme provides every token in `THEME_TOKENS` (`config/themes.spec.ts` checks this). The same spec checks WCAG contrast of the token pairs in both modes with the helpers in `testing/contrast.ts`: text tokens 4.5:1 on every surface they sit on, control and focus borders 3:1. `src/themes/modes.css` holds shared per-mode defaults. Each theme file has three attribute-only blocks: `[data-theme='<key>']` for fonts, radii, spacing and heights, then `[data-theme='<key>'][data-mode='dark']` and `[data-mode='light']` for colours. Font sizes and transitions stay global in `styles.css`.
+- Component CSS never hardcodes colours. Use the tokens, and write translucent shades as `color-mix(in srgb, var(--token) N%, transparent)` (`--color-tint` for hover and divider shades). Buttons, inputs and dropdown triggers use `--control-height`, and list rows use `--row-height`. Form controls (inputs, textareas, editor boxes, dropdown triggers, checkboxes) draw their border with `--color-control-border`; decorative borders (cards, panels, rows, dividers) use `--color-input-border`. Every placeholder uses `--color-text-faint` through one global rule in `styles.css`.
+- To add a theme: create its CSS file with the three blocks, add it to both `styles` arrays in `angular.json`, add its key to `THEMES` and to `User::THEMES` on the backend, add its name to `PHRASES` and every translation file, and provide `--color-control-border` and pass the contrast checks in `config/themes.spec.ts`.
 - Code that paints outside CSS reads tokens with `themeToken()` and re-applies on `theme$` (the flowchart editor recolours cells, grid and gradient). Chart colours are `var(--color-chart-N)` from `chartColor()`, bound through `[style.fill]`.
 
 #### Path aliases
