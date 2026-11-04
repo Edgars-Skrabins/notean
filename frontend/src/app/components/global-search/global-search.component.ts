@@ -68,6 +68,8 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
   activeIndex = -1;
   panelWidth = 0;
   searchedQuery = '';
+  statusText = '';
+  statusParams: Record<string, string | number> = {};
 
   private searchedProjectId: number | null = null;
   private typed = new Subject<string>();
@@ -99,6 +101,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
       this.searchedQuery = query;
       this.searchedProjectId = projectId;
       this.activeIndex = this.isEmpty && this.selectedProjectName !== null ? this.navItems().length - 1 : -1;
+      this.announce();
     });
   }
 
@@ -112,6 +115,10 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
 
   get isEmpty(): boolean {
     return !this.isLoading && !this.hasError && this.visibleSections.length === 0;
+  }
+
+  get showShortcutHint(): boolean {
+    return !this.isFocused && !this.query;
   }
 
   get selectedProjectName(): string | null {
@@ -138,6 +145,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
       this.isLoading = false;
       this.sections = [];
       this.activeIndex = -1;
+      this.statusText = '';
       return;
     }
     this.open();
@@ -208,10 +216,12 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
         }
         if (!response.success) {
           this.hasError = true;
+          this.announce();
           return;
         }
         section.results = [...section.results, ...response.section.results];
         section.hasMore = response.section.hasMore;
+        this.announce();
       });
   }
 
@@ -227,6 +237,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     this.isOpen = false;
     this.includeAllProjects = false;
     this.activeIndex = -1;
+    this.statusText = '';
   }
 
   resultRoute(result: SearchResult): (string | number)[] {
@@ -278,6 +289,24 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
       ...(section.hasMore ? [{section}] : []),
     ]);
     return this.selectedProjectName === null ? sectionItems : [...sectionItems, {scope: true}];
+  }
+
+  private announce() {
+    const count = this.visibleSections.reduce((total, section) => total + section.results.length, 0);
+    const projectName = this.selectedProjectName;
+    if (this.hasError) {
+      this.statusText = PHRASES.SEARCH_FAILED;
+      this.statusParams = {};
+    } else if (count > 0) {
+      this.statusText = count === 1 ? PHRASES.SEARCH_RESULTS_SHOWN_ONE : PHRASES.SEARCH_RESULTS_SHOWN;
+      this.statusParams = {count};
+    } else if (projectName !== null) {
+      this.statusText = PHRASES.SEARCH_NO_MATCHES_IN_PROJECT;
+      this.statusParams = {query: this.searchedQuery, project: projectName};
+    } else {
+      this.statusText = PHRASES.SEARCH_NO_MATCHES;
+      this.statusParams = {query: this.searchedQuery};
+    }
   }
 
   private open() {

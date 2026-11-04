@@ -363,6 +363,81 @@ describe('GlobalSearchComponent', () => {
     expect(scopeRow()).not.toBeNull();
   }));
 
+  function status(): HTMLElement {
+    return fixture.nativeElement.querySelector('[role="status"]');
+  }
+
+  it('announces the loaded result count', fakeAsync(() => {
+    searchService.search.and.returnValue(Promise.resolve(found(
+      section('page', [result('page', 1), result('page', 2)]),
+      section('board', [result('board', 3)]),
+    )));
+    type('rocket');
+    fixture.detectChanges();
+
+    expect(status().getAttribute('aria-live')).toBe('polite');
+    expect(component.statusText).toBe(PHRASES.SEARCH_RESULTS_SHOWN);
+    expect(component.statusParams).toEqual({count: 3});
+    expect(status().textContent!.trim()).toBe(PHRASES.SEARCH_RESULTS_SHOWN);
+  }));
+
+  it('announces a single result', fakeAsync(() => {
+    searchService.search.and.returnValue(Promise.resolve(found(section('page', [result('page', 1)]))));
+    type('rocket');
+
+    expect(component.statusText).toBe(PHRASES.SEARCH_RESULTS_SHOWN_ONE);
+  }));
+
+  it('announces no results with the query and project', fakeAsync(() => {
+    type('rocket');
+    expect(component.statusText).toBe(PHRASES.SEARCH_NO_MATCHES);
+    expect(component.statusParams).toEqual({query: 'rocket'});
+
+    component.close();
+    selectProject();
+    component.handleFocus();
+    flushMicrotasks();
+    expect(component.statusText).toBe(PHRASES.SEARCH_NO_MATCHES_IN_PROJECT);
+    expect(component.statusParams).toEqual({query: 'rocket', project: 'Game'});
+  }));
+
+  it('updates the announcement after Show more and clears it on close', fakeAsync(() => {
+    searchService.search.and.returnValue(Promise.resolve(found(section('page', [result('page', 1)], true))));
+    const more: SearchMoreResponse = {success: true, section: section('page', [result('page', 2), result('page', 3)], false)};
+    searchService.searchMore.and.returnValue(Promise.resolve(more));
+    type('rocket');
+
+    component.showMore(component.sections[0]);
+    flushMicrotasks();
+    expect(component.statusText).toBe(PHRASES.SEARCH_RESULTS_SHOWN);
+    expect(component.statusParams).toEqual({count: 3});
+
+    component.close();
+    fixture.detectChanges();
+    expect(component.statusText).toBe('');
+    expect(status().textContent!.trim()).toBe('');
+  }));
+
+  it('shows the / hint only while the field is empty and unfocused', fakeAsync(() => {
+    const input: HTMLInputElement = fixture.nativeElement.querySelector('input');
+    const hint = () => fixture.nativeElement.querySelector('.globalSearch__shortcut');
+    expect(input.getAttribute('aria-keyshortcuts')).toBe('/');
+    expect(hint()?.getAttribute('aria-hidden')).toBe('true');
+
+    input.dispatchEvent(new FocusEvent('focus'));
+    fixture.detectChanges();
+    expect(hint()).toBeNull();
+
+    input.dispatchEvent(new FocusEvent('blur'));
+    type('rocket');
+    fixture.detectChanges();
+    expect(hint()).toBeNull();
+
+    type('');
+    fixture.detectChanges();
+    expect(hint()).not.toBeNull();
+  }));
+
   it('leaves Escape to the layer below when the panel is closed', () => {
     const event = new KeyboardEvent('keydown', {key: 'Escape', cancelable: true});
 

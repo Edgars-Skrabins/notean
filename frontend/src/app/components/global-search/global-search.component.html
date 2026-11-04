@@ -5,6 +5,7 @@
     class="globalSearch__input textInput"
     role="combobox"
     aria-autocomplete="list"
+    aria-keyshortcuts="/"
     [value]="query"
     [placeholder]="PHRASES.SEARCH_EVERYTHING | translate"
     [attr.aria-label]="PHRASES.SEARCH_EVERYTHING | translate"
@@ -16,6 +17,8 @@
     (blur)="handleBlur()"
     (keydown)="handleKeydown($event)"
   >
+  <kbd class="globalSearch__shortcut" aria-hidden="true" *ngIf="showShortcutHint">/</kbd>
+  <div class="globalSearch__status" role="status" aria-live="polite">{{ statusText | translate: statusParams }}</div>
 </div>
 
 <ng-template

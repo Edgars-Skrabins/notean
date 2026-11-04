@@ -94,6 +94,10 @@ In `config/phrases.ts` and every file in `frontend/public/assets/translations/` 
 6. **The `/` shortcut is shown as a `<kbd>` hint inside the field, hidden on focus, with text and on touch devices; the input carries `aria-keyshortcuts="/"`.** Reason: onboard.md, "Keyboard shortcut hints (⌘K shown on search box)". Nielsen #6 recognition over recall. Rejected: putting it in the placeholder (placeholders are examples, not labels, per clarify.md, and it would disappear for screen readers once typing starts).
 7. **The panel closes when the input loses focus; clicks inside the panel don't blur it (`mousedown` preventDefault).** Reason: APG combobox expectations, and Tab otherwise leaves a stale panel over the page (harden.md, focus management).
 8. **The loading pulse respects `prefers-reduced-motion`.** Reason: WCAG 2.3.3, and Impeccable operate.md: motion conveys state only.
+9. **(2026-11-04, during implementation) A failed search or *Show more* is announced through the same status region with the existing `SEARCH_FAILED` text.** Reason: WCAG 4.1.3 Status Messages covers errors too; the wording itself stays unchanged (out of scope).
+10. **(2026-11-04) Count announcements in lv, lt, et, fi and ru use a "Results shown: {{count}}" form**, since the spec has only a one/many pair and those languages have more plural forms; the form reads correctly for any number.
+11. **(2026-11-04) While a search is loading, the arrow keys reach only the scope row**, since the stale results are hidden then; highlighting invisible rows would announce options that aren't on screen.
+12. **(2026-11-04) The stylesheet ends at about 2.14 kB, over the 2 kB warning budget and well under the 4 kB error budget the spec targets.** The button resets the `div` rows no longer need were removed; splitting the component for 140 bytes would add structure for no user benefit.
 
 ### Decisions to double-check
 None. This changes accessibility and copy only, with no business-logic, data or permission change.
@@ -118,9 +122,9 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] C3. Specs: the scope row appears only with a selected project and is reachable with ↓ and Enter (the next request has no project id); an empty scoped search shows the in-project message and pre-highlights the row; an empty unscoped search shows the query message and hint; the scope row disappears after widening and comes back after close.
 
 ### D. Status, shortcut hint and motion
-- [ ] D1. Add the visually hidden status region with `statusText` / `statusParams` (count, one-result and no-results variants), cleared on close. Specs for each variant, plus an update after *Show more*.
-- [ ] D2. Add the `<kbd>` shortcut hint, `showShortcutHint`, `aria-keyshortcuts="/"` and its CSS (hidden under `hover: none`). Specs: shown when empty and unfocused, hidden on focus and with text.
-- [ ] D3. Add the reduced-motion rule and `overflow-wrap` on messages. Check the stylesheet is under the 4 kB error budget (`npm run build`).
+- [x] D1. Add the visually hidden status region with `statusText` / `statusParams` (count, one-result and no-results variants), cleared on close. Specs for each variant, plus an update after *Show more*.
+- [x] D2. Add the `<kbd>` shortcut hint, `showShortcutHint`, `aria-keyshortcuts="/"` and its CSS (hidden under `hover: none`). Specs: shown when empty and unfocused, hidden on focus and with text.
+- [x] D3. Add the reduced-motion rule and `overflow-wrap` on messages. Check the stylesheet is under the 4 kB error budget (`npm run build`).
 
 ### E. Cleanup and docs
 - [ ] E1. Remove `SEARCH_INCLUDE_ALL_PROJECTS` from `phrases.ts` and every translation file after grepping that it's unused. Remove `NO_SEARCH_RESULTS` only if a grep shows no use left.
