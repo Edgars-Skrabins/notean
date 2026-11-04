@@ -19,6 +19,7 @@ import {TeamCodeDisplayComponent} from "@components/team-code-display/team-code-
 import {AvatarComponent} from "@components/avatar/avatar.component";
 import {CheckboxComponent} from "@components/checkbox/checkbox.component";
 import {MenuButtonComponent} from "@components/menu-button/menu-button.component";
+import {ButtonComponent} from "@components/button/button.component";
 import {errorPhrase} from "@utils/errorPhrase";
 import {AttachmentService} from "@services/attachment.service";
 import {StorageUsage} from "@models/attachment.model";
@@ -58,7 +59,8 @@ const MEMBER_ACTION_TOASTS: Record<MemberAction, string> = {
     TeamCodeDisplayComponent,
     AvatarComponent,
     CheckboxComponent,
-    MenuButtonComponent
+    MenuButtonComponent,
+    ButtonComponent
   ],
   templateUrl: './manage-team.component.html',
   changeDetection: ChangeDetectionStrategy.Eager,

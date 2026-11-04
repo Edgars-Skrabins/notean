@@ -19,6 +19,7 @@ export class TeamCodeDisplayComponent {
   protected readonly PHRASES = PHRASES;
 
   @Input({required: true}) code!: string;
+  @Input() compact = false;
 
   codeCopied = false;
 
