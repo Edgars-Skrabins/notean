@@ -1,7 +1,7 @@
 # Empty states guidance — Spec
 
 **Type:** feature
-**Status:** ready for implementation
+**Status:** in progress
 **Last updated:** 2026-11-04
 
 # Part 1 — Business logic and usage
@@ -91,8 +91,8 @@ Existing stack: Angular standalone components, ngx-translate, `ProjectFilterServ
 
 ### Phrases and translations
 In `config/phrases.ts` and every file in `frontend/public/assets/translations/` (en, lv, et, lt, ru, sv, fi, de, da, fr, es). Add each key next to related keys, not at the end:
-- New: `GET_STARTED_TITLE` ("Get your team started"), `GET_STARTED_HINT`, `INVITE_TEAMMATES` ("Invite teammates"), `HIDE_GET_STARTED` ("Hide getting started"), `FLOWCHART_EMPTY_VIEW` ("This diagram is empty"), `EDIT_DIAGRAM` ("Edit diagram"), `EMPTY_PAGES_TITLE`, `EMPTY_PAGES_IN_PROJECT_TITLE`, `EMPTY_PAGES_HINT`, `EMPTY_DIAGRAMS_TITLE`, `EMPTY_DIAGRAMS_IN_PROJECT_TITLE`, `EMPTY_DIAGRAMS_HINT`, `BROWSE_TEMPLATES`, `SHOW_ALL_PROJECTS`, `NO_MATCHES_TITLE` ("Nothing matches '{{query}}'"), `NO_MATCHES_TITLES_HINT`, `NO_MATCHES_PROJECTS_HINT`, `NO_MATCHES_IN_PROJECT_HINT`, `CLEAR_SEARCH`, `CLEAR_FILTERS`, `TRASH_NO_MATCHES`, `PROJECTS_EMPTY_MEMBER_HINT`, `NO_PROJECT_ITEMS_HINT`, `SELECT_THIS_PROJECT`. Reuse `NEW_PAGE`, `NEW_DIAGRAM`, `NEW_BOARD`, `NEW_PROJECT` for the buttons.
-- Changed text: `ACTIVITY_EMPTY`, `NOTHING_ASSIGNED`, `NO_FAVORITES_SIDEBAR`.
+- New: `GET_STARTED_TITLE` ("Get your team started"), `GET_STARTED_HINT`, `INVITE_TEAMMATES` ("Invite teammates"), `HIDE_GET_STARTED` ("Hide getting started"), `FLOWCHART_EMPTY_VIEW` ("This diagram is empty"), `EDIT_DIAGRAM` ("Edit diagram"), `EMPTY_PAGES_TITLE`, `EMPTY_PAGES_IN_PROJECT_TITLE`, `EMPTY_PAGES_HINT`, `EMPTY_DIAGRAMS_TITLE`, `EMPTY_DIAGRAMS_IN_PROJECT_TITLE`, `EMPTY_DIAGRAMS_HINT`, `BROWSE_TEMPLATES`, `SHOW_ALL_PROJECTS`, `NO_MATCHES_TITLE` ("Nothing matches '{{query}}'"), `NO_MATCHES_TITLES_HINT`, `NO_MATCHES_PROJECTS_HINT`, `NO_MATCHES_IN_PROJECT_HINT`, `CLEAR_SEARCH`, `TRASH_CLEAR_FILTERS` ("Clear filters"), `TRASH_NO_MATCHES`, `PROJECTS_EMPTY_MEMBER_HINT`, `NO_PROJECT_ITEMS_HINT`, `SELECT_THIS_PROJECT`. Reuse `NEW_PAGE`, `NEW_DIAGRAM`, `NEW_BOARD`, `NEW_PROJECT` for the buttons.
+- Changed text: `ACTIVITY_EMPTY`, `NOTHING_ASSIGNED`, `NO_FAVORITES_SIDEBAR`, `NO_PROJECTS_YET` ("No projects yet", trailing period dropped since it is now a title).
 - Removed once unused: `NO_PAGES_YET`, `NO_DIAGRAMS_YET`. `NO_SEARCH_RESULTS` is also used by global search (owned by `global-search-polish`). Remove it only if a grep on your rebased branch shows no remaining use, never by editing the global search files.
 
 ### Parallel work
@@ -122,6 +122,10 @@ In `config/phrases.ts` and every file in `frontend/public/assets/translations/` 
 12. **Project detail offers "Select this project"**, which changes the header's project selector so new items land in the project. This is a new shortcut to an existing setting. Drop the button if you'd rather the empty state be text only.
 13. **The sidebar's create-board dialog moves into its own component.** This is a small refactor of `sidebar-boards` beyond pure empty-state work, done so Home can open the same dialog.
 
+### Clarifications during implementation
+14. **The Trash action uses a new key `TRASH_CLEAR_FILTERS` ("Clear filters")** (2026-11-04). `CLEAR_FILTERS` already exists as "Clear" for the ticket filter's button, which stays unchanged.
+15. **`NO_PROJECTS_YET` drops its trailing period** (2026-11-04), so it reads like the other empty-state titles.
+
 # Part 3 — Implementation TODO
 
 Read Part 1 and Part 2 before starting. Work through the tasks in order and tick each one when it is done.
@@ -129,9 +133,9 @@ Read Part 1 and Part 2 before starting. Work through the tasks in order and tick
 Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 assertions, 0 failures (master f15abdf, 2026-11-04).
 
 ### A. Shared building blocks
-- [ ] A1. Add all new phrase keys and the changed texts from 2.2 to `config/phrases.ts` and every translation file, next to related keys.
-- [ ] A2. Create `EmptyStateComponent` (`npm run newcomponent empty-state`) with the inputs, markup and token-only CSS from 2.2, plus a spec (title and hint params rendered, hint omitted when empty, projected actions shown).
-- [ ] A3. Create `CreateBoardDialogComponent` by moving the dialog, its state and `handleCreateConfirmed` logic out of `sidebar-boards`. Make `SidebarBoardsComponent` use it and navigate on `created`. Move the three create tests from `sidebar-boards.component.spec.ts` into the new component's spec; the sidebar keeps "opens the create dialog" and a "navigates to the created board" test.
+- [x] A1. Add all new phrase keys and the changed texts from 2.2 to `config/phrases.ts` and every translation file, next to related keys.
+- [x] A2. Create `EmptyStateComponent` (`npm run newcomponent empty-state`) with the inputs, markup and token-only CSS from 2.2, plus a spec (title and hint params rendered, hint omitted when empty, projected actions shown).
+- [x] A3. Create `CreateBoardDialogComponent` by moving the dialog, its state and `handleCreateConfirmed` logic out of `sidebar-boards`. Make `SidebarBoardsComponent` use it and navigate on `created`. Move the three create tests from `sidebar-boards.component.spec.ts` into the new component's spec; the sidebar keeps "opens the create dialog" and a "navigates to the created board" test.
 
 ### B. Home
 - [ ] B1. Add `emptyChange` to `ActivityInboxComponent` as in 2.2, with specs: emits `true` after an empty All load, `false` after a non-empty load or a live upsert, nothing on the Unread filter or on error.
