@@ -43,6 +43,9 @@ export class MenuButtonComponent {
   }
 
   toggle() {
+    if (this.disabled) {
+      return;
+    }
     this.isOpen = !this.isOpen;
   }
 
