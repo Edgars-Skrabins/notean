@@ -1,4 +1,4 @@
-<p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+<p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
 <div class="listTab" *ngIf="state.board">
   <div class="listTab__toolbar">

@@ -1,7 +1,7 @@
 <section class="commentList">
   <h3 class="commentList__title capsLabel" *ngIf="title">{{ title | translate }}</h3>
 
-  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+  <p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
   <app-load-more *ngIf="hasMore" [loading]="isLoadingMore" (pressed)="loadMore()"></app-load-more>
 

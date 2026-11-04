@@ -51,7 +51,7 @@
   (detach)="closePanel()"
 >
   <div class="commentLayer__panel popupPanel">
-    <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+    <p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
     <ng-container *ngIf="openPin as pin">
       <app-button class="commentLayer__resolve" variant="ghost" (pressed)="toggleResolved(pin)">

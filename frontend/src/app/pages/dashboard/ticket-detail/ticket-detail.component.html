@@ -28,7 +28,7 @@
 
     <p class="ticketDetail__dropHint" *ngIf="isDraggingFiles">{{ PHRASES.DROP_FILES_HERE | translate }}</p>
 
-    <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+    <p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
     <div class="ticketDetail__body" cdkScrollable>
       <div class="ticketDetail__main">

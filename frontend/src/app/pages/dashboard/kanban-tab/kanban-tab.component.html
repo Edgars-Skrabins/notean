@@ -1,4 +1,4 @@
-<p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+<p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
 <div class="kanbanTab" cdkDropListGroup *ngIf="state.board as board">
   <app-kanban-column
