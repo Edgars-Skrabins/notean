@@ -67,19 +67,12 @@
 }
 
 .itemTree__rowActions > * {
-  opacity: 0;
   transition: opacity var(--transition-fast);
 }
 
-.itemTree__row:hover .itemTree__rowActions > *,
-.itemTree__row:focus-within .itemTree__rowActions > *,
-.itemTree__rowActions > .favoriteStar--favorited {
-  opacity: 1;
-}
-
-@media (hover: none) {
-  .itemTree__rowActions > * {
-    opacity: 1;
+@media (hover: hover) {
+  .itemTree__row:not(:hover, :focus-within) .itemTree__rowActions > :not(.favoriteStar--favorited) {
+    opacity: 0;
   }
 }
 
