@@ -5,7 +5,7 @@
     class="teamCodeDisplay__copyButton"
     [class.teamCodeDisplay__copyButton--copied]="codeCopied"
     [attr.aria-label]="(codeCopied ? PHRASES.CODE_COPIED : PHRASES.COPY_CODE) | translate"
-    [title]="(codeCopied ? PHRASES.CODE_COPIED : PHRASES.COPY_CODE) | translate"
+    [appTooltip]="(codeCopied ? PHRASES.CODE_COPIED : PHRASES.COPY_CODE) | translate"
     (click)="handleCopyCode()"
   >
     <svg *ngIf="!codeCopied" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

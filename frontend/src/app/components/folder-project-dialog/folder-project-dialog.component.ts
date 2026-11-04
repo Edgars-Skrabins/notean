@@ -1,13 +1,16 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
+import {CdkTrapFocus} from '@angular/cdk/a11y';
 import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
 import {ButtonComponent} from '@components/button/button.component';
 import {ProjectSelectComponent} from '@components/project-select/project-select.component';
 import {EscapeService} from '@services/escape.service';
+import {uniqueId} from '@utils/uniqueId';
 
 @Component({
   selector: 'app-folder-project-dialog',
   imports: [
+    CdkTrapFocus,
     TranslatePipe,
     ButtonComponent,
     ProjectSelectComponent
@@ -18,6 +21,7 @@ import {EscapeService} from '@services/escape.service';
 })
 export class FolderProjectDialogComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
+  protected readonly titleId = uniqueId('folderProjectDialog');
 
   @Input({required: true}) folderTitle!: string;
   @Input() projectId: number | null = null;

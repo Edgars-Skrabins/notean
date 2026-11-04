@@ -73,7 +73,7 @@
     </ng-container>
 
     <div class="commentLayer__new" *ngIf="draft">
-      <app-rich-text-editor [content]="draftBody" [compact]="true" [mentionContext]="mentionContext" (contentChange)="draftBody = $event"></app-rich-text-editor>
+      <app-rich-text-editor [content]="draftBody" [compact]="true" [mentionContext]="mentionContext" [ariaLabel]="PHRASES.WRITE_COMMENT | translate" (contentChange)="draftBody = $event"></app-rich-text-editor>
       <div class="commentLayer__actions">
         <app-button variant="ghost" (pressed)="closePanel()">{{ PHRASES.CANCEL | translate }}</app-button>
         <app-button [disabled]="!canPostDraft" (pressed)="postDraft()">{{ PHRASES.POST_COMMENT | translate }}</app-button>
