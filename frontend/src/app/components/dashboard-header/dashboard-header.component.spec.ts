@@ -5,6 +5,41 @@ import {AuthService} from "@services/auth.service";
 import {SessionService} from "@services/session.service";
 import {TeamService} from "@services/team.service";
 import {AvatarService} from "@services/avatar.service";
+import {AppRoutes} from "../../app/app-routes.enum";
+
+describe('DashboardHeaderComponent account menu navigation', () => {
+  let component: DashboardHeaderComponent;
+  let navigationService: jasmine.SpyObj<NavigationService>;
+
+  beforeEach(() => {
+    navigationService = jasmine.createSpyObj('NavigationService', ['navigate']);
+    component = new DashboardHeaderComponent(navigationService, {} as AuthService, {} as TeamService, {} as SessionService, {} as AvatarService, new ElementRef(document.createElement('div')));
+  });
+
+  it('opens Settings inside the dashboard', () => {
+    component.handleGoToSettings();
+
+    expect(navigationService.navigate).toHaveBeenCalledWith(AppRoutes.DASHBOARD, AppRoutes.SETTINGS);
+  });
+
+  it('opens Profile inside the dashboard', () => {
+    component.handleGoToProfile();
+
+    expect(navigationService.navigate).toHaveBeenCalledWith(AppRoutes.DASHBOARD, AppRoutes.PROFILE);
+  });
+
+  it('opens Manage team inside the dashboard', () => {
+    component.handleGoToManageTeam();
+
+    expect(navigationService.navigate).toHaveBeenCalledWith(AppRoutes.DASHBOARD, AppRoutes.MANAGE_TEAM);
+  });
+
+  it('still opens Team selection as a standalone screen', () => {
+    component.handleGoToTeams();
+
+    expect(navigationService.navigate).toHaveBeenCalledWith(AppRoutes.TEAM_SELECTION);
+  });
+});
 
 describe('DashboardHeaderComponent.showManageTeam', () => {
   let component: DashboardHeaderComponent;

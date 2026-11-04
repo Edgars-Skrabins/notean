@@ -13,13 +13,13 @@ import {TranslateService} from "@ngx-translate/core";
 import {ToastType} from "@models/toast.model";
 import {TeamMember, TeamRole} from "@models/team.model";
 import {PHRASES} from "@config/phrases";
+import {AppRoutes} from "../../app/app-routes.enum";
 import {testTeam} from "../../testing/teamFixtures";
-import {escapeServiceStub} from "../../testing/escapeServiceStub";
 import {TeamCodeDisplayComponent} from "@components/team-code-display/team-code-display.component";
 import {ButtonComponent} from "@components/button/button.component";
 
 function teamServiceSpy() {
-  const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeam', 'getCurrentRole', 'fetchTeamMembers', 'isFeatureEnabled', 'updateFeatures', 'removeMember', 'updateMemberRole', 'transferOwnership']);
+  const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeam', 'getCurrentRole', 'fetchTeamMembers', 'isFeatureEnabled', 'updateFeatures', 'removeMember', 'updateMemberRole', 'transferOwnership', 'deleteTeam', 'fetchMyTeam']);
   teamService.getCurrentTeam.and.returnValue(testTeam({id: 1, name: 'Team A', code: 'aaa'}));
   teamService.fetchTeamMembers.and.returnValue(Promise.resolve([]));
   teamService.isFeatureEnabled.and.callFake((feature) => feature !== 'diagrams');
@@ -48,7 +48,7 @@ describe('ManageTeamComponent.isOwner', () => {
 
   beforeEach(() => {
     teamService = teamServiceSpy();
-    component = new ManageTeamComponent({} as NavigationService, teamService, {} as TranslateService, {} as ToastService, escapeServiceStub().service, teamChannelServiceStub().service, attachmentServiceStub());
+    component = new ManageTeamComponent({} as NavigationService, teamService, {} as TranslateService, {} as ToastService, teamChannelServiceStub().service, attachmentServiceStub());
   });
 
   it('returns false when the current role is user', () => {
@@ -223,7 +223,7 @@ describe('ManageTeamComponent member actions', () => {
 
   function build(role: TeamRole) {
     teamService.getCurrentRole.and.returnValue(role);
-    component = new ManageTeamComponent({} as NavigationService, teamService, translateService, toastService, escapeServiceStub().service, channel.service, attachmentServiceStub());
+    component = new ManageTeamComponent({} as NavigationService, teamService, translateService, toastService, channel.service, attachmentServiceStub());
     return component;
   }
 
@@ -319,9 +319,9 @@ describe('ManageTeamComponent member actions', () => {
     expect(toastService.show).not.toHaveBeenCalled();
   });
 
-  it('connects the team channel, reloads on membersChanged$ and disconnects on destroy', async () => {
+  it('leaves the team channel to the dashboard but reloads members on membersChanged$ until destroyed', () => {
     build('owner').ngOnInit();
-    expect(channel.service.connect).toHaveBeenCalledOnceWith('aaa');
+    expect(channel.service.connect).not.toHaveBeenCalled();
     expect(teamService.fetchTeamMembers).toHaveBeenCalledTimes(1);
 
     channel.membersChanged.next();
@@ -330,6 +330,54 @@ describe('ManageTeamComponent member actions', () => {
     component.ngOnDestroy();
     channel.membersChanged.next();
     expect(teamService.fetchTeamMembers).toHaveBeenCalledTimes(2);
-    expect(channel.service.disconnect).toHaveBeenCalled();
+    expect(channel.service.disconnect).not.toHaveBeenCalled();
+  });
+});
+
+describe('ManageTeamComponent.handleConfirmDeleteTeam', () => {
+  let teamService: jasmine.SpyObj<TeamService>;
+  let navigationService: jasmine.SpyObj<NavigationService>;
+  let component: ManageTeamComponent;
+
+  beforeEach(() => {
+    teamService = teamServiceSpy();
+    teamService.getCurrentRole.and.returnValue('owner');
+    teamService.deleteTeam.and.returnValue(Promise.resolve({success: true}));
+    navigationService = jasmine.createSpyObj<NavigationService>('NavigationService', ['navigate', 'reloadAt']);
+    component = new ManageTeamComponent(navigationService, teamService, {} as TranslateService, {} as ToastService, teamChannelServiceStub().service, attachmentServiceStub());
+  });
+
+  async function confirmDelete() {
+    component.handleConfirmDeleteTeam();
+    await new Promise((resolve) => setTimeout(resolve));
+  }
+
+  it('reloads the app into the next team Home when another team remains', async () => {
+    teamService.fetchMyTeam.and.returnValue(Promise.resolve(testTeam({id: 2, name: 'Team B', code: 'bbb'})));
+
+    await confirmDelete();
+
+    expect(teamService.deleteTeam).toHaveBeenCalledOnceWith('aaa');
+    expect(navigationService.reloadAt).toHaveBeenCalledOnceWith('/dashboard/home');
+    expect(navigationService.navigate).not.toHaveBeenCalled();
+  });
+
+  it('goes to Team selection when no team remains', async () => {
+    teamService.fetchMyTeam.and.returnValue(Promise.resolve(null));
+
+    await confirmDelete();
+
+    expect(navigationService.navigate).toHaveBeenCalledOnceWith(AppRoutes.TEAM_SELECTION);
+    expect(navigationService.reloadAt).not.toHaveBeenCalled();
+  });
+
+  it('stays on the screen with the error when the delete fails', async () => {
+    teamService.deleteTeam.and.returnValue(Promise.resolve({success: false, code: 'TEAM_NOT_FOUND'}));
+
+    await confirmDelete();
+
+    expect(component.alertMessage).toBe('ERRORS.TEAMS.TEAM_NOT_FOUND');
+    expect(teamService.fetchMyTeam).not.toHaveBeenCalled();
+    expect(navigationService.reloadAt).not.toHaveBeenCalled();
   });
 });

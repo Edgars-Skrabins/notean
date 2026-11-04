@@ -1,8 +1,8 @@
-<div class="boardPickerOverlay">
+<div class="boardPickerOverlay" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
   <div class="boardPickerOverlay__backdrop" (click)="cancelled.emit()"></div>
 
-  <div class="boardPicker">
-    <h3 class="boardPicker__title">{{ PHRASES.CHOOSE_BOARD | translate }}</h3>
+  <div class="boardPicker" role="dialog" aria-modal="true" [attr.aria-labelledby]="titleId" tabindex="-1">
+    <h3 class="boardPicker__title" [id]="titleId">{{ PHRASES.CHOOSE_BOARD | translate }}</h3>
 
     <ng-container *ngIf="boardListService.boards$ | async as boards">
       <div class="boardPicker__list">

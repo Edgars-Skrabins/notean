@@ -19,8 +19,13 @@
     (failed)="showError($event)"
   ></app-comment-item>
 
-  <div class="commentList__new" *ngIf="isLoaded">
-    <app-rich-text-editor [content]="draft" [compact]="true" [mentionContext]="mentionContext" (contentChange)="draft = $event"></app-rich-text-editor>
-    <app-button class="commentList__submit" [disabled]="!canPost" (pressed)="post()">{{ submitLabel | translate }}</app-button>
+  <button #composerTrigger type="button" class="commentList__trigger textInput" *ngIf="isLoaded && !isComposerOpen" (click)="openComposer()">{{ placeholder | translate }}</button>
+
+  <div class="commentList__new" *ngIf="isLoaded && isComposerOpen" (focusout)="handleComposerFocusOut($event)">
+    <app-rich-text-editor [content]="draft" [compact]="true" [mentionContext]="mentionContext" [autofocus]="true" [ariaLabel]="PHRASES.WRITE_COMMENT | translate" (contentChange)="draft = $event"></app-rich-text-editor>
+    <div class="commentList__actions">
+      <app-button variant="ghost" (pressed)="cancelComposer()">{{ PHRASES.CANCEL | translate }}</app-button>
+      <app-button [disabled]="!canPost" (pressed)="post()">{{ submitLabel | translate }}</app-button>
+    </div>
   </div>
 </section>
