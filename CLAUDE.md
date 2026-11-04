@@ -76,7 +76,7 @@ Run frontend commands from `frontend/` and backend commands from `backend/`.
 - **i18n**: `@ngx-translate/core` 18 with the http loader (`provideTranslateService`, `provideTranslateHttpLoader`); components import `TranslatePipe`
 - **Rich text**: Tiptap 3 (core, pm, starter-kit, extension-mention, suggestion), with StarterKit's Link, Underline, ListKeymap and TrailingNode turned off
 - **Diagrams**: AntV X6 with the selection, snapline and keyboard plugins
-- **Drag and drop and popups**: Angular CDK (drag-drop, overlay)
+- **Drag and drop and popups**: Angular CDK (drag-drop, overlay, a11y focus traps, layout `BreakpointObserver`)
 - **Emoji**: `emoji-picker-element`, loaded with a dynamic `import()` by `EmojiPickerComponent` so it stays in its own lazy chunk; its English data (`emoji-picker-element-data`) is copied by an `angular.json` asset entry to `/assets/emoji/data.json` (the CSP forbids its default CDN), and its labels come from the translation files
 - **Theme fonts**: self-hosted `@fontsource/*` packages (Geist, Inter, Manrope, Plus Jakarta Sans, JetBrains Mono, IBM Plex Sans, Newsreader, DM Sans), included per weight in `angular.json` `styles`
 - **Tests**: Karma + Jasmine
@@ -102,6 +102,8 @@ src/environments/             environment.ts (apiUrl)
 #### App and routing
 - Route paths are defined in the `AppRoutes` enum in `app/app-routes.enum.ts` and wired in `app/app.routes.ts`. Use the enum, never string literals.
 - Auth and team flow pages are top-level routes. Feature screens are child routes of `dashboard`, a shell (`DashboardComponent` with header and sidebar).
+- The shell is responsive with one breakpoint: at `max-width: 767px` (compact) `DashboardComponent` sets `isCompact` through `BreakpointObserver` and the sidebar becomes an off-canvas drawer. `DashboardComponent` owns the drawer state (`isNavOpen`, `toggleNav`, `closeNav(restoreFocus)`) and passes `compact` to `DashboardHeaderComponent` (a 44px Menu button instead of the brand and project selector) and `DashboardSidebarComponent` (a top row with the project selector and Close, no collapse toggle). While compact the drawer wrapper is a modal dialog with `cdkTrapFocus`; Esc goes through `EscapeService`, the scrim and Close return focus to the Menu button, and a completed navigation or widening the window closes it.
+- The header's avatar button (avatar, nickname and chevron; avatar only when compact) opens the account menu, whose panel uses `cdkTrapFocus` with auto-capture. The language switcher lives in Settings (Appearance, applied at once and stored per device) and on the auth card, not in the dashboard header.
 - The dashboard is lazy-loaded: `app.routes.ts` loads `DashboardComponent` with `loadComponent` and its child routes from `app/dashboard.routes.ts` (`dashboardRoutes`) with `loadChildren`, so the diagram and rich-text libraries stay out of the initial bundle. Add new dashboard screens to `dashboardRoutes`.
 - A URL that matches no route hits the last `app.routes.ts` entry, `{path: '**', redirectTo: unknownRouteRedirect}` (`guards/unknown-route.redirect.ts`), which sends the user to Login, Team selection or Dashboard Home depending on the session. The dashboard and board routes have no wildcard of their own; the router falls back to this one.
 - Guards are functional `CanActivateFn`s: `authGuard` (logged in, otherwise Login with `?returnUrl=`, which Login follows after signing in when `isSafeReturnUrl` from `@utils/returnUrl` allows it), `teamGuard` (active team selected), `teamRoleGuard` (role is `admin` or `owner`), and `featureGuard(feature)` (the team has that feature on, otherwise redirects to Home with the `FEATURE_TURNED_OFF` toast) on the pages, diagrams, boards and chat routes.
@@ -116,7 +118,7 @@ src/environments/             environment.ts (apiUrl)
 - `styles.css` holds shared classes for repeated looks: `.popupPanel` (dropdown and overlay panels), `.textInput` (text fields), `.capsLabel` (small uppercase labels) and the `.sidebarList__*` classes (the sidebar's expandable Boards and Chat lists). Add them in the template next to the component's own class, which keeps only what differs.
 - When a component's stylesheet outgrows the style budget after removing duplication, split a self-contained part into its own component (as `ItemTreeRowComponent` and `ItemDetailSidebarComponent` were).
 - Title and name inputs bind `[maxlength]="TITLE_MAX_LENGTH"` and description textareas `[maxlength]="DESCRIPTION_MAX_LENGTH"`, from `config/contentLimits.ts`, matching the backend's `ContentLimits`.
-- Icon-only controls get a styled tooltip with the `appTooltip` directive (`components/tooltip/`) plus an `aria-label`, never a native `title`. `app-icon-button` applies it from its `tooltip` input.
+- Icon-only controls get a styled tooltip with the `appTooltip` directive (`components/tooltip/`) plus an `aria-label`, never a native `title`. `app-icon-button` applies it from its `tooltip` input; its `size` is `28`, `36` or `44` (touch targets in the compact header and drawer), and `expanded` sets `aria-expanded` for toggles.
 
 #### Services and HTTP
 - All HTTP goes through `axiosInstance` from `@config/axiosConfig`, not Angular's `HttpClient`. `HttpClient` is only used to load translation files.
