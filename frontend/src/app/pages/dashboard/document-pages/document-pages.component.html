@@ -8,6 +8,7 @@
       [(ngModel)]="searchQuery"
       (ngModelChange)="handleSearchChange($event)"
       [placeholder]="PHRASES.SEARCH_PAGES | translate"
+      [attr.aria-label]="PHRASES.SEARCH_PAGES | translate"
     />
     <app-button variant="ghost" icon="folder-plus" (pressed)="handleCreateFolder(null)">{{ PHRASES.NEW_FOLDER | translate }}</app-button>
     <app-menu-button [customTrigger]="true" [options]="createOptions" (picked)="handleCreateChoice($event)">

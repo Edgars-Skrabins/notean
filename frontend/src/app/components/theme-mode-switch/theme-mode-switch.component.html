@@ -1,10 +1,15 @@
-<div class="themeModeSwitch" role="group" [attr.aria-label]="PHRASES.THEME_MODE | translate">
-  <button
+<div class="themeModeSwitch" role="radiogroup" [attr.aria-label]="PHRASES.THEME_MODE | translate">
+  <label
     *ngFor="let option of options"
-    type="button"
     class="themeModeSwitch__option"
     [class.themeModeSwitch__option--active]="option.mode === mode"
-    [attr.aria-pressed]="option.mode === mode"
-    (click)="select(option.mode)"
-  >{{ option.phrase | translate }}</button>
+  >
+    <input
+      type="radio"
+      class="cdk-visually-hidden"
+      name="themeMode"
+      [value]="option.mode"
+      [checked]="option.mode === mode"
+      (change)="select(option.mode)"
+    />{{ option.phrase | translate }}</label>
 </div>

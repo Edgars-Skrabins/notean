@@ -1,4 +1,5 @@
 import {Component, EventEmitter, OnDestroy, OnInit, Output, ChangeDetectionStrategy} from '@angular/core';
+import {CdkTrapFocus} from '@angular/cdk/a11y';
 import {AsyncPipe, NgFor, NgIf} from '@angular/common';
 import {TranslatePipe} from '@ngx-translate/core';
 import {PHRASES} from '@config/phrases';
@@ -7,10 +8,12 @@ import {BoardListService} from '@services/board-list.service';
 import {BoardSummary} from '@models/board.model';
 import {ButtonComponent} from '@components/button/button.component';
 import {IconComponent} from '@components/icon/icon.component';
+import {uniqueId} from '@utils/uniqueId';
 
 @Component({
   selector: 'app-board-picker-dialog',
   imports: [
+    CdkTrapFocus,
     AsyncPipe,
     NgFor,
     NgIf,
@@ -24,6 +27,7 @@ import {IconComponent} from '@components/icon/icon.component';
 })
 export class BoardPickerDialogComponent implements OnInit, OnDestroy {
   protected readonly PHRASES = PHRASES;
+  protected readonly titleId = uniqueId('boardPickerDialog');
 
   @Output() picked = new EventEmitter<number>();
   @Output() cancelled = new EventEmitter<void>();

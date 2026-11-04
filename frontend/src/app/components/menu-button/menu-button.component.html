@@ -30,7 +30,7 @@
   (overlayOutsideClick)="handleOutsideClick($event)"
   (detach)="close()"
 >
-  <div class="menuButton__panel" role="menu" (keydown.escape)="close(); $event.preventDefault()">
+  <div class="menuButton__panel" role="menu" (keydown.escape)="handlePanelEscape($event)">
     <button
       *ngFor="let option of options; trackBy: trackByValue"
       type="button"

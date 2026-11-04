@@ -28,6 +28,7 @@
         [value]="draft"
         [maxLength]="MESSAGE_MAX_LENGTH"
         [submitOnEnter]="true"
+        [ariaLabel]="PHRASES.EDIT_MESSAGE | translate"
         (valueChange)="draft = $event"
         (submitted)="saveEdit()"
         (escape)="handleEditEscape($event)"
