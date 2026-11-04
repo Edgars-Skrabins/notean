@@ -125,6 +125,7 @@ In `config/phrases.ts` and every file in `frontend/public/assets/translations/` 
 ### Clarifications during implementation
 14. **The Trash action uses a new key `TRASH_CLEAR_FILTERS` ("Clear filters")** (2026-11-04). `CLEAR_FILTERS` already exists as "Clear" for the ticket filter's button, which stays unchanged.
 15. **`NO_PROJECTS_YET` drops its trailing period** (2026-11-04), so it reads like the other empty-state titles.
+16. **`FlowchartEditorComponent` calls `ChangeDetectorRef.detectChanges()` at the end of `ngAfterViewInit`** (2026-11-04). Setting `hasLoaded` there raised NG0100 in dev mode, as 2.2 warned; the flags depend on the X6 graph, which only exists after the view, so a local re-check is the standard fix. It also covers the existing edit hint's `isEmpty` flip.
 
 # Part 3 — Implementation TODO
 
@@ -144,8 +145,8 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] B4. Copy for the Activity, My work and sidebar Favorites empty lines (translation text only; templates unchanged unless a key name changes).
 
 ### C. Diagram view mode
-- [ ] C1. Add `hasLoaded`, the view-mode empty state and the `[flowchartEmptyAction]` slot to `FlowchartEditorComponent` (CSS stays under the 4 kB budget). Extend `flowchart-editor.component.spec.ts`: an empty read-only editor shows the view message after load; a non-empty one doesn't; an editable one shows only the existing hint.
-- [ ] C2. Project the *Edit diagram* button from `diagram-detail.component.html`. Add a diagram-detail spec, or extend the existing one, that the button calls `handleEdit`.
+- [x] C1. Add `hasLoaded`, the view-mode empty state and the `[flowchartEmptyAction]` slot to `FlowchartEditorComponent` (CSS stays under the 4 kB budget). Extend `flowchart-editor.component.spec.ts`: an empty read-only editor shows the view message after load; a non-empty one doesn't; an editable one shows only the existing hint.
+- [x] C2. Project the *Edit diagram* button from `diagram-detail.component.html`. Add a diagram-detail spec, or extend the existing one, that the button calls `handleEdit`.
 
 ### D. Lists
 - [ ] D1. Pages and Diagrams: `clearSearch`, `showAllProjects`, `selectedProjectName` and the per-type phrase config in `foldered-list-page.base.ts`; the `app-empty-state` blocks in `document-pages` and `diagrams`. Extend `document-pages.component.spec.ts`: first-use vs in-project titles, no-match state with Clear search (search term reset through `searchTerms`), Show all projects calls `select(null)`.
