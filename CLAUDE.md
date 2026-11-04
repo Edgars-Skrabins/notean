@@ -76,7 +76,7 @@ Run frontend commands from `frontend/` and backend commands from `backend/`.
 - **i18n**: `@ngx-translate/core` 18 with the http loader (`provideTranslateService`, `provideTranslateHttpLoader`); components import `TranslatePipe`
 - **Rich text**: Tiptap 3 (core, pm, starter-kit, extension-mention, suggestion), with StarterKit's Link, Underline, ListKeymap and TrailingNode turned off
 - **Diagrams**: AntV X6 with the selection, snapline and keyboard plugins
-- **Drag and drop and popups**: Angular CDK (drag-drop, overlay)
+- **Drag and drop and popups**: Angular CDK (drag-drop, overlay); its `a11y-prebuilt.css` (in `angular.json` `styles`) provides the `.cdk-visually-hidden` class
 - **Emoji**: `emoji-picker-element`, loaded with a dynamic `import()` by `EmojiPickerComponent` so it stays in its own lazy chunk; its English data (`emoji-picker-element-data`) is copied by an `angular.json` asset entry to `/assets/emoji/data.json` (the CSP forbids its default CDN), and its labels come from the translation files
 - **Theme fonts**: self-hosted `@fontsource/*` packages (Geist, Inter, Manrope, Plus Jakarta Sans, JetBrains Mono, IBM Plex Sans, Newsreader, DM Sans), included per weight in `angular.json` `styles`
 - **Tests**: Karma + Jasmine
@@ -117,6 +117,8 @@ src/environments/             environment.ts (apiUrl)
 - When a component's stylesheet outgrows the style budget after removing duplication, split a self-contained part into its own component (as `ItemTreeRowComponent` and `ItemDetailSidebarComponent` were).
 - Title and name inputs bind `[maxlength]="TITLE_MAX_LENGTH"` and description textareas `[maxlength]="DESCRIPTION_MAX_LENGTH"`, from `config/contentLimits.ts`, matching the backend's `ContentLimits`.
 - Icon-only controls get a styled tooltip with the `appTooltip` directive (`components/tooltip/`) plus an `aria-label`, never a native `title`. `app-icon-button` applies it from its `tooltip` input.
+- Text fields without a visible label get `[attr.aria-label]` (a placeholder is not a name). `RichTextEditorComponent` and `MentionTextEditorComponent` take an `ariaLabel` input for their editable `role="textbox"`; the mention editor falls back to its placeholder.
+- Single-choice pickers (theme mode, theme, avatar colour) are native `<input type="radio">`s hidden with `.cdk-visually-hidden` inside `<label>` options in a `role="radiogroup"`, so they get one Tab stop and arrow keys.
 
 #### Services and HTTP
 - All HTTP goes through `axiosInstance` from `@config/axiosConfig`, not Angular's `HttpClient`. `HttpClient` is only used to load translation files.
