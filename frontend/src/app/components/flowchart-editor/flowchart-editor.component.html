@@ -19,6 +19,11 @@
 
     <p class="flowchartEditor__emptyHint" *ngIf="isEmpty && editable">{{ PHRASES.FLOWCHART_EMPTY_HINT | translate }}</p>
 
+    <div class="flowchartEditor__emptyState" *ngIf="isEmpty && hasLoaded && !editable">
+      <p class="flowchartEditor__emptyStateText">{{ PHRASES.FLOWCHART_EMPTY_VIEW | translate }}</p>
+      <ng-content select="[flowchartEmptyAction]"></ng-content>
+    </div>
+
     <input
       *ngIf="editingLabel"
       class="flowchartEditor__labelInput"

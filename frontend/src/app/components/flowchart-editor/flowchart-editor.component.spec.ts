@@ -341,4 +341,44 @@ describe('FlowchartEditorComponent', () => {
       expect(node.getAttrByPath('text/fill')).toBe('#0f1012');
     });
   });
+
+  describe('empty state', () => {
+    let viewer: ComponentFixture<FlowchartEditorComponent> | null = null;
+
+    afterEach(() => {
+      viewer?.nativeElement.remove();
+      viewer?.destroy();
+      viewer = null;
+    });
+
+    function renderViewer(content: string): HTMLElement {
+      viewer = TestBed.createComponent(FlowchartEditorComponent);
+      viewer.componentInstance.content = content;
+      viewer.componentInstance.editable = false;
+      document.body.appendChild(viewer.nativeElement);
+      viewer.detectChanges();
+      return viewer.nativeElement;
+    }
+
+    it('shows the view message after an empty diagram loads in view mode', () => {
+      const element = renderViewer('');
+
+      expect(element.querySelector('.flowchartEditor__emptyStateText')?.textContent).toBe(PHRASES.FLOWCHART_EMPTY_VIEW);
+      expect(element.querySelector('.flowchartEditor__emptyHint')).toBeNull();
+    });
+
+    it('shows no message for a diagram with shapes in view mode', () => {
+      component.handleAddShape('flow-process');
+      const element = renderViewer(JSON.stringify(getGraph().toJSON()));
+
+      expect(element.querySelector('.flowchartEditor__emptyState')).toBeNull();
+    });
+
+    it('shows only the existing hint while editing an empty diagram', () => {
+      const element = fixture.nativeElement as HTMLElement;
+
+      expect(element.querySelector('.flowchartEditor__emptyHint')?.textContent).toBe(PHRASES.FLOWCHART_EMPTY_HINT);
+      expect(element.querySelector('.flowchartEditor__emptyState')).toBeNull();
+    });
+  });
 });
