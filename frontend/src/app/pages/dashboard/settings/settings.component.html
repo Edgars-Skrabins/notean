@@ -23,6 +23,11 @@
         (themeChange)="handleThemeChange($event)"
       ></app-theme-picker>
     </div>
+    <div class="settings__field">
+      <span class="settings__label">{{ PHRASES.LANGUAGE | translate }}</span>
+      <app-language-switcher></app-language-switcher>
+      <span class="settings__hint">{{ PHRASES.LANGUAGE_DEVICE_HINT | translate }}</span>
+    </div>
   </section>
 
   <div class="settings__options">
