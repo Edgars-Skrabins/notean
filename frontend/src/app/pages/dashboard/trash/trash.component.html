@@ -29,9 +29,9 @@
           <span class="trash__title">{{ entry.title }}</span>
           <span class="trash__meta">
             <ng-container *ngIf="entry.board">{{ entry.board.title }} · </ng-container>
-            <ng-container *ngIf="entry.childrenCount">{{ (entry.childrenCount === 1 ? PHRASES.TRASH_ITEMS_INSIDE_ONE : PHRASES.TRASH_ITEMS_INSIDE) | translate: {count: entry.childrenCount} }} · </ng-container>
+            <ng-container *ngIf="entry.childrenCount">{{ PHRASES.TRASH_ITEMS_INSIDE | plural: entry.childrenCount | translate: {count: entry.childrenCount} }} · </ng-container>
             {{ PHRASES.TRASH_DELETED_BY | translate: {name: entry.deletedBy.nickname} }} {{ deletedAgo(entry) }} ·
-            {{ (daysLeft(entry) === 1 ? PHRASES.TRASH_DAYS_LEFT_ONE : PHRASES.TRASH_DAYS_LEFT) | translate: {count: daysLeft(entry)} }}
+            {{ PHRASES.TRASH_DAYS_LEFT | plural: daysLeft(entry) | translate: {count: daysLeft(entry)} }}
           </span>
           <span class="trash__hint" *ngIf="!entry.restorable">{{ PHRASES.TRASH_BOARD_IN_TRASH_HINT | translate }}</span>
         </span>

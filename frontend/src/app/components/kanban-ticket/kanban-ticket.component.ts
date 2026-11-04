@@ -11,12 +11,14 @@ import {Tag} from '@models/tag.model';
 import {BoardPriority} from '@models/priority.model';
 import {IconComponent} from '@components/icon/icon.component';
 import {TooltipDirective} from '@components/tooltip/tooltip.directive';
+import {PluralPipe} from '@pipes/plural.pipe';
 
 @Component({
   selector: 'app-kanban-ticket',
   imports: [
     NgIf,
     TranslatePipe,
+    PluralPipe,
     IconButtonComponent,
     FavoriteStarComponent,
     AvatarStackComponent,

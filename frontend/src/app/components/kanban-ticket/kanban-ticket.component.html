@@ -17,8 +17,8 @@
     <span
       *ngIf="ticket.attachmentCount > 0"
       class="kanbanTicket__attachments"
-      [appTooltip]="PHRASES.ATTACHMENT_COUNT | translate: {count: ticket.attachmentCount}"
-      [attr.aria-label]="PHRASES.ATTACHMENT_COUNT | translate: {count: ticket.attachmentCount}"
+      [appTooltip]="PHRASES.ATTACHMENT_COUNT | plural: ticket.attachmentCount | translate: {count: ticket.attachmentCount}"
+      [attr.aria-label]="PHRASES.ATTACHMENT_COUNT | plural: ticket.attachmentCount | translate: {count: ticket.attachmentCount}"
     >
       <app-icon name="paperclip" class="kanbanTicket__attachmentsIcon"></app-icon>
       {{ ticket.attachmentCount }}

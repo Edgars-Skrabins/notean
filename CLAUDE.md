@@ -91,6 +91,7 @@ src/app/
 ├── services/     API access and app state, all providedIn: 'root'
 ├── models/       TypeScript interfaces and response union types
 ├── guards/       functional route guards
+├── pipes/        Angular pipes (plural.pipe.ts)
 ├── config/       axios instance, i18n config, language options, overlay positions, PHRASES, themes.ts, errorCodes/
 ├── testing/      shared spec fixtures (e.g. boardFixtures.ts) and contrast.ts (WCAG contrast helpers)
 └── utils/        small pure helpers (themeDom.ts applies and reads themes, uniqueId.ts makes element ids)
@@ -169,11 +170,12 @@ src/environments/             environment.ts (apiUrl)
 - Code that paints outside CSS reads tokens with `themeToken()` and re-applies on `theme$` (the flowchart editor recolours cells, grid and gradient). The board Overview draws its charts as `app-bar-list` bars in one colour (`--color-primary-light`).
 
 #### Path aliases
-Import with the tsconfig aliases instead of relative paths: `@components/*`, `@config/*`, `@pages/*`, `@models/*`, `@services/*`, `@utils/*`.
+Import with the tsconfig aliases instead of relative paths: `@components/*`, `@config/*`, `@pages/*`, `@models/*`, `@pipes/*`, `@services/*`, `@utils/*`.
 
 #### i18n
 - All user-facing text goes through ngx-translate. Add the key to `PHRASES` in `config/phrases.ts`, then to every translation file in `public/assets/translations/` (`en.json`, `lv.json` and the other languages in `supportedTranslations`).
 - Templates use `{{ PHRASES.KEY | translate }}`.
+- Strings with a count are objects of CLDR plural forms (`one`, `other`, plus `zero`, `few` or `many` where the language has them, as `Intl.PluralRules` reports), chosen with `{{ PHRASES.KEY | plural: count | translate: {count} }}` (`PluralPipe` from `@pipes/plural.pipe`) in templates or `pluralKey(PHRASES.KEY, count, language)` from `@utils/plural` in TS, never with `count === 1`. `config/translationConfig.spec.ts` checks that every language has every form of every plural key in `en.json`.
 - API error codes live per domain in `config/errorCodes/` and mirror the backend's `ErrorCodes` modules. Translations sit under `ERRORS.<DOMAIN>.<CODE>` in every translation file, and `errorPhrase(code)` from `@utils/errorPhrase` returns the key. `NETWORK_ERROR` and `UNKNOWN_ERROR` are frontend-only. Never show backend text to users.
 
 #### Style

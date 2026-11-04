@@ -228,7 +228,12 @@
   "FILTER_ASSIGNEE": "Исполнитель",
   "FILTER_STATUS": "Статус",
   "CLEAR_FILTERS": "Сбросить",
-  "SELECTED_COUNT": "Выбрано: {{count}}",
+  "SELECTED_COUNT": {
+    "one": "Выбрано: {{count}}",
+    "few": "Выбрано: {{count}}",
+    "many": "Выбрано: {{count}}",
+    "other": "Выбрано: {{count}}"
+  },
   "SET_STATUS": "Изменить статус",
   "ASSIGN": "Назначить",
   "UNASSIGN": "Снять назначение",
@@ -248,8 +253,12 @@
   "CHANGE_PRIORITY_COLOR": "Изменить цвет",
   "DELETE_PRIORITY": "Удалить приоритет",
   "REORDER_PRIORITY": "Перетащите, чтобы изменить порядок",
-  "CONFIRM_DELETE_PRIORITY": "Удалить «{{name}}»? Задачи ({{count}}) останутся без приоритета",
-  "CONFIRM_DELETE_PRIORITY_ONE": "Удалить «{{name}}»? 1 задача останется без приоритета",
+  "CONFIRM_DELETE_PRIORITY": {
+    "one": "Удалить «{{name}}»? {{count}} задача останется без приоритета",
+    "few": "Удалить «{{name}}»? {{count}} задачи останутся без приоритета",
+    "many": "Удалить «{{name}}»? {{count}} задач останутся без приоритета",
+    "other": "Удалить «{{name}}»? {{count}} задачи останутся без приоритета"
+  },
   "CONFIRM_DELETE_UNUSED_PRIORITY": "Удалить «{{name}}»?",
   "TAGS": "Метки",
   "ADD_TAG": "Добавить метку",
@@ -261,8 +270,12 @@
   "NO_TAGS": "Без меток",
   "NO_TAGS_YET": "Меток пока нет",
   "SEARCH_TAGS": "Поиск меток",
-  "CONFIRM_DELETE_TAG": "Убрать «{{name}}» с {{count}} задач?",
-  "CONFIRM_DELETE_TAG_ONE": "Убрать «{{name}}» с 1 задачи?",
+  "CONFIRM_DELETE_TAG": {
+    "one": "Убрать «{{name}}» с {{count}} задачи?",
+    "few": "Убрать «{{name}}» с {{count}} задач?",
+    "many": "Убрать «{{name}}» с {{count}} задач?",
+    "other": "Убрать «{{name}}» с {{count}} задачи?"
+  },
   "CONFIRM_DELETE_UNUSED_TAG": "Удалить «{{name}}»?",
   "TAG_MORE": "+{{count}}",
   "MOVE_TO_BOARD": "Переместить на доску",
@@ -301,7 +314,12 @@
   "PROJECT_DESCRIPTION": "Описание",
   "PROJECT_OWNER": "Владелец",
   "PROJECT_MEMBERS": "Участники",
-  "MEMBER_COUNT": "Участников: {{count}}",
+  "MEMBER_COUNT": {
+    "one": "{{count}} участник",
+    "few": "{{count}} участника",
+    "many": "{{count}} участников",
+    "other": "{{count}} участника"
+  },
   "NO_PROJECTS_YET": "Проектов пока нет.",
   "CREATE_PROJECT_HINT": "Создайте проект, чтобы объединить страницы, диаграммы и доски.",
   "PROJECT_SAVED": "Проект сохранён",
@@ -354,7 +372,12 @@
   "SHOW_RESOLVED": "Показать решённые",
   "RESOLVE": "Решить",
   "REOPEN": "Открыть снова",
-  "COMMENT_REPLIES": "Ответов: {{count}}",
+  "COMMENT_REPLIES": {
+    "one": "{{count}} ответ",
+    "few": "{{count}} ответа",
+    "many": "{{count}} ответов",
+    "other": "{{count}} ответа"
+  },
   "COMMENT_ACTIONS": "Действия с комментарием",
   "TRASH": "Корзина",
   "TRASH_EMPTY": "Корзина пуста",
@@ -370,10 +393,18 @@
   "EMPTY_TRASH": "Очистить корзину",
   "CONFIRM_EMPTY_TRASH": "Удалить всё в корзине навсегда? Это нельзя отменить.",
   "TRASH_DELETED_BY": "Удалил(а) {{name}}",
-  "TRASH_DAYS_LEFT": "Осталось дней: {{count}}",
-  "TRASH_DAYS_LEFT_ONE": "Остался 1 день",
-  "TRASH_ITEMS_INSIDE": "Внутри элементов: {{count}}",
-  "TRASH_ITEMS_INSIDE_ONE": "Внутри 1 элемент",
+  "TRASH_DAYS_LEFT": {
+    "one": "Остался {{count}} день",
+    "few": "Осталось {{count}} дня",
+    "many": "Осталось {{count}} дней",
+    "other": "Осталось {{count}} дня"
+  },
+  "TRASH_ITEMS_INSIDE": {
+    "one": "Внутри {{count}} элемент",
+    "few": "Внутри {{count}} элемента",
+    "many": "Внутри {{count}} элементов",
+    "other": "Внутри {{count}} элемента"
+  },
   "TRASH_BOARD_IN_TRASH_HINT": "Доска в корзине",
   "TRASH_TYPE_ALL": "Все типы",
   "TRASH_TYPE_FOLDERS": "Папки",
@@ -389,7 +420,12 @@
   "STORAGE_USAGE": "Использовано {{used}} из {{quota}}",
   "UPLOADING": "Загрузка {{progress}}%",
   "CLOSE_PREVIEW": "Закрыть просмотр",
-  "ATTACHMENT_COUNT": "Вложений: {{count}}",
+  "ATTACHMENT_COUNT": {
+    "one": "{{count}} вложение",
+    "few": "{{count}} вложения",
+    "many": "{{count}} вложений",
+    "other": "{{count}} вложения"
+  },
   "DROP_FILES_HERE": "Перетащите файлы, чтобы прикрепить",
   "ACTIVITY": "Активность",
   "ACTIVITY_ALL": "Все",

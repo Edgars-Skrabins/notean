@@ -30,6 +30,7 @@ import {assignableMembers} from "@utils/assignableMembers";
 import {shiftedPosition} from "@utils/ticketShifts";
 import {AppRoutes} from "../../../app/app-routes.enum";
 import {BoardPageStateService} from "../board-page/board-page-state.service";
+import {PluralPipe} from "@pipes/plural.pipe";
 
 interface GroupData {
   tickets: TicketSummary[];
@@ -59,6 +60,7 @@ function byPosition(first: TicketSummary, second: TicketSummary): number {
     NgIf,
     RouterOutlet,
     TranslatePipe,
+    PluralPipe,
     CdkDropList,
     CdkDrag,
     ListRowComponent,

@@ -228,7 +228,10 @@
   "FILTER_ASSIGNEE": "Vastuuhenkilö",
   "FILTER_STATUS": "Tila",
   "CLEAR_FILTERS": "Tyhjennä",
-  "SELECTED_COUNT": "{{count}} valittu",
+  "SELECTED_COUNT": {
+    "one": "{{count}} valittu",
+    "other": "{{count}} valittu"
+  },
   "SET_STATUS": "Aseta tila",
   "ASSIGN": "Määritä",
   "UNASSIGN": "Poista määritys",
@@ -248,8 +251,10 @@
   "CHANGE_PRIORITY_COLOR": "Vaihda väriä",
   "DELETE_PRIORITY": "Poista prioriteetti",
   "REORDER_PRIORITY": "Järjestä vetämällä",
-  "CONFIRM_DELETE_PRIORITY": "Poistetaanko '{{name}}'? {{count}} tehtävältä poistuu prioriteetti",
-  "CONFIRM_DELETE_PRIORITY_ONE": "Poistetaanko '{{name}}'? 1 tehtävältä poistuu prioriteetti",
+  "CONFIRM_DELETE_PRIORITY": {
+    "one": "Poistetaanko '{{name}}'? {{count}} tehtävältä poistuu prioriteetti",
+    "other": "Poistetaanko '{{name}}'? {{count}} tehtävältä poistuu prioriteetti"
+  },
   "CONFIRM_DELETE_UNUSED_PRIORITY": "Poistetaanko '{{name}}'?",
   "TAGS": "Tunnisteet",
   "ADD_TAG": "Lisää tunniste",
@@ -261,8 +266,10 @@
   "NO_TAGS": "Ei tunnisteita",
   "NO_TAGS_YET": "Ei vielä tunnisteita",
   "SEARCH_TAGS": "Hae tunnisteita",
-  "CONFIRM_DELETE_TAG": "Poistetaanko '{{name}}' {{count}} tiketistä?",
-  "CONFIRM_DELETE_TAG_ONE": "Poistetaanko '{{name}}' 1 tiketistä?",
+  "CONFIRM_DELETE_TAG": {
+    "one": "Poistetaanko '{{name}}' {{count}} tiketistä?",
+    "other": "Poistetaanko '{{name}}' {{count}} tiketistä?"
+  },
   "CONFIRM_DELETE_UNUSED_TAG": "Poistetaanko '{{name}}'?",
   "TAG_MORE": "+{{count}}",
   "MOVE_TO_BOARD": "Siirrä tauluun",
@@ -301,7 +308,10 @@
   "PROJECT_DESCRIPTION": "Kuvaus",
   "PROJECT_OWNER": "Omistaja",
   "PROJECT_MEMBERS": "Jäsenet",
-  "MEMBER_COUNT": "{{count}} jäsentä",
+  "MEMBER_COUNT": {
+    "one": "{{count}} jäsen",
+    "other": "{{count}} jäsentä"
+  },
   "NO_PROJECTS_YET": "Ei vielä projekteja.",
   "CREATE_PROJECT_HINT": "Luo projekti ryhmitelläksesi sivuja, kaavioita ja tauluja.",
   "PROJECT_SAVED": "Projekti tallennettu",
@@ -354,7 +364,10 @@
   "SHOW_RESOLVED": "Näytä ratkaistut",
   "RESOLVE": "Ratkaise",
   "REOPEN": "Avaa uudelleen",
-  "COMMENT_REPLIES": "Vastauksia: {{count}}",
+  "COMMENT_REPLIES": {
+    "one": "{{count}} vastaus",
+    "other": "{{count}} vastausta"
+  },
   "COMMENT_ACTIONS": "Kommentin toiminnot",
   "TRASH": "Roskakori",
   "TRASH_EMPTY": "Roskakori on tyhjä",
@@ -370,10 +383,14 @@
   "EMPTY_TRASH": "Tyhjennä roskakori",
   "CONFIRM_EMPTY_TRASH": "Poistetaanko kaikki roskakorissa pysyvästi? Tätä ei voi kumota.",
   "TRASH_DELETED_BY": "Poistaja: {{name}}",
-  "TRASH_DAYS_LEFT": "{{count}} päivää jäljellä",
-  "TRASH_DAYS_LEFT_ONE": "1 päivä jäljellä",
-  "TRASH_ITEMS_INSIDE": "{{count}} kohdetta sisällä",
-  "TRASH_ITEMS_INSIDE_ONE": "1 kohde sisällä",
+  "TRASH_DAYS_LEFT": {
+    "one": "{{count}} päivä jäljellä",
+    "other": "{{count}} päivää jäljellä"
+  },
+  "TRASH_ITEMS_INSIDE": {
+    "one": "{{count}} kohde sisällä",
+    "other": "{{count}} kohdetta sisällä"
+  },
   "TRASH_BOARD_IN_TRASH_HINT": "Taulu on roskakorissa",
   "TRASH_TYPE_ALL": "Kaikki tyypit",
   "TRASH_TYPE_FOLDERS": "Kansiot",
@@ -389,7 +406,10 @@
   "STORAGE_USAGE": "{{used}} / {{quota}} käytetty",
   "UPLOADING": "Ladataan {{progress}} %",
   "CLOSE_PREVIEW": "Sulje esikatselu",
-  "ATTACHMENT_COUNT": "{{count}} liitettä",
+  "ATTACHMENT_COUNT": {
+    "one": "{{count}} liite",
+    "other": "{{count}} liitettä"
+  },
   "DROP_FILES_HERE": "Pudota tiedostot liittääksesi",
   "ACTIVITY": "Toiminta",
   "ACTIVITY_ALL": "Kaikki",

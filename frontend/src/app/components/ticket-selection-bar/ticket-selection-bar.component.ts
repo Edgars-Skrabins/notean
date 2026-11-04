@@ -7,11 +7,13 @@ import {TeamMember} from '@models/team.model';
 import {MenuButtonOption} from '@models/menu-button.model';
 import {MenuButtonComponent} from '@components/menu-button/menu-button.component';
 import {IconButtonComponent} from '@components/icon-button/icon-button.component';
+import {PluralPipe} from '@pipes/plural.pipe';
 
 @Component({
   selector: 'app-ticket-selection-bar',
   imports: [
     TranslatePipe,
+    PluralPipe,
     MenuButtonComponent,
     IconButtonComponent
   ],

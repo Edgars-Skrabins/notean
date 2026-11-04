@@ -16,7 +16,7 @@
   "CHANGE_PASSWORD": "Change password",
   "PASSWORDS_DO_NOT_MATCH": "Passwords don't match",
   "PASSWORD_CHANGED": "Password changed",
-  "LOGIN": "Login",
+  "LOGIN": "Log in",
   "REGISTER": "Register",
   "TEAM_SELECTION_PROMPT": "What would you like to do?",
   "TEAM_SELECTION_SUBTITLE": "Create a new team or join one with a code",
@@ -49,7 +49,7 @@
   "MENU": "Menu",
   "ACCOUNT_MENU": "Account menu",
   "NAVIGATION": "Navigation",
-  "LOGOUT": "Logout",
+  "LOGOUT": "Log out",
   "LANGUAGE": "Language",
   "LANGUAGE_DEVICE_HINT": "Applies right away and is remembered on this device.",
   "SEARCH_PAGES": "Search pages by title",
@@ -228,7 +228,10 @@
   "FILTER_ASSIGNEE": "Assignee",
   "FILTER_STATUS": "Status",
   "CLEAR_FILTERS": "Clear",
-  "SELECTED_COUNT": "{{count}} selected",
+  "SELECTED_COUNT": {
+    "one": "{{count}} selected",
+    "other": "{{count}} selected"
+  },
   "SET_STATUS": "Set status",
   "ASSIGN": "Assign",
   "UNASSIGN": "Unassign",
@@ -248,8 +251,10 @@
   "CHANGE_PRIORITY_COLOR": "Change colour",
   "DELETE_PRIORITY": "Delete priority",
   "REORDER_PRIORITY": "Drag to reorder",
-  "CONFIRM_DELETE_PRIORITY": "Delete '{{name}}'? {{count}} tickets will have no priority",
-  "CONFIRM_DELETE_PRIORITY_ONE": "Delete '{{name}}'? 1 ticket will have no priority",
+  "CONFIRM_DELETE_PRIORITY": {
+    "one": "Delete '{{name}}'? {{count}} ticket will have no priority",
+    "other": "Delete '{{name}}'? {{count}} tickets will have no priority"
+  },
   "CONFIRM_DELETE_UNUSED_PRIORITY": "Delete '{{name}}'?",
   "TAGS": "Tags",
   "ADD_TAG": "Add tag",
@@ -261,8 +266,10 @@
   "NO_TAGS": "No tags",
   "NO_TAGS_YET": "No tags yet",
   "SEARCH_TAGS": "Search tags",
-  "CONFIRM_DELETE_TAG": "Remove '{{name}}' from {{count}} tickets?",
-  "CONFIRM_DELETE_TAG_ONE": "Remove '{{name}}' from 1 ticket?",
+  "CONFIRM_DELETE_TAG": {
+    "one": "Remove '{{name}}' from {{count}} ticket?",
+    "other": "Remove '{{name}}' from {{count}} tickets?"
+  },
   "CONFIRM_DELETE_UNUSED_TAG": "Delete '{{name}}'?",
   "TAG_MORE": "+{{count}}",
   "MOVE_TO_BOARD": "Move to board",
@@ -301,7 +308,10 @@
   "PROJECT_DESCRIPTION": "Description",
   "PROJECT_OWNER": "Owner",
   "PROJECT_MEMBERS": "Members",
-  "MEMBER_COUNT": "{{count}} members",
+  "MEMBER_COUNT": {
+    "one": "{{count}} member",
+    "other": "{{count}} members"
+  },
   "NO_PROJECTS_YET": "No projects yet.",
   "CREATE_PROJECT_HINT": "Create one to group pages, diagrams and boards.",
   "PROJECT_SAVED": "Project saved",
@@ -354,7 +364,10 @@
   "SHOW_RESOLVED": "Show resolved",
   "RESOLVE": "Resolve",
   "REOPEN": "Reopen",
-  "COMMENT_REPLIES": "Replies: {{count}}",
+  "COMMENT_REPLIES": {
+    "one": "{{count}} reply",
+    "other": "{{count}} replies"
+  },
   "COMMENT_ACTIONS": "Comment actions",
   "TRASH": "Trash",
   "TRASH_EMPTY": "Trash is empty",
@@ -370,10 +383,14 @@
   "EMPTY_TRASH": "Empty trash",
   "CONFIRM_EMPTY_TRASH": "Delete everything in the trash forever? This can't be undone.",
   "TRASH_DELETED_BY": "Deleted by {{name}}",
-  "TRASH_DAYS_LEFT": "{{count}} days left",
-  "TRASH_DAYS_LEFT_ONE": "1 day left",
-  "TRASH_ITEMS_INSIDE": "{{count}} items inside",
-  "TRASH_ITEMS_INSIDE_ONE": "1 item inside",
+  "TRASH_DAYS_LEFT": {
+    "one": "{{count}} day left",
+    "other": "{{count}} days left"
+  },
+  "TRASH_ITEMS_INSIDE": {
+    "one": "{{count}} item inside",
+    "other": "{{count}} items inside"
+  },
   "TRASH_BOARD_IN_TRASH_HINT": "Board is in the trash",
   "TRASH_TYPE_ALL": "All types",
   "TRASH_TYPE_FOLDERS": "Folders",
@@ -389,7 +406,10 @@
   "STORAGE_USAGE": "{{used}} of {{quota}} used",
   "UPLOADING": "Uploading {{progress}}%",
   "CLOSE_PREVIEW": "Close preview",
-  "ATTACHMENT_COUNT": "{{count}} attachments",
+  "ATTACHMENT_COUNT": {
+    "one": "{{count}} attachment",
+    "other": "{{count}} attachments"
+  },
   "DROP_FILES_HERE": "Drop files to attach",
   "ACTIVITY": "Activity",
   "ACTIVITY_ALL": "All",
