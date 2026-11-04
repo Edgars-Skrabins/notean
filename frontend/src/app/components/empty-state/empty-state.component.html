@@ -1,0 +1,5 @@
+<div class="emptyState">
+  <p class="emptyState__title">{{ title | translate: titleParams }}</p>
+  <p class="emptyState__hint" *ngIf="hint">{{ hint | translate: hintParams }}</p>
+  <div class="emptyState__actions"><ng-content></ng-content></div>
+</div>
