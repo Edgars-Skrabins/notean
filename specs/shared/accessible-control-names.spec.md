@@ -157,9 +157,9 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] D3. Profile avatar colours: radiogroup markup, `appTooltip`, CSS focus ring, `TooltipDirective` import. Keep `profile.component.spec.ts` passing, and check the style budget for `profile.component.css`.
 
 ### E. Native titles
-- [ ] E1. Swap `title` for `appTooltip` in `team-code-display` and `dashboard-sidebar` as described in Part 2.2.
-- [ ] E2. `avatar-stack`: `role="img"`, `aria-label` and `appTooltip`. Update `avatar-stack.component.spec.ts` so the nickname list is checked through `aria-label` and the element has no `title`.
-- [ ] E3. `grep -rn '\[title\]=\| title="' frontend/src/app --include='*.html'` now lists only `app-auth-card` / `app-favorite-star` / item `[title]` inputs and the `item-tree` folder row (out of scope).
+- [x] E1. Swap `title` for `appTooltip` in `team-code-display` and `dashboard-sidebar` as described in Part 2.2.
+- [x] E2. `avatar-stack`: `role="img"`, `aria-label` and `appTooltip`. Update `avatar-stack.component.spec.ts` so the nickname list is checked through `aria-label` and the element has no `title`.
+- [x] E3. `grep -rn '\[title\]=\| title="' frontend/src/app --include='*.html'` now lists only `app-auth-card` / `app-favorite-star` / item `[title]` inputs and the `item-tree` folder row (out of scope).
 
 ### Z. Wrap-up
 - [ ] Z1. Update `CLAUDE.md` (Frontend → Components): text fields without a visible label get `[attr.aria-label]` (placeholders are not names); rich-text and mention editors take `ariaLabel` (the mention editor falls back to its placeholder); single-choice pickers use native radios hidden with `.cdk-visually-hidden` (from `a11y-prebuilt.css`, listed in the tech stack) inside a `role="radiogroup"`.
