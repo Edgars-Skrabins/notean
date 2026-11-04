@@ -1,8 +1,8 @@
-<div class="deleteProjectDialogOverlay">
+<div class="deleteProjectDialogOverlay" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
   <div class="deleteProjectDialogOverlay__backdrop" (click)="cancelled.emit()"></div>
 
-  <div class="deleteProjectDialog">
-    <h3 class="deleteProjectDialog__title">{{ PHRASES.CONFIRM_DELETE_PROJECT | translate: {name: projectName} }}</h3>
+  <div class="deleteProjectDialog" role="dialog" aria-modal="true" [attr.aria-labelledby]="titleId" tabindex="-1">
+    <h3 class="deleteProjectDialog__title" [id]="titleId">{{ PHRASES.CONFIRM_DELETE_PROJECT | translate: {name: projectName} }}</h3>
 
     <label class="deleteProjectDialog__option">
       <input type="radio" name="deleteMode" value="keep" [(ngModel)]="mode" />
