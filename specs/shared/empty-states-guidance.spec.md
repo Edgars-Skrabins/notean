@@ -157,7 +157,7 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] D2. Projects: both empty states with role-dependent hint and actions, `clearSearch`. Extend `projects.component.spec.ts` for the creator vs member variant and Clear search.
 - [x] D3. Project detail: empty state with **Select this project** only when it isn't already selected. Extend `project-detail.component.spec.ts`.
 - [x] D4. Trash: empty and no-match states with `clearFilters()`. Extend `trash.component.spec.ts`: Clear filters resets search and type and loads once.
-- [ ] D5. Template list: no-match state with `clearSearch()`. Extend `template-list.component.spec.ts`.
+- [x] D5. Template list: no-match state with `clearSearch()`. Extend `template-list.component.spec.ts`.
 - [ ] D6. Remove `NO_PAGES_YET` and `NO_DIAGRAMS_YET` from `phrases.ts` and every translation file. Remove `NO_SEARCH_RESULTS` only if a grep shows it unused (see 2.2).
 
 ### E. Docs
