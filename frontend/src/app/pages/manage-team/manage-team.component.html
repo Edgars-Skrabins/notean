@@ -6,7 +6,7 @@
 <div class="manageTeam">
   <h2 class="manageTeam__title">{{ PHRASES.MANAGE_TEAM | translate }}</h2>
 
-  <p class="authStatus" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
+  <p class="errorMessage" role="alert" *ngIf="alertMessage">{{ alertMessage | translate }}</p>
 
   <section class="manageTeam__section">
     <h3 class="manageTeam__sectionTitle">{{ PHRASES.TEAM_CODE | translate }}</h3>
@@ -25,7 +25,6 @@
       <input [(ngModel)]="teamName" [maxlength]="TITLE_MAX_LENGTH" id="teamNameInput" type="text" />
     </div>
     <button class="authButton" (click)="handleRenameTeam()">{{ PHRASES.SAVE | translate }}</button>
-    <p class="authStatus" *ngIf="renameStatusMessage">{{ renameStatusMessage }}</p>
   </section>
 
   <section class="manageTeam__section">
