@@ -96,4 +96,33 @@ describe('TrashComponent', () => {
     expect(trash.service.deleteForever).toHaveBeenCalledWith('abc', 2);
     expect(component.entries!.map((item) => item.id)).toEqual([1]);
   }));
+
+  it('clears the search and type filter with one reload', fakeAsync(() => {
+    component.searchQuery = 'plan';
+    component.handleSearchChange('plan');
+    tick(300);
+    component.handleTypeChange('Page');
+    tick();
+    trash.service.list.calls.reset();
+
+    component.clearFilters();
+    tick(300);
+
+    expect(component.searchQuery).toBe('');
+    expect(component.activeSearch).toBe('');
+    expect(component.typeFilter).toBeNull();
+    expect(trash.service.list).toHaveBeenCalledTimes(1);
+    expect(trash.service.list.calls.mostRecent().args[1]).toEqual(jasmine.objectContaining({type: null, search: '', offset: 0}));
+  }));
+
+  it('clears a type filter alone with one reload', fakeAsync(() => {
+    component.handleTypeChange('Board');
+    tick();
+    trash.service.list.calls.reset();
+
+    component.clearFilters();
+    tick(300);
+
+    expect(trash.service.list).toHaveBeenCalledTimes(1);
+  }));
 });
