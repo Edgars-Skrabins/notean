@@ -27,11 +27,23 @@
       <app-load-more *ngIf="hasMore" [loading]="isLoadingMore" (pressed)="handleLoadMore()"></app-load-more>
     </div>
 
-    <p class="dashboardStub__body" *ngIf="!projects.length && activeSearch">{{ PHRASES.NO_SEARCH_RESULTS | translate }}</p>
+    <ng-container *ngIf="!projects.length && !hasLoadError">
+      <app-empty-state
+        *ngIf="activeSearch"
+        [title]="PHRASES.NO_MATCHES_TITLE"
+        [titleParams]="{query: activeSearch}"
+        [hint]="PHRASES.NO_MATCHES_PROJECTS_HINT"
+      >
+        <app-button variant="ghost" (pressed)="clearSearch()">{{ PHRASES.CLEAR_SEARCH | translate }}</app-button>
+      </app-empty-state>
 
-    <ng-container *ngIf="!projects.length && !activeSearch">
-      <p class="dashboardStub__body">{{ PHRASES.NO_PROJECTS_YET | translate }}</p>
-      <p class="dashboardStub__body" *ngIf="canCreate">{{ PHRASES.CREATE_PROJECT_HINT | translate }}</p>
+      <app-empty-state
+        *ngIf="!activeSearch"
+        [title]="PHRASES.NO_PROJECTS_YET"
+        [hint]="canCreate ? PHRASES.CREATE_PROJECT_HINT : PHRASES.PROJECTS_EMPTY_MEMBER_HINT"
+      >
+        <app-button *ngIf="canCreate" variant="ghost" icon="plus" (pressed)="handleNewProject()">{{ PHRASES.NEW_PROJECT | translate }}</app-button>
+      </app-empty-state>
     </ng-container>
   </ng-container>
 </div>

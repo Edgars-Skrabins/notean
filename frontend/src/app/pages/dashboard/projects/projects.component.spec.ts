@@ -1,4 +1,6 @@
-import {fakeAsync, flushMicrotasks, tick} from '@angular/core/testing';
+import {NO_ERRORS_SCHEMA} from '@angular/core';
+import {NgFor, NgIf} from '@angular/common';
+import {fakeAsync, flushMicrotasks, TestBed, tick} from '@angular/core/testing';
 import {Router} from '@angular/router';
 import {ProjectsComponent} from './projects.component';
 import {ProjectService} from '@services/project.service';
@@ -9,7 +11,11 @@ import {ToastType} from '@models/toast.model';
 import {ProjectDetail, ProjectSummary} from '@models/project.model';
 import {AppRoutes} from '../../../app/app-routes.enum';
 import {projectFilterStub, ProjectFilterStub} from '../../../testing/projectFilterStub';
-import {TranslateService} from '@ngx-translate/core';
+import {provideTranslateService, TranslatePipe, TranslateService} from '@ngx-translate/core';
+import {ProjectFilterService} from '@services/project-filter.service';
+import {TeamRole} from '@models/team.model';
+import {EmptyStateComponent} from '@components/empty-state/empty-state.component';
+import {PHRASES} from '@config/phrases';
 
 const params = {name: 'Game', description: '', ownerUserId: 1, memberIds: [1]};
 
@@ -134,4 +140,68 @@ describe('ProjectsComponent', () => {
 
     expect(toastService.show).toHaveBeenCalledWith({type: ToastType.ERROR, message: 'ERRORS.PROJECTS.PROJECT_INVALID_MEMBERS'});
   }));
+
+  it('clears the search and lists every project again', fakeAsync(() => {
+    component.ngOnInit();
+    flushMicrotasks();
+    component.searchQuery = 'zzz';
+    component.handleSearchChange('zzz');
+    tick(300);
+
+    component.clearSearch();
+    tick(300);
+
+    expect(component.searchQuery).toBe('');
+    expect(component.activeSearch).toBe('');
+    expect(projectService.listProjects.calls.mostRecent().args).toEqual(['abc', {search: '', offset: 0}]);
+    component.ngOnDestroy();
+  }));
+
+  it('remembers a failed load so no empty state replaces the error', fakeAsync(() => {
+    projectService.listProjects.and.returnValue(Promise.resolve({success: false, code: 'NETWORK_ERROR'}));
+    component.ngOnInit();
+    flushMicrotasks();
+
+    expect(component.hasLoadError).toBeTrue();
+    component.ngOnDestroy();
+  }));
+});
+
+describe('ProjectsComponent empty states', () => {
+  async function render(role: TeamRole) {
+    const projectService = jasmine.createSpyObj<ProjectService>('ProjectService', ['listProjects']);
+    projectService.listProjects.and.returnValue(Promise.resolve({success: true, projects: [], hasMore: false}));
+    TestBed.configureTestingModule({
+      imports: [ProjectsComponent],
+      providers: [
+        provideTranslateService(),
+        {provide: Router, useValue: jasmine.createSpyObj<Router>('Router', ['navigate'])},
+        {provide: ProjectFilterService, useValue: projectFilterStub().service},
+        {provide: ProjectService, useValue: projectService},
+        {provide: TeamService, useValue: {getCurrentRole: () => role, getCurrentTeamCode: () => 'abc'}},
+        {provide: ToastService, useValue: {}},
+        {provide: AuthService, useValue: {getCurrentUser: () => null}},
+      ],
+    }).overrideComponent(ProjectsComponent, {set: {imports: [NgIf, NgFor, TranslatePipe, EmptyStateComponent], schemas: [NO_ERRORS_SCHEMA]}});
+    const fixture = TestBed.createComponent(ProjectsComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    return fixture.nativeElement as HTMLElement;
+  }
+
+  it('offers New project to owners and admins', async () => {
+    const element = await render('admin');
+
+    expect(element.querySelector('.emptyState__title')?.textContent).toBe(PHRASES.NO_PROJECTS_YET);
+    expect(element.querySelector('.emptyState__hint')?.textContent).toBe(PHRASES.CREATE_PROJECT_HINT);
+    expect(element.querySelectorAll('.emptyState__actions app-button').length).toBe(1);
+  });
+
+  it('tells regular members projects appear once they are added', async () => {
+    const element = await render('user');
+
+    expect(element.querySelector('.emptyState__hint')?.textContent).toBe(PHRASES.PROJECTS_EMPTY_MEMBER_HINT);
+    expect(element.querySelectorAll('.emptyState__actions app-button').length).toBe(0);
+  });
 });
