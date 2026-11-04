@@ -13,6 +13,7 @@ export interface ToastAction {
 export interface ToastOptions {
   type: ToastType;
   message: string;
+  messageParams?: Record<string, string | number>;
   action?: ToastAction;
 }
 

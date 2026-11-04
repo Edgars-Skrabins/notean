@@ -20,6 +20,8 @@ export interface TrashEntry {
   purgeAt: string;
 }
 
+export type TrashedSubject = { title: string } | { ticketCount: number };
+
 export interface RestoredItem {
   itemType: TrashItemType;
   itemId: number;
