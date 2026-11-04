@@ -29,7 +29,12 @@ const SECTION_PHRASES: Record<SearchResultType, string> = {
   ticket: PHRASES.TICKETS,
 };
 
-type NavItem = { result: SearchResult; section?: undefined } | { section: SearchSection; result?: undefined };
+type NavItem =
+  | { result: SearchResult; section?: undefined; scope?: undefined }
+  | { section: SearchSection; result?: undefined; scope?: undefined }
+  | { scope: true; result?: undefined; section?: undefined };
+
+type NavTarget = SearchResult | SearchSection | 'scope';
 
 @Component({
   selector: 'app-global-search',
@@ -62,8 +67,8 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
   loadingMoreType: SearchResultType | null = null;
   activeIndex = -1;
   panelWidth = 0;
+  searchedQuery = '';
 
-  private searchedQuery = '';
   private searchedProjectId: number | null = null;
   private typed = new Subject<string>();
   private immediate = new Subject<string>();
@@ -93,7 +98,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
       this.sections = response.success ? response.sections : [];
       this.searchedQuery = query;
       this.searchedProjectId = projectId;
-      this.activeIndex = -1;
+      this.activeIndex = this.isEmpty && this.selectedProjectName !== null ? this.navItems().length - 1 : -1;
     });
   }
 
@@ -160,6 +165,8 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
         this.openResult(item.result);
       } else if (item?.section) {
         this.showMore(item.section);
+      } else if (item?.scope) {
+        this.handleIncludeAllProjects();
       }
     } else if (event.key === 'Escape') {
       if (this.isOpen) {
@@ -184,6 +191,7 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
 
   handleIncludeAllProjects() {
     this.includeAllProjects = true;
+    this.activeIndex = -1;
     this.search();
   }
 
@@ -256,22 +264,20 @@ export class GlobalSearchComponent implements OnInit, OnDestroy {
     return `${HEADING_ID_PREFIX}${section.type}`;
   }
 
-  navIndex(item: SearchResult | SearchSection): number {
-    return this.navItems().findIndex((navItem) => navItem.result === item || navItem.section === item);
+  navIndex(item: NavTarget): number {
+    return this.navItems().findIndex((navItem) => item === 'scope' ? !!navItem.scope : navItem.result === item || navItem.section === item);
   }
 
-  isActive(item: SearchResult | SearchSection): boolean {
+  isActive(item: NavTarget): boolean {
     return this.activeIndex >= 0 && this.navIndex(item) === this.activeIndex;
   }
 
   private navItems(): NavItem[] {
-    if (this.isLoading) {
-      return [];
-    }
-    return this.visibleSections.flatMap((section): NavItem[] => [
+    const sectionItems = this.isLoading ? [] : this.visibleSections.flatMap((section): NavItem[] => [
       ...section.results.map((result) => ({result})),
       ...(section.hasMore ? [{section}] : []),
     ]);
+    return this.selectedProjectName === null ? sectionItems : [...sectionItems, {scope: true}];
   }
 
   private open() {

@@ -113,9 +113,9 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] B3. Update `global-search.component.spec.ts`: the input has `role="combobox"` and `aria-controls` points at the rendered listbox only while open; `aria-activedescendant` follows ↓/↑ and is cleared on close; each result row is `role="option"` inside a `role="group"` labelled by its heading; blur closes the panel; the existing keyboard and routing tests still pass with the `div` rows.
 
 ### C. Project scope row and no-results state
-- [ ] C1. Add the `{ scope: true }` nav item, the scope option row, Enter and click handling, and the pre-highlight when a project-scoped search is empty. Remove the footer markup and CSS.
-- [ ] C2. Add the no-results messages with `{query, project}` and the hint.
-- [ ] C3. Specs: the scope row appears only with a selected project and is reachable with ↓ and Enter (the next request has no project id); an empty scoped search shows the in-project message and pre-highlights the row; an empty unscoped search shows the query message and hint; the scope row disappears after widening and comes back after close.
+- [x] C1. Add the `{ scope: true }` nav item, the scope option row, Enter and click handling, and the pre-highlight when a project-scoped search is empty. Remove the footer markup and CSS.
+- [x] C2. Add the no-results messages with `{query, project}` and the hint.
+- [x] C3. Specs: the scope row appears only with a selected project and is reachable with ↓ and Enter (the next request has no project id); an empty scoped search shows the in-project message and pre-highlights the row; an empty unscoped search shows the query message and hint; the scope row disappears after widening and comes back after close.
 
 ### D. Status, shortcut hint and motion
 - [ ] D1. Add the visually hidden status region with `statusText` / `statusParams` (count, one-result and no-results variants), cleared on close. Specs for each variant, plus an update after *Show more*.

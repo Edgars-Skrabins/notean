@@ -34,7 +34,13 @@
 
     <ng-container *ngIf="!isLoading">
       <p class="globalSearch__message" *ngIf="hasError">{{ PHRASES.SEARCH_FAILED | translate }}</p>
-      <p class="globalSearch__message" *ngIf="isEmpty">{{ PHRASES.NO_SEARCH_RESULTS | translate }}</p>
+      <ng-container *ngIf="isEmpty">
+        <p class="globalSearch__message" *ngIf="selectedProjectName as projectName; else noMatches">{{ PHRASES.SEARCH_NO_MATCHES_IN_PROJECT | translate: {query: searchedQuery, project: projectName} }}</p>
+        <ng-template #noMatches>
+          <p class="globalSearch__message">{{ PHRASES.SEARCH_NO_MATCHES | translate: {query: searchedQuery} }}</p>
+          <p class="globalSearch__message">{{ PHRASES.SEARCH_NO_MATCHES_HINT | translate }}</p>
+        </ng-template>
+      </ng-container>
     </ng-container>
 
     <div role="listbox" [id]="LISTBOX_ID" [attr.aria-label]="PHRASES.SEARCH_RESULTS | translate">
@@ -71,11 +77,21 @@
           >{{ PHRASES.SEARCH_SHOW_MORE | translate }}</div>
         </div>
       </ng-container>
-    </div>
 
-    <div class="globalSearch__footer" *ngIf="selectedProjectName as projectName">
-      <span>{{ PHRASES.SEARCH_IN_PROJECT | translate: {project: projectName} }}</span>
-      <button type="button" class="globalSearch__includeAll" (click)="handleIncludeAllProjects()">{{ PHRASES.SEARCH_INCLUDE_ALL_PROJECTS | translate }}</button>
+      <div
+        role="option"
+        class="globalSearch__row globalSearch__scope"
+        *ngIf="selectedProjectName as projectName"
+        [id]="optionId(navIndex('scope'))"
+        [class.globalSearch__row--active]="isActive('scope')"
+        [attr.aria-selected]="isActive('scope')"
+        (click)="handleIncludeAllProjects()"
+      >
+        <span class="globalSearch__text">
+          <span class="globalSearch__scopeTitle">{{ PHRASES.SEARCH_ALL_PROJECTS | translate }}</span>
+          <span class="globalSearch__context">{{ PHRASES.SEARCH_IN_PROJECT | translate: {project: projectName} }}</span>
+        </span>
+      </div>
     </div>
   </div>
 </ng-template>

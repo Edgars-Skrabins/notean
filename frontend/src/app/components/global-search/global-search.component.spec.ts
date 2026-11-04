@@ -7,6 +7,7 @@ import {TeamService} from '@services/team.service';
 import {ProjectFilterService} from '@services/project-filter.service';
 import {SearchMoreResponse, SearchResponse, SearchResult, SearchResultType, SearchSection} from '@models/search.model';
 import {splitSnippet} from '@utils/splitSnippet';
+import {PHRASES} from '@config/phrases';
 import {AppRoutes} from '../../app/app-routes.enum';
 import {projectFilterStub, ProjectFilterStub} from '../../testing/projectFilterStub';
 
@@ -261,6 +262,105 @@ describe('GlobalSearchComponent', () => {
 
     expect(component.isOpen).toBeFalse();
     expect(component.isFocused).toBeFalse();
+  }));
+
+  function selectProject() {
+    projectFilter.selected.next(7);
+    projectFilter.projects.next([{id: 7, name: 'Game'} as never]);
+  }
+
+  function scopeRow(): HTMLElement | null {
+    return document.querySelector('.globalSearch__scope');
+  }
+
+  function messages(): string[] {
+    return Array.from(document.querySelectorAll('.globalSearch__message')).map((element) => element.textContent!.trim());
+  }
+
+  it('shows the scope row only when a project is selected', fakeAsync(() => {
+    searchService.search.and.returnValue(Promise.resolve(found(section('page', [result('page', 1)]))));
+    type('rocket');
+    fixture.detectChanges();
+    expect(scopeRow()).toBeNull();
+
+    component.close();
+    fixture.detectChanges();
+    selectProject();
+    component.handleFocus();
+    flushMicrotasks();
+    fixture.detectChanges();
+    expect(scopeRow()?.getAttribute('role')).toBe('option');
+    expect(scopeRow()?.textContent).toContain(PHRASES.SEARCH_ALL_PROJECTS);
+  }));
+
+  it('widens the search from the scope row with the arrow keys and Enter', fakeAsync(() => {
+    selectProject();
+    searchService.search.and.returnValue(Promise.resolve(found(section('page', [result('page', 1)]))));
+    type('rocket');
+
+    component.handleKeydown(new KeyboardEvent('keydown', {key: 'ArrowDown'}));
+    component.handleKeydown(new KeyboardEvent('keydown', {key: 'ArrowDown'}));
+    fixture.detectChanges();
+    expect(scopeRow()?.getAttribute('aria-selected')).toBe('true');
+
+    component.handleKeydown(new KeyboardEvent('keydown', {key: 'Enter'}));
+    flushMicrotasks();
+    fixture.detectChanges();
+
+    expect(searchService.search.calls.mostRecent().args).toEqual(['abc', 'rocket', null]);
+    expect(router.navigate).not.toHaveBeenCalled();
+    expect(scopeRow()).toBeNull();
+  }));
+
+  it('widens the search when the scope row is clicked', fakeAsync(() => {
+    selectProject();
+    type('rocket');
+    fixture.detectChanges();
+
+    scopeRow()!.click();
+    flushMicrotasks();
+
+    expect(searchService.search.calls.mostRecent().args).toEqual(['abc', 'rocket', null]);
+  }));
+
+  it('names the project and pre-highlights the scope row when a scoped search is empty', fakeAsync(() => {
+    selectProject();
+    type('rocket');
+    fixture.detectChanges();
+
+    expect(messages()).toEqual([PHRASES.SEARCH_NO_MATCHES_IN_PROJECT]);
+    expect(scopeRow()?.getAttribute('aria-selected')).toBe('true');
+
+    component.handleKeydown(new KeyboardEvent('keydown', {key: 'Enter'}));
+    flushMicrotasks();
+    fixture.detectChanges();
+    expect(searchService.search.calls.mostRecent().args).toEqual(['abc', 'rocket', null]);
+    expect(messages()).toEqual([PHRASES.SEARCH_NO_MATCHES, PHRASES.SEARCH_NO_MATCHES_HINT]);
+    expect(component.activeIndex).toBe(-1);
+  }));
+
+  it('names the query with a hint when an unscoped search is empty', fakeAsync(() => {
+    type('rocket');
+    fixture.detectChanges();
+
+    expect(messages()).toEqual([PHRASES.SEARCH_NO_MATCHES, PHRASES.SEARCH_NO_MATCHES_HINT]);
+    expect(component.activeIndex).toBe(-1);
+  }));
+
+  it('brings the scope row back after closing a widened search', fakeAsync(() => {
+    selectProject();
+    type('rocket');
+    component.handleIncludeAllProjects();
+    flushMicrotasks();
+    fixture.detectChanges();
+    expect(scopeRow()).toBeNull();
+
+    component.close();
+    fixture.detectChanges();
+    component.handleFocus();
+    flushMicrotasks();
+    fixture.detectChanges();
+    expect(scopeRow()).not.toBeNull();
   }));
 
   it('leaves Escape to the layer below when the panel is closed', () => {
