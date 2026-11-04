@@ -1,7 +1,7 @@
 # Empty states guidance — Spec
 
 **Type:** feature
-**Status:** in progress
+**Status:** done
 **Last updated:** 2026-11-04
 
 # Part 1 — Business logic and usage
@@ -164,5 +164,5 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] E1. Update `CLAUDE.md`: list `EmptyStateComponent` (`app-empty-state`) as the shared empty state for lists and searches, `CreateBoardDialogComponent` as the create-board dialog shared by the sidebar and Home, and Home's get-started block (its show rule and `homeGetStartedDismissed:<team>` key) in the Home bullet.
 
 ### Z. Wrap-up
-- [ ] Z1. Full test runs, build and lint, using the commands in `CLAUDE.md` (`npm test` and `npm run build` in `frontend/`; the backend suite is unaffected but run `bin/rails test` once).
-- [ ] Z2. Manual check in the running app: register, create a team, and on Home see "Get started" with all four buttons. Each one works; dismiss it and it stays hidden after a reload. Open an empty diagram and use *Edit diagram*. Empty Pages with and without a project selected, a Pages search with no matches (Clear search), Projects as an admin and as a member, an empty project detail, Trash with a filter that matches nothing (Clear filters), and a template search with no matches. Check all of it in light and dark mode at 375 px width.
+- [x] Z1. Full test runs, build and lint, using the commands in `CLAUDE.md` (`npm test` and `npm run build` in `frontend/`; the backend suite is unaffected but run `bin/rails test` once).
+- [x] Z2. Manual check in the running app: register, create a team, and on Home see "Get started" with all four buttons. Each one works; dismiss it and it stays hidden after a reload. Open an empty diagram and use *Edit diagram*. Empty Pages with and without a project selected, a Pages search with no matches (Clear search), Projects as an admin and as a member, an empty project detail, Trash with a filter that matches nothing (Clear filters), and a template search with no matches. Check all of it in light and dark mode at 375 px width.
