@@ -1,4 +1,12 @@
-<div class="chatMessage" [class.chatMessage--grouped]="grouped" [class.chatMessage--active]="isEmojiOpen" [attr.data-message-id]="message.id">
+<div
+  class="chatMessage"
+  tabindex="0"
+  role="article"
+  [attr.aria-label]="accessibleLabel"
+  [class.chatMessage--grouped]="grouped"
+  [class.chatMessage--revealed]="actionsRevealed"
+  [attr.data-message-id]="message.id"
+>
   <div class="chatMessage__gutter">
     <app-avatar *ngIf="!grouped" [avatar]="message.author.avatar" [nickname]="message.author.nickname" [size]="32"></app-avatar>
   </div>
@@ -43,7 +51,7 @@
     ></app-chat-reactions>
   </div>
 
-  <div class="popupPanel chatMessage__actions" *ngIf="!editing">
+  <div class="popupPanel chatMessage__actions" *ngIf="!editing" [attr.inert]="actionsRevealed ? null : ''">
     <button
       *ngFor="let emoji of recentReactionsService.recent"
       type="button"
