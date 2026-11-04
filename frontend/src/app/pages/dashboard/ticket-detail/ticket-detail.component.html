@@ -38,6 +38,7 @@
           [(ngModel)]="titleDraft"
           [maxlength]="TITLE_MAX_LENGTH"
           [placeholder]="PHRASES.TICKET_TITLE_PLACEHOLDER | translate"
+          [attr.aria-label]="PHRASES.TICKET_TITLE_PLACEHOLDER | translate"
           (keydown.enter)="commitTitle()"
           (keydown.escape)="cancelTitleEdit($event)"
           (focus)="handleTitleFocus()"

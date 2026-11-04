@@ -142,7 +142,7 @@ Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 as
 - [x] A2. Add `WRITE_COMMENT`, `PAGE_CONTENT`, `TICKET_DESCRIPTION`, `DIAGRAM_LABEL` and `EDIT_MESSAGE` to `config/phrases.ts` and to all 11 files in `frontend/public/assets/translations/`, each next to the key named in Part 2.2.
 
 ### B. Text inputs
-- [ ] B1. Add the `[attr.aria-label]` bindings from the text-input table in Part 2.2 to all 16 inputs. Afterwards, rerun the sweep (every `<input>`/`<textarea>` in `src/app/**/*.html` that isn't a radio, checkbox or file input has an `aria-label`, `aria-labelledby`, a wrapping `<label>` or a `<label for>`). The only exception left is the create-named-item dialog input, which `dialog-accessibility` labels.
+- [x] B1. Add the `[attr.aria-label]` bindings from the text-input table in Part 2.2 to all 16 inputs. Afterwards, rerun the sweep (every `<input>`/`<textarea>` in `src/app/**/*.html` that isn't a radio, checkbox or file input has an `aria-label`, `aria-labelledby`, a wrapping `<label>` or a `<label for>`). The only exception left is the create-named-item dialog input, which `dialog-accessibility` labels.
 
 ### C. Editors
 - [ ] C1. `rich-text-editor`: the `ariaLabel` input, function `attributes`, `setOptions({})` on change, toolbar `appTooltip` + `aria-pressed`. Extend `rich-text-editor.component.spec.ts`: an editable editor's `.ProseMirror` has `role="textbox"`, `aria-multiline="true"` and the given `aria-label`; changing `ariaLabel` updates it; a read-only editor has no `role` attribute; the Bold button's `aria-pressed` is `"true"` after toggling bold and has no `title` attribute.

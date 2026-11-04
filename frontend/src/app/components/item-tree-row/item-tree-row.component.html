@@ -35,6 +35,7 @@
     [ngModel]="renameDraft"
     (ngModelChange)="renameDraftChange.emit($event)"
     [maxlength]="TITLE_MAX_LENGTH"
+    [attr.aria-label]="PHRASES.RENAME_ITEM | translate"
     (click)="$event.stopPropagation()"
     (keydown.enter)="renameCommit.emit()"
     (keydown.escape)="renameCancel.emit(); $event.preventDefault()"
