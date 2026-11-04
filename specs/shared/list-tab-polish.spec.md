@@ -1,7 +1,7 @@
 # List tab polish — Spec
 
 **Type:** bug fix
-**Status:** ready for implementation
+**Status:** in progress
 **Last updated:** 2026-11-04
 
 # Part 1 — Business logic and usage
@@ -48,6 +48,7 @@ No new dependencies. CSS `position: sticky` inside the existing scroll container
     z-index: 1;
   }
   ```
+  and give `.listTab` `padding-bottom: calc(var(--space-6) + var(--space-4))` (see decision 6).
   Because the bar is the last item in the flex column, appearing only adds height below the last group; the rows above never move. `position: sticky` keeps it at the bottom of the viewport while `.listTab` is scrolled, and its in-flow height means the end of the list scrolls fully above it.
 - `frontend/src/app/components/ticket-selection-bar/ticket-selection-bar.component.css`: the bar now floats over rows, so it needs an opaque surface and elevation: change `background` from `var(--color-input-bg-focus)` (translucent in several themes) to `var(--color-card-bg)` and add `box-shadow: var(--shadow-card)`. Keep the `var(--color-input-border-focus)` border, which marks it as the active selection context.
 - The bar's menus (`app-menu-button`) already use `DROPDOWN_POSITIONS`, which fall back to opening above the trigger, so they still fit at the bottom of the screen. Verify this in the manual check.
@@ -80,6 +81,10 @@ No new dependencies. CSS `position: sticky` inside the existing scroll container
 4. **Status label in rows (2026-11-04):** remove it from every row, including search and filter results. Reason: the List tab always groups by status, even while searching or filtering, so the header already names it (Nielsen #8 aesthetic and minimalist design; Impeccable operate.md "Scanability"). Rejected: keeping it only while searching (results are still grouped, so it would still repeat).
 5. **Date column alignment (2026-11-04):** `min-width: 8em`, right-aligned tabular numerals. Reason: with the status cell gone, variable-width dates shift the assignee and action columns between rows; Impeccable craft-floor "Browser surfaces: … the numerals in tabular data" and polish.md "fix optical as well as mathematical alignment". `em` keeps the width relative to the font size; localized long forms (for example Russian "14 нояб. 2026 г.") still fit because it is a minimum, not a fixed width.
 
+6. **End-of-list space for the sticky bar (2026-11-04, found in the manual check):** `.listTab` gets `padding-bottom: calc(var(--space-6) + var(--space-4))`. Reason: `.boardPage` is `height: 100%` (Kanban scrolls inside it), so the List tab overflows it and the shell's `--space-6` bottom padding never follows the list; Chrome also measures the sticky `bottom` inset inside that padding, so at the end of the list the bar covered "Create ticket" by 48px, breaking usage point 3. The padding restores the shell's end space plus the bar's inset, so at the end the bar sits in flow below the last control with the usual gap. Rejected: changing `.boardPage` to `min-height` (outside this spec and Kanban relies on the fixed height). Known edge case: when a list taller than the screen is scrolled to its very end, clearing the selection removes the bar's height from the page, so the browser clamps the scroll position and the rows shift down by that much; anywhere else in the list nothing moves. Avoiding it would mean permanently reserving the bar's space, which decision 1 rejected.
+
+7. **375px check (2026-11-04):** at 375px the dashboard sidebar still takes most of the width on master (the shell's small-screen layout belongs to `responsive-shell`), so the List tab is too narrow to judge there. The bar still stays sticky, clears the last control at the end of the list and causes no horizontal page scroll; its controls wrap.
+
 ### Decisions to double-check
 
 - None: no business logic, data model or permission changes. Decision 2 (the bar moves later in keyboard order) is the one trade-off worth a look.
@@ -91,17 +96,17 @@ Read Part 1 and Part 2 before starting. Work through the tasks in order and tick
 Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 assertions, 0 failures (master f15abdf, 2026-11-04).
 
 ### A. Selection bar without layout shift
-- [ ] A1. In `list-tab.component.html` move the `app-ticket-selection-bar` block to the end of `.listTab` (after the groups) with `class="listTab__selectionBar"`, and add the `.listTab__selectionBar` sticky rule to `list-tab.component.css`.
-- [ ] A2. In `ticket-selection-bar.component.css` switch the background to `var(--color-card-bg)` and add `box-shadow: var(--shadow-card)`.
-- [ ] A3. Add a DOM test to `list-tab.component.spec.ts` (set up with `TestBed`, `provideTranslateService()` and the same `BoardPageStateService` fixture and service spies the existing tests use; if the file only builds the component with `new`, add a separate `describe` block for this DOM test): after selecting a ticket, `app-ticket-selection-bar` is rendered as the last element child of `.listTab`, after every `.listTab__group`, so nothing is inserted above the rows.
+- [x] A1. In `list-tab.component.html` move the `app-ticket-selection-bar` block to the end of `.listTab` (after the groups) with `class="listTab__selectionBar"`, and add the `.listTab__selectionBar` sticky rule to `list-tab.component.css`.
+- [x] A2. In `ticket-selection-bar.component.css` switch the background to `var(--color-card-bg)` and add `box-shadow: var(--shadow-card)`.
+- [x] A3. Add a DOM test to `list-tab.component.spec.ts` (set up with `TestBed`, `provideTranslateService()` and the same `BoardPageStateService` fixture and service spies the existing tests use; if the file only builds the component with `new`, add a separate `describe` block for this DOM test): after selecting a ticket, `app-ticket-selection-bar` is rendered as the last element child of `.listTab`, after every `.listTab__group`, so nothing is inserted above the rows.
 
 ### B. Status label removed from rows
-- [ ] B1. Remove the `statusTitle` input, the `.listRow__status` span and its CSS from `list-row.component.*`, add the date column alignment rules, and remove the `[statusTitle]` binding from `list-tab.component.html`.
-- [ ] B2. Update `list-row.component.spec.ts` as described in Part 2.2, and add a test that a rendered row contains no `.listRow__status` element and shows the formatted created date in `.listRow__date`.
+- [x] B1. Remove the `statusTitle` input, the `.listRow__status` span and its CSS from `list-row.component.*`, add the date column alignment rules, and remove the `[statusTitle]` binding from `list-tab.component.html`.
+- [x] B2. Update `list-row.component.spec.ts` as described in Part 2.2, and add a test that a rendered row contains no `.listRow__status` element and shows the formatted created date in `.listRow__date`.
 
 ### C. Docs
-- [ ] C1. Update the List tab sentence in `CLAUDE.md` as described in Part 2.2.
+- [x] C1. Update the List tab sentence in `CLAUDE.md` as described in Part 2.2.
 
 ### Z. Wrap-up
-- [ ] Z1. Full test runs (`npm test` in `frontend/`, `bin/rails test` in `backend/`) and `npm run build`; run `/Users/edgarsskrabins/.claude/skills/impeccable/scripts/impeccable detect --json frontend/src/app/pages/dashboard/list-tab frontend/src/app/components/list-row frontend/src/app/components/ticket-selection-bar` once and fix real findings.
-- [ ] Z2. Manual check in the running app at 1280px in Purple haze dark and Paper light, on a board with 20+ tickets in the Backlog: check a row's checkbox, the row stays under the cursor and the bar appears at the bottom of the screen; scroll, the bar stays pinned and opaque over the rows; scroll to the end, "Load more" and "Create ticket" are visible above the bar; open each bar menu near the bottom of the screen, it opens upward and fits; clear the selection, nothing moves. Every row shows no status label, and dates, assignees and actions line up from row to row. Repeat at 375px.
+- [x] Z1. Full test runs (`npm test` in `frontend/`, `bin/rails test` in `backend/`) and `npm run build`; run `/Users/edgarsskrabins/.claude/skills/impeccable/scripts/impeccable detect --json frontend/src/app/pages/dashboard/list-tab frontend/src/app/components/list-row frontend/src/app/components/ticket-selection-bar` once and fix real findings.
+- [x] Z2. Manual check in the running app at 1280px in Purple haze dark and Paper light, on a board with 20+ tickets in the Backlog: check a row's checkbox, the row stays under the cursor and the bar appears at the bottom of the screen; scroll, the bar stays pinned and opaque over the rows; scroll to the end, "Load more" and "Create ticket" are visible above the bar; open each bar menu near the bottom of the screen, it opens upward and fits; clear the selection, nothing moves. Every row shows no status label, and dates, assignees and actions line up from row to row. Repeat at 375px.
