@@ -7,6 +7,7 @@
     [ngModel]="params.name"
     (ngModelChange)="handleNameChange($event)"
     [maxlength]="TITLE_MAX_LENGTH"
+    cdkFocusInitial
   />
   <p class="projectForm__value" *ngIf="readonly">{{ params.name }}</p>
   <p class="projectForm__error" *ngIf="nameError">{{ nameError | translate }}</p>

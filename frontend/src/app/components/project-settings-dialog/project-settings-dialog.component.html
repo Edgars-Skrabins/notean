@@ -1,9 +1,9 @@
-<div class="projectSettingsDialogOverlay">
+<div class="projectSettingsDialogOverlay" cdkTrapFocus [cdkTrapFocusAutoCapture]="true">
   <div class="projectSettingsDialogOverlay__backdrop" (click)="handleClose()"></div>
 
-  <div class="projectSettingsDialog">
+  <div class="projectSettingsDialog" role="dialog" aria-modal="true" [attr.aria-labelledby]="titleId" tabindex="-1">
     <div class="projectSettingsDialog__header">
-      <h3 class="projectSettingsDialog__title">{{ PHRASES.SETTINGS | translate }}</h3>
+      <h3 class="projectSettingsDialog__title" [id]="titleId">{{ PHRASES.SETTINGS | translate }}</h3>
       <app-icon-button icon="x" [tooltip]="PHRASES.CLOSE | translate" (pressed)="handleClose()"></app-icon-button>
     </div>
 
