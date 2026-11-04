@@ -1,7 +1,7 @@
 # Global search polish — Spec
 
 **Type:** bug fix
-**Status:** ready for implementation
+**Status:** in progress
 **Last updated:** 2026-11-04
 
 # Part 1 — Business logic and usage
@@ -105,7 +105,7 @@ Read Part 1 and Part 2 before starting. Work through the tasks in order and tick
 Baseline before starting: frontend 980 specs passing, backend 896 runs / 2398 assertions, 0 failures (master f15abdf, 2026-11-04).
 
 ### A. Phrases
-- [ ] A1. Add the new keys and the changed `SEARCH_IN_PROJECT` text to `config/phrases.ts` and all 11 translation files, next to the existing `SEARCH_*` keys.
+- [x] A1. Add the new keys and the changed `SEARCH_IN_PROJECT` text to `config/phrases.ts` and all 11 translation files, next to the existing `SEARCH_*` keys.
 
 ### B. Combobox and listbox semantics
 - [ ] B1. Template: combobox attributes on the input, the listbox/group/option structure with ids, `aria-selected`, `aria-disabled` on *Show more* while loading, and `(mousedown)` preventDefault on the panel. In the `.ts`, add `LISTBOX_ID`, `optionId`, `headingId` and `activeOptionId`.
