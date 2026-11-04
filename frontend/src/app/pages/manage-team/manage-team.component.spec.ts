@@ -15,6 +15,8 @@ import {TeamMember, TeamRole} from "@models/team.model";
 import {PHRASES} from "@config/phrases";
 import {testTeam} from "../../testing/teamFixtures";
 import {escapeServiceStub} from "../../testing/escapeServiceStub";
+import {TeamCodeDisplayComponent} from "@components/team-code-display/team-code-display.component";
+import {ButtonComponent} from "@components/button/button.component";
 
 function teamServiceSpy() {
   const teamService = jasmine.createSpyObj<TeamService>('TeamService', ['getCurrentTeam', 'getCurrentRole', 'fetchTeamMembers', 'isFeatureEnabled', 'updateFeatures', 'removeMember', 'updateMemberRole', 'transferOwnership']);
@@ -135,6 +137,80 @@ describe('ManageTeamComponent features', () => {
 
     expect(component.features.pages).toBeTrue();
     expect(toastService.show).toHaveBeenCalledOnceWith({type: ToastType.ERROR, message: 'ERRORS.COMMON.FORBIDDEN'});
+  });
+});
+
+describe('ManageTeamComponent sections', () => {
+  let teamService: jasmine.SpyObj<TeamService>;
+
+  async function render(role: TeamRole) {
+    teamService.getCurrentRole.and.returnValue(role);
+    const fixture = TestBed.createComponent(ManageTeamComponent);
+    fixture.detectChanges();
+    await fixture.whenStable();
+    fixture.detectChanges();
+    return fixture;
+  }
+
+  function sectionTitles(element: HTMLElement): string[] {
+    return Array.from(element.querySelectorAll('.manageTeam__sectionTitle, .manageTeam__dangerTitle')).map((title) => title.textContent!.trim());
+  }
+
+  beforeEach(async () => {
+    teamService = teamServiceSpy();
+    await TestBed.configureTestingModule({
+      imports: [ManageTeamComponent],
+      providers: [
+        provideTranslateService(),
+        {provide: TeamService, useValue: teamService},
+        {provide: ToastService, useValue: jasmine.createSpyObj<ToastService>('ToastService', ['show'])},
+        {provide: NavigationService, useValue: {}},
+        {provide: TeamChannelService, useValue: teamChannelServiceStub().service},
+        {provide: AttachmentService, useValue: attachmentServiceStub()},
+      ],
+    })
+      .overrideComponent(ManageTeamComponent, {set: {imports: [NgFor, NgIf, TranslatePipe, TeamCodeDisplayComponent, ButtonComponent], schemas: [NO_ERRORS_SCHEMA]}})
+      .compileComponents();
+    const translate = TestBed.inject(TranslateService);
+    translate.setTranslation('en', {GENERAL: 'General', TEAM_MEMBERS: 'Members', FEATURES: 'Features', STORAGE: 'Storage', DANGER_ZONE: 'Danger zone', STORAGE_USAGE: '{{used}} of {{quota}} used'});
+    translate.use('en');
+  });
+
+  it('shows General, Members, Features, Storage and Danger zone in that order to the owner', async () => {
+    const fixture = await render('owner');
+
+    expect(sectionTitles(fixture.nativeElement)).toEqual(['General', 'Members', 'Features', 'Storage', 'Danger zone']);
+  });
+
+  it('shows an admin General, Members and Storage only', async () => {
+    const fixture = await render('admin');
+
+    expect(sectionTitles(fixture.nativeElement)).toEqual(['General', 'Members', 'Storage']);
+    expect(fixture.nativeElement.querySelector('.manageTeam__danger')).toBeNull();
+  });
+
+  it('shows the compact team code inside the Members section', async () => {
+    const fixture = await render('admin');
+    const sections = Array.from(fixture.nativeElement.querySelectorAll('.manageTeam__section')) as HTMLElement[];
+    const membersSection = sections.find((section) => section.querySelector('.manageTeam__sectionTitle')?.textContent?.trim() === 'Members')!;
+
+    expect(membersSection.querySelector('app-team-code-display .teamCodeDisplay--compact')).not.toBeNull();
+  });
+
+  it('shows the storage figure under the Storage heading', async () => {
+    const fixture = await render('admin');
+    const storage = fixture.nativeElement.querySelector('.manageTeam__storage') as HTMLElement;
+
+    expect(storage.textContent!.trim()).toBe('13 MB of 500 MB used');
+    expect(storage.closest('section')!.querySelector('.manageTeam__sectionTitle')!.textContent!.trim()).toBe('Storage');
+  });
+
+  it('opens the delete confirm from the Danger zone button', async () => {
+    const fixture = await render('owner');
+
+    (fixture.nativeElement.querySelector('.manageTeam__danger app-button button') as HTMLButtonElement).click();
+
+    expect(fixture.componentInstance.showDeleteConfirm).toBeTrue();
   });
 });
 
