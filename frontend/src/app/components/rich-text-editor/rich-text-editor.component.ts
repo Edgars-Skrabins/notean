@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Injector, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild, ViewEncapsulation, ChangeDetectionStrategy} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Injector, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges, ViewChild, ViewEncapsulation, ChangeDetectionStrategy} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {TranslatePipe} from "@ngx-translate/core";
 import {PHRASES} from "@config/phrases";
@@ -26,7 +26,7 @@ import {createMentionExtension} from "@utils/mentionExtension";
   changeDetection: ChangeDetectionStrategy.Eager,
   encapsulation: ViewEncapsulation.None
 })
-export class RichTextEditorComponent implements AfterViewInit, OnChanges, OnDestroy {
+export class RichTextEditorComponent implements OnInit, OnChanges, OnDestroy {
   protected readonly PHRASES = PHRASES;
   protected readonly IMAGE_TYPES = IMAGE_TYPES.join(',');
 
@@ -51,7 +51,7 @@ export class RichTextEditorComponent implements AfterViewInit, OnChanges, OnDest
   constructor(private attachmentService: AttachmentService, private injector: Injector) {
   }
 
-  ngAfterViewInit() {
+  ngOnInit() {
     this.editor = new Editor({
       element: this.editorHost.nativeElement,
       extensions: [
