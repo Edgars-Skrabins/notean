@@ -18,6 +18,9 @@
         (themeChange)="handleThemeChange($event)"
       ></app-theme-picker>
     </div>
+    <button class="authButton settings__save" [disabled]="!hasUnsavedChanges || isSaving" (click)="handleSave()">
+      {{ PHRASES.SAVE | translate }}
+    </button>
     <div class="settings__field">
       <span class="settings__label">{{ PHRASES.LANGUAGE | translate }}</span>
       <app-language-switcher></app-language-switcher>
@@ -39,10 +42,6 @@
       (checkedChange)="handleSettingChange('showMyWorkOnHome', $event)"
     >{{ PHRASES.SHOW_MY_WORK_ON_HOME | translate }}</app-switch>
   </div>
-
-  <button class="authButton" [disabled]="!hasUnsavedChanges || isSaving" (click)="handleSave()">
-    {{ PHRASES.SAVE | translate }}
-  </button>
 </div>
 
 <app-confirm-dialog

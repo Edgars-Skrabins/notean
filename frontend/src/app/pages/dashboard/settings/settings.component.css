@@ -32,6 +32,11 @@
   font-weight: 500;
 }
 
+.settings__save {
+  width: auto;
+  align-self: flex-start;
+}
+
 .settings__hint {
   color: var(--color-text-muted);
   font-size: var(--font-xs);
