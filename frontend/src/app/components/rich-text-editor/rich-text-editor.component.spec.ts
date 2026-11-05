@@ -55,6 +55,16 @@ describe('RichTextEditorComponent', () => {
       expect(proseMirrorHasFocus()).toBeTrue();
     });
 
+    it('marks the toolbar state of autofocused content on the first render', () => {
+      fixture.destroy();
+      fixture = TestBed.createComponent(RichTextEditorComponent);
+      fixture.componentInstance.content = '<p><strong>Bold</strong></p>';
+      fixture.componentInstance.autofocus = true;
+
+      expect(() => fixture.detectChanges()).not.toThrow();
+      expect(fixture.nativeElement.querySelector('.richTextEditor__toolbarButton').getAttribute('aria-pressed')).toBe('true');
+    });
+
     it('leaves the editor unfocused by default', async () => {
       await settle();
 
