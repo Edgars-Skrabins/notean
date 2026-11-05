@@ -52,7 +52,7 @@ export class ToastContainerComponent implements OnDestroy {
   }
 
   private announcementText(toast: Toast) {
-    const message = this.translateService.instant(toast.message);
+    const message = this.translateService.instant(toast.message, toast.messageParams);
     return toast.action ? `${message}. ${this.translateService.instant(toast.action.label)}` : message;
   }
 }
